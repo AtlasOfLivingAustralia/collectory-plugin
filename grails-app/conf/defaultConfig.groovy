@@ -13,6 +13,7 @@
 //#casProperties=casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath
 
 //serverName = "http://devt.ala.org.au:8080"
+
 serverName = "http://localhost:8080"
 contextPath = "collectory-app"
 casServerName = "https://auth.ala.org.au"
