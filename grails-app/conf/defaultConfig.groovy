@@ -18,7 +18,7 @@ contextPath = "collectory-app"
 casServerName = "https://auth.ala.org.au"
 uriFilterPattern = "/admin.*,/collection.*,/institution.*,/contact.*,/reports.*,/providerCode.*,/providerMap.*,/dataProvider.*,/dataResource.*,/dataHub.*,/manage/.*"
 
-uriExclusionFilterPattern = "/images.*,/css.*,/js.*,/less.*,/img,/theme"
+uriExclusionFilterPattern = "/images.*,/css.*,/js.*,/less.*,/img.*,/theme.*"
 
 authenticateOnlyIfLoggedInFilterPattern = ""
 casServerLoginUrl = "https://auth.ala.org.au/cas/login"
