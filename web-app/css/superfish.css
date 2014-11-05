@@ -1,0 +1,126 @@
+/*** ESSENTIAL STYLES ***/
+.sf-menu, .sf-menu * {
+	margin:			0;
+	padding:		0;
+	list-style:		none;
+}
+.sf-menu {
+	line-height:	1.0;
+	margin: 0;
+	padding: 0;
+}
+.sf-menu ul {
+	position:		absolute;
+	top:			-999em;
+	width:			140px; /* left offset of submenus need to match (see below) */
+	margin: 0;
+	padding: 0;
+}
+.sf-menu ul li {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border-right: 1px solid silver;
+}
+.sf-menu li:hover {
+	visibility:		inherit; /* fixes IE7 'sticky bug' */
+}
+.sf-menu li {
+	float:			left;
+	position:		relative;
+}
+.sf-menu a {
+	display:		block;
+	position:		relative;
+}
+.sf-menu li:hover ul,
+.sf-menu li.sfHover ul {
+	left:			0;
+	top:			31px; /* match top ul list item height */
+	z-index:		100;
+}
+ul.sf-menu li:hover li ul,
+ul.sf-menu li.sfHover li ul {
+	top:			-999em;
+}
+ul.sf-menu li li:hover ul,
+ul.sf-menu li li.sfHover ul {
+	left:			140px; /* match ul width */
+	top:			0px;
+}
+ul.sf-menu li li:hover li ul,
+ul.sf-menu li li.sfHover li ul {
+	top:			-999em;
+}
+ul.sf-menu li li li:hover ul,
+ul.sf-menu li li li.sfHover ul {
+	left:			140px; /* match ul width */
+	top:			0px;
+}
+
+/** CUSTOM STYLE */
+
+#menu {
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	/*width: 940px;*/
+	width: 100%;
+	/*background: #4a4f54 url(../img/bg-menu.gif) repeat-x left top;*/
+	background-color: #797B7D;
+}
+
+.sf-menu {
+	margin: 0px;
+	padding: 0px;
+	list-style: none;
+}
+
+ul.children li a {
+	padding: 0px;
+}
+
+.sf-menu a {
+	padding: 0 20px;
+	text-decoration:none;
+	line-height: 30px;
+	/*background: transparent url(../img/bg-menu-a.gif) no-repeat right center;*/
+}
+.sf-menu li ul {
+	border: 1px solid #303133;
+	border-top: none;
+}
+.sf-menu li li ul, .sf-menu li li li ul {
+	border: 1px solid #303133;
+	border-top: none;
+}
+.sf-menu a, .sf-menu a:hover, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
+	color:			#fff;
+}
+.sf-menu li li {
+	/*background:       #1e1f21;*/
+	background-color: #797B7D;
+}
+.sf-menu li li li {
+	/*background:       #1e1f21;*/
+	background-color: #797B7D;
+}
+.sf-menu li:hover, .sf-menu li.sfHover,
+.sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
+	/* outline:		0; */
+}
+.sf-menu li li a, .sf-menu li li a:hover {
+	padding: 10px 20px;
+	line-height: 1.0;
+	/*background: #1e1f21;*/
+	background-color: #797B7D;
+}
+.sf-menu li li:hover, .sf-menu li li.sfHover,
+.sf-menu li li a:focus, .sf-menu li li a:hover, .sf-menu li li a:active {
+	background: #303133;
+	/* outline:		0; */
+}
+
+.sf-menu .children li a:focus, .sf-menu .children li a:hover, .sf-menu .children li a:active {
+	background: #1e1f21!important;
+}

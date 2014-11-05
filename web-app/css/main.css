@@ -1,0 +1,1360 @@
+html * {
+    margin: 0;
+    /*padding: 0; SELECT NOT DISPLAYED CORRECTLY IN FIREFOX */
+}
+
+/* from ALA */
+
+#page {
+	/*width: 940px;*/
+	width: 768px;
+	margin: 0 auto;
+}
+
+.body {
+	margin: 0;
+	padding: 0;
+	/*background: #1e1f21 url(img/bg-body.gif) no-repeat left top;*/
+	/*background: #EDECEB url(../images/ala/ALA_icon_in_background.gif) no-repeat fixed left top;*/
+	/*color: #6e7073;*/
+	color: #373737;
+	font: 12px/20px Verdana, Helvetica, Arial, sans-serif;
+	/* line-height: 1.7em; */
+}
+
+input.button {
+	width: auto;
+	height: 30px;
+	margin: 0px;
+	padding: 0 20px;
+	background: #6e7073;
+	border: none;
+	color: #fff;
+}
+
+/* GENERAL */
+
+.spinner {
+    padding: 5px;
+    position: absolute;
+    right: 0;
+}
+
+/*body {
+    background: #fff;
+    color: #333;
+    font: 11px verdana, arial, helvetica, sans-serif;
+}*/
+#grailsLogo {
+	padding:20px;
+}
+
+a:link, a:visited, a:hover {
+    color: #666;
+    /*font-weight: bold; MEW*/
+    text-decoration: none;
+}
+
+h1 {
+    color: #48802c;
+    font-weight: normal;
+    font-size: 16px;
+    margin: .8em 0 .3em 0;
+}
+
+.tooltip li {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul.simple {
+    padding-left: 40px;
+}
+
+.hint li {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.hint ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+input, select, textarea {
+    background-color: #fcfcfc;
+    border: 1px solid #ccc;
+    font: 11px verdana, arial, helvetica, sans-serif;
+    margin: 2px 0;
+    padding: 2px 4px;
+}
+select {
+   padding: 2px 2px 2px 0;
+}
+textarea {
+	/*width: 250px;   MEW: removed to allow textareas to respond to col and row numbers
+	height: 150px;*/
+	vertical-align: top;
+}
+
+input:focus, select:focus, textarea:focus {
+    border: 1px solid #b2d1ff;
+}
+
+
+/* NAVIGATION MENU */
+
+.nav {
+    background: #fff url(../images/skin/shadow.jpg) bottom repeat-x;
+    border: 1px solid #ccc;
+    border-style: solid none solid none;
+    margin-top: 5px;
+    padding: 7px 12px;
+}
+
+.menuButton {
+    font-size: 10px;
+    padding: 0 5px;
+}
+.menuButton a {
+    color: #333;
+    padding: 4px 6px;
+}
+.menuButton a.home {
+    background: url(../images/skin/house.png) center left no-repeat;
+    color: #333;
+    padding-left: 25px;
+}
+.menuButton a.list {
+    background: url(../images/skin/database_table.png) center left no-repeat;
+    color: #333;
+    padding-left: 25px;
+}
+.menuButton a.create {
+    background: url(../images/skin/database_add.png) center left no-repeat;
+    color: #333;
+    padding-left: 25px;
+}
+
+.menuButton a.return {
+    background: url(../images/skin/arrow_118.png) center left no-repeat;
+    color: #333;
+    padding-left: 21px;
+}
+
+/* MEW added to support in-line create links */
+.inlineButton {
+    padding-left: 30px;
+}
+
+.inlineButton a.create {
+    background: url(../images/skin/database_add.png) center left no-repeat;
+    color: #333;
+    padding-left: 20px;
+}
+
+/* MESSAGES AND ERRORS */
+
+.message {
+    background: #f3f8fc url(../images/skin/information.png) 8px 50% no-repeat;
+    border: 1px solid #b2d1ff;
+    color: #006dba;
+    margin: 10px 0 5px 0;
+    padding: 5px 5px 5px 30px
+}
+
+div.errors {
+    background: #fff3f3;
+    border: 1px solid red;
+    color: #cc0000;
+    margin: 10px 0 5px 0;
+    padding: 5px 0 5px 0;
+}
+div.errors ul {
+    list-style: none;
+    padding: 0;
+}
+div.errors li {
+	background: url(../images/skin/exclamation.png) 8px 0% no-repeat;
+    line-height: 16px;
+    padding-left: 30px;
+}
+
+td.errors select {
+    border: 1px solid red;
+}
+td.errors input {
+    border: 1px solid red;
+}
+
+/* TABLES */
+
+table {
+    border: 1px solid #ccc;
+    width: 100%
+}
+
+tr {
+    border: 0;
+}
+td, th {
+    font: 11px verdana, arial, helvetica, sans-serif;
+    line-height: 12px;
+    padding: 5px 6px;
+    text-align: left;
+    vertical-align: top;
+}
+th {
+    background: #fff url(../images/skin/shadow.jpg);
+    color: #666;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 17px;
+    padding: 2px 6px;
+}
+th a:link, th a:visited, th a:hover {
+    color: #333;
+    display: block;
+    font-size: 10px;
+    text-decoration: none;
+    width: 100%;
+}
+th.asc a, th.desc a {
+    background-position: right;
+    background-repeat: no-repeat;
+}
+th.asc a {
+    background-image: url(../images/skin/sorted_asc.gif);
+}
+th.desc a {
+    background-image: url(../images/skin/sorted_desc.gif);
+}
+
+.odd {
+    background: #f7f7f7;
+}
+.even {
+    background: #fff;
+}
+
+/* LIST */
+
+.list table {
+    border-collapse: collapse;
+}
+.list th, .list td {
+    border-left: 1px solid #ddd;
+}
+.list th:hover, .list tr:hover {
+    background: #b2d1ff;
+}
+
+/* PAGINATION */
+
+.paginateButtons {
+    background: #fff url(../images/skin/shadow.jpg) bottom repeat-x;
+    border: 1px solid #ccc;
+    border-top: 0;
+    color: #666;
+    font-size: 10px;
+    overflow: hidden;
+    padding: 10px 3px;
+}
+.paginateButtons a {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-color: #ccc #aaa #aaa #ccc;
+    color: #666;
+    margin: 0 3px;
+    padding: 2px 6px;
+}
+.paginateButtons span {
+    padding: 2px 3px;
+}
+
+/* DIALOG */
+
+.dialog table {
+    padding: 5px 0;
+}
+
+.prop {
+    padding: 5px;
+}
+.prop .name {
+    text-align: left;
+    width: 15%;
+    white-space: nowrap;
+}
+/* MEW added for hints that appear below labels*/
+.prop .hint {
+    text-align: left;
+    color: #777;
+}
+.prop .value {
+    text-align: left;
+    width: 80%;
+}
+
+/* MEW added to align checkboxes */
+.prop td.checkbox {
+    vertical-align:middle;
+}
+.prop .checkbox label {
+    display:block;
+    float:left;
+    white-space:nowrap;
+}
+
+.prop .checkbox input {
+    width:auto;
+    vertical-align:middle;
+}
+
+.prop .checkbox span {
+    vertical-align:middle;
+    margin-right:15px;
+}
+
+/* ACTION BUTTONS */
+
+.buttons {
+    background: #fff url(../images/skin/shadow.jpg) bottom repeat-x;
+    border: 1px solid #ccc;
+    color: #666;
+    font-size: 10px;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 0;
+    height: 26px;
+}
+
+.contactButton {
+    color: #666;
+    font-size: 10px;
+    overflow: hidden;
+}
+
+/* added for index page MEW */
+.homeCell .buttons {
+    float: right;
+    margin-right: 120px;
+    margin-top: 0px;
+}
+
+.CheckBoxList input {
+    margin-right:4px;
+    width: auto;
+}
+
+input[type='checkbox'] {
+    background: transparent; /* IE */
+    border: 0;  /* IE */
+}
+
+.CheckBoxList {
+    overflow: auto; overflow-x: hidden; border: 0px solid #000;
+    list-style-type: none; margin: 0; padding:0px
+}
+
+.CheckBoxList li  {
+    padding:2px;
+    display: inline;
+    color: #333;
+    margin-right: 12px;
+}
+
+.buttons input {
+    background: #fff;
+    border: 0;
+    color: #333;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: bold;
+    margin-left: 3px;
+    overflow: visible;
+    padding: 2px 6px;
+	/* added by MEW 'cause buttons were 90% */
+	width: auto;
+}
+.buttons input.delete {
+    background: transparent url(../images/skin/database_delete.png) 5px 50% no-repeat;
+    padding-left: 28px;
+}
+.buttons input.edit {
+    background: transparent url(../images/skin/database_edit.png) 5px 50% no-repeat;
+    padding-left: 28px;
+}
+.buttons input.save {
+    background: transparent url(../images/skin/database_save.png) 5px 50% no-repeat;
+    padding-left: 28px;
+}
+/* MEW nav buttons - keep separate for when we have bkg images */
+.buttons input.back {
+    background: transparent url(../images/skin/left-arrow.gif) 0 50% no-repeat;
+    width: 64px;
+    text-align: right;
+    position: relative;
+    left: 30px;
+}
+.buttons input.cancel {
+    background: transparent;
+    position: relative;
+    /*left: 160px;*/
+}
+.buttons input.done {
+    background: transparent;
+    position: relative;
+    left: 300px;
+}
+.buttons input.next {
+    background: transparent url(../images/skin/right-arrow.gif) 40px 50% no-repeat;
+    width: 50px;
+    position: relative;
+    left: 470px;
+}
+.buttons input.preview {
+    background: transparent;
+}
+
+.buttons input.special {
+    background: transparent;
+    font-size: 10px;
+    font-weight: normal;
+    margin-left: 0;
+}
+
+/* Flow buttons */
+/* modifications to the standard grails buttons for a flatter look */
+.flowButtons {
+    background: #f8f8f8 url(../images/skin/shadow.jpg) bottom repeat-x;
+    border: 0;
+    margin-top: 0;
+}
+
+.flowButtons input {
+    color: #5E5E5E;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+/* added style for buttons within the main body */
+.bodyButton input {
+    border: 0;
+    color: #666;
+    cursor: pointer;
+    font-size: 10px;
+    margin-left: 0;
+    overflow: visible;
+    padding: 2px 6px;
+	width: auto;
+}
+
+/* MEW front page input */
+.homeCell input {
+    width: auto;
+
+}
+
+/* MEW submit links (used mainly for web flows) */
+input.addAction, input.cancelAction {
+    border: 0;
+    cursor: pointer;
+    font-size: normal;
+    /*margin-left: 26px;*/
+    overflow: visible;
+	width: auto;
+}
+
+.bodyButton input.remove {
+    background: transparent url(../images/skin/database_delete.png) 5px 50% no-repeat;
+    color: #EDECEB;
+    opacity: 0.7;
+    filter:alpha(opacity=70);
+    padding-left: 24px;
+}
+
+.bodyButton input.add {
+    background: transparent url(../images/skin/add.png) 5px 50% no-repeat;
+    padding-left: 24px;
+}
+
+/* MEW for non-submit action links */
+.addAction {
+    background: transparent url(../images/skin/database_add.png) 0 50% no-repeat;
+    padding-left: 20px;
+    cursor: pointer;
+}
+.removeAction {
+    background: transparent url(../images/skin/database_delete.png) 0 50% no-repeat;
+    padding-left: 20px;
+    cursor: pointer;
+}
+.removeSmallAction {
+    background: transparent url(../images/ala/delete.png) 5px 50% no-repeat;
+    padding-left: 20px;
+    cursor: pointer;
+}
+.cancelAction {
+    background: transparent url(../images/skin/database_delete.png) 0 50% no-repeat;
+    padding-left: 20px;
+    cursor: pointer;
+}
+.returnAction {
+    background: transparent url(../images/skin/return.png) 0 50% no-repeat;
+    padding-left: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* added for index page MEW */
+#welcome {
+    margin-left: 25px;
+    margin-top: 25px;
+}
+
+.homeCell {
+    margin-left: 25px;
+    margin-top: 25px;
+    width: 85%;
+}
+
+/* MEW for login screen */
+#login {
+	margin:15px 0; padding:0;
+	text-align:center;
+}
+#login .inner {
+	width:320px;
+	margin:0 auto;
+	text-align:left;
+	padding:10px;
+    border:1px solid #999999;
+	/*border-top:1px dashed #999999;
+	border-bottom:1px dashed #499ede;*/
+	background-color:#EDECEB;
+}
+#login .inner .fheader {
+	padding:4px;margin:3px 0 13px 0;color:#2e3741;font-size:14px;font-weight:bold;
+}
+#login .inner .cssform p {
+	clear: left;
+	margin: 0;
+	padding: 5px 0 8px 105px;
+	border-top: 1px dashed gray;
+	margin-bottom: 10px;
+	height: 1%;
+}
+#login .inner .cssform input[type='text'] {
+	width: 190px;
+}
+#login .inner .cssform label {
+	font-weight: bold;
+	float: left;
+	margin-left: -105px;
+	width: 100px;
+}
+#login .inner .login_message {color:red;}
+.text_ {width:190px ! important; }
+#login .inner .chk {
+    height:12px;
+    width: auto;    /* for IE */
+    border: 0;  /* for IE */
+    background: transparent;    /* for IE */
+}
+
+.login-info {
+    float: right;
+    margin-right: 15px;
+    margin-top: 3px;
+    color: #666666;
+    font: 11px verdana, arial, helvetica, sans-serif;
+}
+
+#logged-in {
+    padding-right: 30px;
+}
+
+/* MEW override some ALA styles */
+#header {
+    height: 165px;
+}
+
+#page > #content {
+	padding: 0;
+}
+
+/* MEW front page links */
+h4.inline {
+    display: inline;
+}
+
+/* MEW: added for embedded tables */
+table.shy {
+    border: none;
+    padding: 0;
+}
+
+table.shy tr {
+    padding: 0;
+}
+
+table.shy td {
+    padding: 0;
+}
+
+table.value {
+    width:80%;
+    border:1px solid #CCC;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom:20px;
+}
+
+table.value th {
+    background: #EDECEB;
+}
+
+td.name-align {
+    vertical-align: baseline;
+}
+
+/* MEW page heading in wizard pages */
+.wizardHeading {
+    color: #666;
+    font-size: 14px;
+    margin-left: 12px;
+}
+
+/* MEW for home page */
+.mainLink {
+    color: #373 !important;
+    font-size: 14px;
+}
+.mainText {
+    margin-left: 50px;
+}
+
+/* reports 'dashboard' */
+div.dashboard {
+    padding-bottom: 20px;
+}
+
+.dashCell {
+    border: 1px solid #CCC;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+.dashCellTitle {
+    color: #363;
+    font-size: 16px;
+    padding-bottom:0;
+}
+
+.dashboard div.header {
+    margin-bottom: 50px;
+    clear: both;
+}
+
+.dashboard div.header div {
+    float: left;
+    width: 200px;
+}
+
+.dashboard div.stats {
+    padding: 0 30px 5px 30px;
+}
+
+.dashboard span.total {
+    color: #01716E;
+    font-size: 15px;
+}
+
+.dashboard p.pageLink {
+    margin-left: 30px;
+}
+
+.dashboard span.linkText {
+    margin-left: 10px;
+}
+
+table.reports th {
+    background-image: none;
+}
+
+table.reports td {
+    padding: 5px 3px;
+}
+
+table.reports td:first-child {
+    padding: 5px 2px;
+}
+
+td.center, th.center {
+    text-align: center;
+}/* --------*/
+
+.tooltip {
+    position:relative;
+    top:-40px;
+    background:#f8f8f8;
+    padding: 4px;
+    border: 1px solid gray;
+}
+
+/* MEW for toggled help text */
+img.helpButton {
+    padding-top: 8px;
+}
+
+div.fieldHelp {
+    color: #666;
+    border: 1px;
+}
+
+/* MEW for report pages */
+.reportGroupTitle td:first-child {
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+}
+
+.reportHeaderRow td {
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+}
+
+div.reports ul {
+    list-style-type: none;
+}
+
+div.reports ul ul {
+    margin-left: 40px;
+}
+
+table.separate-rows td {
+    border-bottom: 1px solid #ccc;
+}
+
+table.separate-rows tr:last-child td {
+    border-bottom: none;
+}
+
+/* MEW for collection preview page */
+.previewHeader {
+    margin-top: 20px;
+}
+.previewHeader img.logo {
+    float: right;
+}
+
+.previewHeader span a {
+    font-size: 1.5em;
+    font-weight: normal;
+}
+
+.previewHeader a {
+    color: #666;
+    font-size: .8em;
+}
+
+table.preview {
+    border: 0;
+}
+
+.preview a {
+    color: #666;
+    font-size: .8em;
+}
+
+.preview div.webSite {
+    width: 213px;
+    overflow: hidden;
+}
+
+.preview td {
+    font-size: 12px;
+    line-height: 180%;
+    padding-left: 0;
+    padding-right: 4px;
+}
+
+.preview td.leftColumn {
+    padding-right: 18px;
+}
+
+.previewHeader h1 {
+    font-size: 20px;
+    margin-bottom: 0;
+}
+
+.preview h2 {
+    color: #7D8804;
+    font-size: 1.5em;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.preview h4 {
+    color: #7D8804;
+    font-size: 1.0em;
+    margin-top: 20px;
+    margin-bottom: 4px;
+}
+
+.preview p.caption {
+    color: #666;
+    font-size: .8em;
+    line-height: normal;
+}
+
+.rightColumn p {
+    font-size: .9em;
+    line-height: normal;
+    padding-bottom: 4px;
+}
+
+.preview p.contactName {
+    color: #7D8804;
+    font-size: 1.0em;
+}
+
+.preview img {
+    /*width: 100%;*/
+}
+
+.preview div {  /* for IE */
+    border: 0;
+}
+
+.preview li {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.preview table {
+    border: 0;
+}
+
+a.preview {
+    color: #333;
+    background: transparent;
+    font-weight: bold;
+    /*font-family: arial,helvetica,clean,sans-serif;*/
+}
+
+span.button img {
+    border:  none;
+    padding: 2px 6px 6px 5px;
+    margin: 2px 0 2px 3px;
+}
+
+span.button img.json {
+    vertical-align: middle;
+}
+
+span.button img.ala {
+    vertical-align: middle;
+}
+
+span.button a {
+    color: #333;
+    background: transparent; /* url(../images/json.png) left center no-repeat;*/
+    font-weight: bold;
+    /*font-family: arial,helvetica,clean,sans-serif;*/
+    margin-left: 10px;
+}
+
+a.edit-small {
+    background: transparent url(../images/ala/edit.png) 5px 50% no-repeat;
+    padding-left: 20px;
+}
+
+a.remove-small {
+    background: transparent url(../images/ala/delete.png) 5px 50% no-repeat;
+    padding-left: 20px;
+}
+
+/* MEW for sub-collections in the preview */
+p.sub {
+    margin-left: 30px;
+    font-size: 11px;
+}
+
+.subName {
+    font-style: italic;
+}
+
+ul.detailList {
+    list-style-type: none;
+    display: inline;
+}
+
+ul.detailList li {
+    display: inline;
+    padding-left: 12px;
+}
+
+/* MEW some NG styles */
+a.external_icon {
+    background: url(../images/skin/external.png) center right no-repeat;
+    padding-right: 13px;
+    color: #01716E;
+    text-decoration: underline;
+    font-size: 1em;
+}
+
+/* classic button for actions like lookup */
+input.classicButton {
+    width: auto;
+    overflow: visible;
+    background-color: buttonface;
+    white-space: pre;
+    color: buttontext;
+    border: 2px outset buttonface;
+}
+input.classicButton:active {
+    background-color: buttonface;
+    white-space: pre;
+    color: buttontext;
+    border: 2px inset buttonface;
+}
+
+/* edit links after a view link in reports */
+span.editLink {
+    color: #b0b0b0;
+}
+
+span.editLink a {
+    color: #b0b0b0;
+}
+
+span.dataWarning a {
+    color: #dd3102;
+}
+
+/* override YUI tabview colours
+    - also requires modifying sprite.PSD */
+
+.yui-skin-sam .yui-navset .yui-nav {
+    border: solid #9ac07a ! important;
+    border-width: 0 0 5px 0 ! important;
+}
+
+.yui-skin-sam .yui-navset .yui-nav .selected a,
+.yui-skin-sam .yui-navset .yui-nav .selected a:focus, /* no focus effect for selected */
+.yui-skin-sam .yui-navset .yui-nav .selected a:hover { /* no hover effect for selected */
+    background:#fff url(../images/skin/sprite.png) repeat-x left -1400px ! important; /* selected tab background */
+}
+
+.yui-skin-sam .yui-navset .yui-nav a:hover,
+.yui-skin-sam .yui-navset .yui-nav a:focus {
+    background:#fff url(../images/skin/sprite.png) repeat-x left -1300px ! important; /* selected tab background */
+}
+
+.yui-skin-sam .yui-navset .yui-content {
+    background-color: transparent ! important;
+}
+
+/* for percent records progress bar */
+
+img.percentImage1 {
+ background: white url(../images/percentImage_back1.png) top left no-repeat;
+ padding: 0;
+ margin: 5px 0 10px 0;
+ background-position: 1px 0;
+}
+
+img.percentImage2 {
+ background: white url(../images/percentImage_back2.png) top left no-repeat;
+ padding: 0;
+ margin: 5px 0 0 0;
+ background-position: 1px 0;
+}
+
+img.percentImage3 {
+ background: white url(../images/percentImage_back3.png) top left no-repeat;
+ padding: 0;
+ margin: 5px 0 0 0;
+ background-position: 1px 0;
+}
+
+img.percentImage4 {
+ background: white url(../images/percentImage_back4.png) top left no-repeat;
+ padding: 0;
+ margin: 5px 0 0 0;
+ background-position: 1px 0;
+}
+
+/* styling for alphabetic index in list pages */
+div#index {
+    display: inline;
+    border: #ccc solid 1px;
+    padding: 1px 5px 1px 5px;
+    margin-left: 100px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+div#index span {
+    color: #bbb;
+}
+
+div#index a {
+    color: #48802c;
+}
+
+div.list {
+    margin-top: 10px;
+}
+
+/* styling for search results page */
+
+.resultsPage {
+    padding-bottom: 40px;
+}
+
+.pageTitle h1 {
+    font-size: 26px;
+}
+
+.resultsGroup {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.resultsGroup h2 {
+    font-size: 20px;
+    color: #48802C;
+}
+
+.resultsGroup ul {
+    list-style: none;
+    margin-left:20px;
+    padding-right: 20px;
+}
+
+.resultsGroup li {
+    list-style: none;
+    margin-left:20px;
+    padding-top: 5px;
+}
+
+.resultsGroup a {
+    padding-right: 5px;
+    color: #777;
+}
+
+.resultsName a {
+    color: #444;
+}
+
+span.resultsName {
+    font-size: 15px;
+    padding-right: 10px;
+}
+
+.be-careful {
+    border: 1px solid red;
+    color: red;
+}
+
+div.container {
+    border: 1px solid #CCC;
+    margin: 10px;
+    padding: 0 5px 0 5px;
+    float: left;
+    width: 322px;
+    height: 400px;
+    background-color: #EEE;
+    overflow:  visible;
+    overflow-y: auto;
+    /*overflow-x: visible;*/
+}
+
+div#not-selected {
+    width: 340px;       /* allow for width of scrollbar */
+}
+
+#not-selected .draggable {
+    background: #F6F6F6 url(../images/skin/add-small.png) center right no-repeat;
+}
+
+#selected .draggable {
+    background: #F6F6F6 url(../images/skin/delete-small.png) center right no-repeat;
+}
+
+#selected p {
+    padding-left: 80px;
+    padding-top: 100px;
+}
+
+.draggable img {
+    float:right;
+    vertical-align: middle;
+}
+
+.draggable span {
+    float: left;
+    padding-right: 5px;
+}
+
+.draggable {
+    background-color: #f6f6f6;
+    float: left;
+    border: 1px solid #AAA;
+    padding: 0 23px 0 3px;;
+    margin: 2px;
+    cursor: move;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -khtml-border-radius: 8px;
+    border-radius: 8px;
+}
+
+div.filters fieldset {
+    border: 1px solid #ccc;
+    padding: 0 0 5px 100px;
+    margin-bottom: 10px;
+    background-color: transparent;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
+    border-radius: 6px;
+}
+
+div.filters legend {
+    margin-left: -95px;
+    color: #666;
+    font-size: 12px;
+    font-weight: normal;
+}
+
+div.filters input {
+    width: 100px;
+    margin-right: 10px;
+}
+
+div.filters input.submit {
+    background-color: #f7f7f7;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -khtml-border-radius: 8px;
+    border-radius: 8px;
+}
+div.filters input#filter {
+    width: 50px;
+}
+
+div.filters input#reset {
+    width: 44px;
+}
+
+div.filters input#next {
+    width: 70px;
+    border:  none;
+    font-style: italic;
+    float: right;
+}
+
+div.source-box, div.sink-box {
+    border: 1px solid #CCC;
+    padding: 5px 5px 0 5px;
+    float: left;
+    width: 250px;
+    height: 370px;
+    background-color: #f5f5f5;
+    overflow:  visible;
+    overflow-y: auto;
+}
+
+div.source-box {
+    margin-right: 15px;
+}
+
+div.source-box, div.sink-box ul {
+    list-style: none;
+    padding-left: 8px;
+}
+
+div.source-box li, div.sink-box li {
+    cursor: pointer;
+}
+
+div.sink-box li.msg {
+    margin-top: 150px;
+}
+
+.source-box p, .sink-box p {
+    font-size: 13px;
+    color: #48802C;
+    text-align: center;
+}
+
+/* auto width admin pages */
+#auto-page h2 {
+    margin: 10px 0 10px 5px;
+    font-size: 1.4em;
+}
+
+.float-widget-container {
+    float: left;
+    border: 2px solid #ccc;
+    margin: 5px;
+    min-height: 558px;
+    overflow: hidden;
+}
+
+#selected-list {
+    _height: 588px;  /* hack for IE6 */
+}
+
+#selections {
+    width: 55%;
+}
+
+#selected-list {
+    width: 35%;
+}
+
+.float-widget-container h3 {
+    color: #48802C;
+    font-size: 13px;
+    padding: 5px;
+}
+
+.float-widget-container h4 {
+    color: #666;
+    font-size: 12px;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+input.selector {
+    display: inline;
+    margin: 5px;
+    font-size: 13px;
+    width: 150px;
+}
+
+#selections li {
+    list-style-type: none;
+}
+#selected-list li {
+    margin-left: 5px;
+    list-style: none;
+}
+
+#selected-list li img {
+    vertical-align: -2px;
+    padding-right: 5px;
+}
+
+.presets li {
+    background: transparent url(../images/skin/add-small.png) center left no-repeat;
+    margin-left: 10px;
+    padding: 1px 0 1px 16px;
+    cursor: pointer;
+}
+
+.link {
+    /*text-decoration: underline;*/
+    color: #666;
+    cursor: pointer;
+}
+
+.under {
+    text-decoration: underline;
+}
+
+/*************** self-service pages ****************/
+div.manage {
+    color: #222;
+}
+
+div.manage img {
+    border: none;
+}
+
+div.manage p {
+    padding-bottom: 2px;
+    color: #222;
+}
+
+div.manage h1 {
+    font-size: 22px;
+    padding-bottom: 10px;
+}
+
+div.manage h2 {
+    font-size: 18px;
+    color: black;
+}
+
+div.manage h3 {
+    font-size: 16px;
+    color: #222;
+}
+
+div.manage h4 {
+    font-size: 14px;
+    color: #333;
+    font-weight: normal;
+    font-style: italic;
+    padding-bottom: 5px;
+    margin-top: 8px;
+}
+
+div.manage ol {
+    margin: 0 0 10px 25px;
+}
+
+div.manage ul {
+    list-style: none;
+    margin-left: 10px;
+}
+
+div.manage td {
+    font-size: 12px;
+    line-height: 20px;
+}
+
+#login-button {
+    float: right;
+    border: 1px solid #ccc;
+    padding:  3px;
+    background-color: #eee;
+}
+
+#login-button a {
+    color: black;
+}
+
+#instructions {
+    overflow:  hidden;
+    height: 0;
+    margin: 10px 20px;
+    padding: 0;
+    background-color: #eee;
+}
+
+#instructions > div {
+    padding: 10px;
+}
+
+.ok {
+    background: url("../images/ala/olive-tick.png") no-repeat;
+    padding-left: 15px;
+}
+
+.missing {
+    background: transparent url("../images/ala/delete.png") left 30% no-repeat;
+    padding-left: 15px;
+}
+
+div.manage ul.list {
+    list-style: disc outside none;
+    margin-left: 35px;
+}

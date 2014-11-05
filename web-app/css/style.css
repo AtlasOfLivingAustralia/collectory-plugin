@@ -1,0 +1,893 @@
+/*
+Theme Name: ALA
+Theme URI: http://www.ala.org.au/
+Description: Wordpress theme for the ALA based on the <a href="http://webdemar.com/demo/?wptheme=deFusion">deFusion theme</a>.
+Version: 0.1
+Author: ALA web developers
+Author URI: http://www.ala.org.au/contact.html
+Tags: two-columns, fixed-width, right-sidebar, threaded-comments, sticky-post
+*/
+
+/*
+	- GENERAL
+	- BASIC LAYOUT
+	- HEADINGS
+	- HEADER
+	- CONTENT
+		+ CONTENT LEFT
+		+ CONTENT RIGHT
+	- COMMENTS
+	- SEARCHFORM
+	- FOOTER
+	- WORDPRESS CSS
+	- USEFUL
+
+/*	##################################
+   	GENERAL
+	################################## */
+	
+body {
+	margin: 0px;
+	padding: 0px;
+	/*background: #1e1f21 url(img/bg-body.gif) no-repeat left top;*/
+	background: #EDECEB url(../images/ala/ALA_icon_in_background.gif) no-repeat fixed left top;
+	/*color: #6e7073;*/
+	color: #373737;
+	font: 12px/20px Verdana, Helvetica, Arial, sans-serif;
+	/* line-height: 1.7em; */
+}
+
+a {
+	color: #316AC5;
+	/*color: #494949;*/
+	outline: none;
+}
+
+p {
+	margin:0;
+	padding: 0 0 12px 0;
+}
+
+ul, ol {
+	padding: 0;
+	/* margin-bottom: 20px; */
+	margin-top: 0;
+	margin-left: 20px;
+}
+
+/*	##################################
+   	BASIC LAYOUT
+	################################## */
+	
+#page {
+	/*width: 940px;*/
+	width: 768px;
+	margin: 0 auto;
+}
+	
+#header {
+	position: relative;
+	/*height: 200px;*/
+	background:transparent url(../images/ala/ALA_banner3.png) no-repeat scroll 0 0;
+    height: 208px;
+}
+
+#content {
+	padding: 0;
+	padding-top: 20px;
+	background: #fff;
+	width: inherit;
+}
+
+#page > #content {
+	padding: 40px 0 0 0;
+}
+
+#content-left {
+	float: left;
+	/*width: 600px;
+	width: 74%;*/
+	width: 485px;
+}
+
+#content-right {
+	float: right;
+	/*width: 320px;
+	width: 25%;*/
+	width: 272px;
+}
+
+#footer {
+    background: #fff;
+    /* MEW border-top: 1px solid #CECECE;*/
+    clear: both;
+}
+
+#footer a {
+    color: #494949;
+}
+
+/*	##################################
+   	HEADINGS
+	################################## */
+	
+h1, h1 {
+	margin: 0 0 20px 0;
+}
+
+h2, h3, h4, h5, h6 {
+	margin: 0 0 10px 0;
+	line-height: 1.2em;
+}
+	
+h1#blog-title {
+	display: none;
+	position: absolute;
+	bottom: 80px;
+	left: 0px;
+	margin: 0px;
+	padding: 0px;
+	line-height: 1;
+	font-size: 24px;
+	font-weight: normal;
+}
+
+h1#blog-title a {
+	color: #fff;
+	text-decoration: none;
+}
+
+h2 {
+	margin: 10px 0 20px 0;
+	font-size: 1.6em;
+	font-weight: normal;
+}
+
+h2#blog-description {
+	display:none;
+	position: absolute;
+	bottom: 60px;
+	left: 0px;
+	margin: 0px;
+	padding: 0px;
+	font-size: 11px;
+	font-weight: normal;
+}
+
+h2.category-title {
+	margin: 0 20px 20px 20px;
+	padding: 0 0 10px 0;
+	border-bottom: 1px solid #dedede;
+	font-size: 14px;
+}
+
+h3, h3.post-title {
+	margin: 10px 0 10px 0;
+	font-size: 1.6em;
+	font-weight: normal;
+}
+
+h3.post-title {
+	font-weight: bold;
+        margin-bottom: 16px;
+}
+
+h4 {
+    font-size: 1.2em;
+}
+
+div.category-news h3.post-title {
+	font-weight: normal;
+}
+
+
+h3.post-title a {
+	text-decoration: none;
+}
+
+h3.post-title a:hover {
+	text-decoration: underline;
+}
+
+h4.sidebar-title {
+	font-size: 1.4em;
+}
+
+/*	##################################
+   	HEADER
+	################################## */
+	
+div#menu {
+    border-top: 1px solid white;
+}
+
+#top-nav {
+	position: absolute;
+	top: 183px;
+	right: 0px;
+	margin: 0px;
+	padding: 0 20px 0 0;
+	list-style: none;
+}
+
+#top-nav li {
+	float: left;
+	margin: 0 0 0 10px;
+}
+
+#top-nav a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+/*	##################################
+   	CONTENT
+	################################## */
+	
+/** CONTENTN LEFT */
+
+.box-left, .post, .page {
+	margin: 0 0 0 20px;
+	padding-right: 16px;
+}
+
+.sticky {
+	padding: 20px;
+	border: 1px dotted #ccc;
+}
+
+.meta {
+	clear: both;
+	padding-bottom: 5px;
+	/* background: #fff url(img/bg-meta.gif) repeat-x left top; */
+	color: #5e5e5e;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #CCCCCC;
+}
+
+p.tags {
+	clear: both;
+}
+
+/** CONTENT RIGHT */
+
+.box-right {
+	margin: 4px; /*0 20px 20px 0;*/
+	padding: 0;
+	/*background: #f7f7f7 url(img/bg-box-right.gif) no-repeat left top;*/
+	/*background: #CECECE;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px; */
+}
+
+.box-right ul {
+	margin: 0 0 5px 0;
+	padding: 0px;
+	list-style: none;
+	border-top:1px solid #DEDEDE;
+}
+
+.box-right li {
+	margin: 0px;
+	padding: 5px;
+	border-bottom: 1px solid #dedede;
+}
+
+.box-right li a {
+	text-decoration: none;
+}
+
+.box-right li a:hover {
+        text-decoration: underline;;
+}
+
+.box-right li ul {
+	margin: 0 0 0 20px;
+	list-style: square;
+}
+
+.box-right li li {
+	border: none;
+}
+
+/*	##################################
+   	FOOTER
+	################################## */
+
+#footer {
+	/*width: 900px;*/
+	margin: 0 auto;
+	padding: 25px 15px 0 20px;
+	/* padding: 10px 15px 0 20px; changed by MEW for more distinction between content and footer */
+
+}
+
+#footer p {
+	/*margin: 0 0 10px 0;*/
+}
+
+#legal {
+	float: left;
+	/*width: 400px;*/
+	width: 45%;
+}
+
+#webdemar {
+	float: right;
+	/*width: 400px;*/
+	width: 45%;
+	text-align: right;
+}
+
+/*	##################################
+   	WORDPRESS CSS
+	################################## */
+
+.aligncenter,
+div.aligncenter {
+   	display: block;
+   	margin: 0 auto;
+}
+
+.aligncenter {
+	margin-bottom: 20px!important;
+}
+
+.alignleft {
+   	float: left;
+   	margin: 0 20px 20px 0;
+}
+
+.alignright {
+   	float: right;
+   	margin: 0 0 20px 20px;
+}
+
+.wp-caption {
+	margin-bottom: 20px;
+	padding-top: 4px;
+   	border: 1px solid #ccc;
+   	text-align: center;
+   	background-color: #f7f7f7;
+}
+
+.wp-caption img {
+   	float: none;
+   	margin: 0px;
+   	padding: 0px;
+   	border: none;
+}
+
+.wp-caption p.wp-caption-text {
+   	padding: 5px;
+  	margin: 0px;
+  	font-size: 11px;
+  	line-height: 16px;
+}
+
+/** WIDGETS CSS */
+
+#calendar_wrap table {
+	width: 100%;
+}
+
+#calendar_wrap td {
+	text-align: center;
+}
+
+#wp-calendar caption {
+	margin: 0 0 10px 0;
+	background: #dedede;
+}
+
+/*	##################################
+   	USEFUL
+	################################## */
+	
+.clear {
+	clear: both;
+	padding-bottom: 10px;
+}
+
+#footerClear {
+    padding-bottom: 0;
+}
+
+.clearfix:after {
+    content: " ";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.clearfix {
+    display: inline-block;
+}
+
+html[xmlns] .clearfix {
+    display: block;
+}
+
+* html .clearfix {
+    height: 1%;
+}
+
+/** CSS BASIC ELEMENTS */
+
+hr {
+	clear: both;
+	height: 1px;
+	margin: 20px 0;
+	background: #dedede;
+	border: none;
+}
+
+blockquote {
+	margin: 0 0 0 10px;
+	padding: 0 0 0 10px;
+	border-left: 5px solid #f7f7f7;
+}
+
+fieldset {
+	margin: 0 0 20px 0;
+	padding: 0 20px 20px 20px;
+	background: #f7f7f7;
+	border: none;
+}
+
+legend {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+input {
+    height: 22px;
+}
+
+input, textarea {
+	width: 98%;
+	margin: 0 0 20px 0;
+	padding: 6px 6px 0 6px;
+	background: #fff; /* url(img/bg-form-text.gif) repeat-x left top;*/
+	border: 1px solid #dadada;
+	color: #5e5e5e;
+	font-size: 11px;
+}
+
+textarea {
+	width: 98%;
+	/*height: 60px;*/
+}
+
+select {
+	width: auto;
+	margin: 0 0 20px 0;
+	padding: 6px;
+	background: #fff;
+	border: 1px solid #dadada;
+	color: #5e5e5e;
+	font-size: 11px;
+}
+
+input.radio, input.checkbox {
+	width: auto;
+	height: auto;
+	margin: 0px;
+	background: #fff;
+}
+
+input.password {
+	width: auto;
+}
+
+input.button {
+	width: auto;
+	height: 30px;
+	margin: 0px;
+	padding: 0 20px;
+	background: #6e7073;
+	border: none;
+	color: #fff;
+}
+
+/* MEW added for YUI date picker 
+div.datefield {
+    width: 200px;
+}*/
+
+table {
+	width: 100%;
+	margin: 0 0 20px 0;
+}
+
+table.wp {
+	width: 100%;
+	margin: 0 0 20px 0;
+	border: 1px solid #dadada;
+	border-bottom: none;
+	border-right: none;
+}
+
+table.wp th, table.wp td {
+	padding: 2px 5px;
+	border-bottom: 1px solid #dadada;
+	border-right: 1px solid #dadada;
+}
+
+th, td {
+	padding: 2px 5px;
+}
+
+table.wp th {
+	background: #6e7073;
+	color: #fff;
+	border: none;
+}
+
+pre {
+	font-family: Courier, serif;
+}
+
+/** ALA additions */
+
+.img-label {
+    font-size: 10px;
+    line-height: 1.2em;
+    /* padding-top: 5px; */
+}
+
+div.alignright {
+   	float: right;
+   	margin: 0 0 20px 20px;
+   	height: 100%;
+   	width: 268px;
+}
+
+div.page > div.alignright {
+   	max-width: 268px;
+}
+
+
+.sidebar-text {
+    font-size: 11px;
+}
+
+form#cse-search-box div {
+	display: inline;
+	/* width: 280px; */ 
+}
+
+#searchbar { 
+	display: block; 
+	float: right; 
+	background-color: white;
+	/* width: 280px; */
+	padding: 4px;
+	margin: 0;
+	padding-left: 512px;
+	font-size: 12px;
+}
+
+div#page > div#searchbar {
+	padding-left: 476px;
+}
+
+div#searchbar .text { 
+	width: auto; /* 200px; */
+	height: auto;
+	float: left;
+	margin: 0;
+	padding: 2px;
+}
+
+form#cse-search-box > div > .text { 
+	width: 216px;
+}
+
+#searchbar .submit { 
+	height: 20px;
+	float: right;
+	width: auto; 
+	margin: 0 0 0 4px;
+	padding: 0 4px;
+}
+
+.sf-menu li {
+	border-right: 1px solid white;
+}
+
+.sf-menu li:hover {
+	visibility:		inherit; /* fixes IE7 'sticky bug' */
+	background-color: #5A5A5A;
+}
+
+.sf-menu li.current_page_item, 
+.sf-menu li.current_page_ancestor, 
+.sf-menu li.current_page_parent {
+    background-color: #3E3E3E;
+}
+
+#crumbtrail {
+	position: relative;
+	/* top: 300px; */
+	margin: 0;
+	margin-top: -28px;
+		background-color: white;
+	width: 450px; 
+	padding: 4px;
+	padding-left: 10px;
+	/* padding-bottom: 25px; */
+	/* padding-right: 512px; */
+	font-size: 11px;
+	color: gray;
+}
+
+div#page > div#crumbtrail {
+	position: absolute;
+	top: 210px;
+	margin: 0;
+}
+
+#crumbtrail a {
+	text-decoration: none;
+	color: gray;
+}
+
+#crumbtrail a:hover {
+	text-decoration: underline;
+	color: inherit;
+}
+
+div.wpcf7 input, div.wpcf7 textarea {
+	margin: 0;
+	padding: 4px;
+	width: 268px;
+	height: auto;
+	font-size: 12px;
+	color: #494949;
+}
+
+div.wpcf7 input.submit {
+	width: auto;
+	padding: 4px 6px 4px 6px;
+}
+
+div.wpcf7 p {
+	padding-bottom: 6px
+}
+
+div#lastModified {
+    float: right;
+    font-size: 10px;
+    color: #898989;
+}
+
+span.entityType {
+    font-size: 16px;
+    color: #555;
+    padding-bottom: 4px;
+}
+
+/* for change history */
+table.textChanges {
+    margin-left: 30px;
+    border: none;
+    padding: 0 0 20px 0 !important;
+    width: auto;
+}
+
+table.textChanges td {
+    font: 12px verdana, arial, helvetica, sans-serif !important;
+    padding-top: 2px;
+}
+
+p.relatedFollows {
+    padding-bottom: 2px;
+}
+
+span.changeTo {
+    color: #0066cc;
+}
+
+/** following are styles for admin show pages that emulate public page style **/
+.emulate-public h1 {
+    color:#dd3102;
+    padding:0 0 5px 0;
+    font-size:2.0em;
+    line-height:1;
+    margin-top: 0;
+}
+
+.emulate-public h2 {
+    color: #7D8804;
+    font-size:1.6em;
+    line-height:1;
+    padding-bottom:10px;
+}
+
+.emulate-public a:hover {
+    text-decoration: underline !important;
+}
+
+.emulate-public h2 a {
+    text-decoration: underline !important;
+}
+
+.emulate-public div.show-section {
+    border: 1px solid #CCC;
+    padding: 10px 5px 5px 5px;
+    margin: 3px 0 3px 0;
+}
+
+.emulate-public .buttons {
+    position: relative;
+    left: 670px;
+}
+
+.emulate-public .long {
+    left: 590px;
+}
+
+.emulate-public .follow {
+    margin-left: 20px;    
+}
+
+.partner {
+    padding-left: 15px;
+    background: url(../images/ala/icon-tick-small.jpeg) no-repeat center left;
+    color: #7D8804;
+}
+
+.tick {
+    padding-left: 20px;
+    background: url(../images/ala/icon-tick-small.png) no-repeat center left;
+    margin-left: 25px;
+}
+
+.cross {
+    padding-left: 20px;
+    background: url(../images/ala/icon-cross-small.png) no-repeat center left;
+    margin-left: 25px;
+}
+
+.emulate-public #mapCanvas {
+    float: left;
+    border: 1px solid #AAA;
+}
+
+.emulate-public .prop .value {
+    width: auto;
+}
+
+.emulate-public #header h2 {
+    color: inherit;
+}
+
+div.emulate-public > h2 {
+    padding-top: 10px;
+}
+
+.emulate-public p {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+/* don't pad if in a table */
+.emulate-public td p {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.emulate-public ul.fancy li {
+    /* TODO: check in IE - see W3C List styling for cross-browser */
+    list-style-image: url(../images/ala/asterisk.gif);
+    margin-left:40px;
+}
+
+.emulate-public ul.resources li {
+    list-style-image: none;
+    list-style-type: circle;
+    margin-left:80px;
+}
+
+.emulate-public p.caption {
+    color: #666 ! important;
+    font-size: 0.9em;
+    line-height: normal;
+    padding-bottom: 4px ! important;
+}
+
+.emulate-public .showImage {
+    float: left;
+    padding-right:20px;
+    margin-left: 10px;
+}
+
+.emulate-public span.category {
+    font-size: 1.1em;
+    color: #7D8804;
+    padding-top: 10px;
+}
+
+.emulate-public span.contactName {
+    font-size: 1.3em;
+    color: #7D8804;
+    padding-top: 8px;
+}
+
+.emulate-public div.source {
+    float: right;
+    color: #666 ! important;
+    font-size: 0.9em;
+    clear: both;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    position: relative;
+    bottom: -5px;
+}
+
+.emulate-public .hubImage {
+    vertical-align: text-top;
+}
+
+.emulate-public .titleBlock p {
+    margin-left: 0;
+    padding-bottom: 5px;
+}
+
+.emulate-public table {
+    border: 0;
+}
+
+.emulate-public div#warnings {
+    /* float: left; */
+    background-color: #F8F2E5;
+    border: 2px solid #D75A20;
+    width: 75%;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    padding-left: 16px;
+    padding-bottom: 16px;
+    padding-top: 10px;
+    line-height: 1.2em;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+/* custom edit pages */
+
+.custom-edit h2 {
+    color: #7D8804;
+}
+
+.custom-edit div.repeats h2 {
+    margin-top: 30px;
+    padding-bottom: 10px;
+}
+
+.custom-edit div.repeats input {
+    width: auto;
+    margin-left: 10px;
+}
+
+.custom-edit input, select {
+    font-size: 13px !important;
+    vertical-align: middle;
+}
+
+.custom-edit td {
+    vertical-align: middle;
+}
+
+/* ---- */
+img.ccimage {
+    padding-left: 20px;
+    vertical-align: middle;
+}
+
+/* table for show entity values with multiple components */
+table.valueTable td {
+    padding-right: 10px;
+}
