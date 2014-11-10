@@ -50,7 +50,7 @@
                 <h3><g:link action="show" id="${inst.uid}">${inst.name}</g:link></h3>
               </g:if>
               <span style="display:none;">
-                  <cl:valueOrOtherwise value="${instance.acronym}"><span class="acronym"><g:message code="public.show.header.acronym" />: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
+                <cl:valueOrOtherwise value="${instance.acronym}"><span class="acronym"><g:message code="public.show.header.acronym" />: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
                   <span class="lsid"><a href="#lsidText" id="lsid" class="local" title="Life Science Identifier (pop-up)"><g:message code="public.lsid" /></a></span>
               </span>
               <div style="display:none; text-align: left;">
@@ -142,7 +142,7 @@
                     <cl:subCollectionList list="${instance.subCollections}"/>
                   </g:if>
 
-                  <g:if test="${biocacheRecordsAvailable && !grailsApplication.config.disableLoggerLinks.toBoolean()}">
+                  <g:if test="${biocacheRecordsAvailable && !grailsApplication.config.disableLoggerLinks?.asBoolean()}">
                   <div id='usage-stats' style="">
                     <h2><g:message code="public.show.oc.label07" /></h2>
                     <div id='usage'></div>
@@ -275,9 +275,9 @@
                     </g:else>
                     <g:if test="${biocacheRecordsAvailable}">
                         <div style="clear:both;"></div>
-                          <g:if test="${!grailsApplication.config.disableOverviewMap.toBoolean()}">
+                          <g:if test="${!grailsApplication.config.disableOverviewMap?.asBoolean()}">
                               <div id="collectionRecordsMapContainer">
-                                  <h3><g:message code="public.show.crmc.title" /> ${grailsApplication.config.disableOverviewMap.toBoolean()}</h3>
+                                  <h3><g:message code="public.show.crmc.title" /> ${grailsApplication.config.disableOverviewMap?.asBoolean()}</h3>
                                   <cl:recordsMapDirect uid="${instance.uid}"/>
                               </div>
                           </g:if>
@@ -527,7 +527,6 @@ function addCommas(nStr)
 function decadeBreakdownRequestHandler(response) {
   var data = new google.visualization.DataTable(response);
   if (data.getNumberOfRows() > 0) {
-    console.log(data);
     draw(data);
   }
 }

@@ -34,6 +34,7 @@ var genericChartOptions = {
 };
 
 // defaults for individual facet charts
+/*
 var individualChartOptions = {
     state_conservation: {chartType: 'column', width: 700, chartArea: {left:60, height: "58%"},
         title: jQuery.i18n.prop('charts.js.stateconservation'), hAxis: {slantedText: true}},
@@ -46,6 +47,20 @@ var individualChartOptions = {
     type_status: {title: jQuery.i18n.prop('charts.js.typestatus'), ignore: ['notatype']},
     assertions: {chartType: 'bar', width: 900, height:700, chartArea: {left:350, height:"80%", width:"100%"}}
 };
+*/
+var individualChartOptions = {
+    state_conservation: {chartType: 'column', width: 450, chartArea: {left:60, height: "58%"},
+        title: 'By state conservation status', hAxis: {slantedText: true}},
+    occurrence_year: {chartType: 'column', width: 450, chartArea: {left:60, height: "65%"},
+        hAxis: {slantedText: true}},
+    species_group: {title: 'By higher-level group', ignore: ['Animals'], chartType: 'column',
+        width: 450, chartArea: {left:60, height:"58%"}, vAxis: {minValue: 0},
+        colors: ['#108628']},
+    state: {ignore: ['Unknown1']},
+    type_status: {title: 'By type status (as % of all type specimens)', ignore: ['notatype']},
+    assertions: {chartType: 'bar', chartArea: {left:170}}
+};
+
 
 /*----------------- FACET-BASED CHARTS USING DIRECT CALLS TO BIO-CACHE SERVICES ---------------------*/
 // these override the facet names in chart titles

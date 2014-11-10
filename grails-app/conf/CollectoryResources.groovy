@@ -70,7 +70,8 @@ modules = {
     }
     collectory {
         //dependsOn 'bootstrap,jquery,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,map,fancybox,smoothness,jstree,jquery_ui_custom,openlayers'
-        dependsOn 'bootstrap,jquery,jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
+        //dependsOn 'bootstrap,jquery,jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
+        dependsOn 'bootstrap,jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
         resource url:[dir:'js', file:'collectory.js', plugin:'collectory-plugin']
         resource url:[dir:'css', file:'temp-style.css', plugin:'collectory-plugin']
     }

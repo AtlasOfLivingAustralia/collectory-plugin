@@ -35,6 +35,7 @@ var baseFacetChart = {
     datasets: 1,
     backgroundColor: {fill: 'transparent'},
     // defaults for individual facet charts
+    /*
     individualChartOptions: {
         state_conservation: {chartArea: {left:60, height: "58%"}, title: jQuery.i18n.prop('charts2.js.stateconservationstatus')},
         occurrence_year: {chartArea: {left:60, height: "55%"}, requestFacetName: 'decade'},
@@ -59,6 +60,36 @@ var baseFacetChart = {
         precipitation: {hAxis: {title:jQuery.i18n.prop('charts2.js.mm')}, chartArea: {width: "65%"}, facets: ['el882','el889'], facetLabels: [jQuery.i18n.prop('charts2.js.seasonalitybio15'),jQuery.i18n.prop('charts2.js.driestquarterbio17')]},
         moisture: {hAxis: {title:jQuery.i18n.prop('charts2.js.moistureindex')}, chartArea: {width: "65%"}, facets: ['el895','el865'], facetLabels: [jQuery.i18n.prop('charts2.js.lowestperiodbio30'),jQuery.i18n.prop('charts2.js.highestquartermeanbio32')]}
     },
+    */
+
+    individualChartOptions: {
+        state_conservation: {chartArea: {left:60, height: "58%"}, title: 'By state conservation status'},
+        occurrence_year: {chartArea: {left:60, height: "55%"}, requestFacetName: 'decade'},
+        decade: {chartArea: {left:60, height: "55%"}, responseFacetName: 'occurrence_year'},
+        year: {width: 600},
+        month: {width: 600},
+        institution_uid: {chartArea: {left: 0, width: "100%"}},
+        collection_uid: {chartArea: {left: 0, width: "100%"}},
+        species_group: {title: 'By higher-level group', ignore: ['Animals'], chartType: 'column',
+            width: 450, chartArea: {left:60, height:"58%"},
+            vAxis: {minValue: 0, textPosition:'in', gridlines:{color: '#ddd', count: 4}},
+            colors: ['#108628'], reverseCategories:true, hAxis:{slantedTextAngle:60}},
+        state: {ignore: ['Unknown1']},
+        type_status: {title: 'By type status (as % of all type specimens)', ignore: ['notatype']},
+        el895: {hAxis: {title:'Moisture Index'}},
+        el882: {hAxis: {title:'mm'}},
+        el889: {hAxis: {title:'mm'}},
+        el887: {hAxis: {title:'MJ/m2/day'}},
+        el865: {hAxis: {title:'Moisture Index'}},
+        el894: {hAxis: {title:'MJ/m2/day'}},
+        radiation: {hAxis: {title:'MJ/m2/day'}, chartArea: {width: "65%"}, facets: ['el887','el894'],
+            facetLabels: ['seasonality (Bio23)','warmest quarter (Bio26)']},
+        precipitation: {hAxis: {title:'mm'}, chartArea: {width: "65%"}, facets: ['el882','el889'],
+            facetLabels: ['seasonality (Bio15)','driest quarter (Bio17)']},
+        moisture: {hAxis: {title:'Moisture Index'}, chartArea: {width: "65%"}, facets: ['el895','el865'],
+            facetLabels: ['lowest period (Bio30)','highest quarter mean (Bio32)']}
+    },
+
     getChartTypeOptions: function (name) {
         if (this.individualChartOptions[name] !== undefined) {
             return this.individualChartOptions[name];
@@ -66,7 +97,9 @@ var baseFacetChart = {
             return {};
         }
     },
+
     // these override the facet names in chart titles
+    /*
     chartLabels: {
         institution_uid: jQuery.i18n.prop('charts2.js.institution'),
         data_resource_uid: jQuery.i18n.prop('charts2.js.dataset'),
@@ -83,6 +116,25 @@ var baseFacetChart = {
         precipitation: jQuery.i18n.prop('charts2.js.precipitation'),
         moisture: jQuery.i18n.prop('charts2.js.moisture')
     },
+    */
+
+    chartLabels: {
+        institution_uid: 'institution',
+        data_resource_uid: 'data set',
+        assertions: 'data assertion',
+        biogeographic_region: 'biogeographic region',
+        occurrence_year: 'decade',
+        el895: 'Moisture Index - lowest period (Bio30)',
+        el882: 'Precipitation - seasonality (Bio15)',
+        el889: 'Precipitation - driest quarter (Bio17)',
+        el887: 'Radiation - seasonality (Bio23)',
+        el865: 'Moisture Index - highest quarter mean (Bio32)',
+        el894: 'Radiation - warmest quarter (Bio26)',
+        radiation: 'Radiation',
+        precipitation: 'Precipitation',
+        moisture: 'Moisture'
+    },
+
     // select the properties that need to be passed to the chart library
     googleChartOptions: function() {
         var gChartOptions = {},
@@ -580,6 +632,7 @@ var genericChartOptions = {
 };
 
 // defaults for individual facet charts
+/*
 var individualChartOptions = {
     state_conservation: {chartType: 'column', width: 450, chartArea: {left:60, height: "58%"},
         title: jQuery.i18n.prop('charts2.js.stateconservationstatus'), hAxis: {slantedText: true}},
@@ -589,9 +642,20 @@ var individualChartOptions = {
     type_status: {title: jQuery.i18n.prop('charts2.js.typestatus'), ignore: ['notatype']},
     assertions: {chartType: 'bar', chartArea: {left:170}}
 };
+*/
+var individualChartOptions = {
+    state_conservation: {chartType: 'column', width: 450, chartArea: {left:60, height: "58%"},
+        title: 'By state conservation status', hAxis: {slantedText: true}},
+    occurrence_year: {chartType: 'column', width: 450, chartArea: {left:60, height: "65%"}, hAxis: {slantedText: true}},
+    species_group: {title: 'By higher-level group', ignore: ['Animals']},
+    state: {ignore: ['Unknown1']},
+    type_status: {title: 'By type status (as % of all type specimens)', ignore: ['notatype']},
+    assertions: {chartType: 'bar', chartArea: {left:170}}
+};
 
 /*----------------- FACET-BASED CHARTS USING DIRECT CALLS TO BIO-CACHE SERVICES ---------------------*/
 // these override the facet names in chart titles
+/*
 var chartLabels = {
     institution_uid: jQuery.i18n.prop('charts2.js.institution'),
     data_resource_uid: jQuery.i18n.prop('charts2.js.dataset'),
@@ -599,6 +663,15 @@ var chartLabels = {
     biogeographic_region: jQuery.i18n.prop('charts2.js.biogeographicregion'),
     occurrence_year: jQuery.i18n.prop('charts2.js.decade')
 }
+*/
+var chartLabels = {
+    institution_uid: 'institution',
+    data_resource_uid: 'data set',
+    assertions: 'data assertion',
+    biogeographic_region: 'biogeographic region',
+    occurrence_year: 'decade'
+}
+
 // asynchronous transforms are applied after the chart is drawn, ie the chart is drawn with the original values
 // then redrawn when the ajax call for transform data returns
 var asyncTransforms = {
