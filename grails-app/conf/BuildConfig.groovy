@@ -57,7 +57,7 @@ grails.project.dependency.resolution = {
         //    export = false
         //}
 
-        compile ":marshallers:0.6"          //for customized domain object marshalling with json
+        //compile ":marshallers:0.6"          //for customized domain object marshalling with json
         compile ":cache:1.1.2"
         runtime ":hibernate:3.6.10.11"
         runtime ":jquery:1.8.3"
