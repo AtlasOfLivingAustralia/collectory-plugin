@@ -10,56 +10,126 @@
 //#  IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
 //#  implied. See the License for the specific language governing
 //#  rights and limitations under the License.
-//#casProperties=casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath
 
-//serverName = "http://devt.ala.org.au:8080"
-
-serverName = "http://localhost:8080"
-contextPath = "collectory-app"
-casServerName = "https://auth.ala.org.au"
-uriFilterPattern = "/admin.*,/collection.*,/institution.*,/contact.*,/reports.*,/providerCode.*,/providerMap.*,/dataProvider.*,/dataResource.*,/dataHub.*,/manage/.*"
-
-uriExclusionFilterPattern = "/images.*,/css.*,/js.*,/less.*,/img.*,/theme.*"
-
-authenticateOnlyIfLoggedInFilterPattern = ""
-casServerLoginUrl = "https://auth.ala.org.au/cas/login"
-gateway = true
-casServerUrlPrefix = "https://auth.ala.org.au/cas"
-
+casProperties="casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath"
+serverName="http://localhost:8080"
+contextPath="collectory-app"
+grails.serverURL="http://localhost:8080/collectory-app"
+casServerName="https://auth.ala.org.au"
+uriExclusionFilterPattern="/images.*,/css.*,/js.*,/less.*,/theme.*,/img.*"
+casServerLoginUrl="https://auth.ala.org.au/cas/login"
+gateway=false
+casServerUrlPrefix="https://auth.ala.org.au/cas"
+security.cas.logoutUrl="https://auth.ala.org.au/cas/logout"
+uriFilterPattern="/admin.*,/collection.*,/institution.*,/contact.*,/reports.*,/providerCode.*,/providerMap.*,/dataProvider.*,/dataResource.*,/dataHub.*,/manage/.*"
+//uriFilterPattern=/dummy
 //Security bypass
-security.cas.bypass = true
-ala.skin = "generic"
+security.cas.bypass=false
 
-//skin.header=classpath:/header.gsp
-//skin.header=http://localhost/~dos009/headers.gsp
+//Data directories
+repository.location.images="/data/collectory-app/data"
+
+grails.resources.adhoc.patterns = ['/images/*', '/data/*', '/img/*', '/theme/default/*', '/css/*', '/js/*', '/plugins/*']
+
+//External API access
+api_key="to_be_added"
+
+//Biocache integration
+biocacheUiURL="http://biocache.ala.org.au"
+biocacheServicesUrl="http://biocache.ala.org.au/ws"
+
+//Skinning
+ala.skin="generic"
+
+//DB config
+dataSource.username="root"
+dataSource.password="password"
+dataSource.url="jdbc:mysql://localhost:3306/collectory?autoReconnect=true&connectTimeout=0"
+
+//Map config
+//collectionsMap.centreMapLon=-3.7036
+//collectionsMap.centreMapLat=40.4169
+collectionsMap.defaultZoom=4
+
+//Project name
+projectNameShort="Australia"
+projectName="Atlas of Living Australia"
+regionName="Australia"
+
+//EML config
+eml.organizationName="Atlas of Living Australia"
+eml.deliveryPoint="CSIRO Ecosystems Services"
+eml.city="Canberra"
+eml.administrativeArea="ACT"
+eml.postalCode="2605"
+eml.country="Australia"
+
+//The name displayed top left of header
+skin.orgNameLong="Atlas of Living Australia"
+skin.orgNameShort="ALA"
+
+//Disable UI components
+disableOverviewMap=false
+disableAlertLinks=false
+disableLoggerLinks=false
+
+//logger URL
+loggerURL="http://logger.ala.org.au/service"
+
+chartsBgColour="#fffef7"
 
 
-map.cloudmade.key = "BC9A493B41014CAABB98F0471D759707"
-map.defaultFacetMapColourBy = "basis_of_record"
-map.pointColour = "df4a21"
-map.zoomOutsideScopedRegion = true
-map.defaultLatitude
-map.defaultLongitude
-map.defaultZoom
-// 3rd part WMS layer to show on maps. TODO: Allow multiple overlays
-map.overlay.url
-map.overlay.name
 
-
-// prod version follows
-repository.location.images = "/data/collectory-app/data"
-grails.serverURL = "http://localhost:8080/collectory-app"
-//grails.serverURL = "http://devt.ala.org.au:8080/collectory"
-biocacheServicesUrl = "http://biocache.ala.org.au/ws"
-biocache.baseURL = "http://biocache.ala.org.au/"
-google.maps.v2.key = "ABQIAAAAJdniJYdyzT6MyTJB-El-5RQumuBjAh1ZwCPSMCeiY49-PS8MIhSVhrLc20UWCGPHYqmLuvaS_b_FaQ"
-security.cas.serverName = "https://auth.ala.org.au"
-security.cas.context = "/cas"
-ui.showChartsForInstitutions = true
-api_key = "Venezuela"
-useNewBiocache = true
-biocache.records.url = "http://biocache.ala.org.au/"
-biocache.search = "occurrences/search"
-biocache.occurrences.json = "ws/occurrences/search.json"
-dataSource.username = "alin"
-dataSource.password = "alan32"
+////#casProperties=casServerLoginUrl,serverName,centralServer,casServerName,uriFilterPattern,uriExclusionFilter,authenticateOnlyIfLoggedInFilterPattern,casServerLoginUrlPrefix,gateway,casServerUrlPrefix,contextPath
+//
+////serverName = "http://devt.ala.org.au:8080"
+//
+//serverName = "http://localhost:8080"
+//contextPath = "collectory-app"
+//casServerName = "https://auth.ala.org.au"
+//uriFilterPattern = "/admin.*,/collection.*,/institution.*,/contact.*,/reports.*,/providerCode.*,/providerMap.*,/dataProvider.*,/dataResource.*,/dataHub.*,/manage/.*"
+//
+//uriExclusionFilterPattern = "/images.*,/css.*,/js.*,/less.*,/img.*,/theme.*"
+//
+//authenticateOnlyIfLoggedInFilterPattern = ""
+//casServerLoginUrl = "https://auth.ala.org.au/cas/login"
+//gateway = true
+//casServerUrlPrefix = "https://auth.ala.org.au/cas"
+//
+////Security bypass
+//security.cas.bypass = true
+//ala.skin = "generic"
+//
+////skin.header=classpath:/header.gsp
+////skin.header=http://localhost/~dos009/headers.gsp
+//
+//
+//map.cloudmade.key = "BC9A493B41014CAABB98F0471D759707"
+//map.defaultFacetMapColourBy = "basis_of_record"
+//map.pointColour = "df4a21"
+//map.zoomOutsideScopedRegion = true
+//map.defaultLatitude
+//map.defaultLongitude
+//map.defaultZoom
+//// 3rd part WMS layer to show on maps. TODO: Allow multiple overlays
+//map.overlay.url
+//map.overlay.name
+//
+//
+//// prod version follows
+//repository.location.images = "/data/collectory-app/data"
+//grails.serverURL = "http://localhost:8080/collectory-app"
+////grails.serverURL = "http://devt.ala.org.au:8080/collectory"
+//biocacheServicesUrl = "http://biocache.ala.org.au/ws"
+//biocache.baseURL = "http://biocache.ala.org.au/"
+//google.maps.v2.key = "ABQIAAAAJdniJYdyzT6MyTJB-El-5RQumuBjAh1ZwCPSMCeiY49-PS8MIhSVhrLc20UWCGPHYqmLuvaS_b_FaQ"
+//security.cas.serverName = "https://auth.ala.org.au"
+//security.cas.context = "/cas"
+//ui.showChartsForInstitutions = true
+//api_key = "Venezuela"
+//useNewBiocache = true
+//biocache.records.url = "http://biocache.ala.org.au/"
+//biocache.search = "occurrences/search"
+//biocache.occurrences.json = "ws/occurrences/search.json"
+//dataSource.username = "root"
+//dataSource.password = "password"

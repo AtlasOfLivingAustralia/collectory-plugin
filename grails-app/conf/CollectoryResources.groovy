@@ -4,6 +4,7 @@ modules = {
     }
     jquery {
         resource url:[dir:'js', file:'jquery.min.js', plugin:'collectory-plugin']
+        //resource url:[dir:'theme/default', file:'style.css', plugin:'collectory-plugin']
     }
     smoothness {
         resource url:[dir:'css/smoothness', file:'jquery-ui-1.8.16.custom.css', plugin:'collectory-plugin']
@@ -39,7 +40,6 @@ modules = {
         resource url:[dir:'js', file:'jquery.ba-bbq.min.js', plugin:'collectory-plugin']
     }
     openlayers {
-        resource url:[file:'theme/default/style.css', plugin:'collectory-plugin']
         resource url:[dir:'js', file:'OpenLayers/OpenLayers.js', plugin:'collectory-plugin']
         resource url:[dir:'js', file:'OpenLayers/theme/default/style.css', plugin:'collectory-plugin']
     }
@@ -69,8 +69,6 @@ modules = {
         resource url:[dir:'css', file:'bootstrap-fileupload.min.css', plugin:'collectory-plugin']
     }
     collectory {
-        //dependsOn 'bootstrap,jquery,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,map,fancybox,smoothness,jstree,jquery_ui_custom,openlayers'
-        //dependsOn 'bootstrap,jquery,jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
         dependsOn 'bootstrap,jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
         resource url:[dir:'js', file:'collectory.js', plugin:'collectory-plugin']
         resource url:[dir:'css', file:'temp-style.css', plugin:'collectory-plugin']
@@ -79,10 +77,6 @@ modules = {
         resource url:[dir:'js', file:'charts2.js', plugin:'collectory-plugin']
         resource url:[dir:'js', file:'charts.js', plugin:'collectory-plugin']
     }
-    //jquery {
-    //    resource url:[dir:'js', file:'jquery.min.js', plugin:'collectory-plugin']
-    //    resource url:[file:'theme/default/style.css', plugin:'collectory-plugin']
-    //}
 //
 //
 //

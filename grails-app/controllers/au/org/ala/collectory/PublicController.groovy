@@ -616,8 +616,6 @@ class PublicController {
     def mapFeatures = {
         log.info ">>Map features action called"
 
-        println ">>Map features action called"
-
         def locations = [type:"FeatureCollection",features: new ArrayList()]
         def showAll = params.filters == 'all'
         List<CollectionLocation> collections = new ArrayList<CollectionLocation>()

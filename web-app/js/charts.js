@@ -48,6 +48,7 @@ var individualChartOptions = {
     assertions: {chartType: 'bar', width: 900, height:700, chartArea: {left:350, height:"80%", width:"100%"}}
 };
 */
+///*
 var individualChartOptions = {
     state_conservation: {chartType: 'column', width: 450, chartArea: {left:60, height: "58%"},
         title: 'By state conservation status', hAxis: {slantedText: true}},
@@ -60,7 +61,7 @@ var individualChartOptions = {
     type_status: {title: 'By type status (as % of all type specimens)', ignore: ['notatype']},
     assertions: {chartType: 'bar', chartArea: {left:170}}
 };
-
+//*/
 
 /*----------------- FACET-BASED CHARTS USING DIRECT CALLS TO BIO-CACHE SERVICES ---------------------*/
 // these override the facet names in chart titles
@@ -70,19 +71,19 @@ var chartLabels = {
     assertions: 'data assertion',
     biogeographic_region: 'biogeographic region',
     occurrence_year: 'decade'
-}
+};
 // asynchronous transforms are applied after the chart is drawn, ie the chart is drawn with the original values
 // then redrawn when the ajax call for transform data returns
 var asyncTransforms = {
     collection_uid: {method: 'lookupEntityName', param: 'collection'},
     institution_uid: {method: 'lookupEntityName', param: 'institution'},
     data_resource_uid: {method: 'lookupEntityName', param: 'dataResource'}
-}
+};
 // synchronous transforms are applied to the json data before the data table is built
 var syncTransforms = {
     occurrence_year: {method: 'transformDecadeData'}/*,
     assertions: {method: 'expandCamelCase'}*/
-}
+};
 
 /********************************************************************************\
 * Ajax request for charts based on the facets available in the biocache breakdown.

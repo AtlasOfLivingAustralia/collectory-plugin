@@ -87,7 +87,7 @@ from the ALA collectory app (no local DB is required for this app).
         //*/
 
         // Apache proxyPass & cached-resources seems to mangle image URLs in plugins, so we exclude caching it
-        application.config.grails.resources.mappers.hashandcache.excludes = ["**/images/*.*", "**/img/*.*", "**/theme/default/*.*"]
+        application.config.grails.resources.mappers.hashandcache.excludes = ["**/images/*.*"]
 
         ///*
         // Load the "sensible defaults"
