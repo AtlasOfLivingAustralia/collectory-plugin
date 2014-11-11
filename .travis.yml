@@ -33,6 +33,11 @@ script:
   --non-interactive && grails prod maven-install --non-interactive
 after_success: '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && grails prod maven-deploy
   --repository=$MAVEN_REPO --non-interactive'
+
+notifications:
+  email:
+    - a.lin@csiro.au
+
 env:
   global:
   - secure: YYEe60cwia734uOiX2Sxqpy5OISFv3EGgMAOWKJpg/49YUxoMx3UISyTUkNbpByGazW9BzFjob5NCdmByQ0fc+r7k6g7cyboHuLqEYg9+o7dJjhOAuuWPbGA2rxeq9REutwFHjrs4eSLaxI3ti73D3lyGqStWx65tnRdybF9MTg=
