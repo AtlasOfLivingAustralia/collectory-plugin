@@ -69,5 +69,6 @@ grails.project.dependency.resolution = {
         runtime ":tiny-mce:3.4.4"
         runtime ":ala-web-theme:0.2.4"
         //runtime ":cors:1.1.6"
+	runtime ":release:3.0.1"
     }
 }
