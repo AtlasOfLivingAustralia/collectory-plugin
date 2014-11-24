@@ -115,7 +115,7 @@ class TempDataResourceController {
             session.username = obj.user
         }
 
-        def keyCheck = authService.checkApiKey(obj.api_key)
+        def keyCheck = authService?.checkApiKey(obj.api_key)
         if (!keyCheck.valid) {
             unauthorised()
         }

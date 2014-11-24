@@ -446,7 +446,7 @@ class PublicController {
                 }
             }
 
-            //ActivityLog.log authService.username(), authService.isAdmin(), institution.uid, Action.VIEW
+            //ActivityLog.log authService?.username(), authService?.isAdmin(), institution.uid, Action.VIEW
             [instance: institution, exceptions: recordExceptions]
         }
     }
@@ -460,7 +460,7 @@ class PublicController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'dataProvider.label', default: 'Data provider'), params.code ? params.code : params.id])}"
             redirect(controller: "public", action: "map")
         } else {
-            ActivityLog.log authService.username(), authService.isAdmin(), instance.uid, Action.VIEW
+            ActivityLog.log authService?.username(), authService?.isAdmin(), instance.uid, Action.VIEW
             [instance: instance]
         }
     }
@@ -478,7 +478,7 @@ class PublicController {
             render "This resource has decided to not contribute to the Atlas."
         }
         else {
-            ActivityLog.log authService.username(), authService.isAdmin(), instance.uid, Action.VIEW
+            ActivityLog.log authService?.username(), authService?.isAdmin(), instance.uid, Action.VIEW
             [instance: instance]
         }
     }
@@ -493,7 +493,7 @@ class PublicController {
             redirect(controller: "public", action: "map")
         }
         else {
-            ActivityLog.log authService.username(), authService.isAdmin(), instance.uid, Action.VIEW
+            ActivityLog.log authService?.username(), authService?.isAdmin(), instance.uid, Action.VIEW
             def name = (instance.firstName ? instance.firstName + ' ' : '') + (instance.lastName ?: '')
             if (!name) { name = instance.email }
             if (!name) {
@@ -513,7 +513,7 @@ class PublicController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'dataHub.label', default: 'Data hub'), params.code ? params.code : params.id])}"
             redirect(controller: "public", action: "map")
         } else {
-            ActivityLog.log authService.username(), authService.isAdmin(), instance.uid, Action.VIEW
+            ActivityLog.log authService?.username(), authService?.isAdmin(), instance.uid, Action.VIEW
             [instance: instance]
         }
     }
@@ -602,7 +602,7 @@ class PublicController {
      * list is used if the callback fails.
      */
     def map = {
-        //ActivityLog.log authService.username(), authService.isAdmin(), Action.LIST, 'map'
+        //ActivityLog.log authService?.username(), authService?.isAdmin(), Action.LIST, 'map'
         def partnerCollections = Collection.list([sort:"name"]).findAll {
             it.isALAPartner()
         }

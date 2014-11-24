@@ -67,12 +67,12 @@ class ManageController {
     def list = {
 
         // find the entities the user is allowed to edit
-        def entities = authService.authorisedForUser(authService.username()).sorted
-        println "user ${authService.username()} has ${request.getUserPrincipal()?.attributes}"
-        log.debug("user ${authService.username()} has ${request.getUserPrincipal()?.attributes}")
+        def entities = authService?.authorisedForUser(authService?.username())?.sorted
+        println "user ${authService?.username()} has ${request.getUserPrincipal()?.attributes}"
+        log.debug("user ${authService?.username()} has ${request.getUserPrincipal()?.attributes}")
 
         // get their contact details in case needed
-        def contact = Contact.findByEmail(authService.username())
+        def contact = Contact.findByEmail(authService?.username())
 
         [entities: entities, user: contact, show: params.show]
     }

@@ -51,24 +51,14 @@ grails.project.dependency.resolution = {
             export = false
         }
 
-        //build(  ":tomcat:7.0.52.1",
-        //        ":release:3.0.1") { //,
-                //":cors:1.1.6") {
-        //    export = false
-        //}
-
-        //compile ":marshallers:0.6"          //for customized domain object marshalling with json
         compile ":cache:1.1.2"
         runtime ":hibernate:3.6.10.11"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.2.7"
-        //build ":tomcat:7.0.52.1"
         runtime ":audit-logging:0.5.5.3"
         runtime ":cache-headers:1.1.6"
         runtime ":richui:0.8"
         runtime ":tiny-mce:3.4.4"
-        runtime ":ala-web-theme:0.2.4"
-        //runtime ":cors:1.1.6"
-	runtime ":release:3.0.1"
+	    runtime ":release:3.0.1"
     }
 }

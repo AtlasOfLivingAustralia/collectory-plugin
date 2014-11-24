@@ -62,7 +62,7 @@ class DataController {
                 unauthorised()
                 return false
             }
-            def keyCheck = authService.checkApiKey(params.json.api_key)
+            def keyCheck = authService?.checkApiKey(params.json.api_key)
             if (!keyCheck.valid) {
                 unauthorised()
                 return false

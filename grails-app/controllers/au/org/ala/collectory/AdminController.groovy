@@ -21,7 +21,7 @@ class AdminController {
  */
     def beforeInterceptor = [action:this.&auth]
     def auth() {
-        if (!authService.userInRole(ProviderGroup.ROLE_ADMIN)) {
+        if (!authService?.userInRole(ProviderGroup.ROLE_ADMIN)) {
             render "You are not authorised to access this page."
             return false
         }
@@ -130,8 +130,8 @@ class AdminController {
 
     def loadSupplementary = {
         boolean override = params.override ? params.override : false
-        log.info ">>${authService.username()} loading supplimentary data"
-        dataLoaderService.loadSupplementaryData("/data/collectory/bootstrap/sup.json", override, authService.username())
+        log.info ">>${authService?.username()} loading supplimentary data"
+        dataLoaderService.loadSupplementaryData("/data/collectory/bootstrap/sup.json", override, authService?.username())
 //        ActivityLog.log authenticateService.userDomain().username, Action.DATA_LOAD
         redirect(url: "http://localhost:8080/Collectory")  //action: "list")
     }

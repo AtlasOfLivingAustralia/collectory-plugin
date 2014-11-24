@@ -15,7 +15,7 @@ class ProviderMapController {
  */
     def beforeInterceptor = [action:this.&auth]
     def auth() {
-        if (!authService.userInRole(ProviderGroup.ROLE_EDITOR)) {
+        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR)) {
             render "You are not authorised to access this page."
             return false
         }
@@ -89,7 +89,7 @@ class ProviderMapController {
             redirect(action: "list", params:[returnTo: params.returnTo])
         }
         else {
-            if (authService.isAuthorisedToEdit(providerMapInstance.collection.uid)) {
+            if (authService?.isAuthorisedToEdit(providerMapInstance.collection.uid)) {
                 return [providerMapInstance: providerMapInstance, returnTo: params.returnTo]
             } else {
                 render "You are not authorised to access this page."
@@ -127,7 +127,7 @@ class ProviderMapController {
     def delete = {
         def providerMapInstance = ProviderMap.get(params.id)
         if (providerMapInstance) {
-            if (authService.isAuthorisedToEdit(providerMapInstance.collection.uid)) {
+            if (authService?.isAuthorisedToEdit(providerMapInstance.collection.uid)) {
                 try {
                     // remove collection link
                     providerMapInstance.collection?.providerMap = null

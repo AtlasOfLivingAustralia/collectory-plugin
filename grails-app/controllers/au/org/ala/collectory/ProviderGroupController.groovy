@@ -29,7 +29,7 @@ abstract class ProviderGroupController {
  */
     def beforeInterceptor = [action:this.&auth]
     def auth() {
-        if (!authService.userInRole(ProviderGroup.ROLE_EDITOR)) {
+        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR)) {
             response.setHeader("Content-type", "text/plain; charset=UTF-8")
             render message(code: "provider.group.controller.01", default: "You are not authorised to access this page. You do not have 'Collection editor' rights.")
             return false
@@ -95,7 +95,7 @@ abstract class ProviderGroupController {
             redirect(action: "list")
         } else {
             // are they allowed to edit
-            if (authService.isAuthorisedToEdit(pg.uid)) {
+            if (authService?.isAuthorisedToEdit(pg.uid)) {
                 params.page = params.page ?: '/shared/base'
                 render(view:params.page, model:[command: pg, target: params.target])
             } else {
@@ -112,7 +112,7 @@ abstract class ProviderGroupController {
             redirect(action: "list")
         } else {
             // are they allowed to edit
-            if (authService.isAuthorisedToEdit(pg.uid)) {
+            if (authService?.isAuthorisedToEdit(pg.uid)) {
                 render(view: '/shared/attributions', model:[BCI: pg.hasAttribution('at1'), CHAH: pg.hasAttribution('at2'),
                         CHACM: pg.hasAttribution('at3'), command: pg])
             } else {
@@ -134,23 +134,23 @@ abstract class ProviderGroupController {
         ProviderGroup pg
         switch (entityName) {
             case Collection.ENTITY_TYPE:
-                pg = new Collection(uid: idGeneratorService.getNextCollectionId(), name: name, userLastModified: authService.username())
+                pg = new Collection(uid: idGeneratorService.getNextCollectionId(), name: name, userLastModified: authService?.username())
                 if (params.institutionUid && Institution.findByUid(params.institutionUid)) {
                     pg.institution = Institution.findByUid(params.institutionUid)
                 }
                 break
             case Institution.ENTITY_TYPE:
-                pg = new Institution(uid: idGeneratorService.getNextInstitutionId(), name: name, userLastModified: authService.username()); break
+                pg = new Institution(uid: idGeneratorService.getNextInstitutionId(), name: name, userLastModified: authService?.username()); break
             case DataProvider.ENTITY_TYPE:
-                pg = new DataProvider(uid: idGeneratorService.getNextDataProviderId(), name: name, userLastModified: authService.username()); break
+                pg = new DataProvider(uid: idGeneratorService.getNextDataProviderId(), name: name, userLastModified: authService?.username()); break
             case DataResource.ENTITY_TYPE:
-                pg = new DataResource(uid: idGeneratorService.getNextDataResourceId(), name: name, userLastModified: authService.username())
+                pg = new DataResource(uid: idGeneratorService.getNextDataResourceId(), name: name, userLastModified: authService?.username())
                 if (params.dataProviderUid && DataProvider.findByUid(params.dataProviderUid)) {
                     pg.dataProvider = DataProvider.findByUid(params.dataProviderUid)
                 }
                 break
             case DataHub.ENTITY_TYPE:
-                pg = new DataHub(uid: idGeneratorService.getNextDataHubId(), name: name, userLastModified: authService.username()); break
+                pg = new DataHub(uid: idGeneratorService.getNextDataHubId(), name: name, userLastModified: authService?.username()); break
         }
 
         if (!pg.hasErrors() && pg.save(flush: true)) {
@@ -174,7 +174,7 @@ abstract class ProviderGroupController {
      * @param params values for contact fields if the contact does not already exist
      */
     void addUserAsContact(ProviderGroup pg, params) {
-        def user = authService.username()
+        def user = authService?.username()
         // find contact
         Contact c = Contact.findByEmail(user)
         if (!c) {
@@ -256,7 +256,7 @@ abstract class ProviderGroupController {
                 params.remove('networkMembership')
 
                 pg.properties = params
-                pg.userLastModified = authService.username()
+                pg.userLastModified = authService?.username()
                 if (!pg.hasErrors() && pg.save(flush: true)) {
                     flash.message =
                         "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -285,7 +285,7 @@ abstract class ProviderGroupController {
             entitySpecificDescriptionProcessing(pg, params)
 
             pg.properties = params
-            pg.userLastModified = authService.username()
+            pg.userLastModified = authService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message =
                   "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -340,7 +340,7 @@ abstract class ProviderGroupController {
                 }*/
 
                 pg.properties = params
-                pg.userLastModified = authService.username()
+                pg.userLastModified = authService?.username()
                 if (!pg.hasErrors() && pg.save(flush: true)) {
                     flash.message =
                       "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -374,7 +374,7 @@ abstract class ProviderGroupController {
             th.coverage = hints
             pg.taxonomyHints = th as JSON
 
-            pg.userLastModified = authService.username()
+            pg.userLastModified = authService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message =
                   "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -402,7 +402,7 @@ abstract class ProviderGroupController {
             pg.taxonomyHints = th as JSON
             println pg.taxonomyHints
 
-            pg.userLastModified = authService.username()
+            pg.userLastModified = authService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message =
                   "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -422,7 +422,7 @@ abstract class ProviderGroupController {
         def contactFor = ContactFor.get(params.contactForId)
         if (contactFor) {
             contactFor.properties = params
-            contactFor.userLastModified = authService.username()
+            contactFor.userLastModified = authService?.username()
             if (!contactFor.hasErrors() && contactFor.save(flush: true)) {
                 flash.message = "${message(code: 'contactRole.updated.message')}"
                 redirect(action: "edit", id: params.id, params: [page: '/shared/showContacts'])
@@ -442,10 +442,10 @@ abstract class ProviderGroupController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: "${entityNameLower}.label", default: entityNameLower), params.id])}"
             redirect(action: "list")
         } else {
-            if (authService.isAuthorisedToEdit(pg.uid)) {
+            if (authService?.isAuthorisedToEdit(pg.uid)) {
                 Contact contact = Contact.get(params.addContact)
                 if (contact) {
-                    pg.addToContacts(contact, "editor", true, false, authService.username())
+                    pg.addToContacts(contact, "editor", true, false, authService?.username())
                     redirect(action: "edit", params: [page:"/shared/showContacts"], id: params.id)
                 }
             } else {
@@ -460,14 +460,14 @@ abstract class ProviderGroupController {
         def contact = Contact.get(params.contactId)
         if (contact && pg) {
             // add the contact to the collection
-            pg.addToContacts(contact, "editor", true, false, authService.username())
+            pg.addToContacts(contact, "editor", true, false, authService?.username())
             redirect(action: "edit", params: [page:"/shared/showContacts"], id: pg.uid)
         } else {
             if (!pg) {
                 flash.message = message(code: "provider.group.controller.07", default: "Contact was created but") + " ${entityNameLower} " + message(code: "provider.group.controller.08", default: "could not be found. Please edit") + " ${entityNameLower} " + message(code: "provider.group.controller.09", default: "and add contact from existing.")
                 redirect(action: "list")
             } else {
-                if (authService.isAuthorisedToEdit(pg.uid)) {
+                if (authService?.isAuthorisedToEdit(pg.uid)) {
                     // contact must be null
                     flash.message = message(code: "provider.group.controller.10", default: "Contact was created but could not be added to the") + " ${pg.urlForm()}. " + message(code: "provider.group.controller.11", default: "Please add contact from existing.")
                     redirect(action: "edit", params: [page:"/shared/showContacts"], id: pg.uid)
@@ -486,7 +486,7 @@ abstract class ProviderGroupController {
             redirect(action: "list")
         } else {
             // are they allowed to edit
-            if (authService.isAuthorisedToEdit(pg.uid)) {
+            if (authService?.isAuthorisedToEdit(pg.uid)) {
                 ContactFor cf = ContactFor.get(params.idToRemove)
                 if (cf) {
                     cf.delete()
@@ -508,7 +508,7 @@ abstract class ProviderGroupController {
             ProviderGroup pg = ProviderGroup._get(contactFor.entityUid)
             if (pg) {
                 // are they allowed to edit
-                if (authService.isAuthorisedToEdit(pg.uid)) {
+                if (authService?.isAuthorisedToEdit(pg.uid)) {
                     render(view: '/shared/contactRole', model: [command: pg, cf: contactFor, returnTo: params.returnTo])
                 } else {
                     response.setHeader("Content-type", "text/plain; charset=UTF-8")
@@ -553,7 +553,7 @@ abstract class ProviderGroupController {
             redirect(action: "upload")
         } else {
             // are they allowed to edit
-            if (authService.isAuthorisedToEdit(pg.uid)) {
+            if (authService?.isAuthorisedToEdit(pg.uid)) {
                 render(view:'upload', model:[
                         instance: pg,
                         connectionProfiles: metadataService.getConnectionProfilesWithFileUpload(),
@@ -669,7 +669,7 @@ abstract class ProviderGroupController {
                     File f = new File(colDir, filename)
                     log.debug "saving ${filename} to ${f.absoluteFile}"
                     file.transferTo(f)
-                    ActivityLog.log authService.username(), authService.isAdmin(), Action.UPLOAD_IMAGE, filename
+                    ActivityLog.log authService?.username(), authService?.isAdmin(), Action.UPLOAD_IMAGE, filename
                 } else {
                     println "reject file of size ${file.size}"
                     pg.errors.rejectValue('imageRef', 'image.too.big', message(code: "provider.group.controller.13", default: "The image you selected is too large. Images are limited to 200KB."))
@@ -679,7 +679,7 @@ abstract class ProviderGroupController {
                 }
             }
             pg.properties = params
-            pg.userLastModified = authService.username()
+            pg.userLastModified = authService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
                 redirect(action: "show", id: pg.uid)
@@ -695,7 +695,7 @@ abstract class ProviderGroupController {
     def removeImage = {
         def pg = get(params.id)
         if (pg) {
-            if (authService.isAuthorisedToEdit(pg.uid)) {
+            if (authService?.isAuthorisedToEdit(pg.uid)) {
                 if (checkLocking(pg,'/shared/images')) { return }
 
                 if (params.target == 'logoRef') {
@@ -703,7 +703,7 @@ abstract class ProviderGroupController {
                 } else {
                     pg.imageRef = null
                 }
-                pg.userLastModified = authService.username()
+                pg.userLastModified = authService?.username()
                 if (!pg.hasErrors() && pg.save(flush: true)) {
                     flash.message = "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
                     redirect(action: "show", id: pg.uid)
@@ -745,7 +745,7 @@ abstract class ProviderGroupController {
             }
 
             if (pg.isDirty()) {
-                pg.userLastModified = authService.username()
+                pg.userLastModified = authService?.username()
                 if (!pg.hasErrors() && pg.save(flush: true)) {
                     flash.message =
                       "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -767,10 +767,10 @@ abstract class ProviderGroupController {
     def delete = {
         def pg = get(params.id)
         if (pg) {
-            if (authService.isAdmin()) {
+            if (authService?.isAdmin()) {
                 def name = pg.name
-                log.info ">>${authService.username()} deleting ${entityName} " + name
-                ActivityLog.log authService.username(), authService.isAdmin(), pg.uid, Action.DELETE
+                log.info ">>${authService?.username()} deleting ${entityName} " + name
+                ActivityLog.log authService?.username(), authService?.isAdmin(), pg.uid, Action.DELETE
                 try {
                     // remove contact links (does not remove the contact)
                     ContactFor.findAllByEntityUid(pg.uid).each {

@@ -175,7 +175,7 @@ class CollectoryTagLib {
     def roles = {
         def roles = []
         ['ROLE_ADMIN','ROLE_COLLECTION_EDITOR','ROLE_COLLECTION_ADMIN'].each {
-            if (authService.userInRole(it)) {
+            if (authService?.userInRole(it)) {
                 roles << it
             }
         }
