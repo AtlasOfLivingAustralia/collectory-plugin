@@ -47,18 +47,23 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build( ":tomcat:7.0.52.1") {
+        //build( ":tomcat:7.0.52.1") {
+        //    export = false
+        //}
+        build(  ":tomcat:7.0.52.1",
+                ":release:3.0.1",
+                ":rest-client-builder:1.0.3") {
             export = false
         }
-
         compile ":cache:1.1.2"
         runtime ":hibernate:3.6.10.11"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.2.7"
         runtime ":audit-logging:0.5.5.3"
         runtime ":cache-headers:1.1.6"
+        runtime ":rest:0.8"
         runtime ":richui:0.8"
         runtime ":tiny-mce:3.4.4"
-	    runtime ":release:3.0.1"
+	    //runtime ":release:3.0.1"
     }
 }
