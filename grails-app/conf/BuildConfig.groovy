@@ -19,20 +19,14 @@ grails.project.fork = [
         console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
-//grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
-    // inherit Grails' default dependencies
     inherits( "global" ) {
-        // uncomment to disable ehcache
-        // excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {        
         grailsPlugins()
         grailsHome()
         grailsCentral()
-        // uncomment the below to enable remote dependency resolution
-        // from public Maven repositories
         mavenLocal()
         mavenCentral()
         mavenRepo "http://repository.codehaus.org"
@@ -47,9 +41,6 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        //build( ":tomcat:7.0.52.1") {
-        //    export = false
-        //}
         build(  ":tomcat:7.0.52.1",
                 ":release:3.0.1",
                 ":rest-client-builder:1.0.3") {
@@ -64,6 +55,5 @@ grails.project.dependency.resolution = {
         runtime ":rest:0.8"
         runtime ":richui:0.8"
         runtime ":tiny-mce:3.4.4"
-	    //runtime ":release:3.0.1"
     }
 }

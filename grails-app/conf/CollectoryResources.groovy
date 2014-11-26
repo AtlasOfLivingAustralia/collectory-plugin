@@ -9,13 +9,11 @@ modules = {
     }
     jquery {
         resource url:[dir:'js', file:'jquery.min.js', plugin:'collectory-plugin']
-        //resource url:[dir:'theme/default', file:'style.css', plugin:'collectory-plugin']
     }
     smoothness {
         resource url:[dir:'css/smoothness', file:'jquery-ui-1.8.16.custom.css', plugin:'collectory-plugin']
     }
     jquery_jsonp {
-        //resource url:[dir:'js', file:'jquery.min.js', plugin:'collectory-plugin']
         resource url:[dir:'js', file:'jquery.jsonp-2.1.4.min.js', plugin:'collectory-plugin']
     }
     jquery_tools {

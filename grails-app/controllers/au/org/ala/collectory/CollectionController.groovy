@@ -6,8 +6,6 @@ import grails.validation.Validateable
 import java.text.NumberFormat
 import java.text.ParseException
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-
 class CollectionController extends ProviderGroupController {
 
     CollectionController() {
