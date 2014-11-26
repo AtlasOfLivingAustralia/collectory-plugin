@@ -49,13 +49,13 @@ class ContactController {
     def create = {
         def contactInstance = new Contact()
         contactInstance.properties = params
-        contactInstance.userLastModified = authService?.username()
+        contactInstance.userLastModified = authService?.getUserId()
         return [contactInstance: contactInstance, returnTo: params.returnTo]
     }
 
     def save = {
         def contactInstance = new Contact(params)
-        contactInstance.userLastModified = authService?.username()?:'not available'
+        contactInstance.userLastModified = authService?.getUserId()?:'not available'
         contactInstance.validate()
         contactInstance.errors.each{println it}
         if (contactInstance.save(flush: true)) {
@@ -108,9 +108,9 @@ class ContactController {
                 }
             }
             contactInstance.properties = params
-            contactInstance.userLastModified = authService?.username()
+            contactInstance.userLastModified = authService?.getUserId()
             if (!contactInstance.hasErrors() && contactInstance.save(flush: true)) {
-                ActivityLog.log authService?.username(), authService?.isAdmin(), Action.EDIT_SAVE, "contact ${params.id}"
+                ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.EDIT_SAVE, "contact ${params.id}"
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'contact.label', default: 'Contact'), contactInstance.id])}"
                 if (params.returnTo) {
                     redirect(uri: params.returnTo)
@@ -134,9 +134,9 @@ class ContactController {
     def delete = {
         def contactInstance = Contact.get(params.id)
         if (contactInstance) {
-            if (authService?.isAdmin()) {
+            if (authService?.userInRole(grailsApplication.config.auth.admin_role)) {
                 try {
-                    ActivityLog.log authService?.username(), authService?.isAdmin(), Action.DELETE, "contact ${contactInstance.buildName()}"
+                    ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.DELETE, "contact ${contactInstance.buildName()}"
                     // need to delete any ContactFor links first
                     ContactFor.findAllByContact(contactInstance).each {
                         it.delete(flush: true)
@@ -164,7 +164,7 @@ class ContactController {
      * @param userEmail - optional email, defaults to the logged in user
      */
     def showProfile = {
-        def user = params.userEmail ?: authService?.username()
+        def user = params.userEmail ?: authService?.getUserId()
         def contact = Contact.findByEmail(user)
         if (contact) {
             def crList = ContactFor.findAllByContact(contact).collect {
@@ -181,11 +181,11 @@ class ContactController {
         params.each {println it}
         def contactInstance = Contact.get(params.id)
         // only the user or admin can update
-        if (contactInstance.email == authService?.username() || authService?.isAdmin()) {
+        if (contactInstance.email == authService?.getUserId() || authService?.userInRole(grailsApplication.config.auth.admin_role)) {
             contactInstance.properties = params
-            contactInstance.userLastModified = authService?.username()
+            contactInstance.userLastModified = authService?.getUserId()
             if (!contactInstance.hasErrors() && contactInstance.save(flush: true)) {
-                ActivityLog.log authService?.username(), authService?.isAdmin(), Action.EDIT_SAVE, "contact ${params.id}"
+                ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.EDIT_SAVE, "contact ${params.id}"
                 flash.message = "Your profile was updated."
                 redirect(uri: "/admin")
             }
