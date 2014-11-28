@@ -49,42 +49,42 @@ class ReportsController {
     }
 
     def data = {
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'data'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'data'
         [reports: new ReportCommand('data')]
     }
 
     def activity = {
-        //ActivityLog.log authService?.username(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'activity'
+        //ActivityLog.log authService?.username(), authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'activity'
         [reports: new ReportCommand('activity')]
     }
 
     def membership = {
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'membership'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'membership'
         [reports: new ReportCommand('membership')]
     }
 
     def collections = {
         def simple = params.simple ?: 'false'
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'collections'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'collections'
         [collections: Collection.list([sort:'name']), simple: simple]
     }
 
     def institutions = {
         def simple = params.simple ?: 'false'
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'institutions'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'institutions'
         [institutions: Institution.list([sort:'name']), simple: simple]
     }
 
     def providers = {
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'providers'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'providers'
     }
 
     def resources = {
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'resources'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'resources'
     }
 
     def contacts = {
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'contacts'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'contacts'
     }
 
     def codes = {
@@ -163,7 +163,7 @@ class ReportsController {
     }
 
     def classification = {
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'classifications'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'classifications'
         def list = Collection.list([sort:'name'])
         def plants = 0; def fauna = 0; def entomology = 0; def microbes = 0
         list.each {
@@ -176,12 +176,12 @@ class ReportsController {
     }
 
     def taxonomicHints = {
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'taxonomic hints'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'taxonomic hints'
         [collections: Collection.list([sort:'name'])]
     }
 
     def collectionTypes = {
-        ActivityLog.log authService?.getUserId(), authService?.userInRole(grailsApplication.config.auth.admin_role), Action.REPORT, 'collection types'
+        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'collection types'
         [collections: Collection.list([sort:'name'])]
     }
 

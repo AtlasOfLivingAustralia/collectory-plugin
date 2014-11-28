@@ -65,6 +65,10 @@ from the ALA collectory app (no local DB is required for this app).
                     timeToLiveSeconds 3600
                 }
                 cache {
+                    name 'collectoryCache'
+                    timeToLiveSeconds (3600 * 4)
+                }
+                cache {
                     name 'longTermCache'
                     timeToLiveSeconds (3600 * 12)
                 }

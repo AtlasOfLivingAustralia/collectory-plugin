@@ -65,14 +65,21 @@ class ManageController {
      * @param show = user will display user login/cookie/roles details
      */
     def list = {
+        //def username = (request.getUserPrincipal()?.attributes?.email)?:'not available';
+
+        //def username = 'a.lin@csiro.au';
 
         // find the entities the user is allowed to edit
-        def entities = authService?.getUserForUserId(authService?.getUserId())?.sorted
-        println "user ${authService?.getUserId()} has ${request.getUserPrincipal()?.attributes}"
-        log.debug("user ${authService?.getUserId()} has ${request.getUserPrincipal()?.attributes}")
+        //def entities = authService?.getUserForUserId(authService?.email)?.sorted
+
+        def entities = authService?.getUserForEmailAddress(authService?.email)
+
+        //def entities = authService?.getUserForUserId(username)?.sorted
+        println "user ${authService?.email} has ${request.getUserPrincipal()?.attributes}"
+        log.debug("user ${authService?.email} has ${request.getUserPrincipal()?.attributes}")
 
         // get their contact details in case needed
-        def contact = Contact.findByEmail(authService?.getUserId())
+        def contact = Contact.findByEmail(authService?.email)
 
         [entities: entities, user: contact, show: params.show]
     }

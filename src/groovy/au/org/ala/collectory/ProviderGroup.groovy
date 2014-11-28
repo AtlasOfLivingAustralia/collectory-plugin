@@ -39,8 +39,10 @@ abstract class ProviderGroup implements Serializable {
     static final String LSID_PREFIX = 'urn:lsid:'
     static final int ABSTRACT_LENGTH = 250
     // for want of somewhere appropriate to put these:
-    static final String ROLE_ADMIN = 'ROLE_COLLECTION_ADMIN'
-    static final String ROLE_EDITOR = 'ROLE_COLLECTION_EDITOR'
+    //static final String ROLE_ADMIN = 'ROLE_COLLECTION_ADMIN'
+    //static final String ROLE_EDITOR = 'ROLE_COLLECTION_EDITOR'
+    static final String ROLE_ADMIN = 'ROLE_ADMIN'
+    static final String ROLE_EDITOR = 'ROLE_EDITOR'
     // general attributes
     String guid                 // this is not the DB id but a known identifier
                                 // such as an LSID or institution code

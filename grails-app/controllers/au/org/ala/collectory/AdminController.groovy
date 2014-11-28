@@ -130,8 +130,8 @@ class AdminController {
 
     def loadSupplementary = {
         boolean override = params.override ? params.override : false
-        log.info ">>${authService?.getUserId()} loading supplimentary data"
-        dataLoaderService.loadSupplementaryData("/data/collectory/bootstrap/sup.json", override, authService?.getUserId())
+        log.info ">>${authService?.email} loading supplimentary data"
+        dataLoaderService.loadSupplementaryData("/data/collectory/bootstrap/sup.json", override, authService?.email)
 //        ActivityLog.log authenticateService.userDomain().username, Action.DATA_LOAD
         redirect(url: "http://localhost:8080/Collectory")  //action: "list")
     }

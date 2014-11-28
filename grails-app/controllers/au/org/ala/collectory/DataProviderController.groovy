@@ -43,7 +43,7 @@ class DataProviderController extends ProviderGroupController {
             redirect(action: "list")
         } else {
             // are they allowed to edit
-            if (authService?.userInRole(grailsApplication.config.auth.admin_role)) {
+            if (authService?.userInRole(ProviderGroup.ROLE_ADMIN)) {
                 render(view: '../dataResource/consumers', model:[command: pg, source: params.source])
             } else {
                 render("You are not authorised to edit these properties.")
