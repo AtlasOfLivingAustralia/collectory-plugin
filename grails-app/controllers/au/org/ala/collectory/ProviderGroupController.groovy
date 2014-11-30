@@ -95,7 +95,7 @@ abstract class ProviderGroupController {
             redirect(action: "list")
         } else {
             // are they allowed to edit
-            if (authService?.isAuthorisedToEdit(pg.uid)) {
+            if (isAuthorisedToEdit(pg.uid)) {
                 params.page = params.page ?: '/shared/base'
                 render(view:params.page, model:[command: pg, target: params.target])
             } else {
@@ -112,7 +112,7 @@ abstract class ProviderGroupController {
             redirect(action: "list")
         } else {
             // are they allowed to edit
-            if (authService?.isAuthorisedToEdit(pg.uid)) {
+            if (isAuthorisedToEdit(pg.uid)) {
                 render(view: '/shared/attributions', model:[BCI: pg.hasAttribution('at1'), CHAH: pg.hasAttribution('at2'),
                         CHACM: pg.hasAttribution('at3'), command: pg])
             } else {
@@ -443,7 +443,7 @@ abstract class ProviderGroupController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: "${entityNameLower}.label", default: entityNameLower), params.id])}"
             redirect(action: "list")
         } else {
-            if (authService?.isAuthorisedToEdit(pg.uid)) {
+            if (isAuthorisedToEdit(pg.uid)) {
                 Contact contact = Contact.get(params.addContact)
                 if (contact) {
                     pg.addToContacts(contact, "editor", true, false, authService?.email)
@@ -468,7 +468,7 @@ abstract class ProviderGroupController {
                 flash.message = message(code: "provider.group.controller.07", default: "Contact was created but") + " ${entityNameLower} " + message(code: "provider.group.controller.08", default: "could not be found. Please edit") + " ${entityNameLower} " + message(code: "provider.group.controller.09", default: "and add contact from existing.")
                 redirect(action: "list")
             } else {
-                if (authService?.isAuthorisedToEdit(pg.uid)) {
+                if (isAuthorisedToEdit(pg.uid)) {
                     // contact must be null
                     flash.message = message(code: "provider.group.controller.10", default: "Contact was created but could not be added to the") + " ${pg.urlForm()}. " + message(code: "provider.group.controller.11", default: "Please add contact from existing.")
                     redirect(action: "edit", params: [page:"/shared/showContacts"], id: pg.uid)
@@ -487,7 +487,7 @@ abstract class ProviderGroupController {
             redirect(action: "list")
         } else {
             // are they allowed to edit
-            if (authService?.isAuthorisedToEdit(pg.uid)) {
+            if (isAuthorisedToEdit(pg.uid)) {
                 ContactFor cf = ContactFor.get(params.idToRemove)
                 if (cf) {
                     cf.delete()
@@ -509,7 +509,7 @@ abstract class ProviderGroupController {
             ProviderGroup pg = ProviderGroup._get(contactFor.entityUid)
             if (pg) {
                 // are they allowed to edit
-                if (authService?.isAuthorisedToEdit(pg.uid)) {
+                if (isAuthorisedToEdit(pg.uid)) {
                     render(view: '/shared/contactRole', model: [command: pg, cf: contactFor, returnTo: params.returnTo])
                 } else {
                     response.setHeader("Content-type", "text/plain; charset=UTF-8")
@@ -554,7 +554,7 @@ abstract class ProviderGroupController {
             redirect(action: "upload")
         } else {
             // are they allowed to edit
-            if (authService?.isAuthorisedToEdit(pg.uid)) {
+            if (isAuthorisedToEdit(pg.uid)) {
                 render(view:'upload', model:[
                         instance: pg,
                         connectionProfiles: metadataService.getConnectionProfilesWithFileUpload(),
@@ -696,7 +696,7 @@ abstract class ProviderGroupController {
     def removeImage = {
         def pg = get(params.id)
         if (pg) {
-            if (authService?.isAuthorisedToEdit(pg.uid)) {
+            if (isAuthorisedToEdit(pg.uid)) {
                 if (checkLocking(pg,'/shared/images')) { return }
 
                 if (params.target == 'logoRef') {
@@ -857,4 +857,15 @@ abstract class ProviderGroupController {
         return (str?.length() > AuditLogListener.TRUNCATE_LENGTH) ? str?.substring(0, AuditLogListener.TRUNCATE_LENGTH) : str
     }
 
+    protected boolean isAuthorisedToEdit(uid) {
+        if (grailsApplication.config.security.cas.bypass || isAdmin()) {
+            return true
+        } else {
+            def email = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email
+            if (email) {
+                return ProviderGroup._get(uid)?.isAuthorised(email)
+            }
+        }
+        return false
+    }
 }

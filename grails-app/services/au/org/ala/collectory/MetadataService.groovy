@@ -69,7 +69,7 @@ class MetadataService {
     }
 
     def getConnectionProfilesWithFileUpload() {
-        getConnectionProfiles().values().toList().findAll({ it.supportFileUpload })
+        getConnectionProfiles()?.values().toList().findAll({ it.supportFileUpload })
     }
 
     private checkConnectionMetadata() {
@@ -80,12 +80,24 @@ class MetadataService {
 
     private loadConnectionMetadata() {
         log.info "Loading connection profiles and parameters from disk"
-        def json = new File("/data/collectory/config/connection-profiles.json").text
-        def md = JSON.parse(json)
-        // TODO: handle errors
-        // load as map for quick lookup
-        connectionProfileMetadata = md.profiles.inject([:]) {map, pr -> map << [(pr.name): pr]}
-        connectionParameterMetadata = md.parameters.inject([:]) {map, pa -> map << [(pa.name): pa]}
+
+        def json = null;
+        def path = "/data/" + grailsApplication.config.grails.appName + "/config/connection-profiles.json";
+        //def path = "/data/ala-collectory/config/connection-profiles.json";
+
+        def pFile = new File(path)
+        if(pFile.exists())
+            json = pFile.text
+
+        if(json != null) {
+            def md = JSON.parse(json)
+            // TODO: handle errors
+            // load as map for quick lookup
+            connectionProfileMetadata = md.profiles.inject([:]) {map, pr -> map << [(pr.name): pr]}
+            connectionParameterMetadata = md.parameters.inject([:]) {map, pa -> map << [(pa.name): pa]}
+        } else {
+            log.info "Connection profiles does not exist under " + path;
+        }
     }
 
     def clearConnectionProfiles() {

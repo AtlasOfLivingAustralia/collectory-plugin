@@ -89,7 +89,7 @@ class ProviderMapController {
             redirect(action: "list", params:[returnTo: params.returnTo])
         }
         else {
-            if (authService?.isAuthorisedToEdit(providerMapInstance.collection.uid)) {
+            if (isAuthorisedToEdit(providerMapInstance.collection.uid)) {
                 return [providerMapInstance: providerMapInstance, returnTo: params.returnTo]
             } else {
                 render "You are not authorised to access this page."
@@ -127,7 +127,7 @@ class ProviderMapController {
     def delete = {
         def providerMapInstance = ProviderMap.get(params.id)
         if (providerMapInstance) {
-            if (authService?.isAuthorisedToEdit(providerMapInstance.collection.uid)) {
+            if (isAuthorisedToEdit(providerMapInstance.collection.uid)) {
                 try {
                     // remove collection link
                     providerMapInstance.collection?.providerMap = null
@@ -155,5 +155,17 @@ class ProviderMapController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'providerMap.label', default: 'ProviderMap'), params.id])}"
             redirect(action: "list", params:[returnTo: params.returnTo])
         }
+    }
+
+    protected boolean isAuthorisedToEdit(uid) {
+        if (grailsApplication.config.security.cas.bypass || isAdmin()) {
+            return true
+        } else {
+            def email = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email
+            if (email) {
+                return ProviderGroup._get(uid)?.isAuthorised(email)
+            }
+        }
+        return false
     }
 }
