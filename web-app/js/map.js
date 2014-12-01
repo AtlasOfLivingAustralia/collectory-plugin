@@ -661,7 +661,7 @@ function outputMultipleCollections(obj, strategy) {
         if (obj.length == 1) {
             content = outputCollectionWithInstitution(obj[0], strategy);
         } else {
-            content = "<li>" + outputInstitutionOnOwnLine(obj[0]) + " - " + obj.length + " " +  + jQuery.i18n.prop('collections') + "</li>"
+            content = "<li>" + outputInstitutionOnOwnLine(obj[0]) + " - " + obj.length + " " + jQuery.i18n.prop('collections') + "</li>"
         }
     }
     return content;
@@ -770,6 +770,7 @@ function outputCollectionWithInstitution(obj, strategy) {
 
         // try full inst + 1 collection
         } else if (inst.length < max - 12) {
+            Console.log("Collection: " + jQuery.i18n.prop('collection'));
             return "<li>" + instLink + inst + "</a> - 1 " + jQuery.i18n.prop('collection') + "</li>";
 
         // try acronym of inst + 1 collection (worst case!)
