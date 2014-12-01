@@ -26,7 +26,7 @@ from the ALA collectory app (no local DB is required for this app).
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://github.com/AtlasOfLivingAustralia/collectory"
+    def documentation = "http://github.com/AtlasOfLivingAustralia/collectory-plugin"
 
     // License: one of 'APACHE', 'GPL2', 'GPL3'
     def license = "MPL2"
@@ -44,7 +44,7 @@ from the ALA collectory app (no local DB is required for this app).
     def issueManagement = [ system: "Google Code", url: "https://github.com/AtlasOfLivingAustralia/collectory/issues" ]
 
     // Online location of the plugin's browseable source code.
-    def scm = [ url: "https://github.com/AtlasOfLivingAustralia/collectory" ]
+    def scm = [ url: "https://github.com/AtlasOfLivingAustralia/collectory-plugin" ]
 
     def grailsConsole =  new GrailsConsole()
 
