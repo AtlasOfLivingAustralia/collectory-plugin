@@ -19,19 +19,20 @@ grails.project.fork = [
         console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
 
+grails.project.dependency.resolver = "maven"
+
 grails.project.dependency.resolution = {
     inherits( "global" ) {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+
     repositories {        
-        grailsPlugins()
-        grailsHome()
-        grailsCentral()
         mavenLocal()
-        mavenCentral()
-        mavenRepo "http://repository.codehaus.org"
-        mavenRepo "http://maven.ala.org.au/repository/"
+        mavenRepo("http://nexus.ala.org.au/content/groups/public/") {
+            updatePolicy 'always'
+        }
     }
+
     dependencies {
         runtime 'mysql:mysql-connector-java:5.1.5'
         runtime 'net.sf.opencsv:opencsv:2.3'
