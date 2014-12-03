@@ -46,8 +46,6 @@ from the ALA collectory app (no local DB is required for this app).
     // Online location of the plugin's browseable source code.
     def scm = [ url: "https://github.com/AtlasOfLivingAustralia/collectory-plugin" ]
 
-    def grailsConsole =  new GrailsConsole()
-
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
     }
