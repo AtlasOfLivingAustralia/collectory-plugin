@@ -25,7 +25,7 @@ before_script:
 - echo "GRAILS_SETTINGS_FILE:$GRAILS_SETTINGS_FILE"
 - mkdir -p ~/.grails; wget -q -O ~/.grails/settings.groovy https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/$GRAILS_SETTINGS_FILE
 - MAVEN_REPO="ala-repo-snapshot"
-- grep '^\s*app\.version=' ./application.properties | grep -q "\-SNAPSHOT"; if [ "$?"
+- grep '^\s*def\s*version\s*=\s*"' ./CollectoryGrailsPlugin.groovy | grep -q "\-SNAPSHOT"; if [ "$?"
   = "1" ]; then MAVEN_REPO="ala-repo-release"; fi;
 - echo "MAVEN_REPO:$MAVEN_REPO"
 script:
