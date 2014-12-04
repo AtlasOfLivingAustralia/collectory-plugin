@@ -72,14 +72,18 @@ class ManageController {
         // find the entities the user is allowed to edit
         //def entities = authService?.getUserForUserId(authService?.email)?.sorted
 
+        //def userId = authService?.email
+        //if(!userId)
+        //    userId = AuthenticationCookieUtils.getCookie(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE);
+
         def entities = authService?.getUserForEmailAddress(authService?.email)
 
         //def entities = authService?.getUserForUserId(username)?.sorted
-        println "user ${authService?.email} has ${request.getUserPrincipal()?.attributes}"
-        log.debug("user ${authService?.email} has ${request.getUserPrincipal()?.attributes}")
+        println "user ${userId} has ${request.getUserPrincipal()?.attributes}"
+        log.debug("user ${userId} has ${request.getUserPrincipal()?.attributes}")
 
         // get their contact details in case needed
-        def contact = Contact.findByEmail(authService?.email)
+        def contact = Contact.findByEmail(userId)
 
         [entities: entities, user: contact, show: params.show]
     }
