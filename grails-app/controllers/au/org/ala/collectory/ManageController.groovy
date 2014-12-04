@@ -83,7 +83,7 @@ class ManageController {
         log.debug("user ${authService?.email} has ${request.getUserPrincipal()?.attributes}")
 
         // get their contact details in case needed
-        def contact = Contact.findByEmail(userId)
+        def contact = Contact.findByEmail(authService?.email)
 
         [entities: entities, user: contact, show: params.show]
     }
