@@ -79,8 +79,8 @@ class ManageController {
         def entities = authService?.getUserForEmailAddress(authService?.email)
 
         //def entities = authService?.getUserForUserId(username)?.sorted
-        println "user ${userId} has ${request.getUserPrincipal()?.attributes}"
-        log.debug("user ${userId} has ${request.getUserPrincipal()?.attributes}")
+        println "user ${authService?.email} has ${request.getUserPrincipal()?.attributes}"
+        log.debug("user ${authService?.email} has ${request.getUserPrincipal()?.attributes}")
 
         // get their contact details in case needed
         def contact = Contact.findByEmail(userId)
