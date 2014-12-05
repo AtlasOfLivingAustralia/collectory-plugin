@@ -67,8 +67,6 @@ class ManageController {
     def list = {
         //def username = (request.getUserPrincipal()?.attributes?.email)?:'not available';
 
-        //def username = 'a.lin@csiro.au';
-
         // find the entities the user is allowed to edit
         //def entities = authService?.getUserForUserId(authService?.email)?.sorted
 
