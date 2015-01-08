@@ -21,6 +21,9 @@ class CrudService {
     static baseObjectProperties = ['address', 'imageRef','logoRef']
     static baseJSONArrays = ['networkMembership']
 
+    static dataProviderStringProperties = ['hiddenJSON']
+    static dataProviderJSONArrays = ['hiddenJSON']
+
     static dataHubStringProperties = ['memberDataResources']
     static dataHubNumberProperties = []
 
@@ -116,6 +119,9 @@ class CrudService {
                 if (p.listConsumers()) {
                     linkedRecordConsumers = p.listConsumers().formatEntitiesFromUids()
                 }
+                if (p.hiddenJSON) {
+                    hiddenJSON = p.hiddenJSON.formatJSON()
+                }
             }
         }
         return result
@@ -124,6 +130,7 @@ class CrudService {
     def insertDataProvider(obj) {
         DataProvider dp = new DataProvider(uid: idGeneratorService.getNextDataProviderId())
         updateBaseProperties(dp, obj)
+        updateDataProviderProperties(dp, obj)
         dp.userLastModified = obj.user ?: 'Data services'
         if (!dp.hasErrors()) {
              dp.save(flush: true)
@@ -133,11 +140,17 @@ class CrudService {
     
     def updateDataProvider(dp, obj) {
         updateBaseProperties(dp, obj)
+        updateDataProviderProperties(dp, obj)
         dp.userLastModified = obj.user ?: 'Data services'
         if (!dp.hasErrors()) {
              dp.save(flush: true)
         }
         return dp
+    }
+
+    private void updateDataProviderProperties(DataProvider dp, obj) {
+        convertJSONToString(obj, dataProviderJSONArrays)
+        dp.properties[dataProviderStringProperties] = obj
     }
 
     /* data hub */

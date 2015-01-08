@@ -9,11 +9,15 @@ class DataProvider extends ProviderGroup implements Serializable {
 
     static hasMany = [resources: DataResource]
 
+    String hiddenJSON // web service only (non-UI) JSON; used by fieldcapture to store project data
+
     static mapping = {
         sort: 'name'
+        hiddenJSON type: "text"
     }
 
     static constraints = {
+        hiddenJSON(nullable:true, blank: false)
     }
 
     boolean canBeMapped() {
