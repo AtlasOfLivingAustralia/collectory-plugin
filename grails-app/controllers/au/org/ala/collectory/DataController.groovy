@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 
 class DataController {
 
-    def crudService, authService, emlRenderService
+    def crudService, authService, emlRenderService, collectoryAuthService
     
     def index = { }
 
@@ -62,7 +62,7 @@ class DataController {
                 unauthorised()
                 return false
             }
-            def keyCheck = authService?.checkApiKey(params.json.api_key)
+            def keyCheck = collectoryAuthService?.checkApiKey(params.json.api_key)
             if (!keyCheck.valid) {
                 unauthorised()
                 return false
