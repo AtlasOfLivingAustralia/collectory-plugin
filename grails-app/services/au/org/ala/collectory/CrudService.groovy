@@ -378,6 +378,13 @@ class CrudService {
                 dr.dataProvider = dp
             }
         }
+        if (obj.has('institution')) {
+            // find it
+            Institution ins = Institution._get(obj.institution.uid) as Institution
+            if (ins) {
+                dr.institution = ins
+            }
+        }
     }
 
     /* temp data resource */
