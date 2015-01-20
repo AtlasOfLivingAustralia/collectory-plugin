@@ -808,7 +808,7 @@ class DataController {
             badRequest "contact ${params.id} does not exist"
         }
         else {
-            def result = authService.authorisedForUser(contact)
+            def result = collectoryAuthService?.authorisedForUser(contact)
             renderAsJson result.sorted, result.latestMod, result.keys.toString().encodeAsMD5()
         }
     }
