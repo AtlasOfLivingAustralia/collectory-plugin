@@ -1,4 +1,4 @@
-class UrlMappings {
+class CollectoryUrlMappings {
     static mappings = {
         name standard: "/$controller/$action?/$id?"{
             constraints {
