@@ -28,8 +28,9 @@ abstract class ProviderGroupController {
  * Edit methods require ADMIN or the user to be an administrator for the entity.
  */
     def beforeInterceptor = [action:this.&auth]
+
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR)) {
+        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass) {
             response.setHeader("Content-type", "text/plain; charset=UTF-8")
             render message(code: "provider.group.controller.01", default: "You are not authorised to access this page. You do not have 'Collection editor' rights.")
             return false
@@ -39,6 +40,7 @@ abstract class ProviderGroupController {
     protected username = {
             authService?.email ?: 'unavailable'
     }
+
     protected isAdmin = {
         authService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: false
     }
@@ -670,7 +672,7 @@ abstract class ProviderGroupController {
                     File f = new File(colDir, filename)
                     log.debug "saving ${filename} to ${f.absoluteFile}"
                     file.transferTo(f)
-                    ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.UPLOAD_IMAGE, filename
+                    //ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.UPLOAD_IMAGE, filename
                 } else {
                     println "reject file of size ${file.size}"
                     pg.errors.rejectValue('imageRef', 'image.too.big', message(code: "provider.group.controller.13", default: "The image you selected is too large. Images are limited to 200KB."))
@@ -768,10 +770,10 @@ abstract class ProviderGroupController {
     def delete = {
         def pg = get(params.id)
         if (pg) {
-            if (authService?.userInRole(ProviderGroup.ROLE_ADMIN)) {
+            if (authService?.userInRole(ProviderGroup.ROLE_ADMIN) || grailsApplication.config.security.cas.bypass) {
                 def name = pg.name
                 log.info ">>${authService?.email} deleting ${entityName} " + name
-                ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), pg.uid, Action.DELETE
+                //ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), pg.uid, Action.DELETE
                 try {
                     // remove contact links (does not remove the contact)
                     ContactFor.findAllByEntityUid(pg.uid).each {

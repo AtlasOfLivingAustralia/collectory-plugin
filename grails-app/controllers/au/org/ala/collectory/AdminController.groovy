@@ -20,8 +20,9 @@ class AdminController {
  * All methods require ADMIN role.
  */
     def beforeInterceptor = [action:this.&auth]
+
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_ADMIN)) {
+        if (!authService?.userInRole(ProviderGroup.ROLE_ADMIN) && !grailsApplication.config.security.cas.bypass) {
             render "You are not authorised to access this page."
             return false
         }

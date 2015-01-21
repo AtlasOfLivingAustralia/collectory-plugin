@@ -21,25 +21,25 @@ package au.org.ala.collectory.resources
  */
 class DarwinCoreFields {
     static List fields = [
-        new DarwinCoreField(name: 'basisOfRecord', values: ["","FossilSpecimen","HumanObservation","LivingSpecimen","MachineObservation","NomenclaturalChecklist","PreservedSpecimen"], important: true),
-        new DarwinCoreField(name: 'type', important: true, values: ["","Event","MovingImage","PhysicalObject","Sound","StillImage"]),
-        new DarwinCoreField(name: 'recordedBy', important: true),
-        new DarwinCoreField(name: 'occurrenceStatus', values: ["","present", "absent"], important: true),
-        new DarwinCoreField(name: 'samplingProtocol', important: true),
-        new DarwinCoreField(name: 'country', important: true),
-        new DarwinCoreField(name: 'geodeticDatum', important: true),
-        new DarwinCoreField(name: 'coordinateUncertaintyInMeters', important: true),
-        new DarwinCoreField(name: 'coordinatePrecision', important: true),
-        new DarwinCoreField(name: 'georeferencedBy', important: true),
-        new DarwinCoreField(name: 'georeferenceProtocol', important: true),
-        new DarwinCoreField(name: 'georeferenceSources', important: true),
-        new DarwinCoreField(name: 'georeferenceVerificationStatus', important: true),
-        new DarwinCoreField(name: 'identifiedBy', important: true),
-        new DarwinCoreField(name: 'identificationReferences', important: true),
-        new DarwinCoreField(name: 'identificationQualifier', important: true),
-        new DarwinCoreField(name: 'kingdom', important: true),
-        new DarwinCoreField(name: 'taxonRank', values: ["","kingdom","subkingdom","division","phylum","subdivision","subphylum","class","subclass","order","suborder","family","subfamily","tribe","subtribe","genus","subgenus","section","subsection","series","subseries","species","subspecies","variety","subvariety","form","subform"
-], important: true),
+            new DarwinCoreField(name: 'basisOfRecord', values: ["","FossilSpecimen","HumanObservation","LivingSpecimen","MachineObservation","NomenclaturalChecklist","PreservedSpecimen"], important: true),
+            new DarwinCoreField(name: 'type', important: true, values: ["","Event","MovingImage","PhysicalObject","Sound","StillImage"]),
+            new DarwinCoreField(name: 'recordedBy', important: true),
+            new DarwinCoreField(name: 'occurrenceStatus', values: ["","present", "absent"], important: true),
+            new DarwinCoreField(name: 'samplingProtocol', important: true),
+            new DarwinCoreField(name: 'country', important: true),
+            new DarwinCoreField(name: 'geodeticDatum', important: true),
+            new DarwinCoreField(name: 'coordinateUncertaintyInMeters', important: true),
+            new DarwinCoreField(name: 'coordinatePrecision', important: true),
+            new DarwinCoreField(name: 'georeferencedBy', important: true),
+            new DarwinCoreField(name: 'georeferenceProtocol', important: true),
+            new DarwinCoreField(name: 'georeferenceSources', important: true),
+            new DarwinCoreField(name: 'georeferenceVerificationStatus', important: true),
+            new DarwinCoreField(name: 'identifiedBy', important: true),
+            new DarwinCoreField(name: 'identificationReferences', important: true),
+            new DarwinCoreField(name: 'identificationQualifier', important: true),
+            new DarwinCoreField(name: 'kingdom', important: true),
+            new DarwinCoreField(name: 'taxonRank', values: ["","kingdom","subkingdom","division","phylum","subdivision","subphylum","class","subclass","order","suborder","family","subfamily","tribe","subtribe","genus","subgenus","section","subsection","series","subseries","species","subspecies","variety","subvariety","form","subform"
+            ], important: true),
             new DarwinCoreField(name: 'acceptedNameUsage'),
             new DarwinCoreField(name: 'acceptedNameUsageID'),
             new DarwinCoreField(name: 'associatedMedia'),
@@ -188,6 +188,7 @@ class DarwinCoreFields {
             new DarwinCoreField(name: 'verbatimTaxonRank'),
             new DarwinCoreField(name: 'vernacularName'),
             new DarwinCoreField(name: 'waterBody'),
+            new DarwinCoreField(name: 'userId'),
             new DarwinCoreField(name: 'year')
     ]
 
@@ -198,7 +199,6 @@ class DarwinCoreFields {
     static List getLessImportant() {
         return fields.findAll {!it.important}
     }
-
 }
 
 class DarwinCoreField {
