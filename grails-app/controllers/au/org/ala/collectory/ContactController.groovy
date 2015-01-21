@@ -15,8 +15,9 @@ class ContactController {
  */
     def authService
     def beforeInterceptor = [action:this.&auth]
+
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR)) {
+        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass) {
             render "You are not authorised to access this page."
             return false
         }

@@ -23,7 +23,8 @@ enum Action {
     CREATE_CONTACT ('created a contact'),
     UPLOAD_IMAGE ('uploaded file'),
     REPORT ('viewed reports'),
-    NOTIFY ('notifiable event')
+    NOTIFY ('notifiable event'),
+    SCAN ('scanned for updates')
 
     String display
 
@@ -35,4 +36,3 @@ enum Action {
         return display
     }
 }
-

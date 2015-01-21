@@ -22,7 +22,7 @@ class PP {
     final static PP BASE_URL = new PP(name:'url',display:'Base URL', type:'text')
     final static PP RESOURCE = new PP(name:'resource',display:'Resource', type:'text')
     final static PP TERMS = new PP(name:'termsForUniqueKey',
-            display:'DwC terms that uniquely<br/> identify a record', type:'text')
+            display:'DwC terms that uniquely identify a record', type:'text')
     final static PP PARAMS = new PP(name:'params',display:'JSON map of parameters', type:'textArea')
     final static PP DOCUMENT_MAPPER = new PP(name:'documentMapper', display:'Document mapper', type:'text')
     final static PP SITE_MAP = new PP(name:'siteMap', display:'Site map', type:'text')
