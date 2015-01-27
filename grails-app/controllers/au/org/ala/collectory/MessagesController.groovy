@@ -15,7 +15,8 @@ class MessagesController {
     def i18n(String id) {
         Locale locale = request.locale
 
-        if (id == 'messages.properties') {
+        if(id && !id.startsWith("messages_")) {
+        //if (id == 'messages.properties') {
             // Assume standard messageSource file name pattern:
             // messages.properties, messages_en.properties, messages_en_US.properties
             // String locale_suffix = id.replaceFirst(/messages_(.*)/,'$1')
