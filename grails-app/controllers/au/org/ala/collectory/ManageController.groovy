@@ -65,7 +65,10 @@ class ManageController {
      * @param show = user will display user login/cookie/roles details
      */
     def list = {
-        def entities = collectoryAuthService?.authorisedForUser(authService?.email).sorted
+        def entities = null
+        if(authService != null) {
+            entities = collectoryAuthService?.authorisedForUser(authService?.email).sorted
+        }
 
         //println "entities are " + entities.getClass()
 
