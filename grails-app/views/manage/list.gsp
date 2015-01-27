@@ -64,7 +64,7 @@
                                     <td style="text-align: center;">
                                         <i class="icon-edit"></i>
                                     </td>
-                                    <g:set var="name" value="${ent.uid[0..1] == 'in' ? ent.name + ' (Institution)' : ent.name}"/>
+                                    <g:set var="name" value="${ent.userId[0..1] == 'in' ? ent.name + ' (Institution)' : ent.name}"/>
                                     <td style="padding-left: 5px;">${name}</td>
                                 </tr>
                             </g:each>

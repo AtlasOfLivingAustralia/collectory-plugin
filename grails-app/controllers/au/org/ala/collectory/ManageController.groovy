@@ -5,7 +5,7 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class ManageController {
 
-    def authService , gbifService
+    def authService , collectoryAuthService, gbifService
 
     /**
      * Landing page for self-service management of entities.
@@ -65,10 +65,10 @@ class ManageController {
      * @param show = user will display user login/cookie/roles details
      */
     def list = {
-        def entities = authService?.getUserForEmailAddress(authService?.email)
+        def entities = collectoryAuthService?.authorisedForUser(authService.email).sorted
 
-        //def entities = authService?.getUserForUserId(username)?.sorted
         //println "entities are " + entities.getClass()
+
         println "user ${authService?.email} has ${request.getUserPrincipal()?.attributes}"
         log.debug("user ${authService?.email} has ${request.getUserPrincipal()?.attributes}")
 
