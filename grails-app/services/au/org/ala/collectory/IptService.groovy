@@ -46,11 +46,6 @@ class IptService {
 
     /** Fields that we can derive from the RSS feed */
     protected rssFields = [
-            connectionParameters: { item ->
-                def dwca = item."ipt:dwca"?.text()
-
-                dwca == null || dwca.isEmpty() ? null : "{ \"protocol\": \"DwCA\", \"url\": \"${dwca}\", \"automation\": true, \"termsForUniqueKey\": [ \"catalogNumber\" ] }"
-            },
             name: { item -> item.title.text() },
             pubDescription: { item -> item.description.text() },
             websiteUrl: { item -> item.link.text() },
@@ -62,7 +57,7 @@ class IptService {
             lastChecked: { item -> new Timestamp(System.currentTimeMillis()) },
             provenance: { item -> "Published dataset" },
             contentTypes: { item -> "[ \"point occurrence data\" ]" },
-            userLastModified: {item ->  this.authService.username() }
+            userLastModified: {item ->  this.authService.email ?: "unknown" }
     ]
     /** Fields that we can derive from the EML document */
     protected emlFields = [
@@ -84,7 +79,7 @@ class IptService {
 
     /** Collect individual XML para elements together into a single block of text */
     protected def collectParas(GPathResult paras) {
-        paras?.list().inject(null, { acc, para -> acc == null ? para.text().trim() : acc + " " + para.text().trim() })
+        paras?.list().inject(null, { acc, para -> acc == null ? (para.text()?.trim() ?: "") : acc + " " + (para.text()?.trim() ?: "") })
     }
 
     /**
@@ -93,11 +88,14 @@ class IptService {
      * @param provider The provider
      * @param create Update existing datasets and create data resources for new datasets
      * @param check Check to see whether a resource needs updating by looking at the data currency
+     * @param keyName The term to use as a key when creating new resources
      *
      * @return A list of data resources that need re-loading
      */
-    def scan(DataProvider provider, boolean create, boolean check) {
-        def updates = this.rss(provider)
+    @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED)
+    def scan(DataProvider provider, boolean create, boolean check, String keyName) {
+        ActivityLog.log authService?.email ?: "unknown", authService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, provider.uid, Action.SCAN
+        def updates = this.rss(provider, keyName)
 
         return merge(provider, updates, create, check)
     }
@@ -130,16 +128,18 @@ class IptService {
                     }
                     if (create) {
                         old.save(flush: true)
-                        ActivityLog.log authService.username(), authService.isAdmin(), Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
-                    }
+                        //old.errors.each { println it.toString() }
+                        ActivityLog.log authService?.email ?: "unknown", authService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
+                     }
                     merged << old
                 }
             } else {
                 if (create) {
                     update.uid = idGeneratorService.getNextDataResourceId()
                     update.save(flush: true)
-                    ActivityLog.log authService.username(), authService.isAdmin(), Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
-                }
+                    //update.errors.each { println it.toString() }
+                    ActivityLog.log authService?.email ?: "unknown", authService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
+                 }
                 merged << update
             }
         }
@@ -152,18 +152,19 @@ class IptService {
      * The data sets are not saved, unless the need to create a new dataset comes into play
      *
      * @param provider The provider
+     * @param keyName The term to use as a key when creating new resources
      *
      * @return A list of (possibly new providers)
      */
-    def rss(DataProvider provider) {
+    def rss(DataProvider provider, String keyName) {
         def base = new URL(provider.websiteUrl + "/")
         def rsspath = new URL(base, RSS_PATH)
         log.info("Scanning ${rsspath} from ${base}")
-        def rss = new HTTPBuilder(new URL(base, RSS_PATH)).get([:])
+        def rss = new HTTPBuilder(rsspath).get([:])
         rss.declareNamespace(NAMESPACES)
         def items = rss.channel.item
 
-        return items.collect { item -> this.createDataResource(provider, item) }
+        return items.collect { item -> this.createDataResource(provider, item, keyName) }
     }
 
     /**
@@ -171,15 +172,18 @@ class IptService {
      *
      * @param provider The data provider
      * @param rssItem The RSS item
+     * @param keyName The term to use as a key when creating new resources
      *
      * @return A created resource matching the information provided
      */
-    def createDataResource(DataProvider provider, GPathResult rssItem) {
+    def createDataResource(DataProvider provider, GPathResult rssItem, String keyName) {
         def resource = new DataResource()
         def eml = rssItem."ipt:eml"?.text()
+        def dwca = rssItem."ipt:dwca"?.text()
 
         resource.dataProvider = provider
         rssFields.each { name, accessor -> resource.setProperty(name, accessor(rssItem))}
+        resource.connectionParameters =  dwca == null || dwca.isEmpty() ? null : "{ \"protocol\": \"DwCA\", \"url\": \"${dwca}\", \"automation\": true, \"termsForUniqueKey\": [ \"${keyName}\" ] }";
         if (eml != null)
             retrieveEml(resource, eml)
         return resource
