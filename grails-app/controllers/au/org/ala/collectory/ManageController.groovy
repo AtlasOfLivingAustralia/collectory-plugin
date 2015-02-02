@@ -65,18 +65,14 @@ class ManageController {
      * @param show = user will display user login/cookie/roles details
      */
     def list = {
-        def entities = null
-        if(authService != null) {
-            entities = collectoryAuthService?.authorisedForUser(authService?.email).sorted
-        }
+        // find the entities the user is allowed to edit
+        def entities = collectoryAuthService.authorisedForUser(collectoryAuthService.username()).sorted
 
-        //println "entities are " + entities.getClass()
-
-        println "user ${authService?.email} has ${request.getUserPrincipal()?.attributes}"
-        log.debug("user ${authService?.email} has ${request.getUserPrincipal()?.attributes}")
+        println "user ${collectoryAuthService.username()} has ${request.getUserPrincipal()?.attributes}"
+        log.debug("user ${collectoryAuthService.username()} has ${request.getUserPrincipal()?.attributes}")
 
         // get their contact details in case needed
-        def contact = Contact.findByEmail(authService?.email)
+        def contact = Contact.findByEmail(collectoryAuthService.username())
 
         [entities: entities, user: contact, show: params.show]
     }

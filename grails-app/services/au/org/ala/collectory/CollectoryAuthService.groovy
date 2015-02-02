@@ -2,36 +2,66 @@ package au.org.ala.collectory
 import grails.converters.JSON
 import org.springframework.web.context.request.RequestContextHolder
 
-class CollectoryAuthService {
+class CollectoryAuthService{
 
     static transactional = false
 
     def grailsApplication
+    def authService
 
     def username() {
-        return (RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email)?:'not available'
+        def username = 'not available'
+        if(RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email)
+            username = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email
+        else {
+            if(authService)
+                username = authService.email
+        }
+
+        return (username) ? username : 'not available'
     }
 
     def isAdmin() {
-        return grailsApplication.config.security.cas.bypass ||
-                RequestContextHolder.currentRequestAttributes()?.isUserInRole(ProviderGroup.ROLE_ADMIN)
+        def adminFlag = false
+        if(grailsApplication.config.security.cas.bypass.toBoolean())
+            adminFlag = true
+        else {
+            if(authService) {
+                adminFlag = authService.userInRole(ProviderGroup.ROLE_ADMIN)
+            }
+        }
+
+        return adminFlag
     }
 
     protected boolean userInRole(role) {
-        return grailsApplication.config.security.cas.bypass ||
-                RequestContextHolder.currentRequestAttributes()?.isUserInRole(role) ||
-                isAdmin()
+        def foleFlag = false
+        if(grailsApplication.config.security.cas.bypass.toBoolean())
+            roleFlag = true
+        else {
+            if(authService != null) {
+                roleFlag = authService.userInRole(role)
+            }
+        }
+        return roleFlag || isAdmin()
     }
 
     protected boolean isAuthorisedToEdit(uid) {
-        if (grailsApplication.config.security.cas.bypass || isAdmin()) {
+        if (grailsApplication.config.security.cas.bypass.toBoolean() || isAdmin()) {
             return true
         } else {
             def email = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email
-            if (email) {
+            if(email) {
                 return ProviderGroup._get(uid)?.isAuthorised(email)
+            } else {
+                if(authService) {
+                    email = authService.email
+                    if(email)
+                        return ProviderGroup._get(uid)?.isAuthorised(email)
+                }
             }
         }
+
         return false
     }
 
