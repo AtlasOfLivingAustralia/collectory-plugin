@@ -46,6 +46,7 @@ class IptService {
 
     /** Fields that we can derive from the RSS feed */
     protected rssFields = [
+            guid: { item -> item.link.text() },
             name: { item -> item.title.text() },
             pubDescription: { item -> item.description.text() },
             websiteUrl: { item -> item.link.text() },
