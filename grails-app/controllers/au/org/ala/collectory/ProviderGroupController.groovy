@@ -30,7 +30,7 @@ abstract class ProviderGroupController {
     def beforeInterceptor = [action:this.&auth]
 
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass) {
+        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
             response.setHeader("Content-type", "text/plain; charset=UTF-8")
             render message(code: "provider.group.controller.01", default: "You are not authorised to access this page. You do not have 'Collection editor' rights.")
             return false
@@ -770,7 +770,7 @@ abstract class ProviderGroupController {
     def delete = {
         def pg = get(params.id)
         if (pg) {
-            if (authService?.userInRole(ProviderGroup.ROLE_ADMIN) || grailsApplication.config.security.cas.bypass) {
+            if (authService?.userInRole(ProviderGroup.ROLE_ADMIN) || grailsApplication.config.security.cas.bypass.toBoolean()) {
                 def name = pg.name
                 log.info ">>${authService?.email} deleting ${entityName} " + name
                 //ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), pg.uid, Action.DELETE
@@ -860,7 +860,7 @@ abstract class ProviderGroupController {
     }
 
     protected boolean isAuthorisedToEdit(uid) {
-        if (grailsApplication.config.security.cas.bypass || isAdmin()) {
+        if (grailsApplication.config.security.cas.bypass.toBoolean() || isAdmin()) {
             return true
         } else {
             def email = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email

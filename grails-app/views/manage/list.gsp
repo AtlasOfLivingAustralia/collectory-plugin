@@ -34,7 +34,7 @@
                     <g:if test="${show == 'user'}">
                         <div>
                             <h2><g:message code="manage.list.title02" /></h2>
-                            <p><g:message code="manage.list.des02" /> ${grailsApplication.config.security.cas.bypass ? 'bypassed' : 'active'}.</p>
+                            <p><g:message code="manage.list.des02" /> ${grailsApplication.config.security.cas.bypass.toBoolean() ? 'bypassed' : 'active'}.</p>
                             <g:set var="username" value="${request.userPrincipal?.name}"/>
                             <g:if test="${username}">
                                 <p><g:message code="manage.list.username.des01" /> ${username}.</p>

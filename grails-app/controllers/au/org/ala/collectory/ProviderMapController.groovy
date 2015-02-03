@@ -16,7 +16,7 @@ class ProviderMapController {
     def beforeInterceptor = [action:this.&auth]
 
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass) {
+        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
             render "You are not authorised to access this page."
             return false
         }
@@ -159,7 +159,7 @@ class ProviderMapController {
     }
 
     protected boolean isAuthorisedToEdit(uid) {
-        if (grailsApplication.config.security.cas.bypass || isAdmin()) {
+        if (grailsApplication.config.security.cas.bypass.toBoolean() || isAdmin()) {
             return true
         } else {
             def email = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email

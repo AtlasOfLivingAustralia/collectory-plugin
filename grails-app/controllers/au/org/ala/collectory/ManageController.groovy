@@ -18,7 +18,7 @@ class ManageController {
      */
     def index = {
         // forward if logged in
-        if ((AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE) ||  grailsApplication.config.security.cas.bypass)
+        if ((AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE) || grailsApplication.config.security.cas.bypass.toBoolean())
             && !params.noRedirect) {
             redirect(action: 'list')
         }

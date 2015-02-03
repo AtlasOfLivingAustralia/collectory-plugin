@@ -131,7 +131,7 @@ class CollectoryTagLib {
      */
     def ifAllGranted = { attrs, body ->
         def granted = true
-        if (grailsApplication.config.security.cas.bypass) {
+        if (grailsApplication.config.security.cas.bypass.toBoolean()) {
             granted = true
         } else {
             def roles = attrs.role.toString().tokenize(',')
@@ -153,7 +153,7 @@ class CollectoryTagLib {
      * @attr role the role to check
      */
     def ifGranted = { attrs, body ->
-        if (grailsApplication.config.security.cas.bypass || request.isUserInRole(attrs.role)) {
+        if (grailsApplication.config.security.cas.bypass.toBoolean() || request.isUserInRole(attrs.role)) {
             out << body()
         }
     }
@@ -165,7 +165,7 @@ class CollectoryTagLib {
      * @attr role the role to check
      */
     def ifNotGranted = { attrs, body ->
-        if (!grailsApplication.config.security.cas.bypass && !request.isUserInRole(attrs.role)) {
+        if (!grailsApplication.config.security.cas.bypass.toBoolean() && !request.isUserInRole(attrs.role)) {
             out << body()
         }
     }
@@ -190,13 +190,13 @@ class CollectoryTagLib {
     }
 
     def isNotLoggedIn = {attrs, body ->
-        if (!grailsApplication.config.security.cas.bypass && !AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
+        if (!grailsApplication.config.security.cas.bypass.toBoolean() && !AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
             out << body()
         }
     }
 
     def loggedInUsername = {
-        if (grailsApplication.config.security.cas.bypass) {
+        if (grailsApplication.config.security.cas.bypass.toBoolean()) {
             out << 'cas bypassed'
         }
         else if (request.getUserPrincipal()) {
@@ -208,7 +208,7 @@ class CollectoryTagLib {
     }
 
     private boolean isAdmin() {
-        return grailsApplication.config.security.cas.bypass || request?.isUserInRole(ProviderGroup.ROLE_ADMIN)
+        return grailsApplication.config.security.cas.bypass.toBoolean() || request?.isUserInRole(ProviderGroup.ROLE_ADMIN)
     }
 
     /**
