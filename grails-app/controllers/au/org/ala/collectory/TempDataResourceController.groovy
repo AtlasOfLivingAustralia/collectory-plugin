@@ -21,7 +21,7 @@ import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 
 class TempDataResourceController {
 
-    def crudService, authService, collectoryAuthService
+    def crudService, collectoryAuthService
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 

@@ -8,7 +8,7 @@ import org.codehaus.groovy.grails.web.servlet.HttpHeaders
  * Request a scan and an update of a data provider that links to a GBIF IPT instance.
  */
 class IptController {
-    def authService
+    def collectoryAuthService
     def iptService
 
     /**
@@ -32,7 +32,7 @@ class IptController {
         def check = params.check == null || !params.check.equalsIgnoreCase("false")
         def keyName = params.key ?: 'catalogNumber'
         def provider = ProviderGroup._get(params.uid)
-        if (create && !authService.userInRole(ProviderGroup.ROLE_ADMIN)) {
+        if (create && !collectoryAuthService.userInRole(ProviderGroup.ROLE_ADMIN)) {
             render (status: 403, text: "Unable to create resources for " + params.uid)
             return
         }

@@ -19,7 +19,7 @@ abstract class ProviderGroupController {
     static String entityName = "ProviderGroup"
     static String entityNameLower = "providerGroup"
 
-    def idGeneratorService, authService, metadataService, gbifService
+    def idGeneratorService, collectoryAuthService, metadataService, gbifService
 
 /*
  * Access control
@@ -30,7 +30,7 @@ abstract class ProviderGroupController {
     def beforeInterceptor = [action:this.&auth]
 
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass) {
+        if (!collectoryAuthService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
             response.setHeader("Content-type", "text/plain; charset=UTF-8")
             render message(code: "provider.group.controller.01", default: "You are not authorised to access this page. You do not have 'Collection editor' rights.")
             return false
@@ -38,11 +38,11 @@ abstract class ProviderGroupController {
     }
     // helpers for subclasses
     protected username = {
-            authService?.email ?: 'unavailable'
+        collectoryAuthService?.username() ?: 'unavailable'
     }
 
     protected isAdmin = {
-        authService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: false
+        collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: false
     }
 /*
  End access control
@@ -137,23 +137,23 @@ abstract class ProviderGroupController {
         ProviderGroup pg
         switch (entityName) {
             case Collection.ENTITY_TYPE:
-                pg = new Collection(uid: idGeneratorService.getNextCollectionId(), name: name, userLastModified: authService?.email)
+                pg = new Collection(uid: idGeneratorService.getNextCollectionId(), name: name, userLastModified: collectoryAuthService?.username())
                 if (params.institutionUid && Institution.findByUid(params.institutionUid)) {
                     pg.institution = Institution.findByUid(params.institutionUid)
                 }
                 break
             case Institution.ENTITY_TYPE:
-                pg = new Institution(uid: idGeneratorService.getNextInstitutionId(), name: name, userLastModified: authService?.email); break
+                pg = new Institution(uid: idGeneratorService.getNextInstitutionId(), name: name, userLastModified: collectoryAuthService?.username()); break
             case DataProvider.ENTITY_TYPE:
-                pg = new DataProvider(uid: idGeneratorService.getNextDataProviderId(), name: name, userLastModified: authService?.email); break
+                pg = new DataProvider(uid: idGeneratorService.getNextDataProviderId(), name: name, userLastModified: collectoryAuthService?.username()); break
             case DataResource.ENTITY_TYPE:
-                pg = new DataResource(uid: idGeneratorService.getNextDataResourceId(), name: name, userLastModified: authService?.email)
+                pg = new DataResource(uid: idGeneratorService.getNextDataResourceId(), name: name, userLastModified: collectoryAuthService?.username())
                 if (params.dataProviderUid && DataProvider.findByUid(params.dataProviderUid)) {
                     pg.dataProvider = DataProvider.findByUid(params.dataProviderUid)
                 }
                 break
             case DataHub.ENTITY_TYPE:
-                pg = new DataHub(uid: idGeneratorService.getNextDataHubId(), name: name, userLastModified: authService?.email); break
+                pg = new DataHub(uid: idGeneratorService.getNextDataHubId(), name: name, userLastModified: collectoryAuthService?.username()); break
         }
 
         if (!pg.hasErrors() && pg.save(flush: true)) {
@@ -177,7 +177,7 @@ abstract class ProviderGroupController {
      * @param params values for contact fields if the contact does not already exist
      */
     void addUserAsContact(ProviderGroup pg, params) {
-        def user = authService?.email
+        def user = collectoryAuthService?.username()
         // find contact
         Contact c = Contact.findByEmail(user)
         if (!c) {
@@ -218,7 +218,7 @@ abstract class ProviderGroupController {
             if (checkLocking(pg,view)) { return }
 
             pg.properties = params
-            pg.userLastModified = authService?.email
+            pg.userLastModified = collectoryAuthService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message =
                   "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -259,7 +259,7 @@ abstract class ProviderGroupController {
                 params.remove('networkMembership')
 
                 pg.properties = params
-                pg.userLastModified = authService?.email
+                pg.userLastModified = collectoryAuthService?.username()
                 if (!pg.hasErrors() && pg.save(flush: true)) {
                     flash.message =
                         "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -288,7 +288,7 @@ abstract class ProviderGroupController {
             entitySpecificDescriptionProcessing(pg, params)
 
             pg.properties = params
-            pg.userLastModified = authService?.email
+            pg.userLastModified = collectoryAuthService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message =
                   "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -343,7 +343,7 @@ abstract class ProviderGroupController {
                 }*/
 
                 pg.properties = params
-                pg.userLastModified = authService?.email
+                pg.userLastModified = collectoryAuthService?.username()
                 if (!pg.hasErrors() && pg.save(flush: true)) {
                     flash.message =
                       "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -377,7 +377,7 @@ abstract class ProviderGroupController {
             th.coverage = hints
             pg.taxonomyHints = th as JSON
 
-            pg.userLastModified = authService?.email
+            pg.userLastModified = collectoryAuthService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message =
                   "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -405,7 +405,7 @@ abstract class ProviderGroupController {
             pg.taxonomyHints = th as JSON
             println pg.taxonomyHints
 
-            pg.userLastModified = authService?.email
+            pg.userLastModified = collectoryAuthService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message =
                   "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -425,7 +425,7 @@ abstract class ProviderGroupController {
         def contactFor = ContactFor.get(params.contactForId)
         if (contactFor) {
             contactFor.properties = params
-            contactFor.userLastModified = authService?.email
+            contactFor.userLastModified = collectoryAuthService?.username()
             if (!contactFor.hasErrors() && contactFor.save(flush: true)) {
                 flash.message = "${message(code: 'contactRole.updated.message')}"
                 redirect(action: "edit", id: params.id, params: [page: '/shared/showContacts'])
@@ -448,7 +448,7 @@ abstract class ProviderGroupController {
             if (isAuthorisedToEdit(pg.uid)) {
                 Contact contact = Contact.get(params.addContact)
                 if (contact) {
-                    pg.addToContacts(contact, "editor", true, false, authService?.email)
+                    pg.addToContacts(contact, "editor", true, false, collectoryAuthService?.username())
                     redirect(action: "edit", params: [page:"/shared/showContacts"], id: params.id)
                 }
             } else {
@@ -463,7 +463,7 @@ abstract class ProviderGroupController {
         def contact = Contact.get(params.contactId)
         if (contact && pg) {
             // add the contact to the collection
-            pg.addToContacts(contact, "editor", true, false, authService?.email)
+            pg.addToContacts(contact, "editor", true, false, collectoryAuthService?.username())
             redirect(action: "edit", params: [page:"/shared/showContacts"], id: pg.uid)
         } else {
             if (!pg) {
@@ -672,7 +672,7 @@ abstract class ProviderGroupController {
                     File f = new File(colDir, filename)
                     log.debug "saving ${filename} to ${f.absoluteFile}"
                     file.transferTo(f)
-                    //ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.UPLOAD_IMAGE, filename
+                    //ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.UPLOAD_IMAGE, filename
                 } else {
                     println "reject file of size ${file.size}"
                     pg.errors.rejectValue('imageRef', 'image.too.big', message(code: "provider.group.controller.13", default: "The image you selected is too large. Images are limited to 200KB."))
@@ -682,7 +682,7 @@ abstract class ProviderGroupController {
                 }
             }
             pg.properties = params
-            pg.userLastModified = authService?.email
+            pg.userLastModified = collectoryAuthService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
                 redirect(action: "show", id: pg.uid)
@@ -706,7 +706,7 @@ abstract class ProviderGroupController {
                 } else {
                     pg.imageRef = null
                 }
-                pg.userLastModified = authService?.email
+                pg.userLastModified = collectoryAuthService?.username()
                 if (!pg.hasErrors() && pg.save(flush: true)) {
                     flash.message = "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
                     redirect(action: "show", id: pg.uid)
@@ -748,7 +748,7 @@ abstract class ProviderGroupController {
             }
 
             if (pg.isDirty()) {
-                pg.userLastModified = authService?.email
+                pg.userLastModified = collectoryAuthService?.username()
                 if (!pg.hasErrors() && pg.save(flush: true)) {
                     flash.message =
                       "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
@@ -770,10 +770,10 @@ abstract class ProviderGroupController {
     def delete = {
         def pg = get(params.id)
         if (pg) {
-            if (authService?.userInRole(ProviderGroup.ROLE_ADMIN) || grailsApplication.config.security.cas.bypass) {
+            if (collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) || grailsApplication.config.security.cas.bypass.toBoolean()) {
                 def name = pg.name
-                log.info ">>${authService?.email} deleting ${entityName} " + name
-                //ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), pg.uid, Action.DELETE
+                log.info ">>${collectoryAuthService?.username()} deleting ${entityName} " + name
+                //ActivityLog.log collectoryAuthService?.username(), authService?.userInRole(ProviderGroup.ROLE_ADMIN), pg.uid, Action.DELETE
                 try {
                     // remove contact links (does not remove the contact)
                     ContactFor.findAllByEntityUid(pg.uid).each {
@@ -860,7 +860,7 @@ abstract class ProviderGroupController {
     }
 
     protected boolean isAuthorisedToEdit(uid) {
-        if (grailsApplication.config.security.cas.bypass || isAdmin()) {
+        if (grailsApplication.config.security.cas.bypass.toBoolean() || isAdmin()) {
             return true
         } else {
             def email = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email

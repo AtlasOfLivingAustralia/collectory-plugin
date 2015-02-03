@@ -23,7 +23,7 @@ class IptService {
     static transactional = true
     def grailsApplication
     def idGeneratorService
-    def authService
+    def collectoryAuthService
     def dataLoaderService
 
     /** The standard IPT service namespace for XML documents */
@@ -58,7 +58,7 @@ class IptService {
             lastChecked: { item -> new Timestamp(System.currentTimeMillis()) },
             provenance: { item -> "Published dataset" },
             contentTypes: { item -> "[ \"point occurrence data\" ]" },
-            userLastModified: {item ->  this.authService.email ?: "unknown" }
+            userLastModified: {item ->  this.collectoryAuthService?.username() ?: "unknown" }
     ]
     /** Fields that we can derive from the EML document */
     protected emlFields = [
@@ -95,7 +95,7 @@ class IptService {
      */
     @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED)
     def scan(DataProvider provider, boolean create, boolean check, String keyName) {
-        ActivityLog.log authService?.email ?: "unknown", authService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, provider.uid, Action.SCAN
+        ActivityLog.log collectoryAuthService?.username() ?: "unknown", collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, provider.uid, Action.SCAN
         def updates = this.rss(provider, keyName)
 
         return merge(provider, updates, create, check)
@@ -130,8 +130,8 @@ class IptService {
                     if (create) {
                         old.save(flush: true)
                         //old.errors.each { println it.toString() }
-                        ActivityLog.log authService?.email ?: "unknown", authService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
-                     }
+                        ActivityLog.log collectoryAuthService?.username() ?: "unknown", collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
+                    }
                     merged << old
                 }
             } else {
@@ -139,8 +139,8 @@ class IptService {
                     update.uid = idGeneratorService.getNextDataResourceId()
                     update.save(flush: true)
                     //update.errors.each { println it.toString() }
-                    ActivityLog.log authService?.email ?: "unknown", authService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
-                 }
+                    ActivityLog.log collectoryAuthService?.username() ?: "unknown", collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
+                }
                 merged << update
             }
         }

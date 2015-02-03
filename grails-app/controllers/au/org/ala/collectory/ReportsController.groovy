@@ -7,7 +7,7 @@ import grails.converters.XML
 
 class ReportsController {
 
-    def authService
+    def collectoryAuthService
 
     def index = {
         redirect action: list, params: params
@@ -49,42 +49,42 @@ class ReportsController {
     }
 
     def data = {
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'data'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'data'
         [reports: new ReportCommand('data')]
     }
 
     def activity = {
-        //ActivityLog.log authService?.username(), authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'activity'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'activity'
         [reports: new ReportCommand('activity')]
     }
 
     def membership = {
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'membership'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'membership'
         [reports: new ReportCommand('membership')]
     }
 
     def collections = {
         def simple = params.simple ?: 'false'
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'collections'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'collections'
         [collections: Collection.list([sort:'name']), simple: simple]
     }
 
     def institutions = {
         def simple = params.simple ?: 'false'
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'institutions'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'institutions'
         [institutions: Institution.list([sort:'name']), simple: simple]
     }
 
     def providers = {
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'providers'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'providers'
     }
 
     def resources = {
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'resources'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'resources'
     }
 
     def contacts = {
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'contacts'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'contacts'
     }
 
     def codes = {
@@ -163,7 +163,7 @@ class ReportsController {
     }
 
     def classification = {
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'classifications'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'classifications'
         def list = Collection.list([sort:'name'])
         def plants = 0; def fauna = 0; def entomology = 0; def microbes = 0
         list.each {
@@ -176,12 +176,12 @@ class ReportsController {
     }
 
     def taxonomicHints = {
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'taxonomic hints'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'taxonomic hints'
         [collections: Collection.list([sort:'name'])]
     }
 
     def collectionTypes = {
-        ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'collection types'
+        ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.REPORT, 'collection types'
         [collections: Collection.list([sort:'name'])]
     }
 

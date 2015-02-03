@@ -13,11 +13,11 @@ class ContactController {
  * All methods require EDITOR role.
  * Delete requires ADMIN role.
  */
-    def authService
+    def collectoryAuthService
     def beforeInterceptor = [action:this.&auth]
 
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass) {
+        if (!collectoryAuthService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
             render "You are not authorised to access this page."
             return false
         }
@@ -50,13 +50,13 @@ class ContactController {
     def create = {
         def contactInstance = new Contact()
         contactInstance.properties = params
-        contactInstance.userLastModified = authService?.email
+        contactInstance.userLastModified = collectoryAuthService?.username()
         return [contactInstance: contactInstance, returnTo: params.returnTo]
     }
 
     def save = {
         def contactInstance = new Contact(params)
-        contactInstance.userLastModified = authService?.email?:'not available'
+        contactInstance.userLastModified = collectoryAuthService?.username()?:'not available'
         contactInstance.validate()
         contactInstance.errors.each{println it}
         if (contactInstance.save(flush: true)) {
@@ -109,9 +109,9 @@ class ContactController {
                 }
             }
             contactInstance.properties = params
-            contactInstance.userLastModified = authService?.email
+            contactInstance.userLastModified = collectoryAuthService?.username()
             if (!contactInstance.hasErrors() && contactInstance.save(flush: true)) {
-                ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.EDIT_SAVE, "contact ${params.id}"
+                ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.EDIT_SAVE, "contact ${params.id}"
                 flash.message = "${message(code: 'default.updated.message', args: [message(code: 'contact.label', default: 'Contact'), contactInstance.id])}"
                 if (params.returnTo) {
                     redirect(uri: params.returnTo)
@@ -135,9 +135,9 @@ class ContactController {
     def delete = {
         def contactInstance = Contact.get(params.id)
         if (contactInstance) {
-            if (authService?.userInRole(grailsApplication.config.auth.admin_role)) {
+            if (collectoryAuthService?.userInRole(grailsApplication.config.auth.admin_role)) {
                 try {
-                    ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.DELETE, "contact ${contactInstance.buildName()}"
+                    ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.DELETE, "contact ${contactInstance.buildName()}"
                     // need to delete any ContactFor links first
                     ContactFor.findAllByContact(contactInstance).each {
                         it.delete(flush: true)
@@ -165,7 +165,7 @@ class ContactController {
      * @param userEmail - optional email, defaults to the logged in user
      */
     def showProfile = {
-        def user = params.userEmail ?: authService?.email
+        def user = params.userEmail ?: collectoryAuthService?.username()
         def contact = Contact.findByEmail(user)
         if (contact) {
             def crList = ContactFor.findAllByContact(contact).collect {
@@ -182,11 +182,11 @@ class ContactController {
         params.each {println it}
         def contactInstance = Contact.get(params.id)
         // only the user or admin can update
-        if (contactInstance.email == authService?.email || authService?.userInRole(ProviderGroup.ROLE_ADMIN)) {
+        if (contactInstance.email == collectoryAuthService?.username() || collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN)) {
             contactInstance.properties = params
-            contactInstance.userLastModified = authService?.email
+            contactInstance.userLastModified = collectoryAuthService?.username()
             if (!contactInstance.hasErrors() && contactInstance.save(flush: true)) {
-                ActivityLog.log authService?.email, authService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.EDIT_SAVE, "contact ${params.id}"
+                ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.EDIT_SAVE, "contact ${params.id}"
                 flash.message = "Your profile was updated."
                 redirect(uri: "/admin")
             }
