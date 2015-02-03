@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 
 class DataController {
 
-    def crudService, authService, emlRenderService, collectoryAuthService
+    def crudService, emlRenderService, collectoryAuthService
     
     def index = { }
 

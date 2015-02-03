@@ -6,7 +6,7 @@ class ProviderMapController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def authService
+    def collectoryAuthService
 /*
  * Access control
  *
@@ -16,7 +16,7 @@ class ProviderMapController {
     def beforeInterceptor = [action:this.&auth]
 
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
+        if (!collectoryAuthService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
             render "You are not authorised to access this page."
             return false
         }

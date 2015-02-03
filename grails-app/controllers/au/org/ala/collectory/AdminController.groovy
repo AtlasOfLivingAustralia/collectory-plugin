@@ -10,7 +10,7 @@ import grails.web.JSONBuilder
 
 class AdminController {
 
-    def dataLoaderService, idGeneratorService, authService, metadataService
+    def dataLoaderService, idGeneratorService, collectoryAuthService, metadataService
     def grailsApplication
     //static defaultAction = "home"
     
@@ -22,7 +22,7 @@ class AdminController {
     def beforeInterceptor = [action:this.&auth]
 
     def auth() {
-        if (!authService?.userInRole(ProviderGroup.ROLE_ADMIN) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
+        if (!collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
             render "You are not authorised to access this page."
             return false
         }
@@ -131,8 +131,8 @@ class AdminController {
 
     def loadSupplementary = {
         boolean override = params.override ? params.override : false
-        log.info ">>${authService?.email} loading supplimentary data"
-        dataLoaderService.loadSupplementaryData("/data/collectory/bootstrap/sup.json", override, authService?.email)
+        log.info ">>${collectoryAuthService?.username()} loading supplimentary data"
+        dataLoaderService.loadSupplementaryData("/data/collectory/bootstrap/sup.json", override, collectoryAuthService?.username())
 //        ActivityLog.log authenticateService.userDomain().username, Action.DATA_LOAD
         redirect(url: "http://localhost:8080/Collectory")  //action: "list")
     }

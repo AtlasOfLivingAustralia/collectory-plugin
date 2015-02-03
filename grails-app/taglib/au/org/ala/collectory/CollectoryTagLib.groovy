@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 
 class CollectoryTagLib {
 
-    def authService, metadataService, grailsApplication
+    def collectoryAuthService, metadataService, grailsApplication
 
     static namespace = 'cl'
 
@@ -176,7 +176,7 @@ class CollectoryTagLib {
     def roles = {
         def roles = []
         ['ROLE_ADMIN','ROLE_COLLECTION_EDITOR','ROLE_COLLECTION_ADMIN'].each {
-            if (authService.userInRole(it)) {
+            if (collectoryAuthService.userInRole(it)) {
                 roles << it
             }
         }

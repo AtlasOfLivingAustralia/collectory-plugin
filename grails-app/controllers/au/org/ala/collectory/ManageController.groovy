@@ -5,7 +5,7 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class ManageController {
 
-    def authService , collectoryAuthService, gbifService
+    def collectoryAuthService, gbifService
 
     /**
      * Landing page for self-service management of entities.
@@ -18,8 +18,7 @@ class ManageController {
      */
     def index = {
         // forward if logged in
-        if ((AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE) || grailsApplication.config.security.cas.bypass.toBoolean())
-            && !params.noRedirect) {
+        if ((AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE) || grailsApplication.config.security.cas.bypass.toBoolean()) && !params.noRedirect) {
             redirect(action: 'list')
         }
     }

@@ -1,7 +1,6 @@
 package au.org.ala.collectory
 
 class DataProviderController extends ProviderGroupController {
-
     DataProviderController() {
         entityName = "DataProvider"
         entityNameLower = "dataProvider"
@@ -43,7 +42,7 @@ class DataProviderController extends ProviderGroupController {
             redirect(action: "list")
         } else {
             // are they allowed to edit
-            if (authService?.userInRole(ProviderGroup.ROLE_ADMIN) || grailsApplication.config.security.cas.bypass.toBoolean()) {
+            if (collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) || grailsApplication.config.security.cas.bypass.toBoolean()) {
                 render(view: '../dataResource/consumers', model:[command: pg, source: params.source])
             } else {
                 render("You are not authorised to edit these properties.")

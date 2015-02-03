@@ -31,11 +31,14 @@ class CollectoryAuthService{
             }
         }
 
+        println "\n\n\nisAdmin"
+        println adminFlag;
+
         return adminFlag
     }
 
     protected boolean userInRole(role) {
-        def foleFlag = false
+        def roleFlag = false
         if(grailsApplication.config.security.cas.bypass.toBoolean())
             roleFlag = true
         else {
@@ -43,6 +46,12 @@ class CollectoryAuthService{
                 roleFlag = authService.userInRole(role)
             }
         }
+
+        println "\n\n\nuserInRole"
+        println role;
+        println roleFlag;
+        println isAdmin();
+
         return roleFlag || isAdmin()
     }
 

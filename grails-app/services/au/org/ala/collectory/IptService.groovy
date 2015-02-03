@@ -23,7 +23,7 @@ class IptService {
     static transactional = true
     def grailsApplication
     def idGeneratorService
-    def authService
+    def collectoryAuthService
     def dataLoaderService
 
     /** The standard IPT service namespace for XML documents */
@@ -62,7 +62,7 @@ class IptService {
             lastChecked: { item -> new Timestamp(System.currentTimeMillis()) },
             provenance: { item -> "Published dataset" },
             contentTypes: { item -> "[ \"point occurrence data\" ]" },
-            userLastModified: {item ->  this.authService.username() }
+            userLastModified: {item ->  this.collectoryAuthService.username() }
     ]
     /** Fields that we can derive from the EML document */
     protected emlFields = [
@@ -130,7 +130,7 @@ class IptService {
                     }
                     if (create) {
                         old.save(flush: true)
-                        ActivityLog.log authService.username(), authService.isAdmin(), Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
+                        ActivityLog.log collectoryAuthService.username(), collectoryAuthService.isAdmin(), Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
                     }
                     merged << old
                 }
@@ -138,7 +138,7 @@ class IptService {
                 if (create) {
                     update.uid = idGeneratorService.getNextDataResourceId()
                     update.save(flush: true)
-                    ActivityLog.log authService.username(), authService.isAdmin(), Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
+                    ActivityLog.log collectoryAuthService.username(), collectoryAuthService.isAdmin(), Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
                 }
                 merged << update
             }
