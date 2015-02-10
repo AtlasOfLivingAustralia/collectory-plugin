@@ -23,7 +23,6 @@ class IptService {
     static transactional = true
     def grailsApplication
     def idGeneratorService
-    def collectoryAuthService
     def dataLoaderService
 
     /** The standard IPT service namespace for XML documents */
@@ -57,8 +56,7 @@ class IptService {
             },
             lastChecked: { item -> new Timestamp(System.currentTimeMillis()) },
             provenance: { item -> "Published dataset" },
-            contentTypes: { item -> "[ \"point occurrence data\" ]" },
-            userLastModified: {item ->  this.collectoryAuthService?.username() ?: "unknown" }
+            contentTypes: { item -> "[ \"point occurrence data\" ]" }
     ]
     /** Fields that we can derive from the EML document */
     protected emlFields = [
@@ -94,11 +92,11 @@ class IptService {
      * @return A list of data resources that need re-loading
      */
     @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED)
-    def scan(DataProvider provider, boolean create, boolean check, String keyName) {
-        ActivityLog.log collectoryAuthService?.username() ?: "unknown", collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, provider.uid, Action.SCAN
+    def scan(DataProvider provider, boolean create, boolean check, String keyName, String username, boolean admin) {
+        ActivityLog.log username, admin, provider.uid, Action.SCAN
         def updates = this.rss(provider, keyName)
 
-        return merge(provider, updates, create, check)
+        return merge(provider, updates, create, check, username, admin)
     }
 
     /**
@@ -112,7 +110,7 @@ class IptService {
      * @return A list of merged data resources
      */
     @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED)
-    def merge(DataProvider provider, List<DataResource> updates, boolean create, boolean check) {
+    def merge(DataProvider provider, List<DataResource> updates, boolean create, boolean check, String username, boolean admin) {
         def current = provider.resources.inject([:], { map, item -> map[item.websiteUrl] = item; map })
         def merged = []
 
@@ -127,19 +125,21 @@ class IptService {
                         if (val != null)
                             old.setProperty(name, val)
                     }
+                    old.userLastModified = username
                     if (create) {
                         old.save(flush: true)
                         //old.errors.each { println it.toString() }
-                        ActivityLog.log collectoryAuthService?.username() ?: "unknown", collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
+                        ActivityLog.log username, admin, Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
                     }
                     merged << old
                 }
             } else {
                 if (create) {
                     update.uid = idGeneratorService.getNextDataResourceId()
+                    update.userLastModified = username
                     update.save(flush: true)
                     //update.errors.each { println it.toString() }
-                    ActivityLog.log collectoryAuthService?.username() ?: "unknown", collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) ?: true, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
+                    ActivityLog.log username, admin, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
                 }
                 merged << update
             }

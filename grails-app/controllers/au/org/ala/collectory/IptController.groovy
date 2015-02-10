@@ -8,6 +8,8 @@ import org.codehaus.groovy.grails.web.servlet.HttpHeaders
  * Request a scan and an update of a data provider that links to a GBIF IPT instance.
  */
 class IptController {
+    static final API_KEY_COOKIE = "ALA-API-Key"
+
     def collectoryAuthService
     def iptService
 
@@ -24,6 +26,10 @@ class IptController {
      *    <dd>The term that is used as a key when </dd>
      * <dt>
      * <p>
+     * Authentication is either via standard authentication cookies or by the
+     * "ALA-API-Key" cookie that contains a valid API Key. The user is then taken
+     * from the API key.
+     * <p>
      * Output formats are JSON, XML or plain text (the default). Plain text is a list of updatable data resource ids
      * suitable for feeding into a shell script.
      */
@@ -32,7 +38,13 @@ class IptController {
         def check = params.check == null || !params.check.equalsIgnoreCase("false")
         def keyName = params.key ?: 'catalogNumber'
         def provider = ProviderGroup._get(params.uid)
-        if (create && !collectoryAuthService.userInRole(ProviderGroup.ROLE_ADMIN)) {
+        def apiKey = request.cookies.find { cookie -> cookie.name == API_KEY_COOKIE }
+        def keyCheck = apiKey ? collectoryAuthService.checkApiKey(apiKey.value) : null
+        def username = keyCheck?.userEmail ?: collectoryAuthService.username()
+        def admin = keyCheck?.valid || collectoryAuthService.userInRole(ProviderGroup.ROLE_ADMIN)
+
+        log.debug "Access via apikey: ${keyCheck}, user ${username}, admin ${admin}"
+        if (create && !admin) {
             render (status: 403, text: "Unable to create resources for " + params.uid)
             return
         }
@@ -40,7 +52,7 @@ class IptController {
             render (status: 400, text: "Unable to get data provider " + params.uid)
             return
         }
-        def updates = provider == null ? null : iptService.scan(provider, create, check, keyName)
+        def updates = provider == null ? null : iptService.scan(provider, create, check, keyName, username, admin)
         log.info "${updates.size()} data resources to update for ${params.uid}"
         response.addHeader HttpHeaders.VARY, HttpHeaders.ACCEPT
         withFormat {
