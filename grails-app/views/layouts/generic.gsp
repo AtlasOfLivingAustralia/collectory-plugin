@@ -15,7 +15,7 @@
    </g:else>
    <title><g:layoutTitle /></title>
    <g:render template="/layouts/global"/>
-   <r:require modules="jquery, jquery_i18n, application, collectory" />
+   <r:require modules="jquery, application, collectory" />
    <%--
       <r:require modules="jquery, jquery_i18n, bootstrap, application, collectory" />
    --%>

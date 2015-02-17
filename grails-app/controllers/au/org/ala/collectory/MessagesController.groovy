@@ -1,5 +1,8 @@
 package au.org.ala.collectory
 
+import grails.converters.JSON
+import org.springframework.context.support.ReloadableResourceBundleMessageSource.PropertiesHolder
+
 class MessagesController {
 
     def messageSource // ExtendedPluginAwareResourceBundleMessageSource
@@ -13,7 +16,7 @@ class MessagesController {
      * @return
      */
     def i18n(String id) {
-        Locale locale = request.locale
+        def locale = org.springframework.web.servlet.support.RequestContextUtils.getLocale(request)?:request.locale
 
         if(id && !id.startsWith("messages_")) {
         //if (id == 'messages.properties') {
@@ -37,7 +40,7 @@ class MessagesController {
 
             render ( text: messages.sort().join("\n") )
         } else {
-            render (text: '')
+            render ( text: '')
         }
     }
 }
