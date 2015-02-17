@@ -1,3 +1,5 @@
+import org.codehaus.groovy.grails.context.support.PluginAwareResourceBundleMessageSource
+import au.org.ala.collectory.ExtendedPluginAwareResourceBundleMessageSource
 import grails.build.logging.GrailsConsole
 import grails.util.Environment
 
@@ -78,6 +80,19 @@ from the ALA collectory app (no local DB is required for this app).
 
         def loadConfig = new ConfigSlurper(Environment.current.name).parse(application.classLoader.loadClass("defaultConfig"))
         application.config = loadConfig.merge(config) // client app will now override the defaultConfig version
+
+        def beanconf = springConfig.getBeanConfig('messageSource')
+        def beandef = beanconf ? beanconf.beanDefinition : springConfig.getBeanDefinition('messageSource')
+        if (beandef?.beanClassName == PluginAwareResourceBundleMessageSource.class.canonicalName) {
+            //just change the target class of the bean, maintaining all configurations.
+            beandef.beanClassName = ExtendedPluginAwareResourceBundleMessageSource.class.canonicalName
+        }
+
+        messageSource(ExtendedPluginAwareResourceBundleMessageSource) {
+            basenames = ["WEB-INF/grails-app/i18n/messages"] as String[]
+            cacheSeconds = (60 * 60 * 6) // 6 hours
+            useCodeAsDefaultMessage = false
+        }
     }
 
     def doWithDynamicMethods = { ctx ->
