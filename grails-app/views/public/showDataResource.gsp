@@ -30,7 +30,7 @@
 </head>
 <body class="nav-datasets">
 <div id="content">
-<div id="header" class="collectory">
+<div id="header">
     <!--Breadcrumbs-->
     <div id="breadcrumb">
         <ol class="breadcrumb">

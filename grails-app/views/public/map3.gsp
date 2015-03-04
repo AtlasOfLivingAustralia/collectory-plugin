@@ -4,10 +4,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><g:message code="public.map3.title" /> | ${grailsApplication.config.projectName}</title>
-        <script src="https://maps.google.com/maps/api/js?v=3&sensor=true"></script>
-        <r:require modules="bigbuttons,bbq,openlayers,map"/>
+        <r:require modules="google-maps-api,bigbuttons,bbq,openlayers,map"/>
     </head>
-    <body id="page-collections-map">
+    <body id="page-collections-map" class="nav-datasets">
     <div id="content">
       <div id="header">
         <!--Breadcrumbs-->
