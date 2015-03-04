@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="${grailsApplication.config.ala.skin}" />
+        <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><g:message code="dataResource.base.label" default="Edit data resource metadata" /></title>
         <style type="text/css">
             li.free :hover { cursor: pointer; }

@@ -3,7 +3,7 @@
     <head>
         <!-- this is not the current version - use map3 -->
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="${grailsApplication.config.ala.skin}" />
+        <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><g:message code="public.map.title01" /> | <g:message code="public.map.title02" /></title>
         <script src="https://maps.google.com/maps/api/js?v=3&sensor=true"></script>
         <script type="text/javascript" src="${resource(dir:'js', file:'map.js')}"></script>

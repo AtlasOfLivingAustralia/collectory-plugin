@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="${grailsApplication.config.ala.skin}" />
+        <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><g:message code="profile.base.label" default="My profile" /></title>
     </head>
     <body>

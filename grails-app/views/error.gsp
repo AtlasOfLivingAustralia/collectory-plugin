@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
   <head>
 	  <title>Grails Runtime Exception</title>
-      <meta name="layout" content="${grailsApplication.config.ala.skin}"/>
+      <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
       <g:javascript library="collectory" />
 	  <style type="text/css">
 	  		.error-message {

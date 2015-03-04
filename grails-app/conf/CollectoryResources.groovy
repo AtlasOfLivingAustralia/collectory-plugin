@@ -1,14 +1,7 @@
 modules = {
+
     application {
         resource url:[dir:'js', file:'application.js', plugin:'collectory-plugin']
-    }
-    bootstrap {
-        resource url:[dir:'js', file:'bootstrap.js', plugin: 'collectory-plugin', disposition: 'head']
-        resource url:[dir:'css', file:'bootstrap.css', plugin: 'collectory-plugin'], attrs:[media:'screen, projection, print']
-        resource url:[dir:'css', file:'bootstrap-responsive.css', plugin: 'collectory-plugin'], attrs:[media:'screen', id:'responsiveCss']
-    }
-    jquery {
-        resource url:[dir:'js', file:'jquery.min.js', plugin:'collectory-plugin']
     }
     smoothness {
         resource url:[dir:'css/smoothness', file:'jquery-ui-1.8.16.custom.css', plugin:'collectory-plugin']
@@ -72,7 +65,7 @@ modules = {
         resource url:[dir:'css', file:'bootstrap-fileupload.min.css', plugin:'collectory-plugin']
     }
     collectory {
-        dependsOn 'bootstrap,jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
+        dependsOn 'jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
         resource url:[dir:'js', file:'collectory.js', plugin:'collectory-plugin']
         resource url:[dir:'css', file:'temp-style.css', plugin:'collectory-plugin']
     }

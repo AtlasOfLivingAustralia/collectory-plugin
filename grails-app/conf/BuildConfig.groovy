@@ -49,7 +49,7 @@ grails.project.dependency.resolution = {
         }
         compile ":cache:1.1.2"
         runtime ":hibernate:3.6.10.11"
-        runtime ":jquery:1.8.3"
+        runtime ":jquery:1.11.1"
         runtime ":resources:1.2.7"
         runtime ":audit-logging:0.5.5.3"
         runtime ":cache-headers:1.1.6"

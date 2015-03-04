@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="${grailsApplication.config.ala.skin}" />
+        <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <!--meta name="viewport" content="initial-scale=1.0, user-scalable=no" /-->
         <title><g:message code="data.catalogue.title" /></title>
         <style type="text/css">

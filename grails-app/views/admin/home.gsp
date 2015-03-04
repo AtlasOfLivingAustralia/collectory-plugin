@@ -2,7 +2,7 @@
 <html>
     <head>
         <title><g:message code="admin.home.title" /></title>
-	<meta name="layout" content="${grailsApplication.config.ala.skin}" />
+	<meta name="layout" content="${grailsApplication.config.skin.layout}" />
 
     </head>
     

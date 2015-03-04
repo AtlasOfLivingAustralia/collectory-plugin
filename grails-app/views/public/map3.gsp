@@ -2,21 +2,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="${grailsApplication.config.ala.skin}" />
+        <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><g:message code="public.map3.title" /> | ${grailsApplication.config.projectName}</title>
         <script src="https://maps.google.com/maps/api/js?v=3&sensor=true"></script>
         <r:require modules="bigbuttons,bbq,openlayers,map"/>
-        <script type="text/javascript">
-          var altMap = true;
-          var COLLECTIONS_MAP_OPTIONS = {
-              serverUrl:   "${grailsApplication.config.grails.serverURL}",
-              centreLat:   ${grailsApplication.config.collectionsMap.centreMapLat?:'-28.2'},
-              centreLon:   ${grailsApplication.config.collectionsMap.centreMapLon?:'134'},
-              defaultZoom: ${grailsApplication.config.collectionsMap.defaultZoom?:'4'}
-          }
-        </script>
     </head>
-    <body id="page-collections-map" onload="initMap(COLLECTIONS_MAP_OPTIONS)">
+    <body id="page-collections-map">
     <div id="content">
       <div id="header">
         <!--Breadcrumbs-->
@@ -113,4 +104,15 @@
     </div><!--close content-->
     </div>
   </body>
+  <r:script>
+      var altMap = true;
+      var COLLECTIONS_MAP_OPTIONS = {
+          contextPath: "${grailsApplication.config.contextPath}",
+          serverUrl:   "${grailsApplication.config.grails.serverURL}",
+          centreLat:   ${grailsApplication.config.collectionsMap.centreMapLat?:'-28.2'},
+          centreLon:   ${grailsApplication.config.collectionsMap.centreMapLon?:'134'},
+          defaultZoom: ${grailsApplication.config.collectionsMap.defaultZoom?:'4'}
+      }
+      initMap(COLLECTIONS_MAP_OPTIONS);
+  </r:script>
 </html>
