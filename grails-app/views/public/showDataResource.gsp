@@ -2,18 +2,14 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="${grailsApplication.config.ala.skin}"/>
+    <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
-    <link rel="stylesheet" type="text/css" href="${resource(dir: 'css/smoothness', file: 'jquery-ui-1.8.16.custom.css')}"/>
-    <script type="text/javascript" language="javascript" src="http://www.google.com/jsapi"></script>
-    <r:script type="text/javascript">
+    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper"/>
+    <r:script>
         // define biocache server
-        biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
-        biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
         bieUrl = "${grailsApplication.config.bie.baseURL}";
         loadLoggerStats = ${!grailsApplication.config.disableLoggerLinks.toBoolean()};
         $(document).ready(function () {
-            <g:if test="${instance.guid}">
             $("a#lsid").fancybox({
                 'hideOnContentClick': false,
                 'titleShow': false,
@@ -21,7 +17,6 @@
                 'width': 600,
                 'height': 180
             });
-            </g:if>
             $("a.current").fancybox({
                 'hideOnContentClick': false,
                 'titleShow': false,
@@ -31,11 +26,11 @@
             });
         });
     </r:script>
-    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper"/>
+
 </head>
 <body class="nav-datasets">
 <div id="content">
-<div id="header" class="collectory">
+<div id="header">
     <!--Breadcrumbs-->
     <div id="breadcrumb">
         <ol class="breadcrumb">
@@ -290,8 +285,13 @@
     </div>
 </div>
 </div>
-<r:script type="text/javascript">
-      // configure the charts
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">google.load('visualization', '1.0', {'packages':['corechart']});</script>
+<script type="text/javascript">
+    biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
+    biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
+
+    // configure the charts
       var facetChartOptions = {
           /* base url of the collectory */
           collectionsUrl: "${grailsApplication.config.grails.serverURL}",
@@ -425,9 +425,9 @@
     /************************************************************\
     *
     \************************************************************/
-    google.load("visualization", "1", {packages:["corechart"]});
+    google.load("visualization", "1.0", { packages:["corechart"] });
     google.setOnLoadCallback(onLoadCallback);
 
-</r:script>
+</script>
 </body>
 </html>

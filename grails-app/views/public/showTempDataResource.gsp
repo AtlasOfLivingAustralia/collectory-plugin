@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="${grailsApplication.config.ala.skin}" />
+        <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title>${fieldValue(bean: instance, field: "name")} | Data sets | Atlas of Living Australia</title>
     </head>
     <body class="two-column-right">

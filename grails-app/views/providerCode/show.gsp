@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta name="layout" content="${grailsApplication.config.ala.skin}" />
+		<meta name="layout" content="${grailsApplication.config.skin.layout}" />
 		<g:set var="entityName" value="${message(code: 'providerCode.label', default: 'ProviderCode')}" />
 		<title><g:message code="default.show.label" args="[entityName]" /></title>
 	</head>

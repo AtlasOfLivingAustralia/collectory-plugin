@@ -2,7 +2,7 @@
 <html>
     <head>
         <title><g:message code="manage.index.title" /></title>
-	    <meta name="layout" content="${grailsApplication.config.ala.skin}" />
+	    <meta name="layout" content="${grailsApplication.config.skin.layout}" />
     </head>
     
     <body>
@@ -40,7 +40,7 @@
             <p><g:message code="manage.index.des06" />.</p>
             <h4><g:message code="manage.index.title06" />?</h4>
             <p><g:message code="manage.index.des07" /> <span class="link" onclick="return sendEmail('support(SPAM_MAIL@ALA.ORG.AU)ala.org.au')"><g:message code="manage.index.des08" /></span>
-            <g:message code="manage.index.des09" /> ROLE_COLLECTIONS_EDITOR.</p>
+            <g:message code="manage.index.des09" /> ROLE_EDITOR.</p>
             <h4><g:message code="manage.index.title07" />?</h4>
             <p><g:message code="manage.index.des10" />
             <span class="link" onclick="return sendEmail('support(SPAM_MAIL@ALA.ORG.AU)ala.org.au')"><g:message code="manage.index.des08" /></span>

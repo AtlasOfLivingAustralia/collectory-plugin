@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="layout" content="${grailsApplication.config.ala.skin}" />
+    <meta name="layout" content="${grailsApplication.config.skin.layout}" />
 
     <title><g:message code="upload.gbif.archive" /></title>
     <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
