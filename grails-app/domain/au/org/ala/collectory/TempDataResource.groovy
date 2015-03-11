@@ -29,6 +29,8 @@ class TempDataResource {
     String firstName
     String lastName
 
+    String alaId
+
     Date dateCreated        // auto filled by grails
     Date lastUpdated
 
@@ -38,6 +40,7 @@ class TempDataResource {
         uid(maxSize: 20)
         name(nullable: true, maxSize:1024)
         email(nullable: true, maxSize:256)
+        alaId(nullable: true, maxSize:256)
         firstName(nullable: true, maxSize: 255)
         lastName(nullable: true, maxSize: 255)
     }
@@ -55,8 +58,8 @@ class TempDataResource {
     }
 
     def buildSummary() {
-        return [name:name, uid:uid, email:email, firstName:firstName, lastName:lastName, dateCreated:dateCreated,
-                lastUpdated:lastUpdated, numberOfRecords:numberOfRecords]
+        return [name:name, uid:uid, email:email, firstName:firstName, lastName:lastName, alaId:alaId,
+                dateCreated:dateCreated, lastUpdated:lastUpdated, numberOfRecords:numberOfRecords]
     }
 
     def makeAbstract(length) {

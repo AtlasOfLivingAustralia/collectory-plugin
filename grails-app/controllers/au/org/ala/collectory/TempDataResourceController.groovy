@@ -149,6 +149,7 @@ class TempDataResourceController {
      * @param entity - controller form of domain class, eg dataProvider
      * @param uid - optional uid of an instance of entity
      * @param drt - optional instance specified by uid (added in beforeInterceptor)
+     * @param alaId - optional for all drts with this alaId
      * @param summary - any non-null value will cause a richer summary to be returned for entity lists
      */
     def getEntity = {
@@ -156,6 +157,17 @@ class TempDataResourceController {
             addContentLocation "/ws/tempDataResource/${params.drt.uid}"
             //addLastModifiedHeader params.drt.lastUpdated
             render crudService.readTempDataResource(params.drt)
+        } else if (params.alaId) {
+            def c = TempDataResource.createCriteria()
+            def list = c.list(params){
+                if (params.alaId) {
+                    eq('alaId', params.alaId)
+                }
+            }
+            addContentLocation "/ws/tempDataResource"
+            def summaries = list.collect {[name: it.name, uid: it.uid, alaId: it.alaId, dateCreated: it.dateCreated,
+                                            lastUpdated: it.lastUpdated, numberOfRecords: it.numberOfRecords]}
+            render summaries as JSON
         } else {
             addContentLocation "/ws/tempDataResource"
             def list = TempDataResource.list([sort:'name'])
