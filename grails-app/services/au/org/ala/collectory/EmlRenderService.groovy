@@ -23,6 +23,7 @@ import java.text.DateFormat
 class EmlRenderService {
 
     static transactional = true
+    def messageSource
     def grailsApplication
     def ns = [eml:"eml://ecoinformatics.org/eml-2.1.1",
             xsi:"http://www.w3.org/2001/XMLSchema-instance",
@@ -470,8 +471,26 @@ class EmlRenderService {
 
                     /* intellectual rights */
                     intellectualRights {
-                        para  pg.rights
-                    }
+                        if (pg.rights) {
+                            section {
+                                title messageSource.getMessage("dataResource.rights.label", null, "Rights", null)
+                                para pg.rights
+                            }
+                        }
+                        if (pg.citation) {
+                            section {
+                                title messageSource.getMessage("dataResource.citation.label", null, "Citation", null)
+                                para pg.citation
+                            }
+                        }
+                        if (pg.licenseType && pg.licenseType != "other") {
+                            section {
+                                def licence = DataResource.ccDisplayList.find({ it.type == pg.licenseType})?.display ?: pg.licenseType
+                                title messageSource.getMessage("dataResource.license.label", null, "License", null)
+                                para pg.licenseVersion != null ? "${licence} ${pg.licenseVersion}" : licence
+                            }
+                        }
+                     }
 
                     /* distribution */
                     distribution {
