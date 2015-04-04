@@ -111,8 +111,11 @@ function sendEmail(strEncoded) {
     var strAddress;
     strAddress = strEncoded.split(strEncodedAtSign);
     strAddress = strAddress.join("@");
-    var objWin = window.open ('mailto:' + strAddress + '?subject=' + document.title + '&body=' + document.title + ' \n(' + window.location.href + ')','_blank');
-    if (objWin) objWin.close();
+    //var objWin = window.open ('mailto:' + strAddress + '?subject=' + document.title + '&body=' + document.title + ' \n(' + window.location.href + ')','_blank');
+    //console.log('mailto:' + strAddress + '?subject=' + document.title + '&body=' + document.title);
+    //window.location.href = 'mailto:' + strAddress + '?subject=' + document.title + '&body=' + document.title;
+    window.location.href = 'mailto:' + strAddress;
+    //if (objWin) objWin.close();
     if (event) {
         event.cancelBubble = true;
     }
