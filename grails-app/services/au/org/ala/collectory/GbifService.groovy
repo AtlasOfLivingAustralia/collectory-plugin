@@ -81,7 +81,6 @@ class GbifService {
      * @return
      */
     def getStatusInfoFor(String country){
-      //  log.debug("getStatusInfoFor" + loadMap)
       return loadMap[(country.toUpperCase())]
     }
 
