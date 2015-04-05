@@ -99,7 +99,7 @@ class AdminController {
 
     def getConnectionProfile = {
         def profile = metadataService.getConnectionProfile(params.profile)
-        println profile
+        log.debug profile
         render profile as JSON
     }
 
@@ -149,9 +149,9 @@ class AdminController {
             Collection.findAllByNetworkMembershipIlike("%CHACM%") +
             Institution.findAllByNetworkMembershipIlike("%CHACM%")
         targets.each { pg ->
-            println "processing " + pg.name
+            log.debug "processing " + pg.name
             pg.addAttribution('at51')
-            println pg.attributions
+            log.debug pg.attributions
         }
         render 'Done.'
     }
@@ -224,13 +224,13 @@ class AdminController {
             Collection.findAllByNetworkMembershipIlike("%AMRRN%") +
             Institution.findAllByNetworkMembershipIlike("%AMRRN%")
         targets.each { pg ->
-            println "processing " + pg.name
-            print pg.networkMembership + " -> "
+            log.debug "processing " + pg.name
+            log.debug pg.networkMembership + " -> "
             List hubs = JSON.parse(pg.networkMembership).collect { it.toString() }
             hubs.remove 'AMRRN'
             hubs.add 'CHACM'
             pg.networkMembership = (hubs as JSON).toString()
-            println pg.networkMembership
+            log.debug pg.networkMembership
             pg.save(flush:true)
         }
         render 'Done.'
@@ -344,8 +344,8 @@ class AdminController {
                 count++
             }
             else {
-                println "failed to import ${nextLine}"
-                dr.errors.each { println it }
+                log.debug "failed to import ${nextLine}"
+                dr.errors.each { log.error it }
             }
         }
         render "${count} data resources created"
@@ -354,10 +354,8 @@ class AdminController {
     private def extractSearchResults(json) {
         def results = [collections:[], institutions:[], dataResources:[], dataProviders:[], total:0]
         def obj = JSON.parse(json).searchResults
-        //println "------------------------------------"
         if (obj?.results) {
             obj.results.each {
-                //println "type = ${it.idxType} name = ${it.name}"
                 switch (it.idxType) {
                     case "COLLECTION":
                         results.collections << [uid:extractUid(it.guid), name:it.name]
