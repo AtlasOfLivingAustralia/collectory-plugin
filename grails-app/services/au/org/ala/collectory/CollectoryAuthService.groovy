@@ -30,10 +30,6 @@ class CollectoryAuthService{
                 adminFlag = authService.userInRole(ProviderGroup.ROLE_ADMIN)
             }
         }
-
-        println "\n\n\nisAdmin"
-        println adminFlag;
-
         return adminFlag
     }
 
@@ -46,11 +42,6 @@ class CollectoryAuthService{
                 roleFlag = authService.userInRole(role)
             }
         }
-
-        println "\n\n\nuserInRole"
-        println role;
-        println roleFlag;
-        println isAdmin();
 
         return roleFlag || isAdmin()
     }
