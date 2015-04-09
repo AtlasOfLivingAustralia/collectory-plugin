@@ -4,6 +4,15 @@ The collectory-plugin manages metadata that describe Australia's biodiversity co
 
  * [Database schema (PDF)](https://github.com/AtlasOfLivingAustralia/collectory/blob/master/Collectory_schema_20140916.pdf?raw=true)
 
+## Release notes - version 1.1
+
+* Extend EML rendering to include complete rights information
+* removed getString usage - was causing exception
+* Add user id to temp data resources
+* Fix the issue of open an email dialog on Chrome
+* Fix the issue of open an email dialog on Chrome
+* removed reference to collections_editor role
+
 ## Release notes - version 1.0
 
  * Provide this Grails plugin for your collectory project. The initial version is set to 1.0 since it is from collectory project.
