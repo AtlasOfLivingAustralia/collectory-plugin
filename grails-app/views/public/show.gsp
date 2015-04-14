@@ -142,7 +142,7 @@
                     <cl:subCollectionList list="${instance.subCollections}"/>
                   </g:if>
 
-                  <g:if test="${biocacheRecordsAvailable && !grailsApplication.config.disableLoggerLinks?.asBoolean()}">
+                  <g:if test="${biocacheRecordsAvailable && !grailsApplication.config.disableLoggerLinks?.toBoolean()}">
                   <div id='usage-stats' style="">
                     <h2><g:message code="public.show.oc.label07" /></h2>
                     <div id='usage'></div>
