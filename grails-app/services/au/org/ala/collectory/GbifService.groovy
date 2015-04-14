@@ -197,8 +197,8 @@ class GbifService {
                 log.debug(pageObject.get("results").getClass())
                 pageObject.get("results").each {result ->
                     GBIFActiveLoad gal = new GBIFActiveLoad()
-                    gal.gbifResourceUid = result.getString("key")
-                    gal.name = result.getString("title")
+                    gal.gbifResourceUid = result.get("key")
+                    gal.name = result.get("title")
                     list << gal
                     i += 1
                 }

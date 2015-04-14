@@ -36,7 +36,7 @@ class CrudService {
     static dataResourceJSONArrays = ['connectionParameters', 'contentTypes', 'defaultDarwinCoreValues']
     //static dataResourceObjectProperties = ['dataProvider']
 
-    static tempDataResourceStringProperties = ['firstName','lastName','name','email']
+    static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId']
     static tempDataResourceNumberProperties = ['numberOfRecords']
 
     static institutionStringProperties = ['institutionType']
@@ -398,6 +398,7 @@ class CrudService {
             email = p.email
             firstName = p.firstName
             lastName = p.lastName
+            alaId = p.alaId
             dateCreated = p.dateCreated
             lastUpdated = p.lastUpdated
             numberOfRecords = p.numberOfRecords
