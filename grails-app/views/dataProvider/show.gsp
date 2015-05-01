@@ -19,9 +19,9 @@
         <div class="nav">
 
             <p class="pull-right">
-            <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
-            <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
-            <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
+                <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
+                <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
+                <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
             </p>
 
             <ul>
@@ -48,7 +48,7 @@
                 <p><span class="category"><g:message code="providerGroup.uid.label" />:</span> ${fieldValue(bean: instance, field: "uid")}</p>
 
                 <!-- Web site -->
-                <p><span class="category"><g:message code="collection.show.span.cw" />:</span> <cl:externalLink href="${fieldValue(bean:instance, field:'websiteUrl')}"/></p>
+                <p><span class="category"><g:message code="dataprovider.show.span.cw" default="Website URL" />:</span> <cl:externalLink href="${fieldValue(bean:instance, field:'websiteUrl')}"/></p>
 
                 <!-- Networks -->
                 <g:if test="${instance.networkMembership}">
@@ -64,6 +64,23 @@
                 <p><span class="category"><g:message code="datahub.show.lastchange" />:</span> ${fieldValue(bean: instance, field: "userLastModified")} on ${fieldValue(bean: instance, field: "lastUpdated")}</p>
 
                 <cl:editButton uid="${instance.uid}" page="/shared/base"/>
+              </div>
+
+
+              <div class="show-section well">
+                  <h2>IPT integration (Beta)</h2>
+                  <p>
+                      If your data provider is an IPT instance, set the website URL to be the URL of the IPT endpoint.
+                      <br/> e.g. http://data.canadensys.net/ipt
+                      <br/>
+                  </p>
+                  <p class="iptStatus alert alert-info hide">
+
+                  </p>
+                  <p>
+                    <button class="iptCheck iptBtn btn"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img> Check endpoint</button>
+                    <button class="iptUpdate iptBtn btn"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img>  Update data resources</button>
+                  </p>
               </div>
 
               <!-- description -->
@@ -121,13 +138,56 @@
               <g:form>
                 <g:hiddenField name="id" value="${instance?.id}"/>
                 <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
-                  <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
+                  <span class="button"><g:actionSubmit class="delete btn btn-danger" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
                 </cl:ifGranted>
+                <div class="pull-right">
                 <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
                 <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
                 <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
+                </div>
               </g:form>
             </div>
         </div>
+
+    <r:script>
+        function checkIptInstance(){
+            $('.iptCheck .spinner').removeClass('hide');
+            $('.iptBtn').attr('disabled','disabled');
+            var checkUrl = "${createLink(controller: "ipt", action: "scan", params:[format:"json", uid: instance?.uid, check:true])}";
+            var jqxhr = $.get(checkUrl, function(data) {
+              $('.iptStatus').html("Success! IPT instance has " + data.length + " resources available." );
+              $('.iptStatus').removeClass('hide')
+            })
+              .fail(function() {
+                alert( "There was a problem. Check the website URL and try again." );
+              })
+              .always(function() {
+                $('.iptCheck .spinner').addClass('hide');
+                $('.iptBtn').removeAttr('disabled');
+              });
+        }
+
+        function updateResourcesFromIpt(){
+            $('.iptUpdate .spinner').removeClass('hide');
+            $('.iptBtn').attr('disabled','disabled');
+            var updateUrl = "${createLink(controller: "ipt", action: "scan", params:[format:"json", uid: instance?.uid, create:true])}";
+            var jqxhr = $.get(updateUrl, function(data) {
+              $('.iptStatus').html("Success! + " + data.length + " resources has been added from this IPT instance." );
+              $('.iptStatus').removeClass('hide')
+            })
+              .fail(function() {
+                alert( "There was a problem. Check the website URL and try again." );
+              })
+              .always(function() {
+                $('.iptUpdate .spinner').addClass('hide');
+                $('.iptBtn').removeAttr('disabled');
+              });
+        }
+
+        $('.iptCheck').click(checkIptInstance);
+        $('.iptUpdate').click(updateResourcesFromIpt);
+
+    </r:script>
+
     </body>
 </html>

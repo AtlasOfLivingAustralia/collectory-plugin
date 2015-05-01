@@ -57,12 +57,21 @@ class DataController {
                     return false
                 }
             }
-            // all data modifications by ws require a valid api key in the body
-            if (!params.json) {
+            // all data modifications (except deletes) by ws require a valid api key in the body
+            if (!params.json && request.method != 'DELETE') {
                 unauthorised()
                 return false
             }
-            def keyCheck = collectoryAuthService?.checkApiKey(params.json.api_key)
+
+            def apiKey = {
+                if(params.json.api_key){
+                    params.json.api_key
+                } else {
+                    request.getHeader("Authorization")
+                }
+            }.call()
+
+            def keyCheck = collectoryAuthService?.checkApiKey(apiKey)
             if (!keyCheck.valid) {
                 unauthorised()
                 return false

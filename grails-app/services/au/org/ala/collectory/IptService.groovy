@@ -158,7 +158,13 @@ class IptService {
      * @return A list of (possibly new providers)
      */
     def rss(DataProvider provider, String keyName) {
-        def base = new URL(provider.websiteUrl + "/")
+
+        def url = provider.websiteUrl
+        if(!url.endsWith("/")){
+            url = url + "/"
+        }
+
+        def base = new URL(url)
         def rsspath = new URL(base, RSS_PATH)
         log.info("Scanning ${rsspath} from ${base}")
         def rss = new HTTPBuilder(rsspath).get([:])
@@ -198,6 +204,7 @@ class IptService {
      *
      */
     def retrieveEml(DataResource resource, String url) {
+        log.debug("Retrieving EML from " + url)
         def http = new HTTPBuilder(url)
         def eml = http.get([:]).declareNamespace(NAMESPACES)
 

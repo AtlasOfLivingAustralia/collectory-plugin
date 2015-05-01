@@ -46,12 +46,15 @@ class GbifService {
     static final String RIGHTS_FILE = "rights.txt"
     static final String EML_DIRECTORY = "dataset"
     static final String OCCURRENCE_FILE = "occurrence.txt"
-    static final String OCCURRENCE_DOWNLOAD = "/occurrence/download/request" //POST request to this to start download //GET request to retrieve download
+    static final String OCCURRENCE_DOWNLOAD = "/occurrence/download/request" //POST request to this to start download
+    // GET request to retrieve download
     static final String DOWNLOAD_STATUS = "/occurrence/download/" //GET request to this
     static final String DATASET_SEARCH = "/dataset/search?publishingCountry={0}&type=OCCURRENCE" //GET request to this
 
     def crudService
     def CONCURRENT_LOADS = 10
+    def DOWNLOAD_LIMIT = 50
+
     def pool = Executors.newFixedThreadPool(CONCURRENT_LOADS)
     def loading = false
     def loadMap = [:]
@@ -81,7 +84,6 @@ class GbifService {
      * @return
      */
     def getStatusInfoFor(String country){
-      //  log.debug("getStatusInfoFor" + loadMap)
       return loadMap[(country.toUpperCase())]
     }
 
@@ -141,6 +143,8 @@ class GbifService {
                                         if(dr){
                                             l.dataResourceUid = dr.uid
                                             l.phase = "Data Resource Created"
+                                        } else {
+                                            l.phase = "Data Resource Creation Failed."
                                         }
                                     } else {
                                         l.phase = "Download Failed: " + status
@@ -186,14 +190,14 @@ class GbifService {
         log.debug("Search URL: " + url);
         if (countJson){
             def total = countJson.getInt("count")
-            def limit = (userLimit == null || userLimit>total) ? total : userLimit
+            def limit = (userLimit == null || userLimit > total) ? total : userLimit
             log.debug("We will create " + limit + " data resources for the supplied country " + country)
             int i = 0
             def list = []
             while(i < limit){
-                def newLimit = userLimit && userLimit >50 ? userLimit-i:limit
-                def locallimit = newLimit < 50 ? newLimit : 50
-                JSONObject pageObject = getJSONWS(url + "&limit="+locallimit+"&offset="+i)
+                def newLimit = userLimit && userLimit > DOWNLOAD_LIMIT ? userLimit-i:limit
+                def locallimit = newLimit < DOWNLOAD_LIMIT ? newLimit : DOWNLOAD_LIMIT
+                JSONObject pageObject = getJSONWS(url + "&limit=" + locallimit + "&offset=" + i)
                 log.debug(pageObject.get("results").getClass())
                 pageObject.get("results").each {result ->
                     GBIFActiveLoad gal = new GBIFActiveLoad()
@@ -242,30 +246,33 @@ class GbifService {
         //1) Extract the ZIP file
         //2) Extract the JSON for the data resource to create
         def json = extractDataResourceJSON(new ZipFile(uploadedFile), uploadedFile.getParentFile());
-        def meta = extractMetaXML(new ZipFile(uploadedFile))
         json['resourceType'] = 'records'
         json['contentTypes'] = (['point occurrence data', 'gbif import'] as JSON).toString()
-
-
         log.debug("The JSON to create the dr : " + json)
-        //3) Create the data resource
-        def dr = crudService.insertDataResource(json)
-        log.debug(dr.uid + "  " +dr.id + " " +dr.name)//.toString() + " " + dr.hasErrors() + " " + dr.getErrors())
-        //4) Add the contact details for the data resource
-        //TODO we may need to add a separate contact - at the moment we are just adding it to the data resource
-        //5) Create the DwCA for the resource using the GBIF default meta.xml and occurrences.txt
+
+        //3) Create or update the data resource
+        def dr = DataResource.findByGuid(json.guid)
+        if (!dr){
+            dr = crudService.insertDataResource(json)
+        } else {
+            crudService.updateDataResource(dr, json)
+        }
+
+        log.debug(dr.uid + "  " + dr.id + " " + dr.name)    //.toString() + " " + dr.hasErrors() + " " + dr.getErrors())
+
+        //4) Create the DwCA for the resource using the GBIF default meta.xml and occurrences.txt
         String zipFileName = uploadedFile.getParentFile().getAbsolutePath() + File.separator + json.get("guid") + ".zip"
         //add the occurrence.txt file
         IOUtils.copy(new FileInputStream(uploadedFile), new FileOutputStream(zipFileName))
         log.debug("Created the zip file " + zipFileName)
-        //6) Upload the DwCA for the resource to the created data resource
+        //5) Upload the DwCA for the resource to the created data resource
         applyDwCA(new File(zipFileName), dr)
         return dr
     }
 
     /**
-     * Adds the DWCA to the data resource for use in loading
-     * @param file a constructed archive to apply to the resoruce
+     * Adds the DWC-A to the data resource for use in loading
+     * @param file a constructed archive to apply to the resource
      * @param dr  The data resource to apply the supplied archive to
      * @return
      */
@@ -273,7 +280,7 @@ class GbifService {
         try {
             log.debug("Copying DwCA to staging and associated the file to the data resource")
             def fileId = System.currentTimeMillis()
-            String targetFileName = grailsApplication.config.uploadFilePath + fileId  + File.separator+file.getName()
+            String targetFileName = grailsApplication.config.uploadFilePath + fileId  + File.separator + file.getName()
             File targetFile = new File(targetFileName)
             FileUtils.forceMkdir(targetFile.getParentFile())
             file.renameTo(targetFile)
@@ -281,8 +288,8 @@ class GbifService {
             //move the DwCA where it needs to be
             def connParams = (new JsonSlurper()).parseText(dr.connectionParameters?:'{}')
             connParams.url = 'file:///'+targetFileName
-            connParams.protocol="DwCA"
-            connParams.termsForUniqueKey=["gbifID"]
+            connParams.protocol = "DwCA"
+            connParams.termsForUniqueKey = ["gbifID"]
             //NQ we need a transaction so the this can be executed in a multi-threaded manner.
             DataResource.withTransaction {
                 dr.connectionParameters = (new JsonOutput()).toJson(connParams)
@@ -294,39 +301,15 @@ class GbifService {
             log.error(e.getClass().toString() + " : " + e.getMessage(), e)
         }
     }
-
-    /**
-     * Creates a DWCA based on default meta.xml and the occurrence.txt extracted from the
-     * GBIF archive
-     * @param directoryForArchive
-     * @param guid
-     * @return
-     */
-    def createDWCA(File directoryForArchive, String guid, String metaXml){
-        //create a ZIP File with the occurrence.txt and meta.xml
-        String zipFileName = directoryForArchive.getAbsolutePath() + File.separator + guid + ".zip"
-        ZipOutputStream zop = new ZipOutputStream(new FileOutputStream(zipFileName))
-        //add the occurrence.txt file
-        zop.putNextEntry(new ZipEntry(OCCURRENCE_FILE))
-        IOUtils.copy(new FileInputStream(directoryForArchive.getAbsolutePath() + File.separator + OCCURRENCE_FILE), zop)
-        zop.closeEntry()
-        //add the meta.xml
-        zop.putNextEntry(new ZipEntry("meta.xml"))
-        IOUtils.write(metaXml, zop)
-        zop.closeEntry()
-        zop.flush()
-        zop.close()
-        return zipFileName
-    }
-
-    def extractMetaXML(ZipFile zipFile){
-       def entry = zipFile.getEntry("meta.xml")
-       if(entry !=null){
-           zipFile.getInputStream(entry).text
-       } else {
-           null
-       }
-    }
+//
+//    def extractMetaXML(ZipFile zipFile){
+//       def entry = zipFile.getEntry("meta.xml")
+//       if(entry != null){
+//           zipFile.getInputStream(entry).text
+//       } else {
+//           null
+//       }
+//    }
 
     /**
      * Extracts all the details from the GBIF download to use for the data resource.
@@ -348,12 +331,13 @@ class GbifService {
                 //open the XML file that contains the EML details for the GBIF resource
                 def xml = new XmlSlurper().parseText(zipFile.getInputStream(file).text)
                 map.guid = xml.@packageId.toString()
+                map.pubDescription = xml.dataset?.abstract?.para
                 map.name = xml.dataset.title.toString()
                 def contact = xml.dataset.contact
                 map.phone = contact.phone.toString()
                 map.email = contact.electronicMailAddress.toString()
-                map.get("citation",xml.additionalMetadata.metadata.gbif.citation.toString())
-                map.get("rights",xml.additionalMetadata.metadata.gbif.rights.toString())
+                map.get("citation", xml.additionalMetadata.metadata.gbif.citation.toString())
+                map.get("rights", xml.additionalMetadata.metadata.gbif.rights.toString())
 
                 log.debug(map)
 
@@ -367,62 +351,6 @@ class GbifService {
         //map.each{k, v -> jo.put(k,v)}
         log.debug("the toString : " + jo.toString())
         return jo
-    }
-
-    /**
-     * Extracts the data resource information from the EML file in the supplied directory
-     * @param directory
-     */
-    def extractDataResourceJSON(String directory){
-        def emlDir = new File(directory + File.separator+EML_DIRECTORY)
-        //iterate through all the files in the directory (there should only be one, but we will ensure that we only process one set of data)
-        boolean done = false
-        emlDir.eachFile(){file ->
-            if(!done){
-                String uuid = file.getName().replace(".xml","")
-                //open the XML file that contains the EML details for the GBIF resource
-                def xml = new XmlSlurper().parseText(file.text)
-                String title = xml.dataset.title
-                def contact = xml.dataset.contact
-                String phone = contact.phone
-                String email = contact.electronicMailAddress
-                String citation = xml.additionalMetadata.metadata.gbif.citation
-
-                log.debug(title + " " + uuid + " " + contact)
-                log.debug(phone +" " + email + " " + citation)
-            }
-        }
-
-    }
-
-    /**
-     * Extracts the text to use as the citation
-     * @param directory
-     * @return
-     */
-    def extractCitation(String directory){
-        extractFileText(directory, CITATION_FILE)
-    }
-
-    /**
-     * Extracts the text to use as the rights
-     * @param directory
-     * @return
-     */
-    def extractRights(String directory){
-        extractFileText(directory, RIGHTS_FILE)
-    }
-
-    /**
-     * Generic method to extract the text from a  file.
-     * @param directory
-     * @param file
-     * @return
-     */
-    def extractFileText(String directory, String file){
-        def fileName = directory + File.separator + file
-        //extract value to return
-        new File(fileName).text
     }
 
     /**

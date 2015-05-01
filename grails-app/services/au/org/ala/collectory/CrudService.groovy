@@ -742,18 +742,18 @@ class CrudService {
             }
         }
     }
-
-    /**
-     * We don't want to create objects in the target if there is no data for them.
-     * @param obj
-     */
-    private void removeNullObjects(obj) {
-        baseObjectProperties.each {
-            if (obj.has(it) && obj."${it}".toString() == 'null') {
-                obj.remove(it)
-            }
-        }
-    }
+//
+//    /**
+//     * We don't want to create objects in the target if there is no data for them.
+//     * @param obj
+//     */
+//    private void removeNullObjects(obj) {
+//        baseObjectProperties.each {
+//            if (obj.has(it) && obj."${it}".toString() == 'null') {
+//                obj.remove(it)
+//            }
+//        }
+//    }
 
     /**
      * Null numbers are represented as -1 (as they cannot be null).

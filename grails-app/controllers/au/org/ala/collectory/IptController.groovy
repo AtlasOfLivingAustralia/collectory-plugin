@@ -52,13 +52,23 @@ class IptController {
             render (status: 400, text: "Unable to get data provider " + params.uid)
             return
         }
-        def updates = provider == null ? null : iptService.scan(provider, create, check, keyName, username, admin)
-        log.info "${updates.size()} data resources to update for ${params.uid}"
-        response.addHeader HttpHeaders.VARY, HttpHeaders.ACCEPT
-        withFormat {
-            text { render (contentType: 'text/plain', text: updates.findAll({ dr -> dr.uid != null }).collect({ dr -> dr.uid }).join("\n")) }
-            xml { render updates as XML }
-            json { render updates as JSON }
+        try {
+            def updates = provider == null ? null : iptService.scan(provider, create, check, keyName, username, admin)
+            log.info "${updates.size()} data resources to update for ${params.uid}"
+            response.addHeader HttpHeaders.VARY, HttpHeaders.ACCEPT
+            withFormat {
+                text {
+                    render updates.findAll({ dr -> dr.uid != null }).collect({ dr -> dr.uid }).join("\n")
+                }
+                xml {
+                    render updates as XML
+                }
+                json {
+                    render updates as JSON
+                }
+            }
+        } catch (Exception e){
+            log.error("Problem scanning IPT endpoint: " + e.getMessage(), e)
         }
     }
 }
