@@ -371,7 +371,7 @@ class CrudService {
 
         dataResourceStringProperties.each {
             if (obj.has(it)) {
-                pg."${it}" = obj."${it}".toString()
+                dr."${it}" = obj."${it}".toString()
             }
         }
 
