@@ -368,7 +368,13 @@ class CrudService {
 
     private void updateDataResourceProperties(DataResource dr, obj) {
         convertJSONToString(obj, dataResourceJSONArrays)
-        dr.properties[dataResourceStringProperties] = obj
+
+        dataResourceStringProperties.each {
+            if (obj.has(it)) {
+                pg."${it}" = obj."${it}".toString()
+            }
+        }
+
         dr.properties[dataResourceNumberProperties] = obj
         updateTimestamps(dr,obj, dataResourceTimestampProperties)
         if (obj.has('dataProvider')) {
@@ -733,7 +739,11 @@ class CrudService {
         // handle values that might be passed as JSON arrays or string representations of JSON arrays
         convertJSONToString(obj, baseJSONArrays)
         // inject properties (this method does type conversions automatically)
-        pg.properties[baseStringProperties] = obj
+        baseStringProperties.each {
+            if (obj.has(it)) {
+                pg."${it}" = obj."${it}".toString()
+            }
+        }
         pg.properties[baseNumberProperties] = obj
         // only add objects if they exist
         baseObjectProperties.each {
