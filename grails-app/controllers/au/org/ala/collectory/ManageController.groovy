@@ -39,10 +39,20 @@ class ManageController {
      * @return
      */
     def loadAllGbifForCountry(){
-        log.debug(params)
+        log.debug("Loading resources from GBIF: " + params)
+        log.debug("Loading resources from GBIF: " + params.reloadExistingResources)
         if(params.gbifUsername && params.gbifPassword){
+            Boolean reloadExistingResources = false
+            if (params.reloadExistingResources) {
+                reloadExistingResources = true
+            }
             Integer maxResources = params.maxResources ? params.getInt("maxResources") : null
-            gbifService.loadResourcesFor(params.country,params.gbifUsername, params.gbifPassword, maxResources)
+            gbifService.loadResourcesFor(
+                    params.country,
+                    params.gbifUsername,
+                    params.gbifPassword,
+                    maxResources,
+                    reloadExistingResources)
             redirect(action: 'gbifCountryLoadStatus', params: [country:params.country])
         }
     }

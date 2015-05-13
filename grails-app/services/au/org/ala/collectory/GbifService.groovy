@@ -28,6 +28,8 @@ import org.apache.http.protocol.HttpContext
 import org.apache.tools.zip.ZipFile
 import org.codehaus.groovy.grails.web.json.JSONObject
 import org.springframework.web.multipart.MultipartFile
+
+import java.sql.Timestamp
 import java.text.MessageFormat
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
@@ -96,14 +98,15 @@ class GbifService {
      * @param limit null when all datasets should be load OR the number of datasets to load
      * @return A GBIFLoadSummary that should be used to display details - which will need to be updated
      */
-    def loadResourcesFor(String country, final String username, final String password, Integer limit) {
+    def loadResourcesFor(String country, final String username, final String password, Integer limit, Boolean reloadExisting) {
         country = country.toUpperCase()
         final GBIFLoadSummary gls = new GBIFLoadSummary()
         //check to see if a load is already running. We can only have one at a time
         if (!loading){
             loading = true
             //get a list of loads that need to be performed
-            List loadList = getListOfGbifResources(country, limit)
+            List<GBIFActiveLoad> loadList = getListOfGbifResources(country, limit)
+
             if(loadList){
                 //gls.total = loadList.size()
                 gls.startTime = new Date()
@@ -116,52 +119,74 @@ class GbifService {
                         def defer = { c -> pool.submit(c as Callable) }
                         gls.loads.each { l ->
                             defer {
-                                log.debug("Submitting " + l + " to be processed")
-                                //1) Start the download
-                                String downloadId = startGBIFDownload(l.gbifResourceUid,username, null, password)
-                                if(downloadId){
-                                    l.downloadId = downloadId
-                                    //2) Monitor the download
-                                    l.phase = "Generating Download..."
-                                    String status = ""
-                                    while (!stopStatus.contains(status)){
-                                        //sleep for 30 seconds between checks.
-                                        Thread.sleep(3000)
-                                        status = getDownloadStatus(l.downloadId, username, password)
+
+                                Boolean skipReload = false
+                                def existingDataResource = DataResource.findByGuid(l.gbifResourceUid)
+                                if(!reloadExisting){
+                                    log.info("Reload existing resources set to false. Checking for " + l.gbifResourceUid)
+                                    if(existingDataResource){
+                                        skipReload = true
                                     }
-                                    log.debug("Download status: " + status)
-                                    //3) if the status was "SUCCEEDED" then starts the download
-                                    if(status == "SUCCEEDED"){
-                                        l.phase = "Downloading..."
-                                        File localTmpDir = new File(grailsApplication.config.uploadFilePath + File.separator + "tmp" + File.separator + l.downloadId)
-                                        FileUtils.forceMkdir(localTmpDir)
-                                        String tmpFileName = localTmpDir.getAbsolutePath()+File.separator+ l.downloadId
-                                        IOUtils.copy(new URL(grailsApplication.config.gbifApiUrl + OCCURRENCE_DOWNLOAD + "/" + l.downloadId + ".zip").openStream(), new FileOutputStream(tmpFileName))
-                                        //4) Now create the data resource using the file downloaded
-                                        l.phase = "Creating GBIF Data resource..."
-                                        def dr = createGBIFResource(new File(tmpFileName))
-                                        if(dr){
-                                            l.dataResourceUid = dr.uid
-                                            l.phase = "Data Resource Created"
+                                }
+
+                                if(skipReload){
+                                    l.phase = "Resource is already loaded. To reload check the reload existing resource checkbox"
+                                    loading = false
+                                    l.dataResourceUid = existingDataResource.uid
+                                    return null
+
+                                } else {
+
+                                    log.info("Submitting " + l + " to be processed")
+                                    //1) Start the download
+                                    String downloadId = startGBIFDownload(l.gbifResourceUid, username, password)
+                                    if (downloadId) {
+                                        l.downloadId = downloadId
+                                        //2) Monitor the download
+                                        l.phase = "Generating Download..."
+                                        String status = ""
+                                        while (!stopStatus.contains(status)) {
+                                            //sleep for 30 seconds between checks.
+                                            Thread.sleep(3000)
+                                            status = getDownloadStatus(l.downloadId, username, password)
+                                        }
+                                        log.debug("Download status: " + status)
+                                        //3) if the status was "SUCCEEDED" then starts the download
+                                        if (status == "SUCCEEDED") {
+                                            l.phase = "Downloading..."
+                                            File localTmpDir = new File(grailsApplication.config.uploadFilePath + File.separator + "tmp" + File.separator + l.downloadId)
+                                            FileUtils.forceMkdir(localTmpDir)
+                                            String tmpFileName = localTmpDir.getAbsolutePath() + File.separator + l.downloadId
+                                            IOUtils.copy(new URL(grailsApplication.config.gbifApiUrl + OCCURRENCE_DOWNLOAD + "/" + l.downloadId + ".zip").openStream(), new FileOutputStream(tmpFileName))
+                                            //4) Now create the data resource using the file downloaded
+                                            l.phase = "Creating GBIF Data resource..."
+                                            def dr = createOrUpdateGBIFResource(new File(tmpFileName))
+                                            if (dr && existingDataResource) {
+                                                l.dataResourceUid = dr.uid
+                                                l.phase = "Data Resource Updated"
+                                            } else if(dr){
+                                                l.dataResourceUid = dr.uid
+                                                l.phase = "Data Resource Created"
+                                            } else {
+                                                l.phase = "Data Resource Creation Failed."
+                                            }
                                         } else {
-                                            l.phase = "Data Resource Creation Failed."
+                                            l.phase = "Download Failed: " + status
+                                        }
+                                        //Thread.sleep(5000)
+                                        l.setLoaded()
+                                        //l.dataResourceUid="dr123"
+                                        //check to see if all the items have finished loading
+                                        log.debug("Is load still running : " + gls.isLoadRunning())
+                                        loading = gls.isLoadRunning()
+                                        if (!loading) {
+                                            gls.finishTime = new Date()
                                         }
                                     } else {
-                                        l.phase = "Download Failed: " + status
+                                        l.phase = "Failed. Please check your authentication credentials are valid."
+                                        loading = false
+                                        return null
                                     }
-                                    //Thread.sleep(5000)
-                                    l.setLoaded()
-                                    //l.dataResourceUid="dr123"
-                                    //check to see if all the items have finished loading
-                                    log.debug("IS LOAD STILL RUNNING: " + gls.isLoadRunning())
-                                    loading = gls.isLoadRunning()
-                                    if(!loading){
-                                        gls.finishTime = new Date()
-                                    }
-                                } else {
-                                    l.phase = "Failed. Please check your authentication credentials are valid."
-                                    loading = false
-                                    return null
                                 }
                             }
                         }
@@ -242,7 +267,7 @@ class GbifService {
      * @param uploadedFile
      * @return
      */
-    def createGBIFResource(File uploadedFile){
+    def createOrUpdateGBIFResource(File uploadedFile){
         //1) Extract the ZIP file
         //2) Extract the JSON for the data resource to create
         def json = extractDataResourceJSON(new ZipFile(uploadedFile), uploadedFile.getParentFile());
@@ -257,6 +282,7 @@ class GbifService {
         } else {
             crudService.updateDataResource(dr, json)
         }
+        dr.lastChecked = (new Date()).toTimestamp()
 
         log.debug(dr.uid + "  " + dr.id + " " + dr.name)    //.toString() + " " + dr.hasErrors() + " " + dr.getErrors())
 
@@ -430,7 +456,7 @@ class GbifService {
      * @param password  The password for the GBIF user.
      * @return The downloadId used to monitor when the download has been completed
      */
-    def startGBIFDownload(String resourceId, String username, String email, String password){
+    def startGBIFDownload(String resourceId, String username, String password){
         try {
             log.debug("[startGBIFDownload] Initialising download..... ")
 

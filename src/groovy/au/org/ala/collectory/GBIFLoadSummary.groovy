@@ -32,7 +32,7 @@ class GBIFLoadSummary {
     //int completed // stores the number of resource that have been loaded
     //List activeLoads =[] //stores the current GBIF downloads that are being processed for insertion into the collectory
     //List completedLoads=[]
-    List loads =[]
+    List loads = []
     def isLoadRunning(){
         //System.out.println("Testing to see if it is still running")
         GBIFActiveLoad firstItemNotFinished =  loads.find{!it.isLoaded()}

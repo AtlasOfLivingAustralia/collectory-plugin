@@ -614,7 +614,7 @@ class PublicController {
      * Returns GEOJson for populating the map based on the selected filters.
      */
     def mapFeatures = {
-        log.info ">>Map features action called"
+        log.info ">> Map features action called (no cross domain issues)"
 
         def locations = [type:"FeatureCollection",features: new ArrayList()]
         def showAll = params.filters == 'all'
