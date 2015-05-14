@@ -248,7 +248,8 @@ class GbifService {
      *
      * @param uploadedFile
      */
-    def createGBIFResourceFromMultipart(MultipartFile uploadedFile){
+    def createGBIFResourceFromArchiveURL(String gbifFileUrl){
+
         //1) Save the file to the correct tmp staging location
         def fileId = System.currentTimeMillis()
         def tmpDir = new File(grailsApplication.config.uploadFilePath + File.separator + "tmp")
@@ -256,9 +257,14 @@ class GbifService {
             FileUtils.forceMkdir(tmpDir)
         }
         File localFile = new File(grailsApplication.config.uploadFilePath + File.separator + "tmp" + File.separator + fileId)
-        uploadedFile.transferTo(localFile)
-        //2) create the GBIF resource based on a local file now
-        return createGBIFResource(localFile)
+
+        //2) download the file
+        def out = new BufferedOutputStream(new FileOutputStream(localFile))
+        out << new URL(gbifFileUrl).openStream()
+        out.close()
+
+        //3) create the GBIF resource based on a local file now
+        return createOrUpdateGBIFResource(localFile)
     }
 
     /**

@@ -9,45 +9,81 @@
     <r:require modules="fileupload"/>
 </head>
 <body>
-<h1><g:message code="dataresource.gbifupload.title" />
-</h1>
 
-<g:uploadForm action="uploadGBIFFile" controller="dataResource">
-    <label for="fileToUpload"><g:message code="dataresource.gbifupload.label" />:</label>
-    <div class="fileupload fileupload-new" data-provides="fileupload">
+<h1><g:message code="dataresource.gbifupload.title" /></h1>
 
-        <div class="well pull-right span5">
-            <p>
-                <g:message code="dataresource.gbifupload.des01" /> <a href="http://www.gbif.org/"><g:message code="dataresource.gbifupload.link.gbifportal" /></a>.
-                <br/>
-                <g:message code="dataresource.gbifupload.des02" />.
-            </p>
-            <p>
-                <b><g:message code="dataresource.gbifupload.des03" /></b>: <g:message code="dataresource.gbifupload.des04" />.<br/>
-                <g:message code="dataresource.gbifupload.des05" />.
-            </p>
-        </div>
+<div class="row-fluid">
 
-        <div class="input-append">
-            <div class="uneditable-input span3">
-                <i class="icon-file fileupload-exists"></i>
-                <span class="fileupload-preview"></span>
-            </div>
-            <span class="btn btn-file">
-                <span class="fileupload-new"><g:message code="dataresource.gbifupload.span01" /></span>
-                <span class="fileupload-exists"><g:message code="dataresource.gbifupload.span02" /></span>
-                <input type="file" name="myFile" />
-            </span>
-            <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"><g:message code="dataresource.gbifupload.link.remove" /></a>
-        </div>
-        <div style="clear:both">
-            <input type="submit" id="fileToUpload" class="btn fileupload-exists btn-primary" value="${message(code:"dataresource.gbifupload.btn.upload")}"/>
-            <span class="btn cancel"><g:message code="dataresource.gbifupload.btn.cancel" /></span>
-        </div>
-
+    <div class="well pull-right span6">
+        <p>
+            <g:message code="dataresource.gbifupload.des01" />
+            <a href="http://www.gbif.org/"><g:message code="dataresource.gbifupload.link.gbifportal" /></a>.
+            <br/>
+            <g:message code="dataresource.gbifupload.des02" />.
+        </p>
+        <p>
+            <b><g:message code="dataresource.gbifupload.des03" /></b>: <g:message code="dataresource.gbifupload.des04" />.<br/>
+            <g:message code="dataresource.gbifupload.des05" />.
+        </p>
+        <p>
+            <g:message code="dataresource.gbifupload.info0"/> <br/>
+            <strong>http://api.gbif.org/v1/occurrence/download/request/0001008-150512124619364.zip</strong>
+            <br/>
+            <g:message code="dataresource.gbifupload.info1"/> <br/>
+        </p>
     </div>
-</g:uploadForm>
 
+    <div class="span6">
+        <div class="input-append">
+            <label for="url"><g:message code="dataresource.gbifupload.label" />:</label>
+            <input type="text" class="input-xxlarge" id="url" name="url" value=""/>
+
+        </div>
+
+        <div>
+            <button class="btn" id="downloadArchiveBtn">
+                <r:img class="spinner-progress hide" uri="/images/spinner.gif"></r:img>
+                <g:message code="dataresource.gbifupload.btn"/>
+            </button>
+        </div>
+
+        <div id="download-result" class="hide well" style="margin-top:30px;">
+            <g:message code="dataresource.gbifupload.success0"/>:<br/>
+            <strong><span id="new-resource-name"></span></strong>.<br/>
+            <a href="#" id="new-resource-link"><g:message code="dataresource.gbifupload.success1"/></a>
+        </div>
+    </div>
+</div>
+
+<r:script>
+
+    var dataResourceUrlBase = '${g.createLink([controller:"dataResource",action:"show"])}/';
+
+    function downloadFile(){
+
+        $('#download-result').addClass("hide");
+        $('.spinner-progress').removeClass("hide")
+
+        $('#downloadArchiveBtn').prop('disabled', true);
+        $.ajax( "downloadGBIFFile?url=" +  $('#url').val() )
+        .done(function(data) {
+            //alert( "success - " + data.dataResourceUid );
+            $('#download-result').removeClass("hide");
+            $('#new-resource-name').html(data.dataResourceName );
+            $('#new-resource-link').attr('href', dataResourceUrlBase + data.dataResourceUid );
+        })
+        .fail(function() {
+            alert( "error" );
+        })
+        .always(function() {
+            $('.spinner-progress').addClass("hide");
+            $('#downloadArchiveBtn').prop('disabled', false);
+        });
+    }
+
+    $('#downloadArchiveBtn').click(downloadFile);
+
+</r:script>
 
 
 </body>
