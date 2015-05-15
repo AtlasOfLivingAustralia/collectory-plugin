@@ -361,7 +361,7 @@ class GbifService {
             } else if (file.getName().startsWith(EML_DIRECTORY)){
 
                 //open the XML file that contains the EML details for the GBIF resource
-                def xml = new XmlSlurper().parseText(zipFile.getInputStream(file).text)
+                def xml = new XmlSlurper().parseText(zipFile.getInputStream(file).getText("UTF-8"))
                 map.guid = xml.@packageId.toString()
                 map.pubDescription = xml.dataset?.abstract?.para
                 map.name = xml.dataset.title.toString()
