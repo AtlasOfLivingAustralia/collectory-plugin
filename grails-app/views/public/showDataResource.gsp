@@ -288,17 +288,20 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">google.load('visualization', '1.0', {'packages':['corechart']});</script>
 <script type="text/javascript">
-    var biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
-    var biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
+     var CHARTS_CONFIG = {
+         biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
+         biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
+         collectionsUrl: "${grailsApplication.config.grails.serverURL}"
+     };
 
     // configure the charts
       var facetChartOptions = {
           /* base url of the collectory */
-          collectionsUrl: "${grailsApplication.config.grails.serverURL}",
+          collectionsUrl: CHARTS_CONFIG.collectionsUrl,
           /* base url of the biocache ws*/
-          biocacheServicesUrl: biocacheServicesUrl,
+          biocacheServicesUrl: CHARTS_CONFIG.biocacheServicesUrl,
           /* base url of the biocache webapp*/
-          biocacheWebappUrl: biocacheWebappUrl,
+          biocacheWebappUrl: CHARTS_CONFIG.biocacheWebappUrl,
           /* a uid or list of uids to chart - either this or query must be present */
           instanceUid: "${instance.uid}",
           /* the list of charts to be drawn (these are specified in the one call because a single request can get the data for all of them) */
@@ -307,11 +310,11 @@
       }
       var taxonomyChartOptions = {
           /* base url of the collectory */
-          collectionsUrl: "${grailsApplication.config.grails.serverURL}",
+          collectionsUrl: CHARTS_CONFIG.collectionsUrl,
           /* base url of the biocache ws*/
-          biocacheServicesUrl: biocacheServicesUrl,
+          biocacheServicesUrl: CHARTS_CONFIG.biocacheServicesUrl,
           /* base url of the biocache webapp*/
-          biocacheWebappUrl: biocacheWebappUrl,
+          biocacheWebappUrl: CHARTS_CONFIG.biocacheWebappUrl,
           /* support drill down into chart - default is false */
           drillDown: true,
           /* a uid or list of uids to chart - either this or query must be present */
@@ -323,17 +326,15 @@
       }
       var taxonomyTreeOptions = {
           /* base url of the collectory */
-          collectionsUrl: "${grailsApplication.config.grails.serverURL}",
+          collectionsUrl: CHARTS_CONFIG.collectionsUrl,
           /* base url of the biocache ws*/
-          biocacheServicesUrl: biocacheServicesUrl,
+          biocacheServicesUrl: CHARTS_CONFIG.biocacheServicesUrl,
           /* base url of the biocache webapp*/
-          biocacheWebappUrl: biocacheWebappUrl,
+          biocacheWebappUrl: CHARTS_CONFIG.biocacheWebappUrl,
           /* the id of the div to create the charts in - defaults is 'charts' */
           targetDivId: "tree",
           /* a uid or list of uids to chart - either this or query must be present */
           instanceUid: "${instance.uid}"
-          /* a query to set the scope of the records */
-          //query: "notomys"
       }
 
       /************************************************************\
@@ -347,10 +348,6 @@
       $(this).error(function() {
         $(this).attr('src',"${resource(dir: 'images/map', file: 'single-occurrences.png')}");
       });
-      // IE hack as IE doesn't trigger the error handler
-      /*if ($.browser.msie && !n.complete) {
-        $(this).attr('src',"${resource(dir: 'images/map', file: 'single-occurrences.png')}");
-      }*/
     });
     /************************************************************\
     *
@@ -384,7 +381,7 @@
       if (${instance.resourceType == 'records'}) {
           // summary biocache data
           $.ajax({
-            url: "${grailsApplication.config.biocacheServicesUrl}/occurrences/search.json?pageSize=0&q=data_resource_uid:${instance.uid}",
+            url: CHARTS_CONFIG.biocacheServicesUrl + "/occurrences/search.json?pageSize=0&q=data_resource_uid:${instance.uid}",
             dataType: 'jsonp',
             timeout: 30000,
             complete: function(jqXHR, textStatus) {
