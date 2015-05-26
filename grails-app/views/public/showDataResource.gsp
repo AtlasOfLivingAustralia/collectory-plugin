@@ -134,7 +134,7 @@
                 <cl:dataCurrency date="${instance.dataCurrency}"/></p>
         </g:if>
 
-        <g:if test="${instance.resourceType == 'website' || instance.resourceType == 'records'}">
+        <g:if test="${!grailsApplication.config.disableLoggerLinks.toBoolean() && (instance.resourceType == 'website' || instance.resourceType == 'records')}">
             <div id='usage-stats'>
                 <h2><g:message code="public.sdr.usagestats.labe" /></h2>
 
@@ -288,8 +288,8 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">google.load('visualization', '1.0', {'packages':['corechart']});</script>
 <script type="text/javascript">
-    biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
-    biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
+    var biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
+    var biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
 
     // configure the charts
       var facetChartOptions = {
@@ -384,7 +384,7 @@
       if (${instance.resourceType == 'records'}) {
           // summary biocache data
           $.ajax({
-            url: biocacheServicesUrl + "/occurrences/search.json?pageSize=0&q=data_resource_uid:${instance.uid}",
+            url: "${grailsApplication.config.biocacheServicesUrl}/occurrences/search.json?pageSize=0&q=data_resource_uid:${instance.uid}",
             dataType: 'jsonp',
             timeout: 30000,
             complete: function(jqXHR, textStatus) {
