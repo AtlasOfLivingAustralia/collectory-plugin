@@ -15,6 +15,7 @@ class DataResource extends ProviderGroup implements Serializable {
         citation type:'text'
         defaultDarwinCoreValues type:'text'
         connectionParameters type:'text'
+        imageMetadata type:'text'
         harvestingNotes type:'text'
         mobilisationNotes type:'text'
         dataGeneralizations type:'text'
@@ -47,6 +48,7 @@ class DataResource extends ProviderGroup implements Serializable {
     Timestamp lastChecked           // when the last check was made for new data
     Timestamp dataCurrency          // the date of production of the most recent data file
     String connectionParameters     // json string containing parameters based on a connection profile - DIGiR, TAPIR, etc
+    String imageMetadata            // json string containing default dublin core values for any images associated with this resource
     String defaultDarwinCoreValues  // json string containing default values to use for missing DwC fields
     int downloadLimit = 0           // max number of records that can be included in a single download - 0 = no limit
     String contentTypes             // json array of type of content provided by the resource
@@ -76,6 +78,7 @@ class DataResource extends ProviderGroup implements Serializable {
         lastChecked(nullable:true)
         dataCurrency(nullable:true)
         connectionParameters(nullable:true)
+        imageMetadata(nullable:true)
         defaultDarwinCoreValues(nullable:true)
         contentTypes(nullable:true, maxSize:2048)
     }

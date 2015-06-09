@@ -1758,6 +1758,19 @@ class CollectoryTagLib {
         }
     }
 
+    def showImageMetadata = { attrs ->
+        // see if we have a protocol
+        if (attrs.imageMetadata?.toString()) {
+            // create a table to display them
+            out << "<table class='table'>"
+            def im = JSON.parse(attrs.imageMetadata.toString())
+            im.each {
+                out << "<tr><td>${it.key}</td><td>${it.value}</td></tr>"
+            }
+            out << "</table>"
+        }
+    }
+
     def showConnectionParameters = { attrs ->
         // see if we have a protocol
         if (attrs.connectionParameters?.toString()) {

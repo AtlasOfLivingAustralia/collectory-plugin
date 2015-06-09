@@ -30,10 +30,10 @@ class CrudService {
     static dataResourceStringProperties = ['rights','citation','dataGeneralizations','informationWithheld',
                 'permissionsDocument','licenseType','licenseVersion','status','mobilisationNotes','provenance',
                 'harvestingNotes','connectionParameters','resourceType','permissionsDocumentType','riskAssessment',
-                'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues']
+                'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata']
     static dataResourceNumberProperties = ['harvestFrequency','downloadLimit']
     static dataResourceTimestampProperties = ['lastChecked','dataCurrency']
-    static dataResourceJSONArrays = ['connectionParameters', 'contentTypes', 'defaultDarwinCoreValues']
+    static dataResourceJSONArrays = ['connectionParameters', 'contentTypes', 'defaultDarwinCoreValues', 'imageMetadata']
     //static dataResourceObjectProperties = ['dataProvider']
 
     static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId']
@@ -326,6 +326,9 @@ class CrudService {
                 }
                 if (p.connectionParameters) {
                     connectionParameters = p.connectionParameters.formatJSON()
+                }
+                if (p.imageMetadata) {
+                    imageMetadata = p.imageMetadata.formatJSON()
                 }
                 if (p.defaultDarwinCoreValues) {
                     defaultDarwinCoreValues = p.defaultDarwinCoreValues.formatJSON()
