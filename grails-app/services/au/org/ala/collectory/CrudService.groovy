@@ -36,7 +36,7 @@ class CrudService {
     static dataResourceJSONArrays = ['connectionParameters', 'contentTypes', 'defaultDarwinCoreValues', 'imageMetadata']
     //static dataResourceObjectProperties = ['dataProvider']
 
-    static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId']
+    static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId','webserviceUrl','uiUrl']
     static tempDataResourceNumberProperties = ['numberOfRecords']
 
     static institutionStringProperties = ['institutionType']
