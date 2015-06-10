@@ -36,6 +36,9 @@ class TempDataResource {
 
     int numberOfRecords     // determined from upload
 
+    String webserviceUrl    // sandbox.ala.org.au/biocache-service
+    String uiUrl            // sandbox.ala.org.au/ala-hub
+
     static constraints = {
         uid(maxSize: 20)
         name(nullable: true, maxSize:1024)
@@ -43,6 +46,8 @@ class TempDataResource {
         alaId(nullable: true, maxSize:256)
         firstName(nullable: true, maxSize: 255)
         lastName(nullable: true, maxSize: 255)
+        webserviceUrl(nullable: true, maxSize: 255)
+        uiUrl(nullable: true, maxSize: 255)
     }
 
     static auditable = [ignore: ['version','dateCreated','lastUpdated']]
@@ -83,7 +88,8 @@ class TempDataResource {
      * @return the ContactFor created
      *
      */
-    ContactFor addToContacts(Contact contact, String role, boolean isAdministrator, boolean isPrimaryContact, String modifiedBy) {
+    ContactFor addToContacts(Contact contact, String role, boolean isAdministrator, boolean isPrimaryContact,
+                             String modifiedBy) {
         def cf = new ContactFor()
         cf.contact = contact
         cf.entityUid = uid

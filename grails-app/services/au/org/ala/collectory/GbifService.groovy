@@ -54,7 +54,7 @@ class GbifService {
     static final String DATASET_SEARCH = "/dataset/search?publishingCountry={0}&type=OCCURRENCE" //GET request to this
 
     def crudService
-    def CONCURRENT_LOADS = 10
+    def CONCURRENT_LOADS = 3
     def DOWNLOAD_LIMIT = 50
 
     def pool = Executors.newFixedThreadPool(CONCURRENT_LOADS)

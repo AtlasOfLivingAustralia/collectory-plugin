@@ -68,14 +68,16 @@
         </div>
 
         <div class="span4">
-        <!-- provider -->
             <g:if test="${dp?.logoRef?.file}">
                 <g:link action="show" id="${dp.uid}">
                     <img class="institutionImage"
                          src='${resource(absolute: "true", dir: "data/dataProvider/", file: fieldValue(bean: dp, field: 'logoRef.file'))}'/>
                 </g:link>
-                <!--div style="clear: both;"></div-->
             </g:if>
+            <g:elseif test="${instance?.logoRef?.file}">
+                <img class="institutionImage"
+                     src='${resource(absolute: "true", dir: "data/dataResource/", file: fieldValue(bean: instance, field: 'logoRef.file'))}'/>
+            </g:elseif>
         </div>
     </div>
 </div><!--close header-->

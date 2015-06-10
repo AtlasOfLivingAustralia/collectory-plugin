@@ -165,15 +165,27 @@ class TempDataResourceController {
                 }
             }
             addContentLocation "/ws/tempDataResource"
-            def summaries = list.collect {[name: it.name, uid: it.uid, alaId: it.alaId, dateCreated: it.dateCreated,
-                                            lastUpdated: it.lastUpdated, numberOfRecords: it.numberOfRecords]}
+            def summaries = list.collect { buildSummary(it) }
             render summaries as JSON
         } else {
             addContentLocation "/ws/tempDataResource"
             def list = TempDataResource.list([sort:'name'])
-            def summaries = list.collect {[name: it.name, uid: it.uid,email: it.email]}
+            def summaries = list.collect { buildSummary(it) }
             render summaries as JSON
         }
+    }
+
+    private def buildSummary(tempDataResource){
+        [
+            name: tempDataResource.name,
+            uid: tempDataResource.uid,
+            alaId: tempDataResource.alaId,
+            dateCreated: tempDataResource.dateCreated,
+            lastUpdated: tempDataResource.lastUpdated,
+            numberOfRecords: tempDataResource.numberOfRecords,
+            webserviceUrl:tempDataResource.webserviceUrl,
+            uiUrl:tempDataResource.uiUrl
+        ]
     }
 
     def index = {
