@@ -1,4 +1,4 @@
-<%@ page import="groovy.json.JsonSlurper; au.org.ala.collectory.DataResource;au.org.ala.collectory.Institution;au.org.ala.collectory.Collection" %>
+<%@ page import="au.org.ala.collectory.Licence; groovy.json.JsonSlurper; au.org.ala.collectory.DataResource;au.org.ala.collectory.Institution;au.org.ala.collectory.Collection" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -23,8 +23,7 @@
     <div class="row-fluid">
         <div class="span6">
 
-            <g:set var="imageMetadata" value="${new groovy.json.JsonSlurper().parseText(command?.imageMetadata)}"/>
-
+            <g:set var="imageMetadata" value="${new groovy.json.JsonSlurper().parseText(command.imageMetadata?:'{}')}"/>
 
             <g:form controller="dataResource" action="updateImageMetadata">
                 <g:hiddenField name="id" value="${command?.id}" />
@@ -40,10 +39,8 @@
                     <textarea name="rightsHolder" rows="3" class="input-xxlarge" placeholder="Type something…">${imageMetadata?.rightsHolder}</textarea>
 
                     <label>Licence</label>
-
-                    <g:set var="licences" value="${['Creative Commons Attribution', 'Creative Commons Attribution-Noncommercial', 'Creative Commons Attribution-Share Alike', 'Creative Commons Attribution-Noncommercial-Share Alike']}"/>
-
-                    <g:select name="license" from="${licences}" id="license" class="form-control input-xxlarge" value="${imageMetadata?.license}">
+                    <g:select name="license" from="${au.org.ala.collectory.Licence.findAll().collect{it.name } }" id="license"
+                              class="form-control input-xxlarge" value="${imageMetadata?.license}">
                     </g:select>
                     <br/>
                     <button type="submit" class="btn">Save</button>
