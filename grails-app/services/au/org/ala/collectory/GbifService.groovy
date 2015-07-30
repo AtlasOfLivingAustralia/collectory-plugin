@@ -52,6 +52,7 @@ class GbifService {
     // GET request to retrieve download
     static final String DOWNLOAD_STATUS = "/occurrence/download/" //GET request to this
     static final String DATASET_SEARCH = "/dataset/search?publishingCountry={0}&type=OCCURRENCE" //GET request to this
+    static final String DATASET_RECORD_COUNT = "/occurrence/count?datasetKey={0}"
 
     def crudService
     def CONCURRENT_LOADS = 3
@@ -86,7 +87,7 @@ class GbifService {
      * @return
      */
     def getStatusInfoFor(String country){
-      return loadMap[(country.toUpperCase())]
+        return loadMap[(country.toUpperCase())]
     }
 
     /**
@@ -129,10 +130,19 @@ class GbifService {
                                     }
                                 }
 
+                                // is data available
+                                if(!isDataAvailableForResource(l.gbifResourceUid)){
+                                    l.phase = "Data is currently not available for this resource through GBIF"
+                                    loading = false
+                                    l.setCompleted()
+                                    return null
+                                }
+
                                 if(skipReload){
                                     l.phase = "Resource is already loaded. To reload check the reload existing resource checkbox"
                                     loading = false
                                     l.dataResourceUid = existingDataResource.uid
+                                    l.setCompleted()
                                     return null
 
                                 } else {
@@ -157,10 +167,27 @@ class GbifService {
                                             File localTmpDir = new File(grailsApplication.config.uploadFilePath + File.separator + "tmp" + File.separator + l.downloadId)
                                             FileUtils.forceMkdir(localTmpDir)
                                             String tmpFileName = localTmpDir.getAbsolutePath() + File.separator + l.downloadId
-                                            IOUtils.copy(new URL(grailsApplication.config.gbifApiUrl + OCCURRENCE_DOWNLOAD + "/" + l.downloadId + ".zip").openStream(), new FileOutputStream(tmpFileName))
+
+                                            // https://github.com/AtlasOfLivingAustralia/collectory-plugin/issues/53
+                                            InputStream instream = new URL(grailsApplication.config.gbifApiUrl + OCCURRENCE_DOWNLOAD +
+                                                    "/" + l.downloadId + ".zip").openStream();
+                                            FileOutputStream outstream = new FileOutputStream(tmpFileName);
+                                            try {
+                                                IOUtils.copy(instream, outstream);
+                                            } catch (Exception e) {
+                                                l.phase = "Failed To download from GBIF."
+                                                loading = false;
+                                                return null;
+
+                                            } finally {
+                                                IOUtils.closeQuietly(instream);
+                                                IOUtils.closeQuietly(outstream);
+                                            }
+
                                             //4) Now create the data resource using the file downloaded
                                             l.phase = "Creating GBIF Data resource..."
                                             def dr = createOrUpdateGBIFResource(new File(tmpFileName))
+                                            l.phase = "GBIF Data resource created..."
                                             if (dr && existingDataResource) {
                                                 l.dataResourceUid = dr.uid
                                                 l.phase = "Data Resource Updated"
@@ -174,7 +201,7 @@ class GbifService {
                                             l.phase = "Download Failed: " + status
                                         }
                                         //Thread.sleep(5000)
-                                        l.setLoaded()
+                                        l.setCompleted()
                                         //l.dataResourceUid="dr123"
                                         //check to see if all the items have finished loading
                                         log.debug("Is load still running : " + gls.isLoadRunning())
@@ -209,7 +236,7 @@ class GbifService {
     def getListOfGbifResources(String country, Integer userLimit){
         country = country.toUpperCase()
         //first get a request so we know how many we are dealing with
-        log.debug(DATASET_SEARCH + " " +country)
+        log.debug(DATASET_SEARCH + " " + country)
         String url = grailsApplication.config.gbifApiUrl + MessageFormat.format(DATASET_SEARCH, country)
         JSONObject countJson = getJSONWS(url + "&limit=1")
         log.debug("Search URL: " + url);
@@ -290,13 +317,13 @@ class GbifService {
         }
         dr.lastChecked = (new Date()).toTimestamp()
 
-        log.debug(dr.uid + "  " + dr.id + " " + dr.name)    //.toString() + " " + dr.hasErrors() + " " + dr.getErrors())
+        log.info(dr.uid + "  " + dr.id + " " + dr.name)    //.toString() + " " + dr.hasErrors() + " " + dr.getErrors())
 
         //4) Create the DwCA for the resource using the GBIF default meta.xml and occurrences.txt
         String zipFileName = uploadedFile.getParentFile().getAbsolutePath() + File.separator + json.get("guid") + ".zip"
         //add the occurrence.txt file
         IOUtils.copy(new FileInputStream(uploadedFile), new FileOutputStream(zipFileName))
-        log.debug("Created the zip file " + zipFileName)
+        log.info("Created the zip file " + zipFileName)
         //5) Upload the DwCA for the resource to the created data resource
         applyDwCA(new File(zipFileName), dr)
         return dr
@@ -333,15 +360,6 @@ class GbifService {
             log.error(e.getClass().toString() + " : " + e.getMessage(), e)
         }
     }
-//
-//    def extractMetaXML(ZipFile zipFile){
-//       def entry = zipFile.getEntry("meta.xml")
-//       if(entry != null){
-//           zipFile.getInputStream(entry).text
-//       } else {
-//           null
-//       }
-//    }
 
     /**
      * Extracts all the details from the GBIF download to use for the data resource.
@@ -450,6 +468,28 @@ class GbifService {
                 log.debug("[getJSONWS] FAILURE: " + resp)
                 return null
             }
+        }
+    }
+
+    /**
+     * Check to see if data is available for the supplied resource ID.
+     * @param resourceId
+     * @return
+     */
+    def isDataAvailableForResource(String resourceId){
+
+        //http://api.gbif.org/v1/occurrence/count?datasetKey=6679952f-649b-4888-bd97-00daca4b8cc1
+        String url = grailsApplication.config.gbifApiUrl + MessageFormat.format(DATASET_RECORD_COUNT, resourceId)
+        try {
+            def value = new URL(url).getText("UTF-8")
+            if(value && value.toInteger() > 0){
+                true
+            } else {
+                false
+            }
+        } catch (Exception e){
+            log.error("Problem calling the dataset count service for ${resourceId}", e)
+            false
         }
     }
 

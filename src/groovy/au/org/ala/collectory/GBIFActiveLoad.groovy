@@ -28,12 +28,12 @@ class GBIFActiveLoad {
     String name
     String phase="<NOT STARTED>"
     String dataResourceUid
-    private boolean loaded=false
-    public void setLoaded(){
-        loaded =true
+    private boolean completed = false
+    public void setCompleted(){
+        completed = true
     }
-    def isLoaded(){
-        return loaded
+    def isComplete(){
+        return completed
     }
 
 }
