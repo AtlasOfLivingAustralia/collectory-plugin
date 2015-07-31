@@ -1,6 +1,5 @@
 import org.codehaus.groovy.grails.context.support.PluginAwareResourceBundleMessageSource
 import au.org.ala.collectory.ExtendedPluginAwareResourceBundleMessageSource
-import grails.build.logging.GrailsConsole
 import grails.util.Environment
 
 class CollectoryGrailsPlugin {
@@ -9,7 +8,7 @@ class CollectoryGrailsPlugin {
     def authenticateService
 
     // the plugin version
-    def version = "1.4.2-SNAPSHOT"
+    def version = "1.4.2"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.3 > *"
     // resources that are excluded from plugin packaging
@@ -39,7 +38,7 @@ from the ALA collectory app (no local DB is required for this app).
     // Any additional developers beyond the author specified above.
     def developers = [
             [ name: "Dave Martin", email: "david.martin@csiro.au" ],
-            [ name: "Dave Baird", email: "david.baird@csiro.au" ]
+            [ name: "Nick dos Remedios", email: "nick.dosremedios@csiro.au" ]
     ]
 
     // Location of the plugin's issue tracker.
@@ -48,9 +47,7 @@ from the ALA collectory app (no local DB is required for this app).
     // Online location of the plugin's browseable source code.
     def scm = [ url: "https://github.com/AtlasOfLivingAustralia/collectory-plugin" ]
 
-    def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before
-    }
+    def doWithWebDescriptor = { xml -> }
 
     def doWithSpring = {
         def config = application.config
