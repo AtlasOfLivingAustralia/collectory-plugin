@@ -160,7 +160,7 @@
                 <!-- connection parameters -->
                 <h3><g:message code="dataresource.show.title02" /></h3>
 
-                <cl:showConnectionParameters connectionParameters="${instance.connectionParameters}"/></p>
+                <cl:showConnections connections="${instance.connections}"/></p>
 
                 <g:if test="${instance.resourceType == 'records'}">
                     <!-- darwin core defaults -->

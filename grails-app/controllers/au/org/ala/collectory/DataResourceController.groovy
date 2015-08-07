@@ -62,7 +62,7 @@ class DataResourceController extends ProviderGroupController {
     }
 
     def updateContribution = {
-        def pg = get(params.id)
+        DataResource pg = get(params.id)
 
         // process connection parameters
         def protocol = params.remove('protocol')
@@ -104,7 +104,9 @@ class DataResourceController extends ProviderGroupController {
                 }
             }
         }
-        params.connectionParameters = (cp as JSON).toString()
+        DataConnection connection = new DataConnection(parameters: cp)
+        if (!connection.sameConnection(pg.currentConnection))
+            pg.addConnection(connection)
 
         // process dates
         def lastChecked = params.remove('lastChecked')

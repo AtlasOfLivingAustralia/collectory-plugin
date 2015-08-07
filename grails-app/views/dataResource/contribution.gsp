@@ -132,7 +132,7 @@
 
             <!-- harvest parameters -->
             <tr><td colspan="3"><h3><g:message code="dataresource.contribution.table0101" /></h3></td></tr>
-            <cl:connectionParameters bean="command" connectionParameters="${command.connectionParameters}"/>
+            <cl:connection bean="command" parameters="${command.currentConnection}"/>
 
             <g:if test="${command.resourceType == 'records'}">
                 <!-- darwin core defaults -->

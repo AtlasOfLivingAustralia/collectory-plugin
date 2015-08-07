@@ -1758,59 +1758,62 @@ class CollectoryTagLib {
         }
     }
 
-    def showConnectionParameters = { attrs ->
-        // see if we have a protocol
-        if (attrs.connectionParameters?.toString()) {
-
-            // create a table to display them
-            out << "<table class='table'>"
-
-            // parse the storage string
-            def cp = JSON.parse(attrs.connectionParameters.toString())
-
-            // load the profile of the selected protocol
-            def profile = metadataService.getConnectionProfile(cp.protocol)
-
-            // display the protocol
-            out << "<tr><td>Protocol:</td><td>${profile.display}</td></tr>"
-
-            // display each of the protocol's parameters
-            profile.params.each {pp ->
-                def value
-                if (pp.paramName == "termsForUniqueKey") {
-                    // show as comma separated list
-                    value = cp."${pp.paramName}".collect {it}.join(', ') as String
-                }
-                else if (cp."${pp.paramName}" instanceof List) {
-                    // show as list
-                    value = cp."${pp.paramName}".join(',');
-                }
-                else {
-                    // encode any control characters
-                    value = encodeControlChars(cp."${pp.paramName}")
-                }
-
-                if(pp.paramName == "url"){
-                    if(value){
-                        out << "<tr><td id='dataURL'>Data URLs</td><td>"
-                        def rdr = new CSVReader(new StringReader(value))
-                        def dataUrls = rdr.readNext()
-                        dataUrls.each { dataUrl ->
-                            out << "<a href=\"" + metadataService.convertPath(dataUrl)  + "\"> " + metadataService.convertPath(dataUrl) + "</a><br/>"
-                        }
-
-                        out << "</td></tr>"
-                    } else {
-                        out << "<tr><td id='dataURL'>Data URL</td><td>"+ g.message([code:'no.dataurl.supplied', default:'No data URL supplied'], null) + "</td></tr>"
-                    }
-                }
-
-                out << "<tr><td id=\"${pp.paramName}\">${pp.display}:</td><td>" + (value ?: 'Not supplied') + "</td></tr>"
-            }
-            out << "</table>"
-        }
-        else {
+    def showConnections = { attrs ->
+        SortedSet<DataConnection> connections = attrs.connections
+        if (!connections || connections.isEmpty())
             out << "none"
+        else {
+            out << "<div id=\"connections\">"
+            for (connection in connections) {
+                out << "<h3>${connection.sequence}</h3>"
+
+                // create a table to display them
+                out << "<div><table class='table'>"
+
+                // parse the storage string
+                def cp = connection.parameters
+
+                // load the profile of the selected protocol
+                def profile = metadataService.getConnectionProfile(cp.protocol)
+
+                // display the protocol
+                out << "<tr><td>Protocol:</td><td>${profile.display}</td></tr>"
+
+                // display each of the protocol's parameters
+                profile.params.each { pp ->
+                    def value
+                    if (pp.paramName == "termsForUniqueKey") {
+                        // show as comma separated list
+                        value = cp."${pp.paramName}".collect { it }.join(', ') as String
+                    } else if (cp."${pp.paramName}" instanceof List) {
+                        // show as list
+                        value = cp."${pp.paramName}".join(',');
+                    } else {
+                        // encode any control characters
+                        value = encodeControlChars(cp."${pp.paramName}")
+                    }
+
+                    if (pp.paramName == "url") {
+                        if (value) {
+                            out << "<tr><td id='dataURL'>Data URLs</td><td>"
+                            def rdr = new CSVReader(new StringReader(value))
+                            def dataUrls = rdr.readNext()
+                            dataUrls.each { dataUrl ->
+                                out << "<a href=\"" + metadataService.convertPath(dataUrl) + "\"> " + metadataService.convertPath(dataUrl) + "</a><br/>"
+                            }
+
+                            out << "</td></tr>"
+                        } else {
+                            out << "<tr><td id='dataURL'>Data URL</td><td>" + g.message([code: 'no.dataurl.supplied', default: 'No data URL supplied'], null) + "</td></tr>"
+                        }
+                    }
+
+                    out << "<tr><td id=\"${pp.paramName}\">${pp.display}:</td><td>" + (value ?: 'Not supplied') + "</td></tr>"
+                }
+                out << "</table></div>"
+            }
+            out << "</div><script>\$(function() { \$(\"#connections\").accordion(); });</script>"
+
         }
     }
 
@@ -1839,15 +1842,19 @@ class CollectoryTagLib {
     }
 
     /**
-     * Builds the html for editing connection parameters.
+     * Builds the html for editing connection information.
      */
-    def connectionParameters = { attrs ->
+    def connection = { attrs ->
         // see if we have a protocol
+        def conn = null
         def cp = null
         def protocol = 'none'
-        if (attrs.connectionParameters.toString()) {
-            cp = JSON.parse(attrs.connectionParameters.toString())
-            protocol = cp.protocol
+        if (attrs.parameters) {
+            conn = attrs.parameters
+            if (conn) {
+                cp = conn.parameters
+                protocol = cp.protocol
+            }
         }
 
         // show the protocol selector
@@ -1887,7 +1894,7 @@ class CollectoryTagLib {
                 }
 
                 // unravel any JSON lists
-                if (displayedValue instanceof JSONArray) {
+                if (displayedValue instanceof JSONArray || displayedValue instanceof List) {
                     displayedValue = displayedValue.collect {it}.join(', ') as String
                 }
 

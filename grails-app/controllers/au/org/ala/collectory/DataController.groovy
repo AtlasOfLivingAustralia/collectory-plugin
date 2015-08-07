@@ -924,7 +924,7 @@ class DataController {
             badRequest "must be a data resource"
         } else {
             response.setContentType("application/json")
-            render metadataService.convertAnyLocalPaths(pg.connectionParameters)
+            render metadataService.convertAnyLocalPaths(pg.currentConnection?.parameters as JSON)
         }
     }
 

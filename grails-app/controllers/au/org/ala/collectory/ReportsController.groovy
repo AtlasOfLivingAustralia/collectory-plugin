@@ -191,7 +191,7 @@ class ReportsController {
                 def list = DataResource.list(sort:'name').collect {[
                         uid: it.uid, name: it.name, status: it.status, harvestingFrequency: it.harvestFrequency,
                         lastChecked: it.lastChecked, dataCurrency: it.dataCurrency,
-                        connectionParameters: it.connectionParameters ? JSON.parse(it.connectionParameters) : null]}
+                        connectionParameters: it.getCurrentConnection().parameters ]}
                 render list as JSON
             }
         }

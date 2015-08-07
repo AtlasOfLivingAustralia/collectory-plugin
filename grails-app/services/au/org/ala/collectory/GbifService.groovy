@@ -286,13 +286,13 @@ class GbifService {
             file.renameTo(targetFile)
             log.debug("Finished moving the file for " + dr.getUid())
             //move the DwCA where it needs to be
-            def connParams = (new JsonSlurper()).parseText(dr.connectionParameters?:'{}')
-            connParams.url = 'file:///'+targetFileName
-            connParams.protocol = "DwCA"
-            connParams.termsForUniqueKey = ["gbifID"]
+            def conn = dr.getCurrentConnection()?.clone() ?: new DataConnection()
+            conn.parameters.url = 'file:///'+targetFileName
+            conn.parameters.protocol = "DwCA"
+            conn.parameters.termsForUniqueKey = ["gbifID"]
             //NQ we need a transaction so the this can be executed in a multi-threaded manner.
             DataResource.withTransaction {
-                dr.connectionParameters = (new JsonOutput()).toJson(connParams)
+                dr.addConnection(conn)
                 log.debug("Finished creating the connection params for " + dr.getUid())
                 dr.save(flush:true)
                 log.debug("Finished saving the connection params for " + dr.getUid())

@@ -324,9 +324,10 @@ class CrudService {
                 if (p.listConsumers()) {
                     linkedRecordConsumers = p.listConsumers().formatEntitiesFromUids()
                 }
-                if (p.connectionParameters) {
-                    connectionParameters = p.connectionParameters.formatJSON()
+                if (p.connections) {
+                    connections = p.connections.collect { conn -> [ parameters: conn.parameters ]}
                 }
+                connectionParameters = p.currentConnection?.parameters
                 if (p.defaultDarwinCoreValues) {
                     defaultDarwinCoreValues = p.defaultDarwinCoreValues.formatJSON()
                 }
