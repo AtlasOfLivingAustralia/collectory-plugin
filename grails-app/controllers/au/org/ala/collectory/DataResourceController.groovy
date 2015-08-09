@@ -61,6 +61,25 @@ class DataResourceController extends ProviderGroupController {
         [Collection, Object[]].any { it.isAssignableFrom(object.getClass()) }
     }
 
+
+    def updateImageMetadata = {
+
+        def ignores = ["action", "version", "id", "format", "controller"]
+
+        //get the UID
+        def dataResource = get(params.id)
+        def metadata = [:]
+
+        params.entrySet().each {
+            if(!(it.key in ignores)){
+                metadata[it.key] = it.value
+            }
+        }
+        dataResource.imageMetadata = (metadata as JSON).toString()
+        dataResource.save(flush:true)
+        redirect(action: 'show', params: [id:params.id])
+    }
+
     def updateContribution = {
         DataResource pg = get(params.id)
 

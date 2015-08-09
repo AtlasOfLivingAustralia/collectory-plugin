@@ -98,10 +98,10 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="brand" href="#">Atlas of Living Australia</a>
+                <a class="brand" href="#">${orgNameLong}</a>
                 <div class="nav-collapse collapse">
                     <p class="navbar-text pull-right">
-                        Logged in as <a href="#" class="navbar-link">Fred Bare</a>
+                        %{--Logged in as <a href="#" class="navbar-link">Fred Bare</a>--}%
                     </p>
                     <ul class="nav">
                         <li class="active"><a href="#">Home</a></li>

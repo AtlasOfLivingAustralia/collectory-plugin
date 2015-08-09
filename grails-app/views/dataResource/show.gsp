@@ -112,6 +112,14 @@
                 <cl:editButton uid="${instance.uid}" page="description"/>
               </div>
 
+              <!-- image metadata -->
+              <div class="show-section well">
+                <h2>Image metadata</h2>
+                <p>These values the default values displayed for any images loaded for this data resource.</p>
+                <cl:showImageMetadata imageMetadata="${instance.imageMetadata}"/>
+                <cl:editButton uid="${instance.uid}" page="/dataResource/imageMetadata"/>
+              </div>
+
               <!-- taxonomic range -->
               <div class="show-section well">
                 <h2>Taxonomic range</h2>

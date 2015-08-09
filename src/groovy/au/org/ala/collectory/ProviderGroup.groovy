@@ -95,7 +95,7 @@ abstract class ProviderGroup implements Serializable {
     }
 
     static constraints = {
-        guid(nullable:true, maxSize:100)
+        guid(nullable:true, maxSize:256)
         uid(blank:false, maxSize:20)
         name(blank:false, maxSize:1024)
         acronym(nullable:true, maxSize:45)

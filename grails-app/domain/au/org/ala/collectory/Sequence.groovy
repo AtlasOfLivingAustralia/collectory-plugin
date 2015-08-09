@@ -6,6 +6,5 @@ class Sequence {
     String name
     String prefix
 
-    static constraints = {
-    }
+    static constraints = {}
 }

@@ -50,6 +50,7 @@ class DataResource extends ProviderGroup implements Serializable {
     Timestamp lastChecked           // when the last check was made for new data
     Timestamp dataCurrency          // the date of production of the most recent data file
     SortedSet<DataConnection> connections = [] as SortedSet<DataConnection>    // The list of data connections, with the most current at the front
+    String imageMetadata            // json string containing default dublin core values for any images associated with this resource
     String defaultDarwinCoreValues  // json string containing default values to use for missing DwC fields
     int downloadLimit = 0           // max number of records that can be included in a single download - 0 = no limit
     String contentTypes             // json array of type of content provided by the resource
@@ -78,6 +79,7 @@ class DataResource extends ProviderGroup implements Serializable {
         mobilisationNotes(nullable:true)
         lastChecked(nullable:true)
         dataCurrency(nullable:true)
+        imageMetadata(nullable:true)
         defaultDarwinCoreValues(nullable:true)
         contentTypes(nullable:true, maxSize:2048)
     }
@@ -277,6 +279,5 @@ class DataResource extends ProviderGroup implements Serializable {
         connection.sequence = connections.inject(0, { curr, conn -> Math.max(curr, conn.sequence) }) + 1
         connections.add(connection)
     }
-
-
+    
 }

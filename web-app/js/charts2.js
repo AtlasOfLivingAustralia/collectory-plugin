@@ -600,11 +600,11 @@ var facetChartGroup = {
 
 /***** external services & links *****/
 // an instance of the collections app - used for name lookup services
-var collectionsUrl = "http://collections.ala.org.au";  // should be overridden from config by the calling page
+var collectionsUrl = "http://fake-collections.ala.org.au";  // should be overridden from config by the calling page
 // an instance of the biocache web services app - used for facet and taxonomic breakdowns
-var biocacheServicesUrl = "http://biocache.ala.org.au/ws";  // should be overridden from config by the calling page
+var biocacheServicesUrl = "http://fake-biocache.ala.org.au/ws";  // should be overridden from config by the calling page
 // an instance of a web app - used to display search results
-var biocacheWebappUrl = "http://biocache.ala.org.au";  // should be overridden from config by the calling page
+var biocacheWebappUrl = "http://fake-biocache.ala.org.au";  // should be overridden from config by the calling page
 
 // defaults for taxa chart
 var taxonomyPieChartOptions = {
@@ -691,7 +691,7 @@ var syncTransforms = {
 function loadFacetCharts(chartOptions) {
     if (chartOptions.collectionsUrl != undefined) { collectionsUrl = chartOptions.collectionsUrl; }
     if (chartOptions.biocacheServicesUrl != undefined) { biocacheServicesUrl = chartOptions.biocacheServicesUrl; }
-    if (chartOptions.displayRecordsUrl != undefined) { biocacheWebappUrl = chartOptions.displayRecordsUrl; }
+    if (chartOptions.biocacheWebappUrl != undefined) { biocacheWebappUrl = chartOptions.biocacheWebappUrl; }
 
     var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
     chartsDiv.append($("<span>Loading charts...</span>"));
@@ -958,7 +958,7 @@ var taxonomyChart = {
 
             if (chartOptions.collectionsUrl != undefined) { collectionsUrl = chartOptions.collectionsUrl; }
             if (chartOptions.biocacheServicesUrl != undefined) { biocacheServicesUrl = chartOptions.biocacheServicesUrl; }
-            if (chartOptions.displayRecordsUrl != undefined) { biocacheWebappUrl = chartOptions.displayRecordsUrl; }
+            if (chartOptions.biocacheWebappUrl != undefined) { biocacheWebappUrl = chartOptions.biocacheWebappUrl; }
 
             this.baseQuery = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
             this.query = this.baseQuery + (chartOptions.subquery ? chartOptions.subquery : '');
