@@ -596,7 +596,7 @@ abstract class ProviderGroupController {
         f.transferTo(newFile)
 
         //update the connection profile stuff
-        def conn = dataResource.getCurrentConnection().clone()
+        def parameters = [:]
         //retrieve any additional params
         def connProfile = metadataService.getConnectionProfile(params.protocol)
         def allConnParams = metadataService.getConnectionParameters()
@@ -606,9 +606,9 @@ abstract class ProviderGroupController {
             def fullParamDescription = allConnParams.get(param.name)
 
             if(fullParamDescription.type == 'boolean'){
-                conn.parameters[param.paramName] = Boolean.parseBoolean(params[param.paramName])
+                parameters[param.paramName] = Boolean.parseBoolean(params[param.paramName])
             } else {
-                conn.parameters[param.paramName] = params[param.paramName]
+                parameters[param.paramName] = params[param.paramName]
             }
         }
 
@@ -619,13 +619,12 @@ abstract class ProviderGroupController {
             origString.split(',').each {
                terms << it.trim()
             }
-           conn.parameters.termsForUniqueKey = terms
+           parameters.termsForUniqueKey = terms
         }
+        parameters.url = 'file:///' + newFile.getPath()
+        parameters.protocol = params.protocol
 
-        conn.parameters.url = 'file:///' + newFile.getPath()
-        conn.parameters.protocol = params.protocol
-
-        dataResource.addConnection(conn)
+        dataResource.addConnection(new DataConnection(parameters: parameters))
         dataResource.save(flush:true)
 
         redirect([controller: 'dataResource', action: 'show', id: dataResource.uid])
