@@ -528,25 +528,28 @@ abstract class ProviderGroupController {
      * in the file.
      */
     def gbifUpload = {
-        render(view: "gbifUpload")
     }
 
     /**
      * Uploads the supplied GBIF file creating a new data resource based on the supplied EML details
      */
-    def uploadGBIFFile = {
-        //gbifService.extractDataResourceJSON("/data/biocache-download/GBIF/0005083-131106143450413")
-        //gbifService.createGBIFResource(new File("/data/biocache-download/GBIF/0005083-131106143450413.zip"))
-        //createGBIFResourceFromMultipart
-        def f = request.getFile('myFile')
-        if (f.empty) {
-            flash.message = message(code: "provider.group.controller.12", default: "file cannot be empty")
-            response.setHeader("Content-type", "text/plain; charset=UTF-8")
-            render(view: 'gbifUpload')
-            return
+    def downloadGBIFFile = {
+
+        log.info("Downloading file: " + params.url)
+
+        try {
+            def dr = gbifService.createGBIFResourceFromArchiveURL(params.url)
+            if(dr){
+                render(text:([success:true, dataResourceName:dr.name, dataResourceUid: dr.uid] as JSON).toString(),
+                        encoding:"UTF-8", contentType: "application/json")
+            } else {
+                render(text:([success:false] as JSON).toString(), encoding:"UTF-8", contentType: "application/json")
+            }
+
+        } catch (Exception e){
+            log.error(e.getMessage(), e)
+            render(text:([success:false] as JSON).toString(), encoding:"UTF-8", contentType: "application/json")
         }
-        def dr = gbifService.createGBIFResourceFromMultipart(f)
-        redirect([controller: 'dataResource', action: 'show', id: dr.uid])
     }
 
     def upload = {
@@ -593,7 +596,7 @@ abstract class ProviderGroupController {
         f.transferTo(newFile)
 
         //update the connection profile stuff
-        def connParams = (new JsonSlurper()).parseText(dataResource.connectionParameters?:'{}')
+        def parameters = [:]
         //retrieve any additional params
         def connProfile = metadataService.getConnectionProfile(params.protocol)
         def allConnParams = metadataService.getConnectionParameters()
@@ -603,9 +606,9 @@ abstract class ProviderGroupController {
             def fullParamDescription = allConnParams.get(param.name)
 
             if(fullParamDescription.type == 'boolean'){
-                connParams[param.paramName] = Boolean.parseBoolean(params[param.paramName])
+                parameters[param.paramName] = Boolean.parseBoolean(params[param.paramName])
             } else {
-                connParams[param.paramName] = params[param.paramName]
+                parameters[param.paramName] = params[param.paramName]
             }
         }
 
@@ -616,13 +619,12 @@ abstract class ProviderGroupController {
             origString.split(',').each {
                terms << it.trim()
             }
-           connParams.termsForUniqueKey = terms
+           parameters.termsForUniqueKey = terms
         }
+        parameters.url = 'file:///' + newFile.getPath()
+        parameters.protocol = params.protocol
 
-        connParams.url = 'file:///' + newFile.getPath()
-        connParams.protocol = params.protocol
-
-        dataResource.connectionParameters = (new JsonOutput()).toJson(connParams)
+        dataResource.addConnection(new DataConnection(parameters: parameters))
         dataResource.save(flush:true)
 
         redirect([controller: 'dataResource', action: 'show', id: dataResource.uid])

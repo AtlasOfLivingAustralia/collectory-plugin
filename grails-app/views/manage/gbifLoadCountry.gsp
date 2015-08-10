@@ -29,6 +29,13 @@
                             <td valign="top" class="name"><label for="maxResources"><g:message code="manage.gbiflc.label04" />:</label></td>
                             <td valign="top" class="value"><g:field type="number" name="maxResources"  value="1"/></td>
                         </tr>
+                        <tr class="prop">
+                            <td colspan="2">
+                                <label class="checkbox">
+                                    <input type="checkbox" name="reloadExistingResources"> Reload existing resources
+                                </label>
+                            </td>
+                        </tr>
                     </table>
 
                 <span class="button"><input type="submit" name="performGBIFLoad" value="Load" class="save btn"></span>

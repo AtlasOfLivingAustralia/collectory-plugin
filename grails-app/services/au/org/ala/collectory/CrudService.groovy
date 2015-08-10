@@ -30,13 +30,13 @@ class CrudService {
     static dataResourceStringProperties = ['rights','citation','dataGeneralizations','informationWithheld',
                 'permissionsDocument','licenseType','licenseVersion','status','mobilisationNotes','provenance',
                 'harvestingNotes','connectionParameters','resourceType','permissionsDocumentType','riskAssessment',
-                'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues']
+                'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata']
     static dataResourceNumberProperties = ['harvestFrequency','downloadLimit']
     static dataResourceTimestampProperties = ['lastChecked','dataCurrency']
-    static dataResourceJSONArrays = ['connectionParameters', 'contentTypes', 'defaultDarwinCoreValues']
+    static dataResourceJSONArrays = ['connectionParameters', 'contentTypes', 'defaultDarwinCoreValues', 'imageMetadata']
     //static dataResourceObjectProperties = ['dataProvider']
 
-    static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId']
+    static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId','webserviceUrl','uiUrl']
     static tempDataResourceNumberProperties = ['numberOfRecords']
 
     static institutionStringProperties = ['institutionType']
@@ -324,8 +324,12 @@ class CrudService {
                 if (p.listConsumers()) {
                     linkedRecordConsumers = p.listConsumers().formatEntitiesFromUids()
                 }
-                if (p.connectionParameters) {
-                    connectionParameters = p.connectionParameters.formatJSON()
+                if (p.connections) {
+                    connections = p.connections.collect { conn -> [ parameters: conn.parameters ]}
+                }
+                connectionParameters = p.currentConnection?.parameters
+                if (p.imageMetadata) {
+                    imageMetadata = p.imageMetadata.formatJSON()
                 }
                 if (p.defaultDarwinCoreValues) {
                     defaultDarwinCoreValues = p.defaultDarwinCoreValues.formatJSON()
@@ -368,7 +372,13 @@ class CrudService {
 
     private void updateDataResourceProperties(DataResource dr, obj) {
         convertJSONToString(obj, dataResourceJSONArrays)
-        dr.properties[dataResourceStringProperties] = obj
+
+        dataResourceStringProperties.each {
+            if (obj.has(it)) {
+                dr."${it}" = obj."${it}".toString()
+            }
+        }
+
         dr.properties[dataResourceNumberProperties] = obj
         updateTimestamps(dr,obj, dataResourceTimestampProperties)
         if (obj.has('dataProvider')) {
@@ -733,7 +743,11 @@ class CrudService {
         // handle values that might be passed as JSON arrays or string representations of JSON arrays
         convertJSONToString(obj, baseJSONArrays)
         // inject properties (this method does type conversions automatically)
-        pg.properties[baseStringProperties] = obj
+        baseStringProperties.each {
+            if (obj.has(it)) {
+                pg."${it}" = obj."${it}".toString()
+            }
+        }
         pg.properties[baseNumberProperties] = obj
         // only add objects if they exist
         baseObjectProperties.each {

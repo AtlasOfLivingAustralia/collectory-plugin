@@ -7,6 +7,8 @@ class DataResource extends ProviderGroup implements Serializable {
     static final String ENTITY_TYPE = 'DataResource'
     static final String ENTITY_PREFIX = 'dr'
 
+    static hasMany = [connections: DataConnection]
+
     static auditable = [ignore: ['version','dateCreated','lastUpdated','userLastModified']]
 
     static mapping = {
@@ -14,7 +16,6 @@ class DataResource extends ProviderGroup implements Serializable {
         rights type:'text'
         citation type:'text'
         defaultDarwinCoreValues type:'text'
-        connectionParameters type:'text'
         harvestingNotes type:'text'
         mobilisationNotes type:'text'
         dataGeneralizations type:'text'
@@ -26,6 +27,8 @@ class DataResource extends ProviderGroup implements Serializable {
         taxonomyHints type: "text"
         notes type: "text"
         networkMembership type: "text"
+        connections sort: 'sequence', order: 'desc'
+
     }
 
     String rights
@@ -46,7 +49,8 @@ class DataResource extends ProviderGroup implements Serializable {
     int harvestFrequency = 0
     Timestamp lastChecked           // when the last check was made for new data
     Timestamp dataCurrency          // the date of production of the most recent data file
-    String connectionParameters     // json string containing parameters based on a connection profile - DIGiR, TAPIR, etc
+    SortedSet<DataConnection> connections = [] as SortedSet<DataConnection>    // The list of data connections, with the most current at the front
+    String imageMetadata            // json string containing default dublin core values for any images associated with this resource
     String defaultDarwinCoreValues  // json string containing default values to use for missing DwC fields
     int downloadLimit = 0           // max number of records that can be included in a single download - 0 = no limit
     String contentTypes             // json array of type of content provided by the resource
@@ -75,7 +79,7 @@ class DataResource extends ProviderGroup implements Serializable {
         mobilisationNotes(nullable:true)
         lastChecked(nullable:true)
         dataCurrency(nullable:true)
-        connectionParameters(nullable:true)
+        imageMetadata(nullable:true)
         defaultDarwinCoreValues(nullable:true)
         contentTypes(nullable:true, maxSize:2048)
     }
@@ -252,4 +256,28 @@ class DataResource extends ProviderGroup implements Serializable {
     String shortProviderName() {
         return shortProviderName(30)
     }
+
+    /**
+     * Get the most recent data connection
+     *
+     * @return The most recent connection or null for none
+     */
+    DataConnection getCurrentConnection() {
+        connections && connections.size() > 0 ? connections.first() : null
+    }
+
+    /**
+     * Add a connection to the connection list.
+     * <p>
+     * The new connection is given a sequence number one greater than the current set
+     * and inserted into the front of the list.
+     *
+     * @param connection The new connection
+     */
+    void addConnection(DataConnection connection) {
+        connection.dataResource = this
+        connection.sequence = connections.inject(0, { curr, conn -> Math.max(curr, conn.sequence) }) + 1
+        connections.add(connection)
+    }
+    
 }
