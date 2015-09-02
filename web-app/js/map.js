@@ -67,28 +67,20 @@ function initMap(mapOptions) {
     var featureGraphicUrl = mapOptions.serverUrl + "/images/map/orange-dot.png";
     var clusterGraphicUrl = mapOptions.serverUrl + "/images/map/orange-dot-multiple.png";
 
+    var mapboxId = "nickdos.kf2g7gpb"
+    var mapboxToken = "pk.eyJ1Ijoibmlja2RvcyIsImEiOiJ2V2dBdEg0In0.Ep2VyMOaOUnOwN1ZVa9uyQ"
+
+
     // create the map
     map = new OpenLayers.Map('map_canvas', {
-        //maxResolution: 2468,
         controls: [],
-        projection: 'EPSG:3857',
+        sphericalMercator: true,
         layers: [
-            new OpenLayers.Layer.Google(
-                "Google Streets", // the default
-                {numZoomLevels: 20}
-            ),
-            new OpenLayers.Layer.Google(
-                "Google Physical",
-                {type: google.maps.MapTypeId.TERRAIN}
-            ),
-            new OpenLayers.Layer.Google(
-                "Google Hybrid",
-                {type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20}
-            ),
-            new OpenLayers.Layer.Google(
-                "Google Satellite",
-                {type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22}
-            )
+            new OpenLayers.Layer.XYZ("Base layer",
+            ["http://a.tiles.mapbox.com/v4/" + mapboxId + "/${z}/${x}/${y}.png?access_token=" + mapboxToken], {
+                sphericalMercator: true,
+                wrapDateLine: true
+            })
         ]
     });
 
