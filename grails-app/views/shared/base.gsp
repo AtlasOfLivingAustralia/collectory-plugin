@@ -137,7 +137,9 @@
                         <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
                           <tr class="prop">
                               <td valign="top" class="name">
-                                <label for="isALAPartner"><g:message code="providerGroup.isALAPartner.label" default="=Is ALA Partner" /></label>
+                                <label for="isALAPartner">
+                                    <g:message code="providerGroup.isALAPartner.label" default="=Is Atlas Partner" />
+                                </label>
                               </td>
                               <td valign="top" class="value ${hasErrors(bean: command, field: 'isALAPartner', 'errors')}">
                                   <g:checkBox name="isALAPartner" value="${command?.isALAPartner}" />

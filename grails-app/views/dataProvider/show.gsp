@@ -98,6 +98,10 @@
                 <span class="category"><g:message code="dataprovider.show.span06" /></span><br/>
                 <cl:formattedText body="${instance.focus?:'Not provided'}"/>
 
+                <!-- Keywords -->
+                <span class="category"><g:message code="dataprovider.show.span07" /></span><br/>
+                <cl:formattedText body="${instance.keywords?:'Not provided'}"/>
+
                 <cl:editButton uid="${instance.uid}" page="description"/>
               </div>
 

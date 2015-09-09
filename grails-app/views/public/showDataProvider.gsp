@@ -28,6 +28,10 @@
             });
         });
     </script>
+
+    <style type="text/css">
+        .institutionImage { margin-bottom: 15px; }
+    </style>
 </head>
 
 <body class="two-column-right">
@@ -62,20 +66,7 @@
                         </div>
                     </div>
                 </g:if>
-            </div>
-
-            <div class="span4">
-            <!-- logo -->
-                <g:if test="${fieldValue(bean: instance, field: 'logoRef') && fieldValue(bean: instance, field: 'logoRef.file')}">
-                    <img class="institutionImage"
-                         src='${resource(absolute: "true", dir: "data/" + instance.urlForm() + "/", file: fieldValue(bean: instance, field: 'logoRef.file'))}'/>
-                </g:if>
-            </div>
-        </div>
-    </div><!--close header-->
-    <div class="row-fluid">
-        <div class="span8">
-            <div class="section">
+                <div class="section">
                 <g:if test="${instance.pubDescription}">
                     <h2><g:message code="public.des" /></h2>
                     <cl:formattedText>${fieldValue(bean: instance, field: "pubDescription")}</cl:formattedText>
@@ -87,15 +78,21 @@
                 </g:if>
                 <h2><g:message code="public.sdp.content.label03" /></h2>
                 <g:set var="hasRecords" value="false"/>
+                <g:if test="${instance.getResources()}">
                 <ol>
                     <g:each var="c" in="${instance.getResources().sort { it.name }}">
                         <li><g:link controller="public" action="show" id="${c.uid}">${c?.name}</g:link>
+                            <br/>
                             <span style="color:#555;">${c?.makeAbstract(400)}</span></li>
                         <g:if test="${c.resourceType == 'records'}">
                             <g:set var="hasRecords" value="true"/>
                         </g:if>
                     </g:each>
                 </ol>
+                </g:if>
+                <g:else>
+                    <p><g:message code="public.sdp.content.noresources"/></p>
+                </g:else>
 
                 <g:if test="${hasRecords == 'true'}">
                     <div id='usage-stats'>
@@ -110,12 +107,18 @@
                 <cl:lastUpdated date="${instance.lastUpdated}"/>
 
             </div><!--close section-->
-        </div><!--close column-one-->
-        <div class="span4">
+            </div><!--close column-one-->
+            <div class="span4">
+
+        <!-- logo -->
             <div class="section">
+                <g:if test="${fieldValue(bean: instance, field: 'logoRef') && fieldValue(bean: instance, field: 'logoRef.file')}">
+                    <img class="institutionImage"
+                         src='${resource(absolute: "true", dir: "data/" + instance.urlForm() + "/", file: fieldValue(bean: instance, field: 'logoRef.file'))}'/>
+                </g:if>
+
                 <g:if test="${fieldValue(bean: instance, field: 'imageRef') && fieldValue(bean: instance, field: 'imageRef.file')}">
-                    <div class="section">
-                        <img alt="${fieldValue(bean: instance, field: "imageRef.file")}"
+                        <img class="entityLogo" alt="${fieldValue(bean: instance, field: "imageRef.file")}"
                              src="${resource(absolute: "true", dir: "data/" + instance.urlForm() + "/", file: instance.imageRef.file)}"/>
                         <cl:formattedText
                                 pClass="caption">${fieldValue(bean: instance, field: "imageRef.caption")}</cl:formattedText>
@@ -123,28 +126,25 @@
                                 class="caption">${fieldValue(bean: instance, field: "imageRef.attribution")}</p></cl:valueOrOtherwise>
                         <cl:valueOrOtherwise value="${instance.imageRef?.copyright}"><p
                                 class="caption">${fieldValue(bean: instance, field: "imageRef.copyright")}</p></cl:valueOrOtherwise>
-                    </div>
                 </g:if>
 
-                <div class="section">
-                    <h3><g:message code="public.location" /></h3>
-                    <g:if test="${instance.address != null && !instance.address.isEmpty()}">
-                        <p>
-                            <cl:valueOrOtherwise
-                                    value="${instance.address?.street}">${instance.address?.street}<br/></cl:valueOrOtherwise>
-                            <cl:valueOrOtherwise
-                                    value="${instance.address?.city}">${instance.address?.city}<br/></cl:valueOrOtherwise>
-                            <cl:valueOrOtherwise
-                                    value="${instance.address?.state}">${instance.address?.state}</cl:valueOrOtherwise>
-                            <cl:valueOrOtherwise
-                                    value="${instance.address?.postcode}">${instance.address?.postcode}<br/></cl:valueOrOtherwise>
-                            <cl:valueOrOtherwise
-                                    value="${instance.address?.country}">${instance.address?.country}<br/></cl:valueOrOtherwise>
-                        </p>
-                    </g:if>
-                    <g:if test="${instance.email}"><cl:emailLink>${fieldValue(bean: instance, field: "email")}</cl:emailLink><br/></g:if>
-                    <cl:ifNotBlank value='${fieldValue(bean: instance, field: "phone")}'/>
-                </div>
+                <h3><g:message code="public.location" /></h3>
+                <g:if test="${instance.address != null && !instance.address.isEmpty()}">
+                    <p>
+                        <cl:valueOrOtherwise
+                                value="${instance.address?.street}">${instance.address?.street}<br/></cl:valueOrOtherwise>
+                        <cl:valueOrOtherwise
+                                value="${instance.address?.city}">${instance.address?.city}<br/></cl:valueOrOtherwise>
+                        <cl:valueOrOtherwise
+                                value="${instance.address?.state}">${instance.address?.state}</cl:valueOrOtherwise>
+                        <cl:valueOrOtherwise
+                                value="${instance.address?.postcode}">${instance.address?.postcode}<br/></cl:valueOrOtherwise>
+                        <cl:valueOrOtherwise
+                                value="${instance.address?.country}">${instance.address?.country}<br/></cl:valueOrOtherwise>
+                    </p>
+                </g:if>
+                <g:if test="${instance.email}"><cl:emailLink>${fieldValue(bean: instance, field: "email")}</cl:emailLink><br/></g:if>
+                <cl:ifNotBlank value='${fieldValue(bean: instance, field: "phone")}'/>
 
             <!-- contacts -->
                 <g:render template="contacts" bean="${instance.getPublicContactsPrimaryFirst()}"/>
@@ -185,7 +185,6 @@
                     </div>
                 </g:if>
             </div>
-
         </div><!--close column-two-->
     </div>
 </div><!--close content-->

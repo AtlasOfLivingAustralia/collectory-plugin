@@ -22,6 +22,10 @@ class Classification {
     ]
 
     public static boolean matchKeywords(keywords, filterString) {
+        if(!filterString){
+            return true
+        }
+
         def filters = filterString.tokenize(",")
         for (filter in filters) {
             //println "Checking filter ${filter} against keywords ${keywords}"

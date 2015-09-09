@@ -36,19 +36,18 @@
               <h2><a href=""><g:message code="public.map3.link.allcollections" /><span id="allButtonTotal"><g:message code="public.map3.link.showall" /> <collections></collections></span></a></h2>
             </div>
             <div class="fauna" id="fauna" onclick="toggleButton(this);return false;">
-              <h2><a href=""><g:message code="public.map3.link.fauna" /><span style=""><g:message code="public.map3.link.mammals" />.</span></a></h2>
+              <h2><a href=""><g:message code="public.map3.link.fauna" /><span><g:message code="public.map3.link.mammals" />.</span></a></h2>
             </div>
             <div class="insects" id="entomology" onclick="toggleButton(this);return false;">
-              <h2><a href=""><g:message code="public.map3.link.insect" /><span style=""><g:message code="public.map3.link.insects" />.</span></a></h2>
+              <h2><a href=""><g:message code="public.map3.link.insect" /><span><g:message code="public.map3.link.insects" />.</span></a></h2>
             </div>
             <div class="microbes" id="microbes" onclick="toggleButton(this);return false;">
-              <h2><a href=""><g:message code="public.map3.link.mos" /><span style=""><g:message code="public.map3.link.protists" />.</span></a></h2>
+              <h2><a href=""><g:message code="public.map3.link.mos" /><span><g:message code="public.map3.link.protists" />.</span></a></h2>
             </div>
             <div class="plants" id="plants" onclick="toggleButton(this);return false;">
-              <h2><a href=""><g:message code="public.map3.link.plants" /><span style=""><g:message code="public.map3.link.vascular" />.</span></a></h2>
+              <h2><a href=""><g:message code="public.map3.link.plants" /><span><g:message code="public.map3.link.vascular" />.</span></a></h2>
             </div>
           </div><!--close section-->
-          <!--div class="section" style="margin-top:5px;margin-bottom:5px;"><p style="margin-left:8px;padding-bottom:0;color:#666">Note that fauna includes insects.</p></div-->
           <div id="collectionTypesFooter">
             <h4 class="collectionsCount"><span id='numFeatures'></span></h4>
             <h4 class="collectionsCount"><span id='numVisible'></span>
@@ -57,7 +56,9 @@
           </div>
 
           <div id="adminLink" class="dropdown" style="margin-top:110px;">
-              <g:link controller="manage" action="list" style="color:#DDDDDD; margin-top:80px;"><g:message code="public.map3.adminlink" /></g:link>
+              <g:link controller="manage" action="list" style="color:#DDDDDD; margin-top:80px;">
+                  <g:message code="public.map3.adminlink" />
+              </g:link>
           </div>
         </div><!--close column-one-->
 

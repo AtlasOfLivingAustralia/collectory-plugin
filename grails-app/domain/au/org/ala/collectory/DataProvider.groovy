@@ -14,14 +14,17 @@ class DataProvider extends ProviderGroup implements Serializable {
     static mapping = {
         sort: 'name'
         hiddenJSON type: "text"
+        pubDescription type: "text"
+        techDescription type: "text"
+        focus type: "text"
+        taxonomyHints type: "text"
+        notes type: "text"
+        networkMembership type: "text"
     }
 
     static constraints = {
         hiddenJSON(nullable:true, blank: false)
-    }
-
-    boolean canBeMapped() {
-        return false;
+        keywords(nullable:true)
     }
 
     /**

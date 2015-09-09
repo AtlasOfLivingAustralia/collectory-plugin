@@ -56,5 +56,6 @@ grails.project.dependency.resolution = {
         runtime ":rest:0.8"
         runtime ":richui:0.8"
         runtime ":tiny-mce:3.4.4"
+        runtime ":cors:1.1.8"
     }
 }

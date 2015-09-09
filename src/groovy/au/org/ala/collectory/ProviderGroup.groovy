@@ -72,6 +72,7 @@ abstract class ProviderGroup implements Serializable {
     Date dateCreated
     Date lastUpdated
     String userLastModified
+    String keywords             // json list of terms
 
     static embedded = ['address', 'logoRef', 'imageRef']
 
@@ -525,12 +526,6 @@ abstract class ProviderGroup implements Serializable {
     }
 
     /**
-     * Returns true if the entity can be mapped, ie it has lat/lon or can inherit lat/lon.
-     * @return
-     */
-    abstract boolean canBeMapped()
-
-    /**
      * Returns a summary object that extends ProviderGroupSummary and is specific to the type of entity.
      * @return summary object
      */
@@ -594,6 +589,13 @@ abstract class ProviderGroup implements Serializable {
             return hint ?: null
         }
         return null
+    }
+
+    boolean canBeMapped() {
+        if (latitude != 0.0 && latitude != -1 && longitude != 0.0 && longitude != -1) {
+            return true
+        }
+        return false
     }
 
     /*

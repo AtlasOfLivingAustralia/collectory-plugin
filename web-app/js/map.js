@@ -145,8 +145,6 @@ function initMap(mapOptions) {
             featureunhighlighted: hoverOff
         }
     });
-    //map.addControl(hoverControl);
-    //hoverControl.activate();
 
     // control for selecting features (on click)
     var control = new OpenLayers.Control.SelectFeature(vectors, {
@@ -307,8 +305,11 @@ function updateList(features) {
         // show institution - use name of institution from first collection
         var firstColl = collList[0];
         var content = "";
-        if (firstColl.attributes.instName == null) {
+        if (firstColl.attributes.instName == null && firstColl.attributes.entityType == "Collection") {
             content += "<li><span class='highlight'>" + jQuery.i18n.prop('collections.with.no.institution') + "</span><ul>";
+        } else if (firstColl.attributes.instName == null && firstColl.attributes.entityType == "DataProvider") {
+            content += "<li><span class='highlight'>" + jQuery.i18n.prop('dataproviders.list') + "</span><ul>";
+
         } else {
             content += "<li><a class='highlight' href='" + baseUrl + "/public/show/" + firstColl.attributes.instUid + "'>" +
                     firstColl.attributes.instName + "</a><ul>";
@@ -620,6 +621,11 @@ function outputMultipleInstitutions(parents) {
 *   grab name from institution
 \************************************************************/
 function getName(obj) {
+
+    if(obj.entityType != "Collection"){
+        return obj.name;
+    }
+
     var name;
     if ($.isArray(obj)) {
         name = obj[0].attributes.instName;

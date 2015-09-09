@@ -19,26 +19,20 @@ class PublicController {
     def collectoryAuthService
 
     def delay = 3000    // testing delay for responses
-    def sleep = {
-//        if (GrailsUtil.getEnvironment() == GrailsApplication.ENV_DEVELOPMENT) {  // in case we forget to remove
-//            this.sleep(delay)
-//        }
-    }
+
+    def sleep = {}
 
     def renderJson = {json ->
         if (params.callback) {
-            //render(contentType:'application/json', text: "${params.callback}(${json})")
             render(contentType:'text/javascript', text: "${params.callback}(${json})", encoding: "UTF-8")
         } else {
             render json
         }
     }
 
-    def renderAsJson = {json ->
-        renderJson(json as JSON)
-    }
+    def renderAsJson = { json -> renderJson(json as JSON) }
 
-    def index = { redirect(action: 'map')}
+    def index = { redirect(action: 'map') }
 
     /**
      * Do logouts through this app so we can invalidate the session.
@@ -602,11 +596,9 @@ class PublicController {
      * list is used if the callback fails.
      */
     def map = {
-        //ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(grailsApplication.config.auth.admin_role), Action.LIST, 'map'
         def partnerCollections = Collection.list([sort:"name"]).findAll {
             it.isALAPartner()
         }
-
         render(view: 'map3', model: [collections: partnerCollections])
     }
 
@@ -616,9 +608,10 @@ class PublicController {
     def mapFeatures = {
         log.info ">> Map features action called (no cross domain issues)"
 
-        def locations = [type:"FeatureCollection",features: new ArrayList()]
+        def locations = [type:"FeatureCollection", features: new ArrayList()]
         def showAll = params.filters == 'all'
-        List<CollectionLocation> collections = new ArrayList<CollectionLocation>()
+
+        //add collections
         Collection.list([sort:"name"]).each {
             // only show ALA partners
             if (it.isALAPartner()) {
@@ -631,9 +624,10 @@ class PublicController {
                 if (inst && lon == -1) {lon = inst.longitude}
                 // show if matches current filter
                 if (showAll || Classification.matchKeywords(it.keywords, params.filters)) {
-                    def loc = [type:"Feature"]
+                    def loc = [type: "Feature"]
                     loc.properties = [
                             name: it.name,
+                            entityType: it.ENTITY_TYPE,
                             acronym: it.acronym,
                             uid: it.uid,
                             instName: inst?.name,
@@ -649,7 +643,32 @@ class PublicController {
             }
         }
 
-        //def json = JSON.parse(features)
+        //add data providers
+        DataProvider.list([sort:"name"]).each {
+            // only show ALA partners
+            if (it.isALAPartner) {
+                // make 0 values be -1
+                def lat = (it.latitude == 0.0) ? -1 : it.latitude
+                def lon = (it.longitude == 0.0) ? -1 : it.longitude
+                // show if matches current filter
+                if (showAll || Classification.matchKeywords(it.keywords, params.filters)) {
+                    def loc = [type: "Feature"]
+                    loc.properties = [
+                            name: it.name,
+                            entityType: it.ENTITY_TYPE,
+                            acronym: it.acronym,
+                            uid: it.uid,
+                            isMappable: it.canBeMapped(),
+                            address: it.address?.buildAddress(),
+                            desc: it.makeAbstract(),
+                            dataResourceCount: it.resources.size(),
+                            url: request.getContextPath() + "/public/show/" + it.uid]
+                    loc.geometry = [type: "Point", coordinates: [lon,lat]]
+                    locations.features << loc
+                }
+            }
+        }
+
         render( locations as JSON )
     }
 
