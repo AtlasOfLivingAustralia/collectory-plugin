@@ -44,7 +44,6 @@ class DataResource extends ProviderGroup implements Serializable {
     String status = "identified"    // integration status (of the integration of the resource into the atlas)
     String harvestingNotes          // may include which components (text, images, etc) can be harvested
     String mobilisationNotes        //
-
     int harvestFrequency = 0
     Timestamp lastChecked           // when the last check was made for new data
     Timestamp dataCurrency          // the date of production of the most recent data file
@@ -256,5 +255,5 @@ class DataResource extends ProviderGroup implements Serializable {
     String shortProviderName() {
         return shortProviderName(30)
     }
-
 }
+
