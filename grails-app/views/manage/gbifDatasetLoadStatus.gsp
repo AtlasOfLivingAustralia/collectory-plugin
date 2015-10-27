@@ -29,12 +29,9 @@
 <body>
 <g:if test="${gbifSummary}">
     <h1>${gbifSummary.gbifResourceUid} - ${gbifSummary.phase}</h1>
+    <g:if test="${gbifSummary.isComplete()}">
+        <g:link controller="dataResource" action="show" id="${gbifSummary.dataResourceUid}"><g:message code="manage.gbifdds.returnToDataResource" args="${[gbifSummary.dataResourceUid]}"></g:message></g:link>
+    </g:if>
 </g:if>
-<g:else>
-    <h1><g:message code="manage.gbifdds.title04" /> ${datasetKey}</h1>
-    <p>
-        <g:message code="manage.gbifdds.title05" /> <g:link controller="manage" action="gbifDatasetDownload" id=""> <g:message code="manage.gbifdds.link01" />.</g:link>
-    </p>
-</g:else>
 </body>
 </html>
