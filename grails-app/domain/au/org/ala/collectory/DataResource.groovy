@@ -42,7 +42,6 @@ class DataResource extends ProviderGroup implements Serializable {
     boolean riskAssessment = false  // has risk assessment been done (for Data Provider Agreements only)
     boolean filed = false           // has the document been filed (for Data Provider Agreements only)
     String status = "identified"    // integration status (of the integration of the resource into the atlas)
-    boolean gbifDataSet = false
     String harvestingNotes          // may include which components (text, images, etc) can be harvested
     String mobilisationNotes        //
 
