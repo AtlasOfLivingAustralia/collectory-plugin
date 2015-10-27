@@ -348,7 +348,7 @@ class GbifService {
             //move the DwCA where it needs to be
             def connParams = (new JsonSlurper()).parseText(dr.connectionParameters?:'{}')
             connParams.url = 'file:///'+targetFileName
-            connParams.protocol = "GBIF"
+            connParams.protocol = "DwCA"
             connParams.termsForUniqueKey = ["gbifID"]
             //NQ we need a transaction so the this can be executed in a multi-threaded manner.
             DataResource.withTransaction {
