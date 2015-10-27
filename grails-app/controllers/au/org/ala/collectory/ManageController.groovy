@@ -59,6 +59,45 @@ class ManageController {
 
     /**
      *
+     * @return
+     */
+    def loadDataset() {
+        log.debug("Loading resources from GBIF: " + params)
+        if (params.guid && params.gbifUsername && params.gbifPassword) {
+            gbifService.getGbifDataset(
+                    params.guid,
+                    params.gbifUsername,
+                    params.gbifPassword)
+            redirect(action: 'gbifDatasetLoadStatus', model: ['datasetKey': params.guid], params: ['datasetKey': params.guid])
+        }
+    }
+
+    /**
+     *
+     * Display the load status for the supplied country
+     * country - the country to supply the status for
+     * @return
+     */
+    def gbifDatasetLoadStatus(){
+        log.debug('key->'+params.datasetKey)
+        def gbifSummary = gbifService.getDatasetKeyStatusInfoFor(params.datasetKey)
+        log.debug(gbifSummary)
+        [gbifSummary:gbifSummary,'datasetKey':params.datasetKey]
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    def gbifDatasetDownload() {
+        log.debug('Dataset id ' + params.id)
+        def dr = DataResource.findByUid(params.id)
+        render(view: "gbifDatasetDownload", model: ['uid': dr.uid, 'guid' : dr.guid])
+    }
+
+    /**
+     *
      * Display the load status for the supplied country
      * country - the country to supply the status for
      * @return

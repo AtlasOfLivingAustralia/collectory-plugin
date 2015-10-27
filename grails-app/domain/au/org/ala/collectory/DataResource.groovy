@@ -42,8 +42,10 @@ class DataResource extends ProviderGroup implements Serializable {
     boolean riskAssessment = false  // has risk assessment been done (for Data Provider Agreements only)
     boolean filed = false           // has the document been filed (for Data Provider Agreements only)
     String status = "identified"    // integration status (of the integration of the resource into the atlas)
+    boolean gbifDataSet = false
     String harvestingNotes          // may include which components (text, images, etc) can be harvested
     String mobilisationNotes        //
+
     int harvestFrequency = 0
     Timestamp lastChecked           // when the last check was made for new data
     Timestamp dataCurrency          // the date of production of the most recent data file
@@ -255,4 +257,5 @@ class DataResource extends ProviderGroup implements Serializable {
     String shortProviderName() {
         return shortProviderName(30)
     }
+
 }

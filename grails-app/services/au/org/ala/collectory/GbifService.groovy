@@ -304,6 +304,7 @@ class GbifService {
         //1) Extract the ZIP file
         //2) Extract the JSON for the data resource to create
         def json = extractDataResourceJSON(new ZipFile(uploadedFile), uploadedFile.getParentFile());
+        json['gbifDataset'] = true
         json['resourceType'] = 'records'
         json['contentTypes'] = (['point occurrence data', 'gbif import'] as JSON).toString()
         log.debug("The JSON to create the dr : " + json)
@@ -347,7 +348,7 @@ class GbifService {
             //move the DwCA where it needs to be
             def connParams = (new JsonSlurper()).parseText(dr.connectionParameters?:'{}')
             connParams.url = 'file:///'+targetFileName
-            connParams.protocol = "DwCA"
+            connParams.protocol = "GBIF"
             connParams.termsForUniqueKey = ["gbifID"]
             //NQ we need a transaction so the this can be executed in a multi-threaded manner.
             DataResource.withTransaction {
@@ -574,4 +575,140 @@ class GbifService {
         }, 0); // 0 = first, and you really want to be first.
         http
     }
+
+    /**
+     * Gets a dataset from gbif.org
+     *
+     * @param datasetKey    The gbif dataset key
+     * @param user          The gbif.org username
+     * @param password      The gbif.org password
+     * @return
+     */
+    def getGbifDataset(String datasetKey, String username, String password){
+        GBIFActiveLoad l = new GBIFActiveLoad()
+        l.gbifResourceUid = datasetKey
+        def reloadExisting = true
+        log.debug("Started Gbif Dataset")
+        //check to see if a load is already running. We can only have one at a time
+        if (!loading){
+            log.debug("Loading resources from GBIF: ")
+            loading = true
+            loadMap[datasetKey] = l
+
+            //at this point we need to return to the user and perform remaining tasks asynchronously
+            pool.submit(new Runnable(){
+                public void run(){
+
+                    def defer = { c -> pool.submit(c as Callable) }
+
+                        defer {
+                            Boolean skipReload = false
+                            def existingDataResource = DataResource.findByGuid(l.gbifResourceUid)
+                            if(!reloadExisting){
+                                log.info("Reload existing resources set to false. Checking for " + l.gbifResourceUid)
+                                if(existingDataResource){
+                                    skipReload = true
+                                }
+                            }
+
+                            // is data available
+                            if(!isDataAvailableForResource(l.gbifResourceUid)){
+                                l.phase = "Data is currently not available for this resource through GBIF"
+                                loading = false
+                                l.setCompleted()
+                                return null
+                            }
+
+                            if(skipReload){
+                                l.phase = "Resource is already loaded. To reload check the reload existing resource checkbox"
+                                loading = false
+                                l.dataResourceUid = existingDataResource.uid
+                                l.setCompleted()
+                                return null
+
+                            } else {
+
+                                log.info("Submitting " + l + " to be processed")
+                                //1) Start the download
+                                String downloadId = startGBIFDownload(l.gbifResourceUid, username, password)
+                                if (downloadId) {
+                                    l.downloadId = downloadId
+                                    //2) Monitor the download
+                                    l.phase = "Generating Download..."
+                                    String status = ""
+                                    while (!stopStatus.contains(status)) {
+                                        //sleep for 30 seconds between checks.
+                                        Thread.sleep(3000)
+                                        status = getDownloadStatus(l.downloadId, username, password)
+                                    }
+                                    log.debug("Download status: " + status)
+                                    //3) if the status was "SUCCEEDED" then starts the download
+                                    if (status == "SUCCEEDED") {
+                                        l.phase = "Downloading..."
+                                        File localTmpDir = new File(grailsApplication.config.uploadFilePath + File.separator + "tmp" + File.separator + l.downloadId)
+                                        FileUtils.forceMkdir(localTmpDir)
+                                        String tmpFileName = localTmpDir.getAbsolutePath() + File.separator + l.downloadId
+
+                                        // https://github.com/AtlasOfLivingAustralia/collectory-plugin/issues/53
+                                        InputStream instream = new URL(grailsApplication.config.gbifApiUrl + OCCURRENCE_DOWNLOAD +
+                                                "/" + l.downloadId + ".zip").openStream();
+                                        FileOutputStream outstream = new FileOutputStream(tmpFileName);
+                                        try {
+                                            IOUtils.copy(instream, outstream);
+                                        } catch (Exception e) {
+                                            l.phase = "Failed To download from GBIF."
+                                            loading = false;
+                                            return null;
+
+                                        } finally {
+                                            IOUtils.closeQuietly(instream);
+                                            IOUtils.closeQuietly(outstream);
+                                        }
+
+                                        //4) Now create the data resource using the file downloaded
+                                        l.phase = "Creating GBIF Data resource..."
+                                        def dr = createOrUpdateGBIFResource(new File(tmpFileName))
+                                        l.phase = "GBIF Data resource created..."
+                                        if (dr && existingDataResource) {
+                                            l.dataResourceUid = dr.uid
+                                            l.phase = "Data Resource Updated"
+                                        } else if(dr) {
+                                            l.dataResourceUid = dr.uid
+                                            l.phase = "Data Resource Created"
+                                        } else {
+                                            l.phase = "Data Resource Creation Failed."
+                                        }
+                                    } else {
+                                        l.phase = "Download Failed: " + status
+                                    }
+                                    //Thread.sleep(5000)
+                                    l.setCompleted()
+                                    //l.dataResourceUid="dr123"
+                                    //check to see if all the items have finished loading
+                                    loading = false
+                                } else {
+                                    l.phase = "Failed. Please check your authentication credentials are valid."
+                                    loading = false
+                                    return null
+                                }
+                            }
+                        }
+                }
+            })
+            return l
+        } else {
+            loading = false
+            return l
+        }
+    }
+
+    /**
+     * Returns the status information for the supplied datasetKey
+     * @param datasetKey
+     * @return
+     */
+    def getDatasetKeyStatusInfoFor(String datasetKey){
+        return loadMap[datasetKey]
+    }
+
 }
