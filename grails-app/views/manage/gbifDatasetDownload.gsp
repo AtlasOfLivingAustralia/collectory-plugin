@@ -12,7 +12,7 @@
     <div class="span5">
         <table>
             <tr class="prop">
-                <td valign="top" class="name"><label for="guid"><g:message code="manage.gbifdldataset.label02" />:</label></td>
+                <td valign="top" class="name"><label for="guid"><g:message code="manage.gbifdldataset.label01" />:</label></td>
                 <td valign="top" class="value"><g:field type="text" name="guid" required="true" value="${guid}" readonly="true" /></td>
             </tr>
             <tr class="prop">
