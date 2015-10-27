@@ -186,6 +186,9 @@
                 <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
                   <div><span class="buttons"><g:link class="edit btn" action='edit' params="[page:'contribution']" id="${instance.uid}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
                 </cl:ifGranted>
+                <cl:ifGranted role="${ProviderGroup.ROLE_EDITOR}">
+                    <div><span class="buttons"><g:link class="edit btn" controller="manage" action="gbifDatasetDownload" id="${instance.uid}">${message(code: 'datasource.button.update', default: 'Update')}</g:link></span></div>
+                </cl:ifGranted>
               </div>
 
               <div class="well">
