@@ -256,4 +256,3 @@ class DataResource extends ProviderGroup implements Serializable {
         return shortProviderName(30)
     }
 }
-
