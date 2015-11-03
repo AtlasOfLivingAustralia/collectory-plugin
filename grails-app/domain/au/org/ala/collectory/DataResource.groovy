@@ -27,6 +27,7 @@ class DataResource extends ProviderGroup implements Serializable {
         taxonomyHints type: "text"
         notes type: "text"
         networkMembership type: "text"
+        gbifDataset defaultValue: "false"
     }
 
     String rights
@@ -53,7 +54,7 @@ class DataResource extends ProviderGroup implements Serializable {
     int downloadLimit = 0           // max number of records that can be included in a single download - 0 = no limit
     String contentTypes             // json array of type of content provided by the resource
     boolean publicArchiveAvailable = false  // true if a DwC archive is allowed to be downloaded
-
+    boolean gbifDataset = false
     DataProvider dataProvider
     Institution institution         // optional link to the institution whose records are served by this resource
 
@@ -80,6 +81,7 @@ class DataResource extends ProviderGroup implements Serializable {
         connectionParameters(nullable:true)
         imageMetadata(nullable:true)
         defaultDarwinCoreValues(nullable:true)
+        gbifDataset(nullable:false)
         contentTypes(nullable:true, maxSize:2048)
     }
 

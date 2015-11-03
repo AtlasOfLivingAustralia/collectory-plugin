@@ -3,12 +3,13 @@ import au.org.ala.collectory.ExtendedPluginAwareResourceBundleMessageSource
 import grails.util.Environment
 
 class CollectoryGrailsPlugin {
+
     def grailsApplication
     def dataLoaderService
     def authenticateService
 
     // the plugin version
-    def version = "1.4.4"
+    def version = "1.5-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.3 > *"
     // resources that are excluded from plugin packaging
@@ -16,7 +17,6 @@ class CollectoryGrailsPlugin {
         "grails-app/views/error.gsp"
     ]
 
-    // TODO Fill in these fields
     def title = "Collectory Plugin" // Headline display name of the plugin
     def author = "Alan Lin"
     def authorEmail = "alan.lin@csiro.au"
@@ -42,7 +42,7 @@ from the ALA collectory app (no local DB is required for this app).
     ]
 
     // Location of the plugin's issue tracker.
-    def issueManagement = [ system: "Google Code", url: "https://github.com/AtlasOfLivingAustralia/collectory/issues" ]
+    def issueManagement = [ system: "Google Code", url: "https://github.com/AtlasOfLivingAustralia/collectory-plugin/issues" ]
 
     // Online location of the plugin's browseable source code.
     def scm = [ url: "https://github.com/AtlasOfLivingAustralia/collectory-plugin" ]

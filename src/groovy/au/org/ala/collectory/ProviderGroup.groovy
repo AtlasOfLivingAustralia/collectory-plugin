@@ -118,6 +118,7 @@ abstract class ProviderGroup implements Serializable {
         networkMembership(nullable:true, maxSize:256)
         attributions(nullable:true, maxSize:256)
         taxonomyHints(nullable:true)
+        keywords(nullable:true)
     }
 
     /*  Contacts  */

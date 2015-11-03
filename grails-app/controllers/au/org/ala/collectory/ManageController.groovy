@@ -40,7 +40,6 @@ class ManageController {
      */
     def loadAllGbifForCountry(){
         log.debug("Loading resources from GBIF: " + params)
-        log.debug("Loading resources from GBIF: " + params.reloadExistingResources)
         if(params.gbifUsername && params.gbifPassword){
             Boolean reloadExistingResources = false
             if (params.reloadExistingResources) {
@@ -55,6 +54,44 @@ class ManageController {
                     reloadExistingResources)
             redirect(action: 'gbifCountryLoadStatus', params: [country:params.country])
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    def loadDataset() {
+        log.debug("Loading resources from GBIF: " + params)
+        if (params.guid && params.gbifUsername && params.gbifPassword) {
+            gbifService.getGbifDataset(
+                    params.guid,
+                    params.gbifUsername,
+                    params.gbifPassword)
+            redirect(action: 'gbifDatasetLoadStatus', model: ['datasetKey': params.guid], params: ['datasetKey': params.guid])
+        }
+    }
+
+    /**
+     *
+     * Display the load status for the supplied country
+     * country - the country to supply the status for
+     * @return
+     */
+    def gbifDatasetLoadStatus(){
+        log.debug('key->'+params.datasetKey)
+        def gbifSummary = gbifService.getDatasetKeyStatusInfoFor(params.datasetKey)
+        log.debug(gbifSummary)
+        [gbifSummary:gbifSummary,'datasetKey':params.datasetKey]
+    }
+
+    /**
+     *
+     * @return
+     */
+    def gbifDatasetDownload() {
+        log.debug('Dataset id ' + params.id)
+        def dr = DataResource.findByUid(params.id)
+        render(view: "gbifDatasetDownload", model: ['uid': dr.uid, 'guid' : dr.guid])
     }
 
     /**
@@ -77,7 +114,6 @@ class ManageController {
         // find the entities the user is allowed to edit
         def entities = collectoryAuthService.authorisedForUser(collectoryAuthService.username()).sorted
 
-        println "user ${collectoryAuthService.username()} has ${request.getUserPrincipal()?.attributes}"
         log.debug("user ${collectoryAuthService.username()} has ${request.getUserPrincipal()?.attributes}")
 
         // get their contact details in case needed

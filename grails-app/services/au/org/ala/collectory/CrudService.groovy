@@ -33,6 +33,7 @@ class CrudService {
                 'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata']
     static dataResourceNumberProperties = ['harvestFrequency','downloadLimit']
     static dataResourceTimestampProperties = ['lastChecked','dataCurrency']
+    static dataResourceBooleanProperties = ['gbifDataset']
     static dataResourceJSONArrays = ['connectionParameters', 'contentTypes', 'defaultDarwinCoreValues', 'imageMetadata']
     //static dataResourceObjectProperties = ['dataProvider']
 
@@ -349,14 +350,18 @@ class CrudService {
     }
 
     def insertDataResource(obj) {
-        DataResource dr = new DataResource(uid: idGeneratorService.getNextDataResourceId())
-        updateBaseProperties(dr, obj)
-        updateDataResourceProperties(dr, obj)
-        dr.userLastModified = obj.user ?: 'Data services'
-        if (!dr.hasErrors()) {
-             dr.save(flush: true)
+        try {
+            DataResource dr = new DataResource(uid: idGeneratorService.getNextDataResourceId())
+            updateBaseProperties(dr, obj)
+            updateDataResourceProperties(dr, obj)
+            dr.userLastModified = obj.user ?: 'Data services'
+            if (!dr.hasErrors()) {
+                dr.save(flush: true)
+            }
+            return dr
+        } catch (Exception e){
+            log.error("Insert failed: " + e.getMessage(), e)
         }
-        return dr
     }
 
     def updateDataResource(dr, obj) {
@@ -379,7 +384,9 @@ class CrudService {
         }
 
         dr.properties[dataResourceNumberProperties] = obj
-        updateTimestamps(dr,obj, dataResourceTimestampProperties)
+        updateTimestamps(dr, obj, dataResourceTimestampProperties)
+        updateBooleans(dr, obj, dataResourceBooleanProperties)
+
         if (obj.has('dataProvider')) {
             // find it
             DataProvider dp = DataProvider._get(obj.dataProvider.uid) as DataProvider
@@ -797,6 +804,12 @@ class CrudService {
                     adjustEmptyProperties(obj."${it}")
                 }
             }
+        }
+    }
+
+    def updateBooleans(pg, obj, properties) {
+        properties.each {
+            pg."${it}" = (obj."${it}"?:"false").toBoolean()
         }
     }
 

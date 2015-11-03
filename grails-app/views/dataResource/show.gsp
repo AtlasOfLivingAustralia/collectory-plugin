@@ -132,6 +132,14 @@
 
               <!-- mobilisation -->
               <div class="show-section well">
+                <g:if test="${instance.gbifDataset}">
+                    <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
+                        <div class="pull-right"><span class="buttons"><g:link class="edit btn" controller="manage" action="gbifDatasetDownload" id="${instance.uid}">
+                            <i class="icon-refresh"> </i>
+                            ${message(code: 'datasource.button.update', default: 'Reload from GBIF')}</g:link></span></div>
+                    </cl:ifGranted>
+                </g:if>
+
                 <h2><g:message code="dataresource.show.title01" /></h2>
 
                 <!-- contributor -->
@@ -186,6 +194,8 @@
                 <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
                   <div><span class="buttons"><g:link class="edit btn" action='edit' params="[page:'contribution']" id="${instance.uid}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
                 </cl:ifGranted>
+
+
               </div>
 
               <div class="well">
