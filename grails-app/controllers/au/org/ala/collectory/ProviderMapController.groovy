@@ -21,9 +21,6 @@ class ProviderMapController {
             return false
         }
     }
-/*
- End access control
- */
 
     def index = {
         redirect(action: "list", params: params)
@@ -32,18 +29,18 @@ class ProviderMapController {
     def list = {
         if (!params.max) params.max = 10
         if (!params.offset) params.offset = 0
-        if (!params.sort) params.sort = "collectionName"
+//        if (!params.sort) params.sort = "collectionName"
         if (!params.order) params.order = "asc"
         def maps = ProviderMap.withCriteria {
             maxResults(params.max?.toInteger())
             firstResult(params.offset?.toInteger())
-            if (params.sort == 'collectionName') {
-                collection {
-                    order('name', params.order)
-                }
-            } else {
-                order(params.sort, params.order)
-            }
+//            if (params.sort == 'collectionName') {
+//                collection {
+//                    order('name', params.order)
+//                }
+//            } else {
+//                order(params.sort, params.order)
+//            }
         }
         [providerMapInstanceList: maps, providerMapInstanceTotal: ProviderMap.count(), returnTo: params.returnTo]
     }
@@ -90,7 +87,7 @@ class ProviderMapController {
             redirect(action: "list", params:[returnTo: params.returnTo])
         }
         else {
-            if (isAuthorisedToEdit(providerMapInstance.collection.uid)) {
+            if (providerMapInstance.collection.uid) {
                 return [providerMapInstance: providerMapInstance, returnTo: params.returnTo]
             } else {
                 render "You are not authorised to access this page."
@@ -128,7 +125,7 @@ class ProviderMapController {
     def delete = {
         def providerMapInstance = ProviderMap.get(params.id)
         if (providerMapInstance) {
-            if (isAuthorisedToEdit(providerMapInstance.collection.uid)) {
+            if (providerMapInstance.collection.uid) {
                 try {
                     // remove collection link
                     providerMapInstance.collection?.providerMap = null
@@ -156,17 +153,5 @@ class ProviderMapController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'providerMap.label', default: 'ProviderMap'), params.id])}"
             redirect(action: "list", params:[returnTo: params.returnTo])
         }
-    }
-
-    protected boolean isAuthorisedToEdit(uid) {
-        if (grailsApplication.config.security.cas.bypass.toBoolean() || isAdmin()) {
-            return true
-        } else {
-            def email = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email
-            if (email) {
-                return ProviderGroup._get(uid)?.isAuthorised(email)
-            }
-        }
-        return false
     }
 }

@@ -41,7 +41,9 @@
                                 <p>User ${request.isUserInRole('ROLE_COLLECTION_ADMIN') ? 'has' : 'does not have'} ROLE_COLLECTION_ADMIN.</p>
                                 <p>User ${request.isUserInRole('ROLE_COLLECTION_EDITOR') ? 'has' : 'does not have'} ROLE_COLLECTION_EDITOR.</p>
                             </g:if>
-                            <g:else><p><g:message code="manage.list.des03" />.</p></g:else>
+                            <g:else>
+                                <p><g:message code="manage.list.des03" />.</p>
+                            </g:else>
                             <p>
                                 <g:set var="cookiename" value="${cookie(name: 'ALA-Auth')}"/>
                                 <g:if test="${cookiename}"><g:message code="manage.list.cookiename01" /> ${cookiename}.</g:if>

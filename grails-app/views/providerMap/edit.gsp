@@ -1,4 +1,3 @@
-
 <%@ page import="au.org.ala.collectory.ProviderMap" %>
 <html>
     <head>
@@ -40,7 +39,9 @@
                                     <g:select name="collection.id"
                                             from="${au.org.ala.collectory.Collection.list([sort: 'name'])}"
                                             optionKey="id"
-                                            value="${providerMapInstance?.collection?.id}"  />
+                                            value="${providerMapInstance?.collection?.id}"
+                                            class="input-xlarge"
+                                    />
                                 </td>
                             </tr>
 
@@ -93,8 +94,8 @@
                     </table>
                 </div>
                 <div class="buttons">
-                    <span class="button"><g:actionSubmit class="save" action="update" value="${message(code: 'default.button.update.label', default: 'Update')}" /></span>
-                    <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" /></span>
+                    <span class="button"><g:actionSubmit class="save btn" action="update" value="${message(code: 'default.button.update.label', default: 'Update')}" /></span>
+                    <span class="button"><g:actionSubmit class="delete btn" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" /></span>
                 </div>
             </g:form>
         </div>

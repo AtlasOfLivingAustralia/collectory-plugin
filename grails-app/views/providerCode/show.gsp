@@ -1,4 +1,3 @@
-
 <%@ page import="au.org.ala.collectory.ProviderCode" %>
 <!DOCTYPE html>
 <html>
@@ -16,13 +15,19 @@
 				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
 			</ul>
 		</div>
+
+		<div class="pull-right span5 well">
+			<g:link controller="providerMap">
+				Click here to create/edit a provider map
+			</g:link>
+		</div>
+
 		<div id="show-providerCode" class="content scaffold-show" role="main">
 			<h1><g:message code="default.show.label" args="[entityName]" /></h1>
 			<g:if test="${flash.message}">
 			<div class="message" role="status">${flash.message}</div>
 			</g:if>
 			<ol class="property-list providerCode">
-			
 				<g:if test="${providerCodeInstance?.code}">
 				<li class="fieldcontain">
 					<span id="code-label" class="property-label"><g:message code="providerCode.code.label" default="Code" /></span>
@@ -31,7 +36,6 @@
 					
 				</li>
 				</g:if>
-			
 			</ol>
 			<g:form>
 				<fieldset class="buttons">

@@ -140,9 +140,9 @@ class CollectionController extends ProviderGroupController {
             def error = ["error":"must specify a collection code as parameter coll"]
             render error as JSON
         }
-        Collection col = ProviderMap.findMatch(inst, coll)
-        if (col) {
-            render col.buildSummary() as JSON
+        ProviderGroup pg = ProviderMap.findMatch(inst, coll)
+        if (pg) {
+            render pg.buildSummary() as JSON
         } else {
             def error = ["error":"unable to find collection with inst code = ${inst} and coll code = ${coll}"]
             render error as JSON

@@ -121,7 +121,6 @@ abstract class ProviderGroup implements Serializable {
         keywords(nullable:true)
     }
 
-    /*  Contacts  */
     /**
      * Adds a contact for this group using the supplied relationship attributes
      *
@@ -133,7 +132,6 @@ abstract class ProviderGroup implements Serializable {
      * @param isPrimaryContact whether this contact is the one that should be displayed as THE contact
      * @param modifiedBy the user that made the change
      * @return the ContactFor created
-     *
      */
     ContactFor addToContacts(Contact contact, String role, boolean isAdministrator, boolean isPrimaryContact, String modifiedBy) {
         // safety net - if there is no id we can't do this - will happen if the save fails without detection
@@ -522,6 +520,23 @@ abstract class ProviderGroup implements Serializable {
             case DataProvider.ENTITY_PREFIX: return DataProvider.findByUid(uid)
             case DataResource.ENTITY_PREFIX: return DataResource.findByUid(uid)
             case DataHub.ENTITY_PREFIX: return DataHub.findByUid(uid)
+            default: return null
+        }
+    }
+
+    /**
+     * Returns the instance identified by the uid.
+     *
+     * @param uid
+     * @return
+     */
+    static ProviderGroup _get(String id, String entityType) {
+        switch (entityType.toLowerCase()) {
+            case Institution.ENTITY_TYPE.toLowerCase(): return Institution.findById(id)
+            case Collection.ENTITY_TYPE.toLowerCase(): return Collection.findById(id)
+            case DataProvider.ENTITY_TYPE.toLowerCase(): return DataProvider.findById(id)
+            case DataResource.ENTITY_TYPE.toLowerCase(): return DataResource.findById(id)
+            case DataHub.ENTITY_TYPE.toLowerCase(): return DataHub.findById(id)
             default: return null
         }
     }

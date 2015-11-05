@@ -1,4 +1,3 @@
-
 <%@ page import="au.org.ala.collectory.ProviderMap" %>
 <html>
     <head>
@@ -18,7 +17,7 @@
         <div class="body content">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
+            <div class="message alert">${flash.message}</div>
             </g:if>
             <div class="list">
                 <table class="table table-bordered table-striped">
@@ -26,7 +25,9 @@
                         <tr>
                         
                             <g:sortableColumn property="id" title="${message(code: 'providerMap.id.label', default: 'Id')}" />
-                        
+
+                            <g:sortableColumn property="institution" title="${message(code: 'institution.label', default: 'Institution')}" />
+
                             <g:sortableColumn property="collectionName" title="${message(code: 'collection.label', default: 'Collection')}" />
 
                             <g:sortableColumn property="exact" title="${message(code: 'providerMap.exact.label', default: 'Exact')}" />
@@ -44,7 +45,9 @@
                         <tr>
                         
                             <td><g:link action="show" id="${providerMapInstance.id}" params="[returnTo: returnTo]">${fieldValue(bean: providerMapInstance, field: "id")}</g:link></td>
-                        
+
+                            <td>${fieldValue(bean: providerMapInstance, field: "institution")}</td>
+
                             <td>${fieldValue(bean: providerMapInstance, field: "collection")}</td>
                         
                             <td><g:formatBoolean boolean="${providerMapInstance.exact}" /></td>

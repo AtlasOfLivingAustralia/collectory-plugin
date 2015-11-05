@@ -47,7 +47,10 @@ class Institution extends ProviderGroup {
      */
     InstitutionSummary buildSummary() {
         InstitutionSummary is = init(new InstitutionSummary()) as InstitutionSummary
-        is.collections = collections.collect {[it.uid, it.name]}
+        is.institutionId = dbId()
+        is.institutionUid = uid
+        is.institutionName = name
+        is.collections = collections.collect { [it.uid, it.name] }
         listProviders().each {
             def pg = ProviderGroup._get(it)
             if (pg) {
@@ -95,7 +98,6 @@ class Institution extends ProviderGroup {
     String entityType() {
         return ENTITY_TYPE
     }
-
 
     /**
      * List of collections held directly by this institution or by an institution that this one administers.

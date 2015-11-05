@@ -13,14 +13,12 @@ import java.text.SimpleDateFormat
 
 class DataController {
 
-    def crudService, emlRenderService, collectoryAuthService
-    
-    def index = { }
-
-    def metadataService
+    def crudService, emlRenderService, collectoryAuthService, metadataService
 
     /** make sure that uid params point to an existing entity and json is parsable **/
     def beforeInterceptor = this.&check
+
+    def index = { }
 
     def check() {
         def uid = params.uid
@@ -36,9 +34,16 @@ class DataController {
                     return false
                 }
             } else {
-                // doesn't exist
-                notFound "no entity with uid = ${uid}"
-                return false
+
+                if(params.entity){
+                    params.pg = ProviderGroup._get(params.uid, params.entity)
+                }
+
+                if(!params.pg){
+                    // doesn't exist
+                    notFound "no entity with uid = ${uid}"
+                    return false
+                }
             }
         }
         if (request.method == 'POST' || request.method == "PUT" || request.method == 'DELETE') {

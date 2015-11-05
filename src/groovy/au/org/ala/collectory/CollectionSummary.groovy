@@ -4,9 +4,15 @@ package au.org.ala.collectory
  * TO for the summary of a collection.
  */
 class CollectionSummary extends ProviderGroupSummary {
-    String institution
+
+    String institutionName
     String institutionId
     String institutionUid
+
+    String collectionId
+    String collectionUid
+    String collectionName
+
     List derivedInstCodes
     List derivedCollCodes
     String institutionLogoUrl

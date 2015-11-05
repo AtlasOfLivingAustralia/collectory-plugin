@@ -263,13 +263,18 @@ class Collection extends ProviderGroup implements Serializable {
     CollectionSummary buildSummary() {
         CollectionSummary cs = init(new CollectionSummary()) as CollectionSummary
         if (institution) {
-            cs.institution = institution.name
+            cs.institutionName = institution.name
             cs.institutionId = institution.id
             cs.institutionUid = institution.uid
             if (institution.logoRef?.file) {
                 cs.institutionLogoUrl = au.org.ala.collectory.Utilities.buildInstitutionLogoUrl(institution.logoRef.file)
             }
         }
+
+        cs.collectionId = cs.id
+        cs.collectionUid = cs.uid
+        cs.collectionName = cs.name
+
         cs.derivedInstCodes = getListOfInstitutionCodesForLookup()
         cs.derivedCollCodes = getListOfCollectionCodesForLookup()
         cs.hubMembership = listHubMembership().collect { [uid: it.uid, name: it.name] }

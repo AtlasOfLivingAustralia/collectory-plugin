@@ -81,6 +81,11 @@
                 <!-- last edit -->
                 <p><span class="category"><g:message code="datahub.show.lastchange" />: </span> ${fieldValue(bean: instance, field: "userLastModified")} on ${fieldValue(bean: instance, field: "lastUpdated")}</p>
 
+
+                <g:if test="${instance.gbifDataset}">
+                    <p>This dataset was downloaded from GBIF. <a href="http://www.gbif.org/dataset/${instance.guid}">View details on GBIF.org</a></p>
+                </g:if>
+
                 <cl:editButton uid="${instance.uid}" page="/shared/base" notAuthorisedMessage="You are not authorised to edit this resource."/>
               </div>
 
@@ -279,7 +284,7 @@
               <g:form>
                 <g:hiddenField name="id" value="${instance?.id}"/>
                 <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
-                  <span><g:actionSubmit class="delete btn btn-danger" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
+                  <span><g:actionSubmit class="btn btn-danger" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
                 </cl:ifGranted>
               </g:form>
             </div>

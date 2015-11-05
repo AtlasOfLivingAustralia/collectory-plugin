@@ -1,4 +1,3 @@
-
 <%@ page import="au.org.ala.collectory.ProviderMap" %>
 <html>
     <head>
@@ -24,12 +23,12 @@
                     <tbody>
                     
                         <tr class="prop">
-                            <td valign="top" class="name"><g:message code="providerMap.id.label" default="Id" /></td>
-                            
-                            <td valign="top" class="value">${fieldValue(bean: providerMapInstance, field: "id")}</td>
-                            
+                            <td valign="top" class="name"><g:message code="institution.label" default="Institution" /></td>
+
+                            <td valign="top" class="value"><g:link controller="institution" action="show" id="${providerMapInstance?.institution?.uid}">${providerMapInstance?.institution?.encodeAsHTML()}</g:link></td>
+
                         </tr>
-                    
+
                         <tr class="prop">
                             <td valign="top" class="name"><g:message code="collection.label" default="Collection" /></td>
 
