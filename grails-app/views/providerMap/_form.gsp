@@ -1,7 +1,6 @@
-
-
 <g:form action="save" method="post" >
     <g:hiddenField name="returnTo" value="${returnTo}" />
+    <g:hiddenField name="id" value="${providerMapInstance?.id}" />
     <div class="dialog">
         <table>
             <tbody>
@@ -14,7 +13,7 @@
                     <g:select id="institutionSelect" name="institution.id" class="input-xxlarge"
                               from="${au.org.ala.collectory.Institution.list([sort: 'name'])}"
                               optionKey="id"
-                              value="${providerMapInstance?.collection?.id}"
+                              value="${providerMapInstance?.institution?.id}"
                               noSelection="${['null':'---- select an institution -----']}"
                     />
                 </td>

@@ -87,7 +87,7 @@ class ProviderMapController {
             redirect(action: "list", params:[returnTo: params.returnTo])
         }
         else {
-            if (providerMapInstance.collection.uid) {
+            if (providerMapInstance) {
                 return [providerMapInstance: providerMapInstance, returnTo: params.returnTo]
             } else {
                 render "You are not authorised to access this page."
