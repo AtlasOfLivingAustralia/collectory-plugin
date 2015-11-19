@@ -4,6 +4,9 @@ The collectory-plugin manages metadata that describe Australia's biodiversity co
 
  * [Database schema (PDF)](https://github.com/AtlasOfLivingAustralia/collectory/blob/master/Collectory_schema_20140916.pdf?raw=true)
 
+## Release notes - version 1.5
+ [See release notes on release page for 1.5](https://github.com/AtlasOfLivingAustralia/collectory-plugin/releases/tag/1.5)
+
 ## Release notes - version 1.2
 
 * IPT integration UI (Beta)
