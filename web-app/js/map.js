@@ -67,17 +67,13 @@ function initMap(mapOptions) {
     var featureGraphicUrl = mapOptions.serverUrl + "/images/map/orange-dot.png";
     var clusterGraphicUrl = mapOptions.serverUrl + "/images/map/orange-dot-multiple.png";
 
-    var mapboxId = "nickdos.kf2g7gpb"
-    var mapboxToken = "pk.eyJ1Ijoibmlja2RvcyIsImEiOiJ2V2dBdEg0In0.Ep2VyMOaOUnOwN1ZVa9uyQ"
-
-
     // create the map
     map = new OpenLayers.Map('map_canvas', {
         controls: [],
         sphericalMercator: true,
         layers: [
             new OpenLayers.Layer.XYZ("Base layer",
-            ["http://a.tiles.mapbox.com/v4/" + mapboxId + "/${z}/${x}/${y}.png?access_token=" + mapboxToken], {
+            ["http://${s}.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png"], {
                 sphericalMercator: true,
                 wrapDateLine: true
             })
