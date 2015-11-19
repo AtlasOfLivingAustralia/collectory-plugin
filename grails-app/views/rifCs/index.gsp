@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<%@ expressionCodec="xml" %><%@ page contentType="text/html;charset=UTF-8" %><?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <registryObjects xmlns="http://ands.org.au/standards/rif-cs/registryObjects"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://ands.org.au/standards/rif-cs/registryObjects http://services.ands.org.au/documentation/rifcs/schema/registryObjects.xsd">
@@ -84,7 +84,7 @@
                 </citationInfo>
                 </g:if>
                 <g:if test="${resBoundingBoxCoords.containsKey(resource.uid)}" >
-                    <spatial type="iso19139dcmiBox">northlimit=${resBoundingBoxCoords[resource.uid][3]}; southlimit=${resBoundingBoxCoords[resource.uid][1]}; westlimit=${resBoundingBoxCoords[resource.uid][0]}; eastLimit=${resBoundingBoxCoords[resource.uid][2]}; projection=WGS84</spatial>
+                    <coverage><spatial type="iso19139dcmiBox">northlimit=${resBoundingBoxCoords[resource.uid][3]}; southlimit=${resBoundingBoxCoords[resource.uid][1]}; westlimit=${resBoundingBoxCoords[resource.uid][0]}; eastLimit=${resBoundingBoxCoords[resource.uid][2]}; projection=WGS84</spatial></coverage>
                 </g:if>
             </collection>
         </registryObject>

@@ -28,6 +28,7 @@ class CollectoryUrlMappings {
 
         "/ws/licence" (controller:'licence')
 
+        "/rif-cs(.$format)?" (controller:'rifCs',action:'index')
         "/ws/rif-cs(.$format)?" (controller:'rifCs',action:'index')
 
         // temporary mock notification service

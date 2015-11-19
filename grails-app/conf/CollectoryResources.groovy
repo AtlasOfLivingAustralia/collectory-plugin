@@ -84,6 +84,6 @@ modules = {
     jquery_migration{
         // Needed to support legacy js components that do not work with latest versions of jQuery
         dependsOn 'jquery'
-        resource url:[ dir: 'js',file:'jquery-migrate-1.2.1.min.js']
+        resource url:[ dir: 'js',file:'jquery-migrate-1.2.1.min.js', plugin:'collectory-plugin']
     }
 }

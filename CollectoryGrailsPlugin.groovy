@@ -51,6 +51,10 @@ from the ALA collectory app (no local DB is required for this app).
 
     def doWithSpring = {
         def config = application.config
+        // UTF-8 encoding
+        config.grails.views.default.codec = "html"
+        config.grails.views.gsp.encoding = "UTF-8"
+        config.grails.converters.encoding = "UTF-8"
 
         // EhCache settings
         if (!config.grails.cache.config) {
@@ -63,11 +67,11 @@ from the ALA collectory app (no local DB is required for this app).
                 }
                 cache {
                     name 'collectoryCache'
-                    timeToLiveSeconds (3600 * 4)
+                    timeToLiveSeconds (3600 * 24) // day
                 }
                 cache {
                     name 'longTermCache'
-                    timeToLiveSeconds (3600 * 12)
+                    timeToLiveSeconds (3600 * 24 * 7) // week
                 }
             }
         }
