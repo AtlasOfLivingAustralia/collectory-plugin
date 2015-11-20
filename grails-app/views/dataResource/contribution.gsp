@@ -197,7 +197,7 @@
         </div>
     </g:form>
 </div>
-<script type="text/javascript">
+<r:script>
     function instrument() {
         var availableTags = [
             "institutionCode",
@@ -318,6 +318,6 @@
             $('#add-another').parent().append(newField);
         }
     });
-</script>
+</r:script>
 </body>
 </html>
