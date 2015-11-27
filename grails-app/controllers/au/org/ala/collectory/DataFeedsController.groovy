@@ -35,31 +35,34 @@ class DataFeedsController {
         String downloadUrlPrefix = "${grailsApplication.config.biocacheServicesUrl}/occurrences/index/download?sourceTypeId=0&reasonTypeId=9&file=data-resource-dr968&q=data_resource_uid%3A"  // drcode appended
         String siteUrl = "${grailsApplication.config.grails.serverURL}"
 
-        render(feedType:"rss", feedVersion:"2.0") {
-            title = "${grailsApplication.config.skin?.orgNameLong} Collections RSS Feed"
-            link = "${siteUrl}"
-            description = "${grailsApplication.config.skin?.orgNameLong} data resources RSS feed for iDigBio"
+        Map feed = [
+                title: "${grailsApplication.config.skin?.orgNameLong} Collections RSS Feed",
+                link: "${siteUrl}",
+                description: "${grailsApplication.config.skin?.orgNameLong} data resources RSS feed for iDigBio"
+        ]
 
-            dataResources.each { dataResource ->
-                if (dataResource.status == "dataAvailable") {
+        List items = []
 
-                    //Namespace ns = new Namespace("ipt", "http://ipt.gbif.org/")
-                    //Element emlOjb = new Element("eml", ns).setText("${siteUrl}/eml/${dataResource.uid}")
-                    Element emlObj = new Element("emllink").setText("${siteUrl}/eml/${dataResource.uid}")
-                    Element idObj = new Element("id").setText("${siteUrl}/public/showDataResource/${dataResource.uid}")
-
-                    Map entryMap = [
-                            title        : dataResource.name, // name/title of resource
-                            foreignMarkup: Arrays.asList(idObj, emlObj), // takes a list of jDOM Elements TODO: work out why this is not being outputted
-                            uri          : "${siteUrl}/public/showDataResource/${dataResource.uid}", // public resource page URL
-                            link         : "${raw(downloadUrlPrefix)}${dataResource.guid}", // download link for CSV
-                            publishedDate: new Date(dataResource.dataCurrency?.getTime() ?: 1) // some have a null dataCurrency value so fail-over to Jan 1 1970
-                            //description: dataResource.pubDescription, // causes errors due to GString ?? removing for now
+        dataResources.each { dataResource ->
+            if (dataResource.status == "dataAvailable") {
+                Date dateUpdt = new Date(dataResource.dataCurrency?.getTime() ?: 1)
+                //String pubDate =
+                Map entryMap = [
+                        title: dataResource.name, // name/title of resource
+                        guid: "${siteUrl}/public/showDataResource/${dataResource.uid}", // public resource page URL
+                        link: "${raw(downloadUrlPrefix)}${dataResource.guid}", // download link for CSV
+                        date: dateUpdt, // some have a null dataCurrency value so fail-over to Jan 1 1970
+                        description: dataResource.pubDescription, // causes errors due to GString ?? removing for now,
+                        emlLink: "${siteUrl}/eml/${dataResource.uid}" // EML link
                     ]
-
-                    entry(entryMap)
-                }
+                items.add(entryMap)
             }
         }
+
+        response.contentType = 'application/xml;charset=UTF-8'
+
+        [   feed: feed,
+            items: items ]
+
     }
 }
