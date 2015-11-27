@@ -1,9 +1,6 @@
 package au.org.ala.collectory
 
-import org.jdom.Document
 import org.jdom.Element
-import org.jdom.Namespace
-import org.jdom.output.XMLOutputter
 
 class DataFeedsController {
     def rifCsService
@@ -50,41 +47,18 @@ class DataFeedsController {
                     //Element emlOjb = new Element("eml", ns).setText("${siteUrl}/eml/${dataResource.uid}")
                     Element emlObj = new Element("emllink").setText("${siteUrl}/eml/${dataResource.uid}")
                     Element idObj = new Element("id").setText("${siteUrl}/public/showDataResource/${dataResource.uid}")
-                    //Element root = new Element("root").addContent([emlObj,idObj])
-                    //Document doc = new Document(root);
-                    //log.debug "doc = " + new XMLOutputter().outputString(doc);
-                    //feed.setForeignMarkup(Arrays.asList(emlOjb, idObj));
-                    //List foreignObj = [idObj, emlObj]
 
                     Map entryMap = [
-                            title: dataResource.name,
-                            foreignMarkup: Arrays.asList(idObj, emlObj),
-                            uri:  "${siteUrl}/public/showDataResource/${dataResource.uid}"
-                            //description: dataResource.pubDescription,
+                            title        : dataResource.name, // name/title of resource
+                            foreignMarkup: Arrays.asList(idObj, emlObj), // takes a list of jDOM Elements TODO: work out why this is not being outputted
+                            uri          : "${siteUrl}/public/showDataResource/${dataResource.uid}", // public resource page URL
+                            link         : "${raw(downloadUrlPrefix)}${dataResource.guid}", // download link for CSV
+                            publishedDate: new Date(dataResource.dataCurrency?.getTime() ?: 1) // some have a null dataCurrency value so fail-over to Jan 1 1970
+                            //description: dataResource.pubDescription, // causes errors due to GString ?? removing for now
                     ]
 
-                    //log.debug "entryMap = ${entryMap}"
-
-                    entry(entryMap) {
-                        // link to CSV download
-                        link = "${raw(downloadUrlPrefix)}${dataResource.guid}"
-                        // publication date - "EEEEE, MMMMM dd, yyyy hh:mm a"
-                        //publishedDate = new SimpleDateFormat("EEEEE, MMMMM dd, yyyy hh:mm a").parse(dataResource.dataCurrency).toTimestamp()  // new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").parse(dataCurrency).toTimestamp()
-                        publishedDate = new Date(dataResource.dataCurrency?.getTime()?:1)
-                        // other properties
-                        //foreignMarkup = [emlObj, idObj]
-
-//                        // ID - http://collections.ala.org.au/public/showDataResource/
-//                        guid = "${siteUrl}/public/showDataResource/${dataResource.uid}"
-//                        // Description
-//                        description = "${dataResource.pubDescription}"
-//                        // EML link - http://collections.ala.org.au/eml/dr820
-//                        emllink = "${siteUrl}/eml/${dataResource.uid}"
-
-                    }
-
+                    entry(entryMap)
                 }
-
             }
         }
     }
