@@ -28,8 +28,10 @@ class CollectoryUrlMappings {
 
         "/ws/licence" (controller:'licence')
 
-        "/rif-cs(.$format)?" (controller:'rifCs',action:'index')
-        "/ws/rif-cs(.$format)?" (controller:'rifCs',action:'index')
+        "/rif-cs(.$format)?" (controller:'dataFeeds',action:'index')
+        "/ws/rif-cs(.$format)?" (controller:'dataFeeds',action:'index')
+
+        "/feed(.$format)?" (controller:'dataFeeds',action:'rssFeed')
 
         // temporary mock notification service
         "/ws/notify" (controller:'data', action:'notify')
