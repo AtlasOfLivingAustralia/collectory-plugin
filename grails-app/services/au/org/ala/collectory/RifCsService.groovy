@@ -72,7 +72,8 @@ class RifCsService {
     }
 
     @Cacheable('longTermCache')
-    def getDataResources() {
-        DataResource.list([sort: 'uid'])
+    def getDataResources(String sort) {
+        String sortField = "${sort?:'uid'}"
+        DataResource.list([sort: sortField])
     }
 }

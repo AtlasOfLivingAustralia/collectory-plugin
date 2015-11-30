@@ -5,6 +5,10 @@ import org.jdom.Element
 class DataFeedsController {
     def rifCsService
 
+    /**
+     * Produce a RIF-SC XML file
+     * TODO: Use the ANDS RIF-SC Java library instead of GSP
+     */
     def index = {
         Map resData = [:]
         Map resContentTypes = [:]
@@ -29,8 +33,12 @@ class DataFeedsController {
         ]
     }
 
+    /**
+     * Produce a RSS feed for data resources.
+     * @see http://www.idigbio.org/wiki/index.php/CYWG_iDigBio_DwC-A_Pull_Ingestion#Requirements
+     */
     def rssFeed = {
-        List<DataResource> dataResources = rifCsService.getDataResources() // cached
+        List<DataResource> dataResources = rifCsService.getDataResources("dataCurrency") // cached
         // http://biocache.ala.org.au/ws/occurrences/index/download?q=data_resource_uid%3Adr968&email=nick.dosremedios@csiro.au&sourceTypeId=0&reasonTypeId=9&file=data-resource-dr968&extra=dataResourceUid,dataResourceName.p,occurrenceStatus
         String downloadUrlPrefix = "${grailsApplication.config.biocacheServicesUrl}/occurrences/index/download?sourceTypeId=0&reasonTypeId=9&file=data-resource-dr968&q=data_resource_uid%3A"  // drcode appended
         String siteUrl = "${grailsApplication.config.grails.serverURL}"
@@ -45,19 +53,20 @@ class DataFeedsController {
 
         dataResources.each { dataResource ->
             if (dataResource.status == "dataAvailable") {
-                Date dateUpdt = new Date(dataResource.dataCurrency?.getTime() ?: 1)
-                //String pubDate =
+                Date dateUpdated = dataResource.dataCurrency ?: dataResource.dateCreated // fall-back to first loaded date
                 Map entryMap = [
                         title: dataResource.name, // name/title of resource
                         guid: "${siteUrl}/public/showDataResource/${dataResource.uid}", // public resource page URL
-                        link: "${raw(downloadUrlPrefix)}${dataResource.guid}", // download link for CSV
-                        date: dateUpdt, // some have a null dataCurrency value so fail-over to Jan 1 1970
-                        description: dataResource.pubDescription, // causes errors due to GString ?? removing for now,
+                        link: "${raw(downloadUrlPrefix)}${dataResource.uid}", // download link for CSV
+                        date: dateUpdated, // processed above
+                        description: dataResource.pubDescription, // this can be long so might want to clip?
                         emlLink: "${siteUrl}/eml/${dataResource.uid}" // EML link
                     ]
                 items.add(entryMap)
             }
         }
+
+        items.sort { a,b -> b.date <=> a.date } // sort with most recent at top as per RSS convention
 
         response.contentType = 'application/xml;charset=UTF-8'
 
