@@ -4,6 +4,7 @@ import grails.converters.JSON
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
+import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.multipart.MultipartFile
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
