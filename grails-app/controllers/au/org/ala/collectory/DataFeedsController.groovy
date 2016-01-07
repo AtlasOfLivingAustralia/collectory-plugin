@@ -42,8 +42,6 @@ class DataFeedsController {
      */
     def rssFeed = {
         List<DataResource> dataResources = rifCsService.getDataResources("dataCurrency") // cached
-        // http://biocache.ala.org.au/ws/occurrences/index/download?q=data_resource_uid%3Adr968&email=nick.dosremedios@csiro.au&sourceTypeId=0&reasonTypeId=9&file=data-resource-dr968&extra=dataResourceUid,dataResourceName.p,occurrenceStatus
-        String downloadUrlPrefix = "${grailsApplication.config.biocacheServicesUrl}/occurrences/index/download?sourceTypeId=0&reasonTypeId=9&file=data-resource-dr968&q=data_resource_uid%3A"  // drcode appended
         String siteUrl = "${grailsApplication.config.grails.serverURL}"
 
         Map feed = [
@@ -57,10 +55,11 @@ class DataFeedsController {
         dataResources.each { dataResource ->
             if (dataResource.status == "dataAvailable") {
                 Date dateUpdated = dataResource.dataCurrency ?: dataResource.dateCreated // fall-back to first loaded date
+                String downloadUrl = "${grailsApplication.config.biocacheServicesUrl}/occurrences/index/download?sourceTypeId=0&reasonTypeId=9&file=data-resource-${dataResource.uid}&q=data_resource_uid%3A${dataResource.uid}"
                 Map entryMap = [
                         title: dataResource.name, // name/title of resource
                         guid: "${siteUrl}/public/showDataResource/${dataResource.uid}", // public resource page URL
-                        link: "${raw(downloadUrlPrefix)}${dataResource.uid}", // download link for CSV
+                        link: "${raw(downloadUrl)}", // download link for CSV
                         date: dateUpdated, // processed above
                         description: dataResource.pubDescription, // this can be long so might want to clip?
                         emlLink: "${siteUrl}/eml/${dataResource.uid}" // EML link
