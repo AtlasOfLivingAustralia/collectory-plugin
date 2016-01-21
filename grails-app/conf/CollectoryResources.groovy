@@ -69,6 +69,7 @@ modules = {
         resource url:[dir:'js', file:'json2.js', plugin:'collectory-plugin']
     }
     fileupload {
+        dependsOn('bootstrap')
         resource url:[dir:'js', file:'bootstrap-fileupload.min.js', plugin:'collectory-plugin']
         resource url:[dir:'css', file:'bootstrap-fileupload.min.css', plugin:'collectory-plugin']
     }

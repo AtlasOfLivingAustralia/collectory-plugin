@@ -321,7 +321,7 @@ class GbifService {
         log.info(dr.uid + "  " + dr.id + " " + dr.name)    //.toString() + " " + dr.hasErrors() + " " + dr.getErrors())
 
         //4) Create the DwCA for the resource using the GBIF default meta.xml and occurrences.txt
-        String zipFileName = uploadedFile.getParentFile().getAbsolutePath() + File.separator + json.get("guid") + ".zip"
+        String zipFileName = uploadedFile.getParentFile().getAbsolutePath() + File.separator + json.get("guid", "dwca") + ".zip"
         //add the occurrence.txt file
         IOUtils.copy(new FileInputStream(uploadedFile), new FileOutputStream(zipFileName))
         log.info("Created the zip file " + zipFileName)

@@ -33,20 +33,17 @@
         </p>
     </div>
 
-    <div class="span6">
+    <div class="span6" style="padding-left:0;margin-left:0;">
         <div class="input-append">
             <label for="url"><g:message code="dataresource.gbifupload.label" />:</label>
             <input type="text" class="input-xxlarge" id="url" name="url" value=""/>
-
         </div>
-
         <div>
             <button class="btn" id="downloadArchiveBtn">
                 <r:img class="spinner-progress hide" uri="/images/spinner.gif"></r:img>
                 <g:message code="dataresource.gbifupload.btn"/>
             </button>
         </div>
-
         <div id="download-result" class="hide well" style="margin-top:30px;">
             <g:message code="dataresource.gbifupload.success0"/>:<br/>
             <strong><span id="new-resource-name"></span></strong>.<br/>
