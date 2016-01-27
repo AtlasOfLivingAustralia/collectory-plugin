@@ -618,8 +618,10 @@ function outputMultipleInstitutions(parents) {
 \************************************************************/
 function getName(obj) {
 
-    if(obj.entityType != "Collection"){
-        return obj.name;
+    if ($.isArray(obj) && obj[0].attributes && obj[0].attributes.name && obj[0].attributes.entityType != "Collection") {
+        return obj[0].attributes.name;
+    } else if (!$.isArray(obj) && obj.attributes && obj.attributes.name && obj.attributes.entityType != "Collection") {
+        return obj.attributes.name;
     }
 
     var name;
