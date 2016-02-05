@@ -766,7 +766,7 @@ function outputCollectionWithInstitution(obj, strategy) {
 
         // try full inst + 1 collection
         } else if (inst.length < max - 12) {
-            Console.log("Collection: " + jQuery.i18n.prop('collection'));
+            //console.log("Collection: " + jQuery.i18n.prop('collection'));
             return "<li>" + instLink + inst + "</a> - 1 " + jQuery.i18n.prop('collection') + "</li>";
 
         // try acronym of inst + 1 collection (worst case!)
