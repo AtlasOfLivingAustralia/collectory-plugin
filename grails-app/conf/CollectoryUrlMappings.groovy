@@ -41,6 +41,9 @@ class CollectoryUrlMappings {
         "/ws/lookup/$action/$id"(controller:'lookup')
         "/ws/lookup/$action"(controller:'lookup')
 
+
+        "/admin" (controller:'manage',action:'list')
+
         "/admin/export/$table" (controller:'admin',action:'export')
 
         // data sets

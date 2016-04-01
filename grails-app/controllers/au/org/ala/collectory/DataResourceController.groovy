@@ -7,7 +7,7 @@ import au.org.ala.collectory.resources.DarwinCoreFields
 
 class DataResourceController extends ProviderGroupController {
 
-    def metadataService
+    def metadataService, dataImportService
 
     DataResourceController() {
         entityName = "DataResource"
@@ -60,7 +60,6 @@ class DataResourceController extends ProviderGroupController {
     boolean isCollectionOrArray(object) {
         [Collection, Object[]].any { it.isAssignableFrom(object.getClass()) }
     }
-
 
     def updateImageMetadata = {
 
@@ -180,6 +179,13 @@ class DataResourceController extends ProviderGroupController {
         flash.message =
           "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
         redirect(action: "show", id: pg.uid)
+    }
+
+    def importDirOfDwcA(){
+        def dir = new File(params.dir)
+        if(dir.exists()){
+            dataImportService.importDirOfDwCA(params.dir)
+        }
     }
 
     /**

@@ -4,6 +4,8 @@ import grails.converters.JSON
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
+import org.apache.tools.zip.ZipFile
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.multipart.MultipartFile
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
@@ -20,7 +22,7 @@ abstract class ProviderGroupController {
     static String entityName = "ProviderGroup"
     static String entityNameLower = "providerGroup"
 
-    def idGeneratorService, collectoryAuthService, metadataService, gbifService
+    def idGeneratorService, collectoryAuthService, metadataService, gbifService, dataImportService
 
 /*
  * Access control
@@ -586,51 +588,10 @@ abstract class ProviderGroupController {
             return
         }
 
-        def fileId = System.currentTimeMillis()
-        def uploadDirPath = grailsApplication.config.uploadFilePath + fileId
-        log.debug "Creating upload directory " + uploadDirPath
-        def uploadDir = new File(uploadDirPath)
-        FileUtils.forceMkdir(uploadDir)
-
-        log.debug "Transferring file to directory...."
-        def newFile = new File(uploadDirPath + File.separatorChar + f.getFileItem().getName())
-        f.transferTo(newFile)
-
-        //update the connection profile stuff
-        def connParams = (new JsonSlurper()).parseText(dataResource.connectionParameters?:'{}')
-        //retrieve any additional params
-        def connProfile = metadataService.getConnectionProfile(params.protocol)
-        def allConnParams = metadataService.getConnectionParameters()
-
-        connProfile.params.each { param ->
-
-            def fullParamDescription = allConnParams.get(param.name)
-
-            if(fullParamDescription.type == 'boolean'){
-                connParams[param.paramName] = Boolean.parseBoolean(params[param.paramName])
-            } else {
-                connParams[param.paramName] = params[param.paramName]
-            }
-        }
-
-        //termsForUniqueKey
-        if(params.termsForUniqueKey){
-            def origString = params.termsForUniqueKey.trim()
-            def terms = []
-            origString.split(',').each {
-               terms << it.trim()
-            }
-           connParams.termsForUniqueKey = terms
-        }
-
-        connParams.url = 'file:///' + newFile.getPath()
-        connParams.protocol = params.protocol
-
-        dataResource.connectionParameters = (new JsonOutput()).toJson(connParams)
-        dataResource.save(flush:true)
-
+        dataImportService.importDataFileForDataResource(dataResource, f, params)
         redirect([controller: 'dataResource', action: 'show', id: dataResource.uid])
     }
+
 
 
     /**
