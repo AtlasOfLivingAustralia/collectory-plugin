@@ -14,7 +14,7 @@ class CollectoryGrailsPlugin {
     def grailsVersion = "2.3 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
-        "grails-app/views/error.gsp"
+        //"grails-app/views/error.gsp"
     ]
 
     def title = "Collectory Plugin" // Headline display name of the plugin
