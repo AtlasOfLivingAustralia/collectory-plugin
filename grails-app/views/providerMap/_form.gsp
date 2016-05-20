@@ -123,7 +123,7 @@ $('#institutionSelect').change(function() {
                 console.log(collection);
                 $('#collectionSelect')
                     .append($("<option></option>")
-                    .attr("value", collection.uid)
+                    .attr("value", collection.id)
                     .text(collection.name));
             });
         });
@@ -141,7 +141,7 @@ $('#institutionSelect').change(function() {
                 console.log(collection);
                 $('#collectionSelect')
                     .append($("<option></option>")
-                    .attr("value", collection.uid)
+                    .attr("value", collection.id)
                     .text(collection.name));
             });
         });

@@ -881,7 +881,7 @@ class OutputFormat {
     }
 
     static def briefEntity(list) {
-        return list.collect {[name: it.name, uri: it.buildUri(), uid: it.uid]}
+        return list.collect {[name: it.name, uri: it.buildUri(), uid: it.uid, id:it.id]}
     }
 
     static def formatHubMembership(hubs) {
