@@ -184,7 +184,7 @@ class TempDataResourceController {
             lastUpdated: tempDataResource.lastUpdated,
             numberOfRecords: tempDataResource.numberOfRecords,
             webserviceUrl:tempDataResource.webserviceUrl,
-            uiUrl:tempDataResource.uiUrl
+            status: tempDataResource.status
         ]
     }
 
