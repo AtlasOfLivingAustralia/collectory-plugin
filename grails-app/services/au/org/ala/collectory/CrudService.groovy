@@ -39,7 +39,8 @@ class CrudService {
 
     static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId','webserviceUrl','uiUrl',
                                                'description', 'status', 'type', 'dataGeneralisations',
-                                               'informationWithheld','license','citation','sourceFile','prodUid', 'keyFields']
+                                               'informationWithheld','license','citation','sourceFile','prodUid',
+                                               'keyFields', 'csvSeparator']
     static tempDataResourceNumberProperties = ['numberOfRecords']
     static tempDataResourceBooleanProperties = ['isContactPublic']
 
@@ -433,6 +434,8 @@ class CrudService {
             citation= p.citation
             sourceFile= p.sourceFile
             prodUid= p.prodUid
+            keyFields = p.keyFields
+            csvSeparator= p.csvSeparator
         }
         return result
     }

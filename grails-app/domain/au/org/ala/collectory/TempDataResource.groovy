@@ -36,7 +36,7 @@ class TempDataResource {
     String webserviceUrl    // sandbox.ala.org.au/biocache-service
     String uiUrl            // sandbox.ala.org.au/ala-hub
 
-    String status
+    String status = 'draft'
     Boolean isContactPublic = false
     String description
     String dataGeneralisations
@@ -46,6 +46,7 @@ class TempDataResource {
     String sourceFile
     String prodUid
     String keyFields
+    String csvSeparator
 
     static constraints = {
         uid(maxSize: 20)
@@ -63,6 +64,7 @@ class TempDataResource {
         informationWithheld(nullable: true)
         dataGeneralisations(nullable: true)
         keyFields(nullable: true)
+        csvSeparator(nullable: true, maxSize: 10)
         status(nullable: true, inList: ['draft', 'submitted', 'declined', 'dataAvailable', 'queuedForLoading'])
         prodUid(nullable: true, maxSize: 20)
     }
