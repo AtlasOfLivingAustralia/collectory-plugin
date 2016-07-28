@@ -18,6 +18,7 @@ package au.org.ala.collectory
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import grails.converters.JSON
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
+import org.grails.datastore.mapping.query.api.Criteria
 
 class TempDataResourceController {
 
@@ -157,6 +158,47 @@ class TempDataResourceController {
             addContentLocation "/ws/tempDataResource/${params.drt.uid}"
             //addLastModifiedHeader params.drt.lastUpdated
             render crudService.readTempDataResource(params.drt)
+        } else if (params.max && params.offset) {
+            Map props =[:]
+            crudService.tempDataResourceStringProperties?.each { prop ->
+                if(params.get(prop)){
+                    props[prop] = params.get(prop)
+                }
+            }
+
+            crudService.tempDataResourceNumberProperties?.each { prop ->
+                if(params.get(prop)){
+                    props[prop] = params.get(prop)
+                }
+            }
+
+            crudService.tempDataResourceBooleanProperties?.each { prop->
+                if(params.get(prop)){
+                    props[prop] = params.asBoolean(prop)
+                }
+            }
+            Integer max = params.getInt('max', 10)
+            Integer offset = params.getInt('offset', 0)
+            String sortField = params.remove('sortField'), sortOrder = params.remove('sortOrder')
+            Criteria c = TempDataResource.createCriteria()
+            List list = c.list(max: max, offset: offset) {
+                props.each { prop, value ->
+                    if (value instanceof List) {
+                        inList(prop, value)
+                    }
+                    else {
+                        eq(prop, value)
+                    }
+                }
+                if(sortField){
+                    order sortField, sortOrder?:'asc'
+                }
+            }
+
+            addContentLocation "/ws/tempDataResource"
+            List summaries = list.collect { buildSummary(it) }
+            Map result = [ resources: summaries, total: list.totalCount ]
+            render result as JSON
         } else if (params.alaId) {
             def c = TempDataResource.createCriteria()
             def list = c.list(params){
