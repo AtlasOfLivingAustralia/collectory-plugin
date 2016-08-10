@@ -13,9 +13,6 @@
  * rights and limitations under the License.
  */
 package au.org.ala.collectory
-
-import java.sql.Timestamp
-
 /**
  * Represents a temporary data set that has been uploaded to the transient biocache.
  */
@@ -39,6 +36,18 @@ class TempDataResource {
     String webserviceUrl    // sandbox.ala.org.au/biocache-service
     String uiUrl            // sandbox.ala.org.au/ala-hub
 
+    String status = 'draft'
+    Boolean isContactPublic = false
+    String description
+    String dataGeneralisations
+    String informationWithheld
+    String license
+    String citation
+    String sourceFile
+    String prodUid
+    String keyFields
+    String csvSeparator
+
     static constraints = {
         uid(maxSize: 20)
         name(nullable: true, maxSize:1024)
@@ -48,14 +57,29 @@ class TempDataResource {
         lastName(nullable: true, maxSize: 255)
         webserviceUrl(nullable: true, maxSize: 255)
         uiUrl(nullable: true, maxSize: 255)
+        description(nullable: true)
+        license(nullable: true, inList: ['CCBY3Aus', 'CCBYNC3Aus', 'CCBY4Int', 'CCBYNC4Int', 'CC0'])
+        citation(nullable: true)
+        sourceFile(nullable: true)
+        informationWithheld(nullable: true)
+        dataGeneralisations(nullable: true)
+        keyFields(nullable: true)
+        csvSeparator(nullable: true, maxSize: 10)
+        status(nullable: true, inList: ['draft', 'submitted', 'declined', 'dataAvailable', 'queuedForLoading'])
+        prodUid(nullable: true, maxSize: 20)
+        isContactPublic(nullable: true)
     }
 
     static auditable = [ignore: ['version','dateCreated','lastUpdated']]
 
-    static transients = ['primaryContact','primaryPublicContact','publicContactsPrimaryFirst','contactsPrimaryFirst']
+    static transients = ['primaryContact','primaryPublicContact','publicContactsPrimaryFirst','contactsPrimaryFirst','type']
 
     static mapping = {
         uid index:'uid_idx'
+        description type: 'text'
+        dataGeneralisations type: 'text'
+        informationWithheld type: 'text'
+        citation type: 'text'
     }
 
     def urlForm() {
@@ -228,5 +252,15 @@ class TempDataResource {
         ContactFor.findByEntityUidAndContact(uid, contact)?.delete()
     }
 
+    /**
+     * type says if the data is published or in sandbox.
+     */
+    String getType(){
+        if(prodUid){
+            return 'Production'
+        }
+
+        return 'Draft'
+    }
 
 }

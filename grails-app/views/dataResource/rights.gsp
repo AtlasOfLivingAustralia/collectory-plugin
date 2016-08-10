@@ -74,7 +74,7 @@
                             </td>
                             <td valign="top" class="value ${hasErrors(bean: command, field: 'licenseVersion', 'errors')}">
                                 <g:select name="licenseVersion"
-                                        from="${['','2.5','3.0']}"
+                                        from="${['','2.5','3.0','4.0']}"
                                         value="${command.licenseVersion}"/>
                                 <cl:helpText code="dataResource.licenseVersion"/>
                             </td>

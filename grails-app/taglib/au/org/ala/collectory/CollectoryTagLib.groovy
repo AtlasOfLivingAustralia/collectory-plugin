@@ -1750,10 +1750,10 @@ class CollectoryTagLib {
                 out << imageHtml
             }
             else if (image) {
-                out << "${display.display?:'No licence specified'} ${attrs.version?:''} Australia (${license}) ${imageHtml}"
+                out << "${display.display?:'No licence specified'} ${attrs.version?:''} (${license}) ${imageHtml}"
             }
             else {
-                out << "${display.display?:'No licence specified'} ${attrs.version?:''} Australia (${license})"
+                out << "${display.display?:'No licence specified'} ${attrs.version?:''} (${license})"
             }
         }
     }
