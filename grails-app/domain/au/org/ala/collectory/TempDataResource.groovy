@@ -67,6 +67,7 @@ class TempDataResource {
         csvSeparator(nullable: true, maxSize: 10)
         status(nullable: true, inList: ['draft', 'submitted', 'declined', 'dataAvailable', 'queuedForLoading'])
         prodUid(nullable: true, maxSize: 20)
+        isContactPublic(nullable: true)
     }
 
     static auditable = [ignore: ['version','dateCreated','lastUpdated']]
