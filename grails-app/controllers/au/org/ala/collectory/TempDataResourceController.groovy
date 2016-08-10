@@ -225,6 +225,7 @@ class TempDataResourceController {
             dateCreated: tempDataResource.dateCreated,
             lastUpdated: tempDataResource.lastUpdated,
             numberOfRecords: tempDataResource.numberOfRecords,
+            uiUrl: tempDataResource.uiUrl,
             webserviceUrl:tempDataResource.webserviceUrl,
             status: tempDataResource.status
         ]
