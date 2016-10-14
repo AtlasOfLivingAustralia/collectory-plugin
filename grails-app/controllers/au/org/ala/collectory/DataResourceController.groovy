@@ -152,6 +152,15 @@ class DataResourceController extends ProviderGroupController {
 
     def updateRights = {
         def pg = get(params.id)
+        //check licence
+        if(params.licenceID){
+            def selectedLicence = Licence.get(params.licenceID)
+            params.licenseType = selectedLicence.acronym
+            params.licenseVersion = selectedLicence.licenceVersion
+        } else {
+            params.licenseType = ""
+            params.licenseVersion = ""
+        }
         genericUpdate pg, 'rights'
     }
 

@@ -67,7 +67,7 @@
                                 <label for="focus"><g:message code="providerGroup.keywords.label" default="Keywords" /></label>
                             </td>
                             <td valign="top" class="value ${hasErrors(bean: command, field: 'keywords', 'errors')}">
-                                <g:textField name="keywords" cols="40" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.focus)}" value="${command?.focus}" />
+                                <g:textField name="keywords" cols="40" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.keywords)}" value="${command?.keywords}" />
                                 <cl:helpText code="providerGroup.focus"/>
                                 <p>Recognised keywords include: ${au.org.ala.collectory.Classification.keywordSynonyms.values().flatten().toSet().sort().join(", ")}</p>
                                 The keywords should be comma separated. These keywords are used to drive the

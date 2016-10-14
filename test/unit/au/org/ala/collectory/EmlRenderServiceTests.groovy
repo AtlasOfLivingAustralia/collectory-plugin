@@ -34,7 +34,7 @@ class EmlRenderServiceTests extends Specification {
     static ATTRIBUTIONS1 = 'co100 co101'
     static RIGHTS1 = 'Copyright CSIRO 2015'
     static CITATION1 = 'Some random person 2015'
-    static LICENCETYPE1 = DataResource.creativeCommonsLicenses[0]
+    static LICENCETYPE1 = "CC BY"
     static LICENCEVERSION1 = '3.0'
     static LASTUPDATED1 = new Date(100000000)
 

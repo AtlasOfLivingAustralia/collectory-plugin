@@ -12,6 +12,8 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 class CrudService {
 
     static transactional = true
+
+    def grailsApplication
     def idGeneratorService
 
     static baseStringProperties = ['guid','name','acronym','phone','email','state','pubDescription','techDescription','notes',
@@ -342,7 +344,7 @@ class CrudService {
                 dataCurrency = p.dataCurrency
                 harvestingNotes = p.harvestingNotes
                 publicArchiveAvailable = p.publicArchiveAvailable
-                publicArchiveUrl = ConfigurationHolder.config.resource.publicArchive.url.template.replaceAll('@UID@',p.uid)
+                publicArchiveUrl = grailsApplication.config.resource.publicArchive.url.template.replaceAll('@UID@',p.uid)
                 downloadLimit = p.downloadLimit
             }
         }

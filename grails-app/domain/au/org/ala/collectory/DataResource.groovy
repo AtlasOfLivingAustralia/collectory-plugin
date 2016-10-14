@@ -61,7 +61,7 @@ class DataResource extends ProviderGroup implements Serializable {
     static constraints = {
         rights(nullable:true)
         citation(nullable:true)
-        licenseType(nullable:true, maxSize:45, inList:licenseTypeList)
+        licenseType(nullable:true, maxSize:45)
         licenseVersion(nullable:true, maxSize:45)
         resourceType(maxSize:255, validator: {
             return it in resourceTypeList
@@ -88,14 +88,6 @@ class DataResource extends ProviderGroup implements Serializable {
     static transients =  ['creativeCommons']
 
     static resourceTypeList = ["records", "website", "document", "uploads", "species-list"]
-    static creativeCommonsLicenses = ["CC BY", "CC BY-NC", "CC BY-SA", "CC BY-NC-SA"]
-    static ccDisplayList = [
-        [type:'CC BY',display:'Creative Commons Attribution'],
-        [type:'CC BY-NC',display:'Creative Commons Attribution-NonCommercial'],
-        [type:'CC BY-SA',display:'Creative Commons Attribution-ShareAlike'],
-        [type:'CC BY-NC-SA',display:'Creative Commons Attribution-NonCommercial-ShareAlike'],
-        [type:'other',display:'Some other or no license']]
-    static licenseTypeList = creativeCommonsLicenses + ["other"]
     static permissionsDocumentTypes = ['','Email','Data Provider Agreement','Web Page','Other']
     static contentTypesList = ['authoritative','behaviour','commercial uses','common names','conservation management',
             'conservation status','description','distribution maps','distribution text','feeding and diet','habitat',
@@ -169,7 +161,7 @@ class DataResource extends ProviderGroup implements Serializable {
      * @return
      */
     boolean isCreativeCommons() {
-        return licenseType in creativeCommonsLicenses
+        return licenseType.contains('CC')
     }
 
     /**

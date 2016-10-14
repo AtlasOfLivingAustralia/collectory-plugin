@@ -103,12 +103,10 @@
             <p><g:message code="public.sdr.content.des01" />.</p>
         </g:else>
 
-        <g:if test="${instance.rights || instance.creativeCommons}">
+        <g:if test="${instance.rights || instance.licenseType}">
             <h2><g:message code="public.sdr.content.label04" /></h2>
             <cl:formattedText>${fieldValue(bean: instance, field: "rights")}</cl:formattedText>
-            <g:if test="${instance.creativeCommons}">
-                <p><cl:displayLicenseType type="${instance.licenseType}" version="${instance.licenseVersion}"/></p>
-            </g:if>
+            <p><cl:displayLicenseType type="${instance.licenseType}" version="${instance.licenseVersion}"/></p>
         </g:if>
 
         <g:if test="${instance.dataGeneralizations}">

@@ -214,6 +214,11 @@
                     </div>
 
                     <div class="homeCell">
+                        <g:link class="mainLink" controller="licence" action="list"><g:message code="admin.index.licence"  default="View all licences" /></g:link>
+                        <p class="mainText"><g:message code="admin.index.licence.desc" default="View all licences, and add new licences" />.</p>
+                    </div>
+
+                    <div class="homeCell">
                         <g:link class="mainLink" controller="reports" action="list"><g:message code="manage.list.addtools.vr" /></g:link>
                         <p class="mainText"><g:message code="manage.list.addtools.des09" />.</p>
                     </div>

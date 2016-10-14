@@ -258,8 +258,8 @@ class LookupController {
     }
 
     def buildCitation(pg, format) {
-        def citation = ConfigurationHolder.config.citation.template
-        def rights = ConfigurationHolder.config.citation.rights.template
+        def citation = grailsApplication.config.citation.template
+        def rights = grailsApplication.config.citation.rights.template
         def name = pg.name
         def dataGen = ''
         def infoWithheld = ''
@@ -268,9 +268,13 @@ class LookupController {
             def cit = pg.getCitation()
             citation = cit ? cit : citation
             def rit = ""
-            if (pg.creativeCommons) {
-                def display = DataResource.ccDisplayList.find { it.type == pg.licenseType }
-                rit = "${display.display} ${pg.licenseVersion} ${grailsApplication.config.regionName} (${pg.licenseType})"
+            if (pg.licenseType) {
+                def display = Licence.find { acronym == pg.licenseType }
+                if(display){
+                    rit = "${display.name} (${pg.licenseType})"
+                } else {
+                    rit = "${pg.licenseType}"
+                }
             }
             if (pg.getRights()) {
                 rit = rit ? rit + " " + pg.getRights() : pg.getRights()

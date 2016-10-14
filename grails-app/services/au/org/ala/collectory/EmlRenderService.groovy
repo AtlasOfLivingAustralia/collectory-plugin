@@ -485,7 +485,7 @@ class EmlRenderService {
                         }
                         if (pg.licenseType && pg.licenseType != "other") {
                             section {
-                                def licence = DataResource.ccDisplayList.find({ it.type == pg.licenseType})?.display ?: pg.licenseType
+                                def licence = Licence.find({ acronym == pg.licenseType})?.name ?: pg.licenseType
                                 title messageSource.getMessage("dataResource.license.label", null, "License", null)
                                 para pg.licenseVersion != null ? "${licence} ${pg.licenseVersion}" : licence
                             }

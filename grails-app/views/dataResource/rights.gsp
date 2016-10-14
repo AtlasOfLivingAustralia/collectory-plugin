@@ -33,7 +33,7 @@
                               <label for="citation"><g:message code="dataResource.citation.label" default="Citation" /></label>
                             </td>
                             <td valign="top" class="value ${hasErrors(bean: command, field: 'citation', 'errors')}">
-                                <g:textArea name="citation" cols="40" rows="${cl.textAreaHeight(text:command.citation)}" value="${command.citation}" />
+                                <g:textArea class="input-xxlarge" name="citation" cols="40" rows="${cl.textAreaHeight(text:command.citation)}" value="${command.citation}" />
                                 <cl:helpText code="dataResource.citation"/>
                               </td>
                               <cl:helpTD/>
@@ -45,7 +45,7 @@
                               <label for="rights"><g:message code="dataResource.rights.label" default="Rights" /></label>
                             </td>
                             <td valign="top" class="value ${hasErrors(bean: command, field: 'rights', 'errors')}">
-                                <g:textArea name="rights" cols="40" rows="${cl.textAreaHeight(text:command.rights)}" value="${command?.rights}" />
+                                <g:textArea class="input-xxlarge" name="rights" cols="40" rows="${cl.textAreaHeight(text:command.rights)}" value="${command?.rights}" />
                                 <cl:helpText code="dataResource.rights"/>
                             </td>
                           <cl:helpTD/>
@@ -54,29 +54,17 @@
                         <!-- license -->
                         <tr class="prop">
                             <td valign="top" class="name">
-                              <label for="licenseType"><g:message code="dataResource.licenseType.label" default="License type" /></label>
+                              <label for="licenceID"><g:message code="dataResource.licenseType.label" default="License type" /></label>
                             </td>
                             <td valign="top" class="value ${hasErrors(bean: command, field: 'licenseType', 'errors')}">
-                                <g:select name="licenseType"
-                                        from="${DataResource.ccDisplayList}"
-                                        optionKey="type"
-                                        optionValue="display"
-                                        value="${command.licenseType}"/>
+                                <g:select name="licenceID"
+                                        from="${au.org.ala.collectory.Licence.findAll()}"
+                                        optionKey="id"
+                                        optionValue=""
+                                        value="${command.licenseType}" class="input-xxlarge"
+                                        noSelection="['':'--- Choose licence ---']"
+                                />
                                 <cl:helpText code="dataResource.licenseType"/>
-                            </td>
-                          <cl:helpTD/>
-                        </tr>
-
-                        <!-- license version -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="licenseVersion"><g:message code="dataResource.licenseVersion.label" default="License version" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'licenseVersion', 'errors')}">
-                                <g:select name="licenseVersion"
-                                        from="${['','2.5','3.0']}"
-                                        value="${command.licenseVersion}"/>
-                                <cl:helpText code="dataResource.licenseVersion"/>
                             </td>
                           <cl:helpTD/>
                         </tr>

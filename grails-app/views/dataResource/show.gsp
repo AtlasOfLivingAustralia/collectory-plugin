@@ -218,7 +218,7 @@
                 <!-- rights -->
                 <p><span class="category"><g:message code="dataResource.rights.label" />: </span> ${fieldValue(bean: instance, field: "rights")}</p>
 
-                <!-- license -->
+                <!-- license type-->
                 <p><span class="category"><g:message code="dataResource.licenseType.label" />: </span> <cl:displayLicenseType type="${instance.licenseType}"/></p>
 
                 <!-- license version -->
