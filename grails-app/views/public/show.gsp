@@ -205,7 +205,7 @@
                       <g:if test="${instance.institution?.websiteUrl}">
                         <div class="webSite">
                           <a class='external' rel='nofollow' target="_blank" href="${instance.institution?.websiteUrl}">
-                            <g:message code="public.show.osb.link02" /> <cl:institutionType inst="${instance.institution}"/><g:message code="public.show.osb.link03" /></a>
+                            <g:message code="public.show.osb.link02"/>&nbsp;&nbsp;<cl:institutionType inst="${instance.institution}"/><g:message code="public.show.osb.link03" /></a>
                         </div>
                       </g:if>
                     </div>
@@ -400,7 +400,7 @@ function onLoadCallback() {
             drawFacetCharts(data, facetChartOptions);
             if(data.totalRecords > 0){
                 $('#dataAccessWrapper').css({display:'block'});
-                $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + ' records');
+                $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + " ${g.message(code: 'public.show.rt.des03')}");
             }
         }
     }
@@ -537,15 +537,15 @@ function decadeBreakdownRequestHandler(response) {
 function setProgress(percentage){
   var captionText = "";
   if (${instance.numRecords < 1}) {
-    captionText = "There is no estimate of the total number<br/>of ${nouns} in this collection.";
+    captionText = jQuery.i18n.prop('public.show.setprogress.01')+ " " +  ${nouns} +  jQuery.i18n.prop('public.show.setprogress.02');
   } else if (percentage == 0) {
-    captionText = "No records are available for viewing in the Atlas.";
+    captionText = jQuery.i18n.prop('public.show.setprogress.03');
   } else {
     var displayPercent = percentage.toFixed(1);
     if (percentage < 0.1) {displayPercent = percentage.toFixed(2)}
     if (percentage > 20) {displayPercent = percentage.toFixed(0)}
     if (percentage > 100) {displayPercent = "over 100"}
-    captionText = "Approximately, records for " + displayPercent + "% of ${nouns} are available for viewing in the Atlas.";
+    captionText = jQuery.i18n.prop('public.show.percentrecords.01') + " " + displayPercent + " " + jQuery.i18n.prop('public.show.percentrecords.02') + " " + jQuery.i18n.prop('public.show.percentrecords.${nouns}') + " " + jQuery.i18n.prop('public.show.percentrecords.03') +  ".";
   }
   $('#speedoCaption').html(captionText);
   if (percentage > 100) {
