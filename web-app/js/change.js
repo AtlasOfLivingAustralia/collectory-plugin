@@ -305,9 +305,10 @@ var validator = {
                     scientificNamesVal = transformer.commaSeparatedToList($('#scientificNamesInput').val());
 
                 dialogs.checkAndUpdateText('focus');
+                dialogs.checkAndUpdateText('uso');
 
                 if (kingdomCoverageVal !== currentValue.kingdomCoverage) {
-                    $kingdomCoverageElement.html(jQuery.i18n.prop('change.js.taxonomicrange02') + " " + transformer.listToString(selectedKingdoms));
+                    $kingdomCoverageElement.html("Kingdoms covered include: " + transformer.listToString(selectedKingdoms));
                     $kingdomCoverageElement.toggleClass('empty', kingdomCoverageVal === "");
                     currentValue.kingdomCoverage = kingdomCoverageVal;
                     pageButtons.changed('kingdomCoverage');
@@ -384,6 +385,9 @@ var validator = {
         },
         focus: {
             property: 'focus'
+        },
+        uso: {
+            property: 'uso'
         },
         kingdomCoverage: {
             property: "kingdomCoverage"

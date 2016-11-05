@@ -73,14 +73,15 @@ modules = {
         resource url:[dir:'js', file:'bootstrap-fileupload.min.js', plugin:'collectory-plugin']
         resource url:[dir:'css', file:'bootstrap-fileupload.min.css', plugin:'collectory-plugin']
     }
+    charts {
+        dependsOn 'jquery_i18n'
+        resource url:[dir:'js', file:'charts2.js', plugin:'collectory-plugin']
+        resource url:[dir:'js', file:'charts.js', plugin:'collectory-plugin']
+    }
     collectory {
         dependsOn 'jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
         resource url:[dir:'js', file:'collectory.js', plugin:'collectory-plugin']
         resource url:[dir:'css', file:'temp-style.css', plugin:'collectory-plugin']
-    }
-    charts {
-        resource url:[dir:'js', file:'charts2.js', plugin:'collectory-plugin']
-        resource url:[dir:'js', file:'charts.js', plugin:'collectory-plugin']
     }
     jquery_migration{
         // Needed to support legacy js components that do not work with latest versions of jQuery
