@@ -8,6 +8,17 @@
 //// an instance of a web app - used to display search results
 //var biocacheWebappUrl = "http://biocache.ala.org.au";  // should be overridden from config by the calling page
 
+/**
+ * Load Spring i18n messages into JS
+ */
+jQuery.i18n.properties({
+    name: 'messages',
+    path: COLLECTORY_CONF.contextPath + '/messages/i18n/',
+    mode: 'map',
+    language: COLLECTORY_CONF.locale // default is to use browser specified locale
+    //callback: function(){} //alert( "facet.conservationStatus = " + jQuery.i18n.prop('facet.conservationStatus')); }
+});
+
 // defaults for taxa chart
 var taxonomyPieChartOptions = {
     width: 700,
@@ -51,26 +62,26 @@ var individualChartOptions = {
 ///*
 var individualChartOptions = {
     state_conservation: {chartType: 'column', width: 450, chartArea: {left:60, height: "58%"},
-        title: 'By state conservation status', hAxis: {slantedText: true}},
+    title: jQuery.i18n.prop('charts2.js.stateconservationstatus'), hAxis: {slantedText: true}},
     occurrence_year: {chartType: 'column', width: 450, chartArea: {left:60, height: "65%"},
         hAxis: {slantedText: true}},
-    species_group: {title: 'By higher-level group', ignore: ['Animals'], chartType: 'column',
+    species_group: {title: jQuery.i18n.prop('charts2.js.higherlevelgroup'), ignore: ['Animals'], chartType: 'column',
         width: 450, chartArea: {left:60, height:"58%"}, vAxis: {minValue: 0},
         colors: ['#108628']},
     state: {ignore: ['Unknown1']},
-    type_status: {title: 'By type status (as % of all type specimens)', ignore: ['notatype']},
-    assertions: {chartType: 'bar', chartArea: {left:170}}
+    type_status: {title: jQuery.i18n.prop('charts2.js.typestatus'), ignore: ['notatype']},
+    assertions: {title: jQuery.i18n.prop('charts2.js.dataassertion'), chartType: 'bar', chartArea: {left:170}}
 };
 //*/
 
 /*----------------- FACET-BASED CHARTS USING DIRECT CALLS TO BIO-CACHE SERVICES ---------------------*/
 // these override the facet names in chart titles
 var chartLabels = {
-    institution_uid: 'institution',
-    data_resource_uid: 'data set',
-    assertions: 'data assertion',
-    biogeographic_region: 'biogeographic region',
-    occurrence_year: 'decade'
+    institution_uid: jQuery.i18n.prop('charts2.js.institution'),
+    data_resource_uid: jQuery.i18n.prop('charts2.js.dataset'),
+    assertions: jQuery.i18n.prop('charts2.js.dataassertion'),
+    biogeographic_region: jQuery.i18n.prop('charts2.js.biogeographicregion'),
+    occurrence_year: jQuery.i18n.prop('charts2.js.decade')
 };
 // asynchronous transforms are applied after the chart is drawn, ie the chart is drawn with the original values
 // then redrawn when the ajax call for transform data returns
@@ -94,7 +105,7 @@ function loadFacetCharts(chartOptions) {
     if (chartOptions.biocacheWebappUrl != undefined) { biocacheWebappUrl = chartOptions.biocacheWebappUrl; }
 
     var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
-    chartsDiv.append($("<span>Loading charts...</span>"));
+    chartsDiv.append($("<span>" + jQuery.i18n.prop('charts.js.loading') + "</span>"));
     var query = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
     $.ajax({
       url: urlConcat(biocacheServicesUrl, "/occurrences/search.json?flimit=-1pageSize=0&q=") + query,
@@ -159,7 +170,15 @@ function buildGenericFacetChart(name, data, query, chartsDiv, chartOptions) {
 
     // resolve the chart options
     var opts = $.extend({}, genericChartOptions);
-    opts.title = "By " + chartLabel;  // default title
+    if (chartLabel == "state") {
+        opts.title = jQuery.i18n.prop('charts.js.byregion');
+    }else{
+        if (chartLabel == "country"){
+            opts.title = jQuery.i18n.prop('charts.js.bycountry');
+        }else{
+            opts.title = jQuery.i18n.prop('charts.js.by') + " " + chartLabel;  // default title
+        }
+    }
     var individualOptions = individualChartOptions[name] ? individualChartOptions[name] : {};
     // merge generic, individual and user options
     opts = $.extend(true, {}, opts, individualOptions, chartOptions[name]);
@@ -252,7 +271,7 @@ function transformDecadeData(data) {
     var transformedData = [];
     $.each(data, function(i,obj) {
         if (obj.label == 'before') {
-            transformedData.splice(0,0,{label: "before " + firstDecade, count: obj.count});
+            transformedData.splice(0,0,{label: jQuery.i18n.prop('charts.js.before') + firstDecade, count: obj.count});
         }
         else {
             var decade = obj.label.substr(0,4);
@@ -352,9 +371,35 @@ function drawTaxonomyChart(data, chartOptions, query) {
     });
 
     // resolve the chart options
+    var rango="";
     var opts = $.extend({}, taxonomyPieChartOptions);
     opts = $.extend(true, opts, chartOptions);
-    opts.title = opts.name ? opts.name + " " + jQuery.i18n.prop('charts.js.recordsby') + " " + data.rank : "By " + data.rank;
+    switch(data.rank) {
+        case "kingdom":
+            rango=jQuery.i18n.prop('charts.js.kingdom');
+            break;
+        case "phylum":
+            rango=jQuery.i18n.prop('charts.js.phylum');
+            break;
+        case "order":
+            rango=jQuery.i18n.prop('charts.js.order');
+            break;
+        case "family":
+            rango=jQuery.i18n.prop('charts.js.family');
+            break;
+        case "genus":
+            rango=jQuery.i18n.prop('charts.js.genus')
+            break;
+        case "class":
+            rango=jQuery.i18n.prop('charts.js.class');
+            break;
+        case "species":
+            rango=jQuery.i18n.prop('charts.js.species');
+            break;
+        default:
+            rango=data.rank;
+     }
+    opts.title = opts.name ? opts.name + " " + jQuery.i18n.prop('charts.js.by') + " " + rango : jQuery.i18n.prop('charts.js.by') + " " + rango;
 
     // create the outer div that will contain the chart and the additional links
     var $outerContainer = $('#taxa');
@@ -382,7 +427,7 @@ function drawTaxonomyChart(data, chartOptions, query) {
     // draw the back button / instructions
     var $backLink = $('#backLink');
     if ($backLink.length == 0) {
-        $backLink = $('<div class="link" id="backLink">&laquo; Previous rank</div>').appendTo($outerContainer);  // create it
+        $backLink = $('<div class="link" id="backLink">&laquo; ' + jQuery.i18n.prop('charts2.js.previousrank') + '</div>').appendTo($outerContainer);  // create it
         $backLink.css('position','relative').css('top','-75px');
         $backLink.click(function() {
             // only act if link was real
@@ -390,7 +435,7 @@ function drawTaxonomyChart(data, chartOptions, query) {
 
             // show spinner while loading
             $container.append($('<img class="loading" style="position:absolute;left:130px;top:220px;z-index:2000" ' +
-                    'alt="loading..." src="' + collectionsUrl + '/images/ala/ajax-loader.gif"/>'));
+                    'alt="cargando..." src="' + collectionsUrl + '/images/ala/ajax-loader.gif"/>'));
 
             // get state from history
             var previous = popHistory(chartOptions);
@@ -405,7 +450,7 @@ function drawTaxonomyChart(data, chartOptions, query) {
     }
     if (chartOptions.history) {
         // show the prev link
-        $backLink.html("&laquo; Previous rank").addClass('link');
+        $backLink.html("&laquo; " + jQuery.i18n.prop('charts2.js.previousrank')).addClass('link');
     }
     else {
         // show the instruction
@@ -497,7 +542,7 @@ function initTaxonTree(treeOptions) {
 
     var targetDivId = treeOptions.targetDivId ? treeOptions.targetDivId : 'tree';
     var $container = $('#' + targetDivId);
-    $container.append($('<h4>Explore records by taxonomy</h4>'));
+    $container.append($('<h4>' + jQuery.i18n.prop('charts2.js.explorerecords') +'</h4>'));
     var $treeContainer = $('<div id="treeContainer"></div>').appendTo($container);
     $treeContainer.resizable({
         maxHeight: 900,
