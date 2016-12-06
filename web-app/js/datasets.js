@@ -106,14 +106,14 @@ function appendResource(value) {
     $rowA.find('img').tooltip($.extend({},tooltipOptions,{position:'center left'}));
 
     // row B
-    $rowB.append('<span><strong class="resultsLabelFirst">Type of resource: </strong>' + value.resourceType + '</span>');  // resource type
-    $rowB.append('<span><strong class="resultsLabel">License: </strong>' + (value.licenseType == null ? '' : value.licenseType) + '</span>'); // license type
-    $rowB.append('<span><strong class="resultsLabel">License version: </strong>' + (value.licenseVersion == null ? '' : value.licenseVersion) + '</span>'); // license version
+    $rowB.append('<span><strong class="resultsLabelFirst">'+ jQuery.i18n.prop('datasets.js.appendresource06') +': </strong>' + value.resourceType + '</span>');  // resource type
+    $rowB.append('<span><strong class="resultsLabel">'+ jQuery.i18n.prop('datasets.js.appendresource07') +': </strong>' + (value.licenseType == null ? '' : value.licenseType) + '</span>'); // license type
+    $rowB.append('<span><strong class="resultsLabel">'+ jQuery.i18n.prop('datasets.js.appendresource08') +': </strong>' + (value.licenseVersion == null ? '' : value.licenseVersion) + '</span>'); // license version
     if (value.resourceType == 'records') {
-        $rowB.append('<span class="viewRecords"><a title="' + jQuery.i18n.prop('datasets.js.appendresource03') + '" href="' + biocacheUrl + '/occurrences/search?q=data_resource_uid:' + value.uid + '">View records</a></span>'); // records link
+        $rowB.append('<span class="viewRecords"><a title="' + jQuery.i18n.prop('datasets.js.appendresource03') + '" href="' + biocacheUrl + '/occurrences/search?q=data_resource_uid:' + value.uid + '">'+ jQuery.i18n.prop('datasets.js.appendresource10') +'</a></span>'); // records link
     }
     if (value.resourceType == 'website' && value.websiteUrl) {
-        $rowB.append('<span class="viewWebsite"><a title="' + jQuery.i18n.prop('datasets.js.appendresource04') + '" class="external" target="_blank" href="' + value.websiteUrl + '">Website</a></span>'); // website link
+        $rowB.append('<span class="viewWebsite"><a title="' + jQuery.i18n.prop('datasets.js.appendresource04') + '" class="external" target="_blank" href="' + value.websiteUrl + '">'+ jQuery.i18n.prop('datasets.js.appendresource11') +'</a></span>'); // website link
     }
     $rowB.find('a').tooltip(tooltipOptions);
 
@@ -130,7 +130,7 @@ function appendResource(value) {
     }
 
     if (value.contentTypes != null) {
-        $rowC.append('<span><strong class="resultsLabel">Content includes:</strong></span>'); // label for content types
+        $rowC.append('<span><strong class="resultsLabel">'+ jQuery.i18n.prop('datasets.js.appendresource09') +':</strong></span>'); // label for content types
         var $ul = $('<ul class="contentList"></ul>').appendTo($rowC);
         var ctList = $.parseJSON(value.contentTypes);
         $.each(ctList, function(i,v) {
@@ -176,7 +176,7 @@ function clearList() {
 /** display the current size of the filtered list **/
 function updateTotal() {
     total = resources.length;
-    $('#resultsReturned').html("Showing <strong>" + total + "</strong> data " + (total == 1 ? 'set.' : 'sets.'));
+    $('#resultsReturned').html(jQuery.i18n.prop('datasets.js.updatetotal03') +  ' <strong>' + total + '</strong> ' + jQuery.i18n.prop('datasets.js.updatetotal04') + (total == 1 ? jQuery.i18n.prop('datasets.js.updatetotal05') : jQuery.i18n.prop('datasets.js.updatetotal06')));
     $('#downloadLink').attr('title', jQuery.i18n.prop('datasets.js.updatetotal01') + ' ' + total + ' ' + jQuery.i18n.prop('datasets.js.updatetotal02'));
 }
 function hideTooltip(element) {
@@ -543,7 +543,7 @@ function displayFacet(facet, list) {
     return $div;
 }
 function moreLink() {
-    var $more = $('<li class="link"><i class="icon-hand-right"></i> show more</li>');
+    var $more = $('<li class="link"><i class="icon-hand-right"></i> '+ jQuery.i18n.prop('datasets.js.morelink')+'</li>');
     $more.click(function() {
         // make following items visible and add a 'less' link
         $(this).parent().find('li').css('display','list-item');
@@ -555,7 +555,7 @@ function moreLink() {
     return $more
 }
 function lessLink() {
-    var $less = $('<li class="link"><i class="icon-hand-right"></i> show less</li>');
+    var $less = $('<li class="link"><i class="icon-hand-right"></i> ' + jQuery.i18n.prop('datasets.js.lesslink') + '</li>');
     $less.click(function() {
         // make items > 5 hidden and add a 'more' link
         $(this).parent().find('li:gt(4)').css('display','none');

@@ -48,7 +48,7 @@
                     <h2><g:link action="show" id="${p.uid}">${p.name}</g:link></h2>
                 </g:each>
                 <cl:valueOrOtherwise value="${instance.acronym}"><span
-                        class="acronym">Acronym: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
+                        class="acronym"><g:message code="public.show.header.acronym"/>: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
                 <g:if test="${instance.guid?.startsWith('urn:lsid:')}">
                     <span class="lsid"><a href="#lsidText" id="lsid" class="local"
                                           title="Life Science Identifier (pop-up)"><g:message code="public.lsid" /></a></span>
@@ -262,7 +262,7 @@
                 drawFacetCharts(data, facetChartOptions);
                 if(data.totalRecords > 0){
                     $('#dataAccessWrapper').css({display:'block'});
-                    $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + ' records');
+                    $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + " ${g.message(code: 'public.show.rt.des03')}");
                 }
             }
         }

@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
-    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper"/>
+    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper, jquery_i18n"/>
     <r:script>
         // define biocache server
         bieUrl = "${grailsApplication.config.bie.baseURL}";
@@ -50,7 +50,7 @@
                 <h2><g:link action="show" id="${instance.institution.uid}">${instance.institution.name}</g:link></h2>
             </g:if>
             <cl:valueOrOtherwise value="${instance.acronym}"><span
-                    class="acronym">Acronym: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
+                    class="acronym"><g:message code="public.show.header.acronym"/>: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
             <g:if test="${instance.guid}">
                 <span class="lsid"><a href="#lsidText" id="lsid" class="local"
                                   title="Life Science Identifier (pop-up)"><g:message code="public.lsid" /></a></span>
@@ -412,7 +412,7 @@
                     drawFacetCharts(data, facetChartOptions);
                     if(data.totalRecords > 0){
                         $('#dataAccessWrapper').css({display:'block'});
-                        $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + ' records');
+                        $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + " ${g.message(code: 'public.show.rt.des03')}");
                     }
                 }
             }

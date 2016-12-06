@@ -81,7 +81,7 @@
 
         <h2><g:message code="public.sdh.co.label03" /></h2>
         <p><g:message code="public.sdh.co.des01" /> <span id="totalRecords"><g:message code="public.usage.des" />...</span> <g:message code="public.sdh.co.des03" />.
-            <a href="${grailsApplication.config.biocacheUiURL}/occurrences/search?q=data_hub_uid:${instance.uid}" class="btn">View all records</a>
+            <a href="${grailsApplication.config.biocacheUiURL}/occurrences/search?q=data_hub_uid:${instance.uid}" class="btn"><g:message code="public.sdh.co.allrecords" /></a>
             %{--&nbsp;&nbsp;&nbsp;<button type=button id="showTimings">Show timings</button>--}%
         </p>
         <div id="charts" class="section vertical-charts">

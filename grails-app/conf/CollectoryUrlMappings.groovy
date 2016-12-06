@@ -81,7 +81,7 @@ class CollectoryUrlMappings {
         //"/ws/contacts/$id?" (controller: 'data', action: 'contacts')
         "/ws/contacts/email/$email?" (controller: 'data', action: 'getContactByEmail')
 
-        "/ws/contacts/$id?(.$format)?" (controller:'data') {
+        "/ws/contacts/$id(.$format)?" (controller:'data') {
             action = [GET:'contacts', PUT:'updateContact', DELETE:'deleteContact', POST:'updateContact']
         }
 
