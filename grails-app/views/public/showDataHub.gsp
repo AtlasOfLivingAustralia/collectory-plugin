@@ -2,11 +2,11 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="layout" content="${ConfigurationHolder.config.skin.layout}" />
+    <meta name="layout" content="${grailsApplication.config.skin.layout}" />
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
     <g:javascript src="jquery.fancybox/fancybox/jquery.fancybox-1.3.1.pack.js" />
     <link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery.fancybox/fancybox',file:'jquery.fancybox-1.3.1.css')}" media="screen" />
-    <script type="text/javascript" language="javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
     <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper"/>
     <script type="text/javascript">
       biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";

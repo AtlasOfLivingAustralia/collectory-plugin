@@ -9,12 +9,12 @@ class CollectoryGrailsPlugin {
     def authenticateService
 
     // the plugin version
-    def version = "1.5.9"
+    def version = "1.5.12-SNAPSHOT"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.3 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
-        "grails-app/views/error.gsp"
+        //"grails-app/views/error.gsp"
     ]
 
     def title = "Collectory Plugin" // Headline display name of the plugin

@@ -219,10 +219,16 @@
         </g:if>
 
     <!-- contacts -->
-        <g:set var="contacts" value="${instance.getPublicContactsPrimaryFirst()}"/>
-        <g:if test="${!contacts}">
-            <g:set var="contacts" value="${instance.dataProvider?.getContactsPrimaryFirst()}"/>
+        <g:if test="${instance.makeContactPublic}">
+            %{-- added so that contact visibility on website is on data resource level --}%
+            <g:set var="contacts" value="${instance.getContacts()}"/>
         </g:if>
+        <g:else>
+            <g:set var="contacts" value="${instance.getPublicContactsPrimaryFirst()}"/>
+            <g:if test="${!contacts}">
+                <g:set var="contacts" value="${instance.dataProvider?.getContactsPrimaryFirst()}"/>
+            </g:if>
+        </g:else>
         <g:render template="contacts" bean="${contacts}"/>
 
     <!-- web site -->

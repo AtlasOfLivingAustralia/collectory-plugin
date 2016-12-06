@@ -39,8 +39,12 @@ class CrudService {
     static dataResourceJSONArrays = ['connectionParameters', 'contentTypes', 'defaultDarwinCoreValues', 'imageMetadata']
     //static dataResourceObjectProperties = ['dataProvider']
 
-    static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId','webserviceUrl','uiUrl']
+    static tempDataResourceStringProperties = ['firstName','lastName','name','email','alaId','webserviceUrl','uiUrl',
+                                               'description', 'status', 'type', 'dataGeneralisations',
+                                               'informationWithheld','license','citation','sourceFile','prodUid',
+                                               'keyFields', 'csvSeparator']
     static tempDataResourceNumberProperties = ['numberOfRecords']
+    static tempDataResourceBooleanProperties = ['isContactPublic']
 
     static institutionStringProperties = ['institutionType']
 
@@ -420,6 +424,20 @@ class CrudService {
             dateCreated = p.dateCreated
             lastUpdated = p.lastUpdated
             numberOfRecords = p.numberOfRecords
+            description = p.description
+            uiUrl=p.uiUrl
+            description= p.description
+            license= p.license
+            status= p.status
+            type= p.type
+            isContactPublic= p.isContactPublic
+            dataGeneralisations= p.dataGeneralisations
+            informationWithheld= p.informationWithheld
+            citation= p.citation
+            sourceFile= p.sourceFile
+            prodUid= p.prodUid
+            keyFields = p.keyFields
+            csvSeparator= p.csvSeparator
         }
         return result
     }
@@ -447,6 +465,7 @@ class CrudService {
     def updateTempDataResourceProperties(drt, obj) {
         drt.properties[tempDataResourceStringProperties] = obj
         drt.properties[tempDataResourceNumberProperties] = obj
+        drt.properties[tempDataResourceBooleanProperties] = obj
     }
 
     /* institution */
@@ -883,7 +902,7 @@ class OutputFormat {
     }
 
     static def briefEntity(list) {
-        return list.collect {[name: it.name, uri: it.buildUri(), uid: it.uid]}
+        return list.collect {[name: it.name, uri: it.buildUri(), uid: it.uid, id:it.id]}
     }
 
     static def formatHubMembership(hubs) {
