@@ -57,6 +57,7 @@ class DataResource extends ProviderGroup implements Serializable {
     boolean gbifDataset = false
     DataProvider dataProvider
     Institution institution         // optional link to the institution whose records are served by this resource
+    Boolean makeContactPublic
 
     static constraints = {
         rights(nullable:true)
