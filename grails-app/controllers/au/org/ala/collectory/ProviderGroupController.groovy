@@ -132,8 +132,6 @@ abstract class ProviderGroupController {
      *
      */
     def create = {
-        println("\r\n" + entityName + "\r\n")
-
         def name = params.name ?: message(code: "provider.group.controller.05", default: "enter name")
         //def name = message(code: 'provider.group.controller.05', default: 'enter name')
         //def name = 'enter name'

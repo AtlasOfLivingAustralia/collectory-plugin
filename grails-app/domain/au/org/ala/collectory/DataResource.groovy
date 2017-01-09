@@ -28,6 +28,7 @@ class DataResource extends ProviderGroup implements Serializable {
         notes type: "text"
         networkMembership type: "text"
         gbifDataset defaultValue: "false"
+        makeContactPublic defaultValue: "true"
     }
 
     String rights
@@ -57,7 +58,7 @@ class DataResource extends ProviderGroup implements Serializable {
     boolean gbifDataset = false
     DataProvider dataProvider
     Institution institution         // optional link to the institution whose records are served by this resource
-    Boolean makeContactPublic
+    Boolean makeContactPublic = true
 
     static constraints = {
         rights(nullable:true)
@@ -84,6 +85,7 @@ class DataResource extends ProviderGroup implements Serializable {
         defaultDarwinCoreValues(nullable:true)
         gbifDataset(nullable:false)
         contentTypes(nullable:true, maxSize:2048)
+        makeContactPublic(nullable:false)
     }
 
     static transients =  ['creativeCommons']
