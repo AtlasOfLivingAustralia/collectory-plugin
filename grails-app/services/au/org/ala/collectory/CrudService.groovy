@@ -16,8 +16,9 @@ class CrudService {
     def grailsApplication
     def idGeneratorService
 
-    static baseStringProperties = ['guid','name','acronym','phone','email','state','pubDescription','techDescription','notes',
-                'isALAPartner','focus','attributions','websiteUrl','networkMembership','altitude',
+    static baseStringProperties = ['guid','name','acronym','phone','email','state','pubShortDescription',
+                                   'pubDescription','techDescription','notes', 'isALAPartner','focus','attributions',
+                                   'websiteUrl','networkMembership','altitude',
                 'street','postBox','postcode','city','state','country','file','caption','attribution','copyright']
     static baseNumberProperties = ['latitude','longitude']
     static baseObjectProperties = ['address', 'imageRef','logoRef']
@@ -88,6 +89,7 @@ class CrudService {
             }
             phone = p.phone
             email = p.email
+            pubShortDescription = p.pubShortDescription
             pubDescription = p.pubDescription
             techDescription = p.techDescription
             focus = p.focus
@@ -184,6 +186,7 @@ class CrudService {
             }
             phone = p.phone
             email = p.email
+            pubShortDescription = p.pubShortDescription
             pubDescription = p.pubDescription
             techDescription = p.techDescription
             focus = p.focus
@@ -275,6 +278,7 @@ class CrudService {
             }
             phone = p.phone
             email = p.email
+            pubShortDescription = p.pubShortDescription
             pubDescription = p.pubDescription
             techDescription = p.techDescription
             focus = p.focus
@@ -492,6 +496,7 @@ class CrudService {
             }
             phone = p.phone
             email = p.email
+            pubShortDescription = p.pubShortDescription
             pubDescription = p.pubDescription
             techDescription = p.techDescription
             focus = p.focus
@@ -597,6 +602,7 @@ class CrudService {
             }
             phone = p.phone
             email = p.email
+            pubShortDescription = p.pubShortDescription
             pubDescription = p.pubDescription
             techDescription = p.techDescription
             focus = p.focus

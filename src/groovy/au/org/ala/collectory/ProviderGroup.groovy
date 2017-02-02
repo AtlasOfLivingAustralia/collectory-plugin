@@ -49,7 +49,8 @@ abstract class ProviderGroup implements Serializable {
     String uid                  // ALA assigned identifier for matching across sub-systems
     String name
     String acronym              //
-    //String groupType            // what sort of entity this is - eg institution, collection, project
+    //String groupType          // what sort of entity this is - eg institution, collection, project
+    String pubShortDescription  // public short description
     String pubDescription       // public description
     String techDescription      // technical description
     String focus                //
@@ -87,6 +88,7 @@ abstract class ProviderGroup implements Serializable {
     static mapping = {
         tablePerHierarchy false
         uid index:'uid_idx'
+        pubShortDescription type: "text"
         pubDescription type: "text"
         techDescription type: "text"
         focus type: "text"
@@ -100,6 +102,7 @@ abstract class ProviderGroup implements Serializable {
         uid(blank:false, maxSize:20)
         name(blank:false, maxSize:1024)
         acronym(nullable:true, maxSize:45)
+        pubShortDescription(nullable:true, maxSize:100)
         pubDescription(nullable:true)
         techDescription(nullable:true)
         focus(nullable:true)

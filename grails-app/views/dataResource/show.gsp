@@ -93,6 +93,10 @@
               <div class="show-section well">
                 <h2><g:message code="collection.show.title.description" /></h2>
 
+                <!-- Pub Short Desc -->
+                <span class="category"><g:message code="collection.show.pubShort"  default="Public short description"/></span><br/>
+                <cl:formattedText body="${instance.pubShortDescription?:'Not provided'}"/>
+
                 <!-- Pub Desc -->
                 <span class="category"><g:message code="collection.show.span04" /></span><br/>
                 <cl:formattedText body="${instance.pubDescription?:'Not provided'}"/>
