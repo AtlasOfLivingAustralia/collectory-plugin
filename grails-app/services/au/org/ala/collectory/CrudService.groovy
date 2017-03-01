@@ -124,6 +124,9 @@ class CrudService {
                 if (p.listConsumers()) {
                     linkedRecordConsumers = p.listConsumers().formatEntitiesFromUids()
                 }
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
+                }
                 if (p.hiddenJSON) {
                     hiddenJSON = p.hiddenJSON.formatJSON()
                 }
@@ -214,6 +217,9 @@ class CrudService {
                 dateCreated = p.dateCreated
                 lastUpdated = p.lastUpdated
                 userLastModified = p.userLastModified
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
+                }
             }
             // hub specific
             members = p.listMembers()
@@ -348,6 +354,9 @@ class CrudService {
                 publicArchiveAvailable = p.publicArchiveAvailable
                 publicArchiveUrl = ConfigurationHolder.config.resource.publicArchive.url.template.replaceAll('@UID@',p.uid)
                 downloadLimit = p.downloadLimit
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
+                }
             }
         }
         return result
@@ -532,6 +541,9 @@ class CrudService {
                 if (p.listProviders()) {
                     linkedRecordProviders = p.listProviders().formatEntitiesFromUids()
                 }
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
+                }
             }
         }
         return result
@@ -664,6 +676,9 @@ class CrudService {
                 }
                 if (p.listProviders()) {
                     linkedRecordProviders = p.listProviders().formatEntitiesFromUids()
+                }
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }
             }
         }
@@ -940,6 +955,10 @@ class OutputFormat {
             }
         }
         return result
+    }
+
+    static def formatExternalIdentifiers(externalIdentifiers) {
+        return externalIdentifiers.collect { [source: it.source, identifier: it.identifier, uri: it.uri ] }
     }
 
 }

@@ -73,6 +73,7 @@ abstract class ProviderGroup implements Serializable {
     Date lastUpdated
     String userLastModified
     String keywords             // json list of terms
+    String externalIdentifiers  // json list of external identifiers
 
     static embedded = ['address', 'logoRef', 'imageRef']
 
@@ -274,6 +275,46 @@ abstract class ProviderGroup implements Serializable {
      */
     void deleteFromContacts(Contact contact) {
         ContactFor.findByEntityUidAndContact(uid, contact)?.delete()
+    }
+
+    /**
+     * Add an external identifier to this object
+     *
+     * @param identifier The identifier
+     * @param source The identifier source (eg. 'GBIF')
+     * @param link A link to the oreiginal source
+     * @return
+     */
+    ExternalIdentifier addExternalIdentifier(String identifier, String source, String link) {
+        ExternalIdentifier ext = new ExternalIdentifier(entityUid: uid, identifier: identifier, source: source, uri: link)
+
+        ext.save(flush: true)
+        if (ext.hasErrors()) {
+            ext.errors.each { println it.toString() }
+        }
+        return ext
+    }
+
+    /**
+     * Get the external identifiers associated with this entity
+     *
+     * @return The external identifiers
+     */
+    List<ExternalIdentifier> getExternalIdentifiers() {
+        if (dbId()) {
+            return ExternalIdentifier.findByEntityUid(uid)
+        } else {
+            return []
+        }
+    }
+
+    /**
+     * Remove an external identifier
+     *
+     * @param identifier
+     */
+    void deleteExternalIdentifier(ExternalIdentifier identifier) {
+        ExternalIdentifier.findByEntityUidAndIdentifierAndSource(uid, identifier.identifier, identifier.source)?.delete()
     }
 
     /**
