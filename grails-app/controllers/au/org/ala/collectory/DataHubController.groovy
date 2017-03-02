@@ -39,13 +39,13 @@ class DataHubController extends ProviderGroupController {
         def instance = get(params.id)
         if (instance) {
             if (isAdmin()) {
-                /* need to remove it as a parent from all children otherwise they will be deleted */
-                def resources = instance.resources as List
-                resources.each {
-                    instance.removeFromResources it
-                    it.userLastModified = username()
-                    it.save()  // necessary?
-                }
+//                /* need to remove it as a parent from all children otherwise they will be deleted */
+//                def resources = instance.resources as List
+//                resources.each {
+//                    instance.removeFromResources it
+//                    it.userLastModified = username()
+//                    it.save()  // necessary?
+//                }
                 // remove contact links (does not remove the contact)
                 ContactFor.findAllByEntityUid(instance.uid).each {
                     it.delete()
