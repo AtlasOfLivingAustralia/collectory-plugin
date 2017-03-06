@@ -429,26 +429,26 @@ abstract class ProviderGroupController {
             }
             def external = sources.sort().collect { key, value ->
                 def idx = key.substring(7)
+                def source = params[key]
                 def identifier = params."identifier_${idx}"
                 def uri = params."uri_${idx}"
                 if (!uri)
                     uri = null
-                return new ExternalIdentifier(source: key, identifier: identifier, uri: uri)
+                return new ExternalIdentifier(entityUid: pg.uid, source: source, identifier: identifier, uri: uri)
             }
             def existing = pg.externalIdentifiers
-            //
             external.each { ext ->
                 def old = existing.find { prev -> prev.same(ext) }
                 if (!old) {
-                    it.save()
+                    ext.save(flush: true)
                 } else {
-                    old.uri = it.uri
-                    old.save()
+                    old.uri = ext.uri
+                     old.save(flush: true)
                     existing.remove(old)
                 }
             }
             // Delete non-matching, existing external IDs
-            existing.each { ext -> ext.delete() }
+            existing.each { ext -> ext.delete(flush: true) }
             pg.userLastModified = collectoryAuthService?.username()
             if (!pg.hasErrors() && pg.save(flush: true)) {
                 flash.message =

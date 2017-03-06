@@ -28,21 +28,21 @@
                         <!-- taxonomy hints -->
                         <tr class="prop">
                             <td valign="top" class="name">
-                              <label for="taxonomyHints"><g:message code="externalIdentifiers.label" default="External Identifiers" /></label>
+                              <label for="externalIdentifiers"><g:message code="externalIdentifiers.label" default="External Identifiers" /></label>
                             </td>
                             <td valign="top" class="value ${hasErrors(bean: command, field: 'externalIdentifiers', 'errors')}">
                               <p><g:message code="shared.ext.des01" /> ${command.urlForm()}.</p>
                               <table class="shy"><colgroup><col width="50%"/><col width="50%"/></colgroup>
                                 <tr><td><g:message code="shared.ext.th01" /></td><td><g:message code="shared.ext.th02" /></td><td><g:message code="shared.ext.th03" /></td></tr>
                                 <g:set var="ids" value="${command.externalIdentifiers}"/>
-                                <g:each var="id" in="${id}" status="i">
+                                <g:each var="id" in="${ids}" status="i">
                                   <tr>
                                     <td valign="top"><g:field type="text" size="8" name="source_${i}" value="${id.source.encodeAsHTML()}" /></td>
                                     <td valign="top"><g:field type="text" size="10" name="identifier_${i}" value="${id.identifier.encodeAsHTML()}" /></td>
                                     <td valign="top"><g:field type="url" size="48" name="uri_${i}" value="${id.uri.encodeAsHTML()}" /></td>
                                   </tr>
                                 </g:each>
-                                <g:set var="j" value="${ids.size()}"/>
+                                <g:set var="j" value="${ids?.size() ?: 0}"/>
                                 <g:each var="i" in="${[j, j+1, j+2]}">
                                   <tr>
                                     <td valign="top"><g:field type="text" size="8" name="source_${i}" value="" /></td>

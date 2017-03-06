@@ -73,7 +73,6 @@ abstract class ProviderGroup implements Serializable {
     Date lastUpdated
     String userLastModified
     String keywords             // json list of terms
-    String externalIdentifiers  // json list of external identifiers
 
     static embedded = ['address', 'logoRef', 'imageRef']
 
@@ -302,7 +301,7 @@ abstract class ProviderGroup implements Serializable {
      */
     List<ExternalIdentifier> getExternalIdentifiers() {
         if (dbId()) {
-            return ExternalIdentifier.findByEntityUid(uid)
+            return ExternalIdentifier.findAllByEntityUid(uid)
         } else {
             return []
         }
