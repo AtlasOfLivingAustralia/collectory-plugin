@@ -824,7 +824,6 @@ class CrudService {
             def update = obj.externalIdentifiers.collect { ext ->
                 def source = ext["source"]
                 def identifier = ext["identifier"]
-                log.info "Found source ${source} and identifier ${identifier}"
                 source && identifier ? new ExternalIdentifier(entityUid: pg.uid, source: source, identifier: identifier, uri: ext["uri"]) : null
             }
             def existing = pg.externalIdentifiers
@@ -835,16 +834,16 @@ class CrudService {
                         old.uri = ext.uri
                         existing.remove(old)
                         old.save(flush: true)
-                        log.info "Updating old identifier ${old.source} ${old.identifier} ${old.uri}"
+                        log.debug "Updating old identifier ${old.source} ${old.identifier} ${old.uri}"
                     } else {
                         ext.save(flush: true)
-                        log.info "Adding new identifier ${ext.source} ${ext.identifier} ${ext.uri}"
+                        log.debug "Adding new identifier ${ext.source} ${ext.identifier} ${ext.uri}"
                     }
                 }
             }
             existing.each { old ->
                 old.delete(flush: true)
-                log.info "Deleting old identifier ${old.source} ${old.identifier} ${old.uri}"
+                log.debug "Deleting old identifier ${old.source} ${old.identifier} ${old.uri}"
             }
         }
     }
