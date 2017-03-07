@@ -98,7 +98,6 @@
       <div class="dashCell">
         <h2><g:message code="reports.index.title08" /></h2>
         <div style="clear:both;">
-          <p class="pageLink"><g:link class="mainLink" controller="reports" action="contacts"><g:message code="reports.index.pagelink.contacts" /></g:link></p>
           <p class="pageLink"><g:link class="mainLink" controller="reports" action="duplicateContacts"><g:message code="reports.index.pagelink.dc" /></g:link></p>
           <p class="pageLink"><g:link class="mainLink" controller="reports" action="contactsForCouncilMembers"><g:message code="reports.index.pagelink.cfcm" /></g:link>
           <span class="linkText">- <g:message code="reports.index.linktext.cfcm" />.</span></p>

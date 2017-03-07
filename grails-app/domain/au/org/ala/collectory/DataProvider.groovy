@@ -14,6 +14,7 @@ class DataProvider extends ProviderGroup implements Serializable {
     static mapping = {
         sort: 'name'
         hiddenJSON type: "text"
+        pubShortDescription type: "text"
         pubDescription type: "text"
         techDescription type: "text"
         focus type: "text"

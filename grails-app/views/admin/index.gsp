@@ -24,7 +24,7 @@
             <div class="homeCell">
               <h4 class="inline"><g:message code="admin.notlogin.title" /></h4>
                 <span class="buttons" style="float: right;">
-                  <a href="${ConfigurationHolder.config.security.cas.loginUrl}?service=${ConfigurationHolder.config.grails.serverURL}/admin">&nbsp;<g:message code="admin.notlogin.link" />&nbsp;</a>
+                  <a href="${grailsApplication.config.security.cas.loginUrl}?service=${grailsApplication.config.grails.serverURL}/admin">&nbsp;<g:message code="admin.notlogin.link" />&nbsp;</a>
                 </span>
               <p><g:message code="admin.notlogin.des" /></p>
             </div>
@@ -63,7 +63,7 @@
             <p class="mainText"><g:message code="admin.index.des07" />.</p>
           </div>
 
-        <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
+        <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN || grailsApplication.config.security.cas.bypass.toBoolean()}">
           <br/><br/><p><g:message code="admin.index.des08" />.</p>
 
           <div class="homeCell">
@@ -84,6 +84,11 @@
           <div class="homeCell">
             <g:link class="mainLink" controller="contact" action="list"><g:message code="admin.index.link12" /></g:link>
             <p class="mainText"><g:message code="admin.index.des12" />.</p>
+          </div>
+
+          <div class="homeCell">
+            <g:link class="mainLink" controller="licence" action="list"><g:message code="admin.index.licence"  default="View all licences" /></g:link>
+            <p class="mainText"><g:message code="admin.index.licence.desc" default="View all licences, and add new licences" />.</p>
           </div>
 
           <div class="homeCell">

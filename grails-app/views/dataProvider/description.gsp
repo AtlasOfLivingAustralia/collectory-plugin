@@ -25,6 +25,18 @@
                     <table>
                         <tbody>
 
+                        <!-- public short description -->
+                        <tr class="prop">
+                            <td valign="top" class="name">
+                                <label for="pubShortDescription"><g:message code="providerGroup.pubShortDescription.label" default="Public Short Description" /></label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: command, field: 'pubShortDescription', 'errors')}">
+                                <g:textArea name="pubShortDescription" class="input-large"  rows="${cl.textAreaHeight(text:command.pubShortDescription)}" value="${command.pubShortDescription}" />
+                                <cl:helpText code="providerGroup.pubShortDescription"/>
+                            </td>
+                            <cl:helpTD/>
+                        </tr>
+
                         <!-- public description -->
                         <tr class="prop">
                             <td valign="top" class="name">
@@ -67,7 +79,7 @@
                                 <label for="focus"><g:message code="providerGroup.keywords.label" default="Keywords" /></label>
                             </td>
                             <td valign="top" class="value ${hasErrors(bean: command, field: 'keywords', 'errors')}">
-                                <g:textField name="keywords" cols="40" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.focus)}" value="${command?.focus}" />
+                                <g:textField name="keywords" cols="40" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.keywords)}" value="${command?.keywords}" />
                                 <cl:helpText code="providerGroup.focus"/>
                                 <p>Recognised keywords include: ${au.org.ala.collectory.Classification.keywordSynonyms.values().flatten().toSet().sort().join(", ")}</p>
                                 The keywords should be comma separated. These keywords are used to drive the

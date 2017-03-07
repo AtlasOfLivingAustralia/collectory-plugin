@@ -55,7 +55,7 @@ class DataController {
             try {
                 params.json = request.JSON
             } catch (Exception e) {
-                println "exception caught ${e}"
+                log.error("exception caught ${e}")
                 // allow empty body
                 if (request.getContentLength() > 0) {
                     badRequest 'cannot parse request body as JSON'
@@ -673,7 +673,7 @@ class DataController {
             if (c) {
                 bindData(c, props as Map, ['id'])
                 c.save(flush: true)
-                c.errors.each { println it}
+                c.errors.each {  log.error(it) }
                 addContentLocation "/ws/contacts/${c.id}"
                 def cm = buildContactModel(c)
                 cm.id = c.id
@@ -686,7 +686,7 @@ class DataController {
             if (props.email) {
                 def c = new Contact(props as Map)
                 c.save(flush: true)
-                c.errors.each { println it}
+                c.errors.each { log.error(it) }
                 addContentLocation "/ws/contacts/${c.id}"
                 def cm = buildContactModel(c)
                 cm.id = c.id
@@ -851,7 +851,7 @@ class DataController {
     def notification() {
         //println "notify"
         if (request.method != 'POST') {
-            println "not allowed"
+            log.error("not allowed")
             notAllowed()
         } else {
             //println params.json
@@ -861,7 +861,7 @@ class DataController {
             def id = payload.id
             def action = payload.action
             if (!(uid && event && id && action)) {
-                println "bad request"
+                log.error("bad request")
                 badRequest 'must specify a uid, an event and an event id'
             } else {
                 //println "OK"
@@ -890,7 +890,7 @@ class DataController {
             // update
             bindData(cf, props as Map, ['entityUid'])
             c.save(flush: true)
-            c.errors.each { println it}
+            c.errors.each { log.error(it) }
             success 'updated'
         } else {
             // create
@@ -910,7 +910,7 @@ class DataController {
     def deleteContactFor = {
         def props = params.json
         props.userLastModified = session.username
-        println "body = "  + props
+        log.error("body = "  + props)
         def c = Contact.get(params.id)
         def cf = ContactFor.findByContactAndEntityUid(c, params.pg.uid)
         if (cf) {

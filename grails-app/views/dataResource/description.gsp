@@ -29,6 +29,18 @@
                     <table>
                         <tbody>
 
+                        <!-- public short description -->
+                        <tr class="prop">
+                            <td valign="top" class="name">
+                                <label for="pubShortDescription"><g:message code="providerGroup.pubShortDescription.label" default="Public Short Description" /></label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: command, field: 'pubDescription', 'errors')}">
+                                <g:textArea name="pubShortDescription" class="input-xlarge"  rows="${cl.textAreaHeight(text:command.pubShortDescription)}" value="${command.pubDescription}" />
+                                <cl:helpText code="providerGroup.pubShortDescription"/>
+                            </td>
+                            <cl:helpTD/>
+                        </tr>
+
                         <!-- public description -->
                         <tr class="prop">
                             <td valign="top" class="name">

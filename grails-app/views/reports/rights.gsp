@@ -36,7 +36,7 @@
                 </thead>
                 <tbody>
                     <g:each var='r' in="${resources}">
-                      <g:if test="${r.permissionsDocument || r.permissionsDocumentType || r.licenseType || r.licenseVersion}">
+                      <g:if test="${r.permissionsDocument || r.permissionsDocumentType || r.licenseType}">
                           <g:set var="hide" value=""/>
                       </g:if>
                       <g:else>

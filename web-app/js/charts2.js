@@ -12,7 +12,16 @@
  * implied. See the License for the specific language governing
  * rights and limitations under the License.
  */
-
+/**
+ * Load Spring i18n messages into JS
+ */
+jQuery.i18n.properties({
+    name: 'messages',
+    path: COLLECTORY_CONF.contextPath + '/messages/i18n/',
+    mode: 'map',
+    language: COLLECTORY_CONF.locale // default is to use browser specified locale
+    //callback: function(){} //alert( "facet.conservationStatus = " + jQuery.i18n.prop('facet.conservationStatus')); }
+});
 /*------------------------------------------------------------------------------------------*
  *---------------- FACET BREAKDOWN CHARTS USING THE MODULE PATTERN -------------------------*
  *------------------------------------------------------------------------------------------*/

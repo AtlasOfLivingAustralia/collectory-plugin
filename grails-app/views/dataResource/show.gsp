@@ -93,6 +93,10 @@
               <div class="show-section well">
                 <h2><g:message code="collection.show.title.description" /></h2>
 
+                <!-- Pub Short Desc -->
+                <span class="category"><g:message code="collection.show.pubShort"  default="Public short description"/></span><br/>
+                <cl:formattedText body="${instance.pubShortDescription?:'Not provided'}"/>
+
                 <!-- Pub Desc -->
                 <span class="category"><g:message code="collection.show.span04" /></span><br/>
                 <cl:formattedText body="${instance.pubDescription?:'Not provided'}"/>
@@ -218,7 +222,7 @@
                 <!-- rights -->
                 <p><span class="category"><g:message code="dataResource.rights.label" />: </span> ${fieldValue(bean: instance, field: "rights")}</p>
 
-                <!-- license -->
+                <!-- license type-->
                 <p><span class="category"><g:message code="dataResource.licenseType.label" />: </span> <cl:displayLicenseType type="${instance.licenseType}"/></p>
 
                 <!-- license version -->

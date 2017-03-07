@@ -1,7 +1,5 @@
 <%@ page import="au.org.ala.collectory.ProviderCode" %>
 
-
-
 <div class="fieldcontain ${hasErrors(bean: providerCodeInstance, field: 'code', 'error')} required">
 	<label for="code">
 		<g:message code="providerCode.code.label" default="Code" />
