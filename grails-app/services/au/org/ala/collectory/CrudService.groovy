@@ -159,6 +159,7 @@ class CrudService {
     private void updateDataProviderProperties(DataProvider dp, obj) {
         convertJSONToString(obj, dataProviderJSONArrays)
         dp.properties[dataProviderStringProperties] = obj
+        updateExternalIdentifiers(dp, obj)
     }
 
     /* data hub */
@@ -253,6 +254,7 @@ class CrudService {
     def updateDataHubProperties(dh, obj){
         dh.properties[dataHubStringProperties] = obj
         dh.properties[dataHubNumberProperties] = obj
+        updateExternalIdentifiers(dh, obj)
     }
 
     /* data resource */
@@ -383,7 +385,7 @@ class CrudService {
         dr.userLastModified = obj.user ?: 'Data services'
         if (!dr.hasErrors()) {
              dr.save(flush: true)
-        }
+         }
         return dr
     }
 
@@ -414,6 +416,7 @@ class CrudService {
                 dr.institution = ins
             }
         }
+        updateExternalIdentifiers(dr, obj)
     }
 
     /* temp data resource */
@@ -572,6 +575,7 @@ class CrudService {
 
     private void updateInstitutionProperties(Institution inst, obj) {
         inst.properties[institutionStringProperties] = obj
+        updateExternalIdentifiers(inst, obj)
     }
 
     /* collection */
@@ -776,6 +780,7 @@ class CrudService {
             }
             co.providerMap = pm
         }
+        updateExternalIdentifiers(co, obj)
     }
 
     private void updateBaseProperties(pg, obj) {
@@ -796,6 +801,46 @@ class CrudService {
             }
         }
     }
+
+    /**
+     * Update the list of external identifiers, if supplied.
+     * <p>
+     * Identifiers are merged, based on source and identifier.
+     * Note that this needs to be done <em>after</em> the resource has got a uid.
+     *
+     * @param pg The provider group object
+     * @param obj The new object
+     */
+    private void updateExternalIdentifiers(pg, obj) {
+        if (obj["externalIdentifiers"]) {
+            def update = obj.externalIdentifiers.collect { ext ->
+                def source = ext["source"]
+                def identifier = ext["identifier"]
+                log.info "Found source ${source} and identifier ${identifier}"
+                source && identifier ? new ExternalIdentifier(entityUid: pg.uid, source: source, identifier: identifier, uri: ext["uri"]) : null
+            }
+            def existing = pg.externalIdentifiers
+            update.each { ext ->
+                if (ext) {
+                    def old = existing.find { it.same(ext) }
+                    if (old) {
+                        old.uri = ext.uri
+                        existing.remove(old)
+                        old.save(flush: true)
+                        log.info "Updating old identifier ${old.source} ${old.identifier} ${old.uri}"
+                    } else {
+                        ext.save(flush: true)
+                        log.info "Adding new identifier ${ext.source} ${ext.identifier} ${ext.uri}"
+                    }
+                }
+            }
+            existing.each { old ->
+                old.delete(flush: true)
+                log.info "Deleting old identifier ${old.source} ${old.identifier} ${old.uri}"
+            }
+        }
+    }
+
 //
 //    /**
 //     * We don't want to create objects in the target if there is no data for them.
