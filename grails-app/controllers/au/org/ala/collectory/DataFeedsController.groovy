@@ -1,7 +1,5 @@
 package au.org.ala.collectory
 
-import org.jdom.Element
-
 class DataFeedsController {
     def rifCsService
 

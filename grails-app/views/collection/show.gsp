@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.collectory.ProviderGroup; org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.collectory.Collection" %>
+<%@ page import="au.org.ala.collectory.ProviderGroup; org.codehaus.groovy.grails.commons.grailsApplication; au.org.ala.collectory.Collection" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -277,7 +277,7 @@
 \************************************************************/
 function onLoadCallback() {
   // summary biocache data
-  var biocacheRecordsUrl = "${ConfigurationHolder.config.grails.context}/public/biocacheRecords.json?uid=${instance.uid}";
+  var biocacheRecordsUrl = "${grailsApplication.config.grails.context}/public/biocacheRecords.json?uid=${instance.uid}";
   $.get(biocacheRecordsUrl, {}, biocacheRecordsHandler);
 }
 /************************************************************\

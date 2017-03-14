@@ -1,11 +1,11 @@
 package au.org.ala.collectory
 
-import groovy.json.JsonSlurper
-import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
+import au.org.ala.audit.AuditLogEvent
 
 class ManageController {
 
-    def collectoryAuthService, gbifService
+    def collectoryAuthService
+    def gbifService
 
     /**
      * Landing page for self-service management of entities.
@@ -27,8 +27,40 @@ class ManageController {
      * Renders the view that allows a user to load all the gbif resources for a country
      */
     def gbifLoadCountry = {
-        //get country list
-        render(view: "gbifLoadCountry", model: ['pubMap': gbifService.getPublishingCountriesMap()])
+        render(view: "gbifLoadCountry",
+               model: [
+                'pubMap': gbifService.getPublishingCountriesMap(),
+                'dataProviders': DataProvider.all.sort { it.name }
+        ])
+    }
+
+    /**
+     * Search for resources that may be loaded.
+     *
+     * dataProvider - The data provider attached to the resources (GBIF)
+     * country - the country to load
+     * gbifUsername - the username used to instantiate a download
+     * gbifPassword - the password for the supplied gbif user
+     *
+     * @return
+     */
+    def searchForResources() {
+        log.debug "Searching for resources from GBIF: ${params}"
+        DataProvider dp = DataProvider.findByUid(params.dataProvider)
+        if (!dp || !params.gbifUsername || !params.gbifPassword) {
+            redirect(action: 'gbifLoadCountry')
+        }
+        def dataResources = DataResource.all.findAll({ dr -> dr.resourceType == 'records' }).collectEntries({ [(it.uid): it] })
+        def resources = gbifService.searchForDatasets(dp, params.country, params.maxRecords)
+        render(view: 'gbifLoadReview',
+               model: [
+                      dataProvider: dp,
+                      resources: resources,
+                      dataResources: dataResources,
+                      gbifUsername: params.gbifUsername,
+                      gbifPassword: params.gbifPassword,
+               ]
+        )
     }
 
     /**
@@ -137,4 +169,6 @@ class ManageController {
         // get audit records
         return AuditLogEvent.findAllByUri(uid,[sort:'lastUpdated',order:'desc',max:20])
     }
+
+
 }

@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.collectory.CollectionLocation" %>
+<%@ page import="org.codehaus.groovy.grails.commons.grailsApplication; au.org.ala.collectory.CollectionLocation" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -59,27 +59,27 @@
             <colgroup><col width="55%"><col width="45%"></colgroup>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0101" />:</td>
-              <td><a href="${ConfigurationHolder.config.grails.serverURL}/ws">http://collections.ala.org.au/ws</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws">http://collections.ala.org.au/ws</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0201" />:</td>
-              <td><a href="${ConfigurationHolder.config.grails.serverURL}/ws/institution.json">http://collections.ala.org.au/ws/institution</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution.json">http://collections.ala.org.au/ws/institution</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0301" />:</td>
-              <td><a href="${ConfigurationHolder.config.grails.serverURL}/ws/institution/in72.json">http://collections.ala.org.au/ws/institution/in72</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/in72.json">http://collections.ala.org.au/ws/institution/in72</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0401" />:</td>
-              <td><a href="${ConfigurationHolder.config.grails.serverURL}/ws/institution/count">http://collections.ala.org.au/ws/institution/count</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/count">http://collections.ala.org.au/ws/institution/count</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0501" />:</td>
-              <td><a href="${ConfigurationHolder.config.grails.serverURL}/ws/institution/count/state">http://collections.ala.org.au/ws/institution/count/state</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/count/state">http://collections.ala.org.au/ws/institution/count/state</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0601" />:</td>
-              <td><a href="${ConfigurationHolder.config.grails.serverURL}/ws/institution/in72/contacts.json">http://collections.ala.org.au/ws/institution/in72/contacts</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/in72/contacts.json">http://collections.ala.org.au/ws/institution/in72/contacts</a></td>
             </tr>
           </table>
           <h3><g:message code="data.catalogue.title04" /></h3>

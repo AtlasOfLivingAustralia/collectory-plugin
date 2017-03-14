@@ -15,7 +15,6 @@
 
 package au.org.ala.collectory
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import grails.converters.JSON
 
 /**
@@ -679,7 +678,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     String buildUri() {
-        return ConfigurationHolder.config.grails.serverURL + "/ws/" + urlForm() + "/" + uid
+        return grailsApplication.config.grails.serverURL + "/ws/" + urlForm() + "/" + uid
     }
 
     /**
@@ -687,7 +686,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     String buildPublicUrl() {
-        return ConfigurationHolder.config.grails.serverURL + "/public/show/" + uid
+        return grailsApplication.config.grails.serverURL + "/public/show/" + uid
     }
 
     /**
@@ -696,7 +695,7 @@ abstract class ProviderGroup implements Serializable {
      */
     def buildLogoUrl() {
         return logoRef?.file ?
-            ConfigurationHolder.config.grails.serverURL + "/data/" + urlForm() + "/" + logoRef.file :
+            grailsApplication.config.grails.serverURL + "/data/" + urlForm() + "/" + logoRef.file :
             ""
     }
 

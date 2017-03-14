@@ -8,9 +8,15 @@
 <body>
 <h1><g:message code="manage.gbiflc.title01" /></h1>
 <div id="baseForm">
-    <g:form action="loadAllGbifForCountry" controller="manage">
+    <g:form action="searchForResources" controller="manage">
             <div class="span6">
                     <table>
+                        <tr class="prop">
+                            <td valign="top" class="name"><label for="dataProvider"><g:message code="manage.gbiflc.label05" />:</label></td>
+                            <td valign="top" class="value">
+                                <g:select name="dataProvider" from="${dataProviders}" optionKey="uid" optionValue="name"/>
+                            </td>
+                        </tr>
                         <tr class="prop">
                             <td valign="top" class="name"><label for="country"><g:message code="manage.gbiflc.label01" />:</label></td>
                             <td valign="top" class="value">

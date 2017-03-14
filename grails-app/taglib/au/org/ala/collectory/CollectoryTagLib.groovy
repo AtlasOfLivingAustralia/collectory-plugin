@@ -5,7 +5,6 @@ import au.org.ala.collectory.resources.PP
 import grails.converters.JSON
 import groovy.json.JsonSlurper
 import groovy.xml.MarkupBuilder
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.util.StreamCharBuffer
@@ -1055,7 +1054,7 @@ class CollectoryTagLib {
                 " <img id='recordsMap' class='no-radius' src='${resource(dir:'images/map',file:'map-loader.gif')}' width='340' />" +
                 " <img id='mapLegend' src='${resource(dir:'images/ala', file:'legend-not-available.png')}' width='128' />" +
                 "</div>" +
-                "<div class='learnMaps'><span class='asterisk-container'><a href='${ConfigurationHolder.config.ala.baseURL}/about/progress/map-ranges/'>Learn more about Atlas maps</a>&nbsp;</span></div>"
+                "<div class='learnMaps'><span class='asterisk-container'><a href='${grailsApplication.config.ala.baseURL}/about/progress/map-ranges/'>Learn more about Atlas maps</a>&nbsp;</span></div>"
     }
 
     /**
@@ -1074,7 +1073,7 @@ class CollectoryTagLib {
                     " <img id='recordsMap' class='no-radius' src='${urlBase}map${query}' width='340' />" +
                     " <img id='mapLegend' src='${urlBase}legend${query}' width='128' />" +
                     "</div>" +
-                    "<div class='learnMaps'><span class='asterisk-container'><a href='${ConfigurationHolder.config.ala.baseURL}/faq/species-data/errors-in-maps/'>Learn more about Atlas maps</a>&nbsp;</span></div>"
+                    "<div class='learnMaps'><span class='asterisk-container'><a href='${grailsApplication.config.ala.baseURL}/faq/species-data/errors-in-maps/'>Learn more about Atlas maps</a>&nbsp;</span></div>"
         }
         else {
             out <<
@@ -1082,7 +1081,7 @@ class CollectoryTagLib {
                     " <img id='recordsMap' class='no-radius' src='${resource(dir:'images/map',file:'mapping-data-not-available.png')}' width='340' />" +
                     " <img id='mapLegend' src='${resource(dir:'images/ala', file:'legend-not-available.png')}' width='128' />" +
                     "</div>" +
-                    "<div class='learnMaps'><span class='asterisk-container'><a href='${ConfigurationHolder.config.ala.baseURL}/faq/species-data/errors-in-maps/'>Learn more about Atlas maps</a>&nbsp;</span></div>"
+                    "<div class='learnMaps'><span class='asterisk-container'><a href='${grailsApplication.config.ala.baseURL}/faq/species-data/errors-in-maps/'>Learn more about Atlas maps</a>&nbsp;</span></div>"
         }
     }
 
@@ -1098,7 +1097,7 @@ class CollectoryTagLib {
                 "<div class='collectionRecordsMap'>" +
                 " <img id='recordsMap' class='no-radius' src='${resource(dir:'images/map',file:'map-loader.gif')}' width='340' />" +
                 " <img id='mapLegend' src='${resource(dir:'images/ala', file:'legend-not-available.png')}' width='128' />" +
-                " <div class='learnMaps'><span class='asterisk-container'><a href='${ConfigurationHolder.config.ala.baseURL}/about/progress/map-ranges/'>Learn more about Atlas maps</a>&nbsp;</span></div>" +
+                " <div class='learnMaps'><span class='asterisk-container'><a href='${grailsApplication.config.ala.baseURL}/about/progress/map-ranges/'>Learn more about Atlas maps</a>&nbsp;</span></div>" +
                 "</div>"
     }
 
@@ -1137,7 +1136,7 @@ class CollectoryTagLib {
                 "<div id='taxonChartCaption' style='visibility:hidden;'>" +
                 " <span class='taxonChartCaption'>Click a slice or legend to drill into a group.</span><br/>" +
                 " <span id='resetTaxonChart' onclick='resetTaxonChart()'></span>&nbsp;" +
-                " <div class='taxonCaveat'><span class='asterisk-container'><a href='${ConfigurationHolder.config.ala.baseURL}/about/progress/wrong-classification/'>Learn more about classification errors</a>&nbsp;</span></div>" +
+                " <div class='taxonCaveat'><span class='asterisk-container'><a href='${grailsApplication.config.ala.baseURL}/about/progress/wrong-classification/'>Learn more about classification errors</a>&nbsp;</span></div>" +
                 "</div>"
 
         /*out << '<div id="taxonChart">\n' +
@@ -1704,7 +1703,7 @@ class CollectoryTagLib {
     }
 
     def jsonDataLink = { attrs, body ->
-        def uri = "${ConfigurationHolder.config.grails.serverURL}/ws/${ProviderGroup.urlFormFromUid(attrs.uid)}/${attrs.uid}.json"
+        def uri = "${grailsApplication.config.grails.serverURL}/ws/${ProviderGroup.urlFormFromUid(attrs.uid)}/${attrs.uid}.json"
         // have to use this method rather than 'link' so we can specify the accept format as json
         out << "<a class='json' href='${uri}'><img class='json' alt='json' src='${resource(dir:"images", file:"json.png")}'/> View raw data</a>"
     }

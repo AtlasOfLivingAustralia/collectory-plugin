@@ -2,7 +2,6 @@ package au.org.ala.collectory
 
 import grails.converters.JSON
 import org.springframework.web.multipart.MultipartFile
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
 class InstitutionController extends ProviderGroupController {
 

@@ -1,7 +1,5 @@
 package au.org.ala.collectory
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-
 class ProviderMapController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]

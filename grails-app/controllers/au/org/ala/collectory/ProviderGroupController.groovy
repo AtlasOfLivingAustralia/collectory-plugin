@@ -1,11 +1,13 @@
 package au.org.ala.collectory
 
+import au.org.ala.audit.AuditLogEvent
 import grails.converters.JSON
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogListener
+
+//import au.org.ala.audit.AuditLogEvent
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.multipart.MultipartFile
+
 /**
  * This is a base class for all provider group entities types.
  *
@@ -672,7 +674,7 @@ abstract class ProviderGroupController {
                     pg."${target}" = new Image(file: filename)
                     String subDir = pg.urlForm()
 
-                    def colDir = new File(ConfigurationHolder.config.repository.location.images as String, subDir)
+                    def colDir = new File(grailsApplication.config.repository.location.images as String, subDir)
                     colDir.mkdirs()
                     File f = new File(colDir, filename)
                     log.debug "saving ${filename} to ${f.absoluteFile}"

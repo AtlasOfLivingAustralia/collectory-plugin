@@ -2,7 +2,6 @@ package au.org.ala.collectory
 
 import grails.test.mixin.*
 import grails.test.mixin.web.ControllerUnitTestMixin
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.springframework.context.MessageSource
 import spock.lang.Specification
 

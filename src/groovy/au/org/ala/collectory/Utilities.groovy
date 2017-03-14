@@ -1,6 +1,6 @@
 package au.org.ala.collectory
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import grails.util.Holders
 
 /**
  * Created by markew
@@ -9,7 +9,7 @@ import org.codehaus.groovy.grails.commons.ConfigurationHolder
  */
 class Utilities {
     public static String buildInstitutionLogoUrl(filename) {
-        return ConfigurationHolder.config.grails.serverURL +
+        return Holders.config.grails.serverURL +
                 "/data/institution/" + filename
     }
 }

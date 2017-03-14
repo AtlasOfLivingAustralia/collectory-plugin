@@ -1,7 +1,6 @@
 package au.org.ala.collectory
 
-import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import au.org.ala.audit.AuditLogEvent
 
 class ContactController {
 
