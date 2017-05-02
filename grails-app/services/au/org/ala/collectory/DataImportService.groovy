@@ -25,11 +25,20 @@ class DataImportService {
     def importDirOfDwCA(String directoryPath){
         new File(directoryPath).listFiles().each { file ->
             if(file.getName().endsWith(".zip")){
-                def dr = new DataResource(uid: idGeneratorService.getNextDataResourceId(),
-                        name: "to be replaced",
-                        userLastModified: collectoryAuthService.username()
-                )
-                dr.save(flush:true)
+                def dr = null
+                def guid = getGuidFromDwCAFile(file)
+                if(guid){
+                    dr = DataResource.findByGuid(guid)
+                }
+                if(!dr){
+                    //create a new data resource
+                    dr = new DataResource(uid: idGeneratorService.getNextDataResourceId(),
+                            name: "to be replaced",
+                            userLastModified: collectoryAuthService.username()
+                    )
+                    dr.save(flush:true)
+                }
+
                 importDataFileForDataResource(dr, file, ["protocol":"DwCA"])
             }
         }
@@ -131,6 +140,21 @@ class DataImportService {
         dataResource.save(flush:true)
     }
 
+    def getGuidFromDwCAFile(newFile){
+        def guid = null
+        def zipFile = new ZipFile(newFile)
+        zipFile.entries.each { file ->
+            if (file.getName().startsWith(EML_FILE)) {
+
+                //open the XML file that contains the EML details for the GBIF resource
+                def xml = new XmlSlurper().parseText(zipFile.getInputStream(file).getText("UTF-8"))
+                guid = xml.@packageId.toString()
+            }
+        }
+        guid
+    }
+
+
     private def addContact(dataResource, emlElement){
         def contact = Contact.findByEmail(emlElement.electronicMailAddress)
 
@@ -144,8 +168,13 @@ class DataImportService {
             contact.email = emlElement.electronicMailAddress
             contact.setUserLastModified(collectoryAuthService.username())
             contact.save(flush:true)
-            contact.getErrors().each { println it }
+            contact.getErrors().each { log.error(it) }
         }
-        dataResource.addToContacts(contact, null, false, true, collectoryAuthService.username())
+
+        if(contact && !contact.hasErrors()) {
+            dataResource.addToContacts(contact, null, false, true, collectoryAuthService.username())
+        } else {
+            log.error("Problem adding contact: " + contact)
+        }
     }
 }
