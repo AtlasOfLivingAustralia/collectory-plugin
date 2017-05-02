@@ -6,7 +6,9 @@
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <g:set var="entityName" value="${message(code: 'institution.label', default: 'Institution')}" />
         <title><g:message code="default.show.label" args="[entityName]" /></title>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=${grailsApplication.config.google?.apikey}"
+                type="text/javascript"></script>
         <r:require module="collectory"/>
     </head>
     <body onload="initializeLocationMap('${instance.canBeMapped()}',${instance.latitude},${instance.longitude});">
