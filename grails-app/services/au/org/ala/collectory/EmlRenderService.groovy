@@ -29,7 +29,7 @@ class EmlRenderService {
             xsi:"http://www.w3.org/2001/XMLSchema-instance",
             dc:"http://purl.org/dc/terms/"]
 
-    def emlNs = ['xsi:schemaLocation':"eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/dev/eml.xsd",
+    def emlNs = ['xsi:schemaLocation':"eml://ecoinformatics.org/eml-2.1.1 http://rs.gbif.org/schema/eml-gbif-profile/1.1/eml-gbif-profile.xsd",
             'xmlns:d':"eml://ecoinformatics.org/dataset-2.1.0",
             'system':"ALA-Registry",
             'scope':"system",
@@ -174,9 +174,13 @@ class EmlRenderService {
             builder.contact {
                 if (cnt.contact.firstName || cnt.contact.lastName) {
                     builder.individualName {
-                        //cnt.contact.title ? builder.salutation(cnt.contact.title) : ""
-                        cnt.contact.firstName ? builder.givenName(cnt.contact.firstName) : ""
-                        cnt.contact.lastName ? builder.surName(cnt.contact.lastName) : ""
+                        if(cnt.contact.firstName && cnt.contact.lastName){
+                            builder.givenName(cnt.contact.firstName?:'')
+                            builder.surName(cnt.contact.lastName?:'')
+                        } else {
+                            builder.surName(cnt.contact.firstName?:' ')
+                        }
+                        builder.surName(cnt.contact.firstName?:'')
                     }
                 }
                 cnt.role ? builder.positionName(cnt.role) : ""
@@ -252,7 +256,7 @@ class EmlRenderService {
                     /* distribution */
                     distribution {
                         online {
-                          url('function':'information',"http://collections.ala.org.au/public/show/" + pg.uid)
+                          url('function':'information',"${grailsApplication.config.grails.serverURL}/public/show/" + pg.uid)
                         }
                     }
 
@@ -402,7 +406,7 @@ class EmlRenderService {
                     /* distribution */
                     distribution {
                         online {
-                          url('function':'information',"http://collections.ala.org.au/public/show/" + pg.uid)
+                          url('function':'information',"${grailsApplication.config.grails.serverURL}/public/show/" + pg.uid)
                         }
                     }
 
@@ -436,7 +440,7 @@ class EmlRenderService {
         markupBuilder.encoding = 'UTF-8'
         markupBuilder.useDoubleQuotes = true
         def dp = pg.dataProvider
-
+        def licence = Licence.find({ acronym == pg.licenseType})
         def eml = markupBuilder.bind { builder ->
             mkp.xmlDeclaration()
             namespaces << ns
@@ -472,22 +476,12 @@ class EmlRenderService {
                     /* intellectual rights */
                     intellectualRights {
                         if (pg.rights) {
-                            section {
-                                title messageSource.getMessage("dataResource.rights.label", null, "Rights", null)
-                                para pg.rights
-                            }
-                        }
-                        if (pg.citation) {
-                            section {
-                                title messageSource.getMessage("dataResource.citation.label", null, "Citation", null)
-                                para pg.citation
-                            }
-                        }
-                        if (pg.licenseType && pg.licenseType != "other") {
-                            section {
-                                def licence = Licence.find({ acronym == pg.licenseType})?.name ?: pg.licenseType
-                                title messageSource.getMessage("dataResource.license.label", null, "License", null)
-                                para pg.licenseVersion != null ? "${licence} ${pg.licenseVersion}" : licence
+                            para (){
+                                mkp.yield pg.rights
+                                mkp.yield  pg.citation
+                                ulink(url:licence.url) {
+                                    citetitle "${licence.name} (${licence.acronym}${licence.licenceVersion ? ' ' + licence.licenceVersion:''})"
+                                }
                             }
                         }
                      }
@@ -495,7 +489,7 @@ class EmlRenderService {
                     /* distribution */
                     distribution {
                         online {
-                          url('function':'information',"http://collections.ala.org.au/public/show/" + pg.uid)
+                          url('function':'information',"${grailsApplication.config.grails.serverURL}/public/show/" + pg.uid)
                         }
                     }
 
@@ -545,7 +539,7 @@ class EmlRenderService {
                     individualName {
                         //out << addIf(cnt.contact.title, 'salutation')
                         out << addIf(cnt.contact.firstName, 'givenName')
-                        out << addIf(cnt.contact.lastName, 'surName')
+                        out << surName(cnt.contact.lastName)
                     }
                 }
                 out << addIf(cnt.contact.phone, 'phone')
@@ -575,35 +569,6 @@ class EmlRenderService {
         }
     }
 
-    /**
-     * This service generates eml by directly replacing tokens in a template file.
-     * @param dr the resource to describe
-     * @return xml string
-     * @deprecated use emlFor...
-     */
-    def generateEmlForDataResource(DataResource dr) {
-        //def template = new XmlSlurper().parse(new File("/data/collectory/templates/dataResourceTemplate.xml"))
-        def template = new File("/data/collectory/templates/dataResourceTemplate.xml").getText()
-        template = template.replaceAll(/\$[\.\w]*/) {
-            def field = it[1..it.size()-1]
-            def parts = field.tokenize('.')
-            def value
-            switch (parts.size()) {
-                case 1:
-                    value = dr."${field}"
-                    break
-                case 2:
-                    value = dr."${parts[0]}"?."${parts[1]}"
-                    break
-                case 3:
-                    value = dr."${parts[0]}"?."${parts[1]}"?."${parts[2]}"
-                    break
-            }
-            value ?: ""
-        }
-        return template
-    }
-
     def stripFormatting(List items) {
         items.collect {
             if (it) {
@@ -622,45 +587,6 @@ class EmlRenderService {
             str = str.replaceAll(boldMarkup) {match, group -> group}
         }
         return str
-    }
-
-    /**
-     * Outputs eml-text.
-     *
-     * 1. Wiki style link markup ([url name]) is translated to name (url)
-     * 2. Wiki style list markup * xxx is output as an itemizedlist
-     * 3. +xxx+ bold markup is output as emphasis
-     * @param builder
-     * @param str
-     */
-    def toDocBook(builder, String str) {
-        str = handleLinks(str)
-        if (str) {
-            def lines = str.tokenize('\r\n')
-            def ul = []
-
-            lines.each { line ->
-                if (line[0..1] == "* ") {
-                    // add to the current list
-                    ul << line
-                } else {
-                    if (ul) {
-                        // transition from a list to plain text - so write the list
-                        builder.para() {
-                            builder.itemizedlist() {
-                                ul.each { item ->
-                                    builder.listitem item[2..-1]
-                                }
-                            }
-                        }
-                        // clear list
-                        ul = []
-                    }
-                    // write line
-                    if (line) { docBookEmphasis(builder, 'para', line) }
-                }
-            }
-        }
     }
 
     /**
