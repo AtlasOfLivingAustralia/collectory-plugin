@@ -594,12 +594,14 @@ function initTaxonTree(treeOptions) {
               var nodes = [];
               var rank = data.rank;
               $.each(data.taxa, function(i, obj) {
-                  var label = obj.label + " - " + obj.count;
-                  if (rank == 'species') {
-                      nodes.push({"data":label, "attr":{"rank":rank, "id":obj.label}});
-                  }
-                  else {
-                      nodes.push({"data":label, "state":"closed", "attr":{"rank":rank, "id":obj.label}});
+                  if(obj.label) {
+                      var label = obj.label + " - " + obj.count;
+                      if (rank == 'species' || obj.label == 'Unknown') {
+                          nodes.push({"data": label, "attr": {"rank": rank, "id": obj.label}});
+                      }
+                      else {
+                          nodes.push({"data": label, "state": "closed", "attr": {"rank": rank, "id": obj.label}});
+                      }
                   }
               });
               return nodes;
@@ -645,8 +647,8 @@ function showBie(node) {
     var rank = node.attr('rank');
     if (rank == 'kingdoms') return;
     var name = node.attr('id');
-    var sppUrl = "http://bie.ala.org.au/species/" + name;
-    if (rank != 'species') { sppUrl += "_(" + rank + ")"; }
+    var sppUrl = bieUrl + "/species/" + name;
+    //if (rank != 'species') { sppUrl += "_(" + rank + ")"; }
     document.location.href = sppUrl;
 }
 
