@@ -357,6 +357,7 @@ class CrudService {
                 publicArchiveAvailable = p.publicArchiveAvailable
                 publicArchiveUrl = grailsApplication.config.resource.publicArchive.url.template.replaceAll('@UID@',p.uid)
                 downloadLimit = p.downloadLimit
+                verified = p.isVerified()
             }
         }
         return result

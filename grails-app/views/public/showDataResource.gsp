@@ -208,7 +208,7 @@
         <g:if test="${instance.isVerified()}">
             <h3>
                 <g:message code="public.verified" default="Verified dataset"/>
-                <i class="icon-ok"></i>
+                <i class="fa fa-check-circle tooltips" style="color:green;"></i>
             </h3>
         </g:if>
 
