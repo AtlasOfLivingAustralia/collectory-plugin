@@ -29,6 +29,8 @@ class DataResource extends ProviderGroup implements Serializable {
         networkMembership type: "text"
         gbifDataset defaultValue: "false"
         makeContactPublic defaultValue: "true"
+        methodStepDescription type: "text"
+        qualityControlDescription type: "text"
     }
 
     String rights
@@ -60,6 +62,18 @@ class DataResource extends ProviderGroup implements Serializable {
     Institution institution         // optional link to the institution whose records are served by this resource
     Boolean makeContactPublic = true
 
+    //Additional EML fields
+    String purpose
+    String geographicDescription
+    String westBoundingCoordinate
+    String eastBoundingCoordinate
+    String northBoundingCoordinate
+    String southBoundingCoordinate
+    String beginDate
+    String endDate
+    String methodStepDescription
+    String qualityControlDescription
+
     static constraints = {
         rights(nullable:true)
         citation(nullable:true)
@@ -86,6 +100,17 @@ class DataResource extends ProviderGroup implements Serializable {
         gbifDataset(nullable:false)
         contentTypes(nullable:true, maxSize:2048)
         makeContactPublic(nullable:false)
+        purpose(nullable:true)
+        geographicDescription(nullable:true)
+        westBoundingCoordinate(nullable:true)
+        eastBoundingCoordinate(nullable:true)
+        northBoundingCoordinate(nullable:true)
+        southBoundingCoordinate(nullable:true)
+        beginDate(nullable:true)
+        endDate(nullable:true)
+        methodStepDescription(nullable:true)
+        qualityControlDescription(nullable:true)
+
     }
 
     static transients =  ['creativeCommons']

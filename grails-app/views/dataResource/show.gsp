@@ -24,6 +24,7 @@
             <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
             <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
             <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
+            <span class="button"><cl:emlDataLink uid="${instance.uid}"/></span>
             </p>
 
             <ul>
@@ -33,7 +34,6 @@
             </ul>
 
         </div>
-
 
         <div class="body">
             <g:if test="${flash.message}">
@@ -107,9 +107,37 @@
                 <span class="category"><g:message code="collection.show.span05" /></span><br/>
                 <cl:formattedText body="${instance.techDescription?:'Not provided'}"/>
 
-                <!-- Focus -->
-                <span class="category"><g:message code="providerGroup.focus.label" /></span><br/>
-                <cl:formattedText>${instance.focus?:'Not provided'}</cl:formattedText>
+                <!-- Bounding box -->
+                <span class="category"><g:message code="collection.show.boundingbox" default="Bounding box (decimal degrees WGS84)"/></span><br/>
+                <p>
+                    <ul>
+                        <li><g:message code="collection.show.northBoundingCoordinate" default="North" />: ${instance.northBoundingCoordinate?:'Not provided'}</li>
+                        <li><g:message code="collection.show.southBoundingCoordinate" default="South" />: ${instance.southBoundingCoordinate?:'Not provided'}</li>
+                        <li><g:message code="collection.show.eastBoundingCoordinate" default="East" />: ${instance.eastBoundingCoordinate?:'Not provided'}</li>
+                        <li><g:message code="collection.show.westBoundingCoordinate" default="West" />: ${instance.westBoundingCoordinate?:'Not provided'}</li>
+                    </ul>
+                </p>
+
+                <!-- Temporal range -->
+                <span class="category"><g:message code="collection.show.temporalrange" default="Temporal range"/></span><br/>
+                <p>
+                <ul>
+                    <li><g:message code="collection.show.beginDate" default="Start date" />: ${instance.beginDate?:'Not provided'}</li>
+                    <li><g:message code="collection.show.endDate" default="End date" />: ${instance.endDate?:'Not provided'}</li>
+                </ul>
+                </p>
+
+                <!-- Data Quality -->
+                <span class="category"><g:message code="collection.show.qualityControlDescription" /></span><br/>
+                <cl:formattedText body="${instance.qualityControlDescription?:'Not provided'}"/>
+
+                <!-- Methods -->
+                <span class="category"><g:message code="collection.show.methodStepDescription" /></span><br/>
+                <cl:formattedText body="${instance.methodStepDescription?:'Not provided'}"/>
+
+                <!-- Focus / purpose -->
+                <span class="category"><g:message code="providerGroup.purpose.label" default="Purpose"/></span><br/>
+                <cl:formattedText>${instance.purpose?:'Not provided'}</cl:formattedText>
 
                 <!-- generalisations -->
                 <p><span class="category"><g:message code="dataresource.show.dg" />: </span> ${fieldValue(bean: instance, field: "dataGeneralizations")}</p>
@@ -286,6 +314,7 @@
                 <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
                 <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
                 <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
+                <span class="button"><cl:emlDataLink uid="${instance.uid}"/></span>
               </div>
               <g:form>
                 <g:hiddenField name="id" value="${instance?.id}"/>

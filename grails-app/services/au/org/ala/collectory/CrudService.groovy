@@ -33,7 +33,10 @@ class CrudService {
     static dataResourceStringProperties = ['rights','citation','dataGeneralizations','informationWithheld',
                 'permissionsDocument','licenseType','licenseVersion','status','mobilisationNotes','provenance',
                 'harvestingNotes','connectionParameters','resourceType','permissionsDocumentType','riskAssessment',
-                'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata']
+                'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata',
+                'geographicDescription','northBoundingCoordinate','southBoundingCoordinate','eastBoundingCoordinate',
+                'westBoundingCoordinate','beginDate','endDate','qualityControlDescription','methodStepDescription'
+    ]
     static dataResourceNumberProperties = ['harvestFrequency','downloadLimit']
     static dataResourceTimestampProperties = ['lastChecked','dataCurrency']
     static dataResourceBooleanProperties = ['gbifDataset']

@@ -180,7 +180,6 @@ class EmlRenderService {
                         } else {
                             builder.surName(cnt.contact.firstName?:' ')
                         }
-                        builder.surName(cnt.contact.firstName?:'')
                     }
                 }
                 cnt.role ? builder.positionName(cnt.role) : ""
@@ -479,8 +478,10 @@ class EmlRenderService {
                             para (){
                                 mkp.yield pg.rights
                                 mkp.yield  pg.citation
-                                ulink(url:licence.url) {
-                                    citetitle "${licence.name} (${licence.acronym}${licence.licenceVersion ? ' ' + licence.licenceVersion:''})"
+                                if(licence) {
+                                    ulink(url: licence.url) {
+                                        citetitle "${licence.name} (${licence.acronym}${licence.licenceVersion ? ' ' + licence.licenceVersion : ''})"
+                                    }
                                 }
                             }
                         }
@@ -489,12 +490,68 @@ class EmlRenderService {
                     /* distribution */
                     distribution {
                         online {
-                          url('function':'information',"${grailsApplication.config.grails.serverURL}/public/show/" + pg.uid)
+                            url('function':'information',"${grailsApplication.config.grails.serverURL}/public/show/" + pg.uid)
                         }
                     }
 
+                    coverage {
+                        if (pg.geographicDescription && pg.westBoundingCoordinate) {
+                            geographicCoverage {
+                                geographicDescription pg.geographicDescription
+                                if(pg.westBoundingCoordinate) {
+                                    boundingCoordinates {
+                                        westBoundingCoordinate pg.westBoundingCoordinate
+                                        eastBoundingCoordinate pg.eastBoundingCoordinate
+                                        northBoundingCoordinate pg.northBoundingCoordinate
+                                        southBoundingCoordinate pg.southBoundingCoordinate
+                                    }
+                                }
+                            }
+                        }
+                        if (pg.beginDate && pg.endDate) {
+                            temporalCoverage {
+                                rangeOfDates {
+                                    beginDate {
+                                        calendarDate pg.beginDate
+                                    }
+                                    endDate {
+                                        calendarDate pg.endDate
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    purpose {
+                        para pg.purpose?:''
+                    }
+
                     contacts builder, pg
+
+                    methods {
+                        if (pg.methodStepDescription) {
+                            methodStep {
+                                description {
+                                    para pg.methodStepDescription?:''
+                                }
+                            }
+                        }
+                        if (pg.qualityControlDescription) {
+                            qualityControl {
+                                description {
+                                    para pg.qualityControlDescription?:''
+                                }
+                            }
+                        }
+                    }
+
+
+
+
                 }
+
+
+
 
                 additionalMetadata() {
                     metadata() {
@@ -506,6 +563,8 @@ class EmlRenderService {
                         }
                     }
                 }
+
+
             }
          }
         
