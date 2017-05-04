@@ -204,10 +204,10 @@ class EmlRenderService {
         def altId = ""
         if (pg.guid?.startsWith('urn:lsid')) {
             id = pg.guid
-            altId = 'ala.org.au:' + pg.uid
+            altId = grailsApplication.config.grails.serverURL + "/public/show/" + pg.uid
         }
         else {
-            id = 'ala.org.au:' + pg.uid
+            id = grailsApplication.config.grails.serverURL + "/public/show/" + pg.uid
         }
         def uuid = UUID.nameUUIDFromBytes(id as byte[]).toString()
         def packageId = uuid + "/v" + pg.version
@@ -236,7 +236,7 @@ class EmlRenderService {
 
                     /* alt identifier */
                     alternateIdentifier ids.uuid
-                    alternateIdentifier ids.id
+                    alternateIdentifier "${grailsApplication.config.grails.serverURL}/public/show/" +ids.id
                     if (ids.altId) {
                         alternateIdentifier(ids.altId)
                     }

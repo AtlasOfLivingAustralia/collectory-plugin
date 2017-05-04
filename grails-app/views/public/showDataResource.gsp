@@ -71,8 +71,13 @@
         <cl:formattedText>${fieldValue(bean: instance, field: "pubDescription")}</cl:formattedText>
         <cl:formattedText>${fieldValue(bean: instance, field: "techDescription")}</cl:formattedText>
         <cl:formattedText>${fieldValue(bean: instance, field: "focus")}</cl:formattedText>
-        <cl:formattedText>${fieldValue(bean: instance, field: "geographicDescription")}</cl:formattedText>
+
         <cl:dataResourceContribution resourceType="${instance.resourceType}" status="${instance.status}" tag="p"/>
+
+            <g:if test="${instance.geographicDescription}">
+                <h2><g:message code="public.geographicDescription" default="Purpose"/></h2>
+                <cl:formattedText>${fieldValue(bean: instance, field: "geographicDescription")}</cl:formattedText>
+            </g:if>
 
         <g:if test="${instance.purpose}">
             <h2><g:message code="public.purpose" default="Purpose"/></h2>
@@ -199,6 +204,13 @@
         <div id="dataAccessWrapper" style="display:none;">
             <g:render template="dataAccess" model="[instance:instance]"/>
         </div>
+
+        <g:if test="${instance.isVerified()}">
+            <h3>
+                <g:message code="public.verified" default="Verified dataset"/>
+                <i class="icon-ok"></i>
+            </h3>
+        </g:if>
 
         <g:if test="${instance.licenseType}">
             <h3><g:message code="public.license" default="Licence" /></h3>

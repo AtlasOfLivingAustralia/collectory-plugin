@@ -586,7 +586,7 @@ abstract class ProviderGroupController {
             return
         }
 
-        dataImportService.importDataFileForDataResource(dataResource, f, params)
+        dataImportService.importDataFileForDataResource(dataResource, f, params, true)
         redirect([controller: 'dataResource', action: 'show', id: dataResource.uid])
     }
 

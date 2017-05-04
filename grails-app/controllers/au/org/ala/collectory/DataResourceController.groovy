@@ -18,6 +18,22 @@ class DataResourceController extends ProviderGroupController {
         redirect(action:"list")
     }
 
+    def markAsVerified = {
+        def instance = get(params.id)
+        if(instance){
+            instance.markAsVerified()
+        }
+        redirect(action: 'show', params: [id:params.id])
+    }
+
+    def markAsUnverified = {
+        def instance = get(params.id)
+        if(instance){
+            instance.markAsUnverified()
+        }
+        redirect(action: 'show', params: [id:params.id])
+    }
+
     // list all entities
     def list = {
         if (params.message)
@@ -193,8 +209,16 @@ class DataResourceController extends ProviderGroupController {
     def importDirOfDwcA(){
         def dir = new File(params.dir)
         if(dir.exists()){
-            dataImportService.importDirOfDwCA(params.dir)
+            def filesImported = dataImportService.importDirOfDwCA(params.dir)
+            render "${filesImported.size()} archives imported"
+        } else {
+            render "Unable to find directory"
         }
+    }
+
+    def reimportMetadata(){
+        def count = dataImportService.reimportMetadataFromArchives()
+        render "Updated ${count} resources"
     }
 
     /**

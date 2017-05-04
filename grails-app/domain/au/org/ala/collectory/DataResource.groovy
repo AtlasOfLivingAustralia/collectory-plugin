@@ -1,5 +1,8 @@
 package au.org.ala.collectory
 
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 import java.sql.Timestamp
 
 class DataResource extends ProviderGroup implements Serializable {
@@ -31,6 +34,8 @@ class DataResource extends ProviderGroup implements Serializable {
         makeContactPublic defaultValue: "true"
         methodStepDescription type: "text"
         qualityControlDescription type: "text"
+        geographicDescription type: "text"
+        purpose type: "text"
     }
 
     String rights
@@ -110,7 +115,6 @@ class DataResource extends ProviderGroup implements Serializable {
         endDate(nullable:true)
         methodStepDescription(nullable:true)
         qualityControlDescription(nullable:true)
-
     }
 
     static transients =  ['creativeCommons']
@@ -173,6 +177,57 @@ class DataResource extends ProviderGroup implements Serializable {
             drs.institutionUid = drs.relatedInstitutions[0].uid
         }
         return drs
+    }
+
+    Boolean isVerified(){
+
+        if(defaultDarwinCoreValues){
+            def js = new JsonSlurper()
+            def values = js.parseText(defaultDarwinCoreValues)
+            if(
+               values.georeferenceVerificationStatus
+               &&
+               values.identificationVerificationStatus
+               &&
+               values.georeferenceVerificationStatus == "verified"
+               &&
+               values.identificationVerificationStatus == "verified"
+            ){
+                true
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    }
+
+    def markAsVerified(){
+
+        if(!defaultDarwinCoreValues){
+            defaultDarwinCoreValues = "{}"
+        }
+
+        def js = new JsonSlurper()
+        def values = js.parseText(defaultDarwinCoreValues)
+        values.georeferenceVerificationStatus = "verified"
+        values.identificationVerificationStatus = "verified"
+        defaultDarwinCoreValues = JsonOutput.toJson(values)
+        save(flush:true)
+    }
+
+    def markAsUnverified(){
+
+        if(!defaultDarwinCoreValues){
+            defaultDarwinCoreValues = "{}"
+        }
+
+        def js = new JsonSlurper()
+        def values = js.parseText(defaultDarwinCoreValues)
+        values.georeferenceVerificationStatus = ""
+        values.identificationVerificationStatus = ""
+        defaultDarwinCoreValues = JsonOutput.toJson(values)
+        save(flush:true)
     }
 
     /**

@@ -39,6 +39,7 @@ grails.project.dependency.resolution = {
 	    runtime 'ant:ant:1.6.5'
         runtime 'commons-httpclient:commons-httpclient:3.1'
         runtime 'org.aspectj:aspectjweaver:1.6.6'
+
     }
 
     plugins {
@@ -47,6 +48,7 @@ grails.project.dependency.resolution = {
                 ":rest-client-builder:1.0.3") {
             export = false
         }
+
         compile ":cache:1.1.2"
         runtime ":hibernate:3.6.10.11"
         runtime ":jquery:1.11.1"
