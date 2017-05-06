@@ -26,7 +26,7 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
 
-    repositories {        
+    repositories {
         mavenLocal()
         mavenRepo("http://nexus.ala.org.au/content/groups/public/") {
             updatePolicy 'always'
@@ -36,7 +36,7 @@ grails.project.dependency.resolution = {
     dependencies {
         runtime 'mysql:mysql-connector-java:5.1.5'
         runtime 'net.sf.opencsv:opencsv:2.3'
-	    runtime 'ant:ant:1.6.5'
+        runtime 'ant:ant:1.6.5'
         runtime 'commons-httpclient:commons-httpclient:3.1'
         runtime 'org.aspectj:aspectjweaver:1.6.6'
     }

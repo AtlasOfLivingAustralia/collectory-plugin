@@ -81,6 +81,20 @@
                             </tr>
                         </g:if>
 
+                        <g:if test="${command.ENTITY_TYPE == 'DataProvider'}">
+                          <tr class="prop">
+                            <td valign="top" class="name">
+                              <label for="resourceType"><g:message code="dataprovider.gbif.country" default="GBIF Attribution" /></label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: command, field: 'gbifCountryToAttribute', 'errors')}">
+                              <g:countrySelect id="country" name="gbifCountryToAttribute" value="${command?.gbifCountryToAttribute}"
+                                               noSelection="['':'-Leave empty for international organisations-']"/>
+                              <cl:helpText code="dataprovider.gbifCountryToAttribute" default="Select the country to attribute within GBIF.org as the publishing country"/>
+                              <cl:helpTD/>
+                            </td>
+                          </tr>
+                        </g:if>
+
                         <g:if test="${command.ENTITY_TYPE == 'Collection'}">
                           <!-- institution -->
                           <tr class="prop">
