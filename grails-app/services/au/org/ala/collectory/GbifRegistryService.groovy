@@ -26,6 +26,9 @@ class GbifRegistryService {
 
     static final String API_DATASET = "/v1/dataset"
     static final String API_DATASET_DETAIL = "/v1/dataset/{0}"
+    static final String API_DATASET_ENDPOINT = "/v1/dataset/{0}/endpoint"
+    static final String API_DATASET_ENDPOINT_DETAIL = "/v1/dataset/{0}/endpoint/{1}"
+
 
     /**
      * Updates the registration in GBIF for the DataProvider.
@@ -46,8 +49,11 @@ class GbifRegistryService {
             uri.path = MessageFormat.format(API_ORGANIZATION_DETAIL, dp.gbifRegistryKey)
             body = (organisation as JSON).toString()
             response.success = { resp, reader ->
-                syncContacts(dp)
                 log.info("Successfully updated provider in GBIF: ${dp.gbifRegistryKey}")
+                syncContacts(dp)
+                log.info("Successfully synced contacts: ${dp.gbifRegistryKey}")
+                syncDataResources(dp)
+                log.info("Successfully synced ${dp.resources.size()} resources in GBIF: ${dp.gbifRegistryKey}")
             }
         }
     }
@@ -77,6 +83,9 @@ class GbifRegistryService {
                 log.info("Successfully created provider in GBIF: ${dp.gbifRegistryKey}")
                 dp.save(flush: true)
                 syncContacts(dp)
+                log.info("Successfully created contacts: ${dp.gbifRegistryKey}")
+                syncDataResources(dp)
+                log.info("Successfully created ${dp.resources.size()} resources: ${dp.gbifRegistryKey}")
             }
         }
     }
@@ -121,6 +130,128 @@ class GbifRegistryService {
                 }
             }
         }
+    }
+
+  /**
+   * This creates any missing data resources and updates endpoints for all datasets.
+   * Deletions are not propogated at this point instead deferring to the current helpdesk@gbif.org process.
+   */
+    private def syncDataResources(DataProvider dp) {
+        def resources = dp.getResources()
+        resources.each {
+
+            // register the missing datasets
+            if (!it.gbifRegistryKey) {
+                log.info("Creating resource for dr ${it.id}")
+                def dataset = newDatasetInstance(it)
+                log.info("Creating dataset in GBIF: ${dataset}")
+                if (dataset) {
+                    def http = newHttpInstance();
+                    http.parser.'application/json' = http.parser.'text/plain' // handle sloppy responses from GBIF
+                    http.request(Method.POST, ContentType.JSON) { req ->
+                        uri.path = MessageFormat.format(API_DATASET, dp.gbifRegistryKey)
+                        body = (dataset as JSON).toString()
+
+                        // on success, save the key in GBIF
+                        response.success = { resp, reader ->
+                            it.gbifRegistryKey = reader.text.replaceAll('"', "") // more sloppy GBIF responses
+                            log.info("Added dataset ${it.gbifRegistryKey}")
+                            log.info("Successfully created dataset in GBIF: ${it.gbifRegistryKey}")
+                            it.save(flush: true)
+                        }
+                    }
+
+                }
+            }
+            syncEndpoints(it)
+        }
+    }
+
+  /**
+   * Checks that the GBIF registry holds the single endpoint for the data resource creating it or updating if required.
+   */
+    private def syncEndpoints(DataResource resource) {
+        if (resource.gbifRegistryKey) {
+            log.info("Syncing endpoints for resource[${resource.id}], gbifKey[${resource.gbifRegistryKey}]")
+
+            def http = newHttpInstance()
+            def dataset
+            http.get(path: MessageFormat.format(API_DATASET_DETAIL, resource.gbifRegistryKey)) { resp, reader ->
+                dataset = reader
+            }
+
+            if (dataset) {
+                http.parser.'application/json' = http.parser.'text/plain' // handle sloppy responses from GBIF
+
+                def dwcaUrl = grailsApplication.config.gbifExportUrlBase + "dr" + resource.getId() + ".dwca";
+
+                if (dataset.endpoints && dataset.endpoints.size() == 1 && dwcaUrl.equals(dataset.endpoints.get(0).url)) {
+                    log.info("Dataset[${resource.gbifRegistryKey}] has correct URL[${dwcaUrl}]")
+                } else {
+
+                    // delete the existing ones
+                    if (dataset.endpoints) {
+                        dataset.endpoints.each {
+                            http.request(Method.DELETE, ContentType.JSON) { req ->
+                                uri.path = MessageFormat.format(API_DATASET_ENDPOINT_DETAIL, resource.gbifRegistryKey, it.key as String)
+                                response.success = { resp, reader -> log.info("Removed endpoint ${it.key as String}") }
+                            }
+                        }
+                    }
+
+                    // now add the correct one
+                    def endpoint = [
+                            "type": "DWC_ARCHIVE",
+                            "url": dwcaUrl
+                    ]
+                    http.request(Method.POST, ContentType.JSON) { req ->
+                        uri.path = MessageFormat.format(API_DATASET_ENDPOINT, resource.gbifRegistryKey)
+                        body = (endpoint as JSON).toString()
+                        response.success = { resp, reader ->
+                            log.info("Created endpoint for Dataset[${resource.gbifRegistryKey}] with URL[${endpoint.url}]")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+  /**
+   * Creates the content for a dataset to POST to GBIF from the supplied resource or null if it can't be created.
+   */
+    private def newDatasetInstance(DataResource resource) {
+        def license
+        // map to GBIF, recognising GBIF are particular about the correct name
+        switch (resource.licenseType) {
+            case 'CC0':
+                license = 'http://creativecommons.org/publicdomain/zero/1.0/legalcode'
+                break
+            case 'CC-BY':
+                license = 'http://creativecommons.org/licenses/by/4.0/legalcode'
+                break
+            case 'CC-BY-NC':
+                license = 'http://creativecommons.org/licenses/by-nc/4.0/legalcode'
+                break
+            case 'OGL':
+                // See https://en.wikipedia.org/wiki/Open_Government_Licence
+                // Note that publisher has explicitly confirmed a desire to register in GBIF, knowing that GBIF support
+                // CC0, CC-BY and CC-BY-NC only.  This seems the most appropriate license to map to.
+                license = 'http://creativecommons.org/licenses/by/4.0/legalcode'
+                break
+            default:
+                log.info("Unsupported license ${resource.licenseType} for GBIF so cannot be registered")
+                return null
+        }
+
+        def dataset = [
+                "type": "OCCURRENCE",
+                "license": license,
+                "installationKey": grailsApplication.config.gbifInstallationKey,
+                "publishingOrganizationKey": resource.dataProvider.gbifRegistryKey,
+                "title": resource.name,
+                "description": resource.pubDescription
+        ]
+        return dataset
     }
 
   /**
@@ -187,11 +318,12 @@ class GbifRegistryService {
                                                   grailsApplication.config.gbifApiPassword).bytes)
         http.setHeaders([Authorization: "Basic ${token}"])
 
-        http.handler.'400' = { resp, reader -> throw new Exception("Bad request to GBIF: ${resp.status}")}
+        http.handler.'400' = { resp, reader -> throw new Exception("Bad request to GBIF: ${resp.status} ${reader}")}
         http.handler.'401' = { resp, reader -> throw new Exception("GBIF Authorisation required: ${resp.status}")}
         http.handler.'403' = { resp, reader -> throw new Exception("Not authorised to update GBIF: ${resp.status}")}
         http.handler.'422' = { resp, reader -> throw new Exception("Content fails GBIF validation: ${resp.status}")}
-        http.handler.failure = { resp, reader -> throw new Exception("GBIF API error : ${resp.text} ${reader}")}
+        http.handler.failure = { resp, reader ->
+            throw new Exception("GBIF API error : ${resp} ${reader}")}
 
         return http
     }
