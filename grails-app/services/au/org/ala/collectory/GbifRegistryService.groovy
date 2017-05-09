@@ -162,6 +162,24 @@ class GbifRegistryService {
                     }
 
                 }
+            } else {
+                // ensure the organisation is correct in GBIF as ownership varies over time
+                def dataset = loadDataset(it.gbifRegistryKey)
+                if (dataset.publishingOrganizationKey != dp.gbifRegistryKey) {
+                    log.info("Updating the GBIF registry dataset[${it.gbifRegistryKey}] to point to " +
+                             "organisation[${dp.gbifRegistryKey}]")
+                    dataset.publishingOrganizationKey = dp.gbifRegistryKey
+                    def http = newHttpInstance();
+                    def datasetKey = it.gbifRegistryKey
+                    http.request (Method.PUT, ContentType.JSON) {
+                        uri.path = MessageFormat.format(API_DATASET_DETAIL, datasetKey)
+                        body = (dataset as JSON).toString()
+                        response.success = { resp, reader ->
+                            log.info("Successfully updated dataset in GBIF: ${datasetKey}")
+                        }
+                    }
+                }
+
             }
             syncEndpoints(it)
         }
@@ -254,9 +272,9 @@ class GbifRegistryService {
         return dataset
     }
 
-  /**
-   * Loads an organization from the GBIF API.
-   */
+    /**
+     * Loads an organization from the GBIF API.
+     */
     private def loadOrganization(gbifRegistryKey) {
         def http = newHttpInstance()
         def organisation
@@ -264,6 +282,18 @@ class GbifRegistryService {
             organisation = reader
         }
         return organisation
+    }
+
+    /**
+     * Loads a dataset from the GBIF API.
+     */
+    private def loadDataset(gbifRegistryKey) {
+        def http = newHttpInstance()
+        def dataset
+        http.get(path: MessageFormat.format(API_DATASET_DETAIL, gbifRegistryKey)) { resp, reader ->
+            dataset = reader
+        }
+        return dataset
     }
 
     /**
