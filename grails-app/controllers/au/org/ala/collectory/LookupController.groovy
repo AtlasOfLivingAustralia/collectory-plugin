@@ -293,7 +293,7 @@ class LookupController {
         else {
             citation =  citation.replaceAll("@entityName@",name)
         }
-        def link = ConfigurationHolder.config.citation.link.template
+        def link = grailsApplication.config.citation.link.template
         link =  link.replaceAll("@link@",makeLink(pg.uid))
         switch (format) {
             case "tab separated": return "${name}\t${citation}\t${rights}\t${link}\t${dataGen}\t${infoWithheld}\t${downloadLimit}\t${pg.uid}"
