@@ -314,9 +314,9 @@ class GbifRegistryService {
         def http = new HTTPBuilder(grailsApplication.config.gbifApiUrl)
 
         // GBIF does not return the expected 401 challenge so this needs to be set preemptively
-        def token = Base64.encoder.encodeToString((grailsApplication.config.gbifApiUser + ':' +
-                                                  grailsApplication.config.gbifApiPassword).bytes)
-        http.setHeaders([Authorization: "Basic ${token}"])
+        // Note: Using Grails built in encoding which is a Java7-safe version
+        def token = grailsApplication.config.gbifApiUser + ':' + grailsApplication.config.gbifApiPassword
+        http.setHeaders([Authorization: "Basic ${token.bytes.encodeBase64().toString()}"])
 
         http.handler.'400' = { resp, reader -> throw new Exception("Bad request to GBIF: ${resp.status} ${reader}")}
         http.handler.'401' = { resp, reader -> throw new Exception("GBIF Authorisation required: ${resp.status}")}
