@@ -21,27 +21,50 @@
 
             <div class="list">
                 <table class="table table-bordered table-striped">
-                  <colgroup><col width="75%"/><col width="10%"/><col width="15%"/></colgroup>
                     <thead>
                         <tr>
                             <g:sortableColumn property="name" title="${message(code: 'dataProvider.name.label', default: 'Name')}" />
-  
+
                             <g:sortableColumn property="uid" title="${message(code: 'providerGroup.uid.label', default: 'UID')}" />
 
-                            <th>${message(code: 'dataProvider.resources.label', default: 'No. resources')}</th>
-  
+                            <th style="text-align:center;">${message(code: 'dataProvider.resources.label', default: 'No. resources')}</th>
+
+                            <g:if test="${grailsApplication.config.gbifRegistrationEnabled == 'true'}">
+                                <th style="text-align:center;">${message(code: 'dataProvider.gbif.label', default: 'GBIF')}</th>
+                            </g:if>
+
                         </tr>
                     </thead>
                     <tbody>
                     <g:each in="${instanceList}" status="i" var="instance">
                       <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-  
+
                         <td><g:link controller="dataProvider" action="show" id="${instance.uid}">${fieldValue(bean: instance, field: "name")}</g:link></td>
-  
+
                         <td>${fieldValue(bean: instance, field: "uid")}</td>
 
                         <td style="text-align:center;">${instance.resources.size()}</td>
-  
+
+                        <g:if test="${grailsApplication.config.gbifRegistrationEnabled == 'true'}">
+
+                            <td class="text-nowrap">
+                                <g:if test="${fieldValue(bean: instance, field: "gbifRegistryKey")}">
+                                    <g:link controller="dataProvider" action="updateGBIF" id="${instance.uid}">
+                                        ${message(code: 'dataProvider.gbif.update', default: 'Update')}
+                                    </g:link> |
+                                    <a href="https://gbif.org/publisher/${instance.gbifRegistryKey}">
+                                        ${message(code: 'dataProvider.gbif.show', default: 'Show')}
+                                    </a>
+                                </g:if>
+                                <g:else>
+                                    <g:link controller="dataProvider" action="registerGBIF" id="${instance.uid}">
+                                        ${message(code: 'dataProvider.gbif.register', default: 'Register')}
+                                    </g:link>
+                                </g:else>
+                            </td>
+
+                        </g:if>
+
                       </tr>
                     </g:each>
                     </tbody>
