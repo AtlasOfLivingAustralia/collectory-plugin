@@ -175,8 +175,7 @@ class DataImportService {
                     //additional fields
                     dataResource.purpose = xml.dataset.purpose?.para?:''
                     dataResource.methodStepDescription = xml.dataset.methods?.methodStep?.description?.para?:''
-                    dataResource.methodStepDescription = xml.dataset.methods?.qualityControl?.description?.para?:''
-
+                    dataResource.qualityControlDescription = xml.dataset.methods?.qualityControl?.description?.para?:''
 
                     //TODO it should be possible to retrieve the ID fields from the meta.xml
                     if(!connParams.termsForUniqueKey ){
