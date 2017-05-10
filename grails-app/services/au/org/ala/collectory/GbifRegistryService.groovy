@@ -7,6 +7,8 @@ import groovyx.net.http.Method
 import java.text.MessageFormat
 import groovyx.net.http.ContentType
 
+import java.util.concurrent.Executors
+
 /**
  * Services required to register and update organisation and datasets in GBIF.
  *
@@ -29,32 +31,56 @@ class GbifRegistryService {
     static final String API_DATASET_ENDPOINT = "/v1/dataset/{0}/endpoint"
     static final String API_DATASET_ENDPOINT_DETAIL = "/v1/dataset/{0}/endpoint/{1}"
 
+    static def pool = Executors.newFixedThreadPool(1) // very conservative
+
+  /**
+   * Updates all registrations of data providers and data resources with GBIF.  This will create missing datasets
+   * in GBIF, update the organisation metadata in GBIF, and set DOIs in the datasets in the Collectory if configured
+   * to do so (i.e. config useGbifDoi=true).
+   */
+    def updateAllRegistrations() {
+        def providers = DataProvider.list()
+        providers.each {
+            def dp = it
+            log.info("Scheduling update of registration of ${dp.uid}: ${dp.name} ${pool}")
+            pool.submit(new Runnable() {
+
+                public void run() {
+                    updateRegistration(dp)
+                }
+            })
+        }
+    }
 
     /**
      * Updates the registration in GBIF for the DataProvider.
      * This updates the key metadata and the contacts which is typically all publishers provide to GBIF.
      */
     def updateRegistration(DataProvider dp) throws Exception {
-        log.info("Updating GBIF organisation: ${dp.gbifRegistryKey}")
+        if (dp.gbifRegistryKey) {
+            log.info("Updating GBIF organisation ${dp.uid}: ${dp.gbifRegistryKey}")
 
-        // load the current GBIF entry to get the endorsing node key
-        def organisation = loadOrganization(dp.gbifRegistryKey)
+            // load the current GBIF entry to get the endorsing node key
+            def organisation = loadOrganization(dp.gbifRegistryKey)
 
-        // apply mutations
-        populateOrganisation(organisation, dp)
+            // apply mutations
+            populateOrganisation(organisation, dp)
 
-        // update mutated version in GBIF
-        def http = newHttpInstance();
-        http.request (Method.PUT, ContentType.JSON) {
-            uri.path = MessageFormat.format(API_ORGANIZATION_DETAIL, dp.gbifRegistryKey)
-            body = (organisation as JSON).toString()
-            response.success = { resp, reader ->
-                log.info("Successfully updated provider in GBIF: ${dp.gbifRegistryKey}")
-                syncContacts(dp)
-                log.info("Successfully synced contacts: ${dp.gbifRegistryKey}")
-                syncDataResources(dp)
-                log.info("Successfully synced ${dp.resources.size()} resources in GBIF: ${dp.gbifRegistryKey}")
+            // update mutated version in GBIF
+            def http = newHttpInstance();
+            http.request (Method.PUT, ContentType.JSON) {
+                uri.path = MessageFormat.format(API_ORGANIZATION_DETAIL, dp.gbifRegistryKey)
+                body = (organisation as JSON).toString()
+                response.success = { resp, reader ->
+                    log.info("Successfully updated provider in GBIF: ${dp.gbifRegistryKey}")
+                    syncContacts(dp)
+                    log.info("Successfully synced contacts: ${dp.gbifRegistryKey}")
+                    syncDataResources(dp)
+                    log.info("Successfully synced ${dp.resources.size()} resources in GBIF: ${dp.gbifRegistryKey}")
+                }
             }
+        } else {
+          log.info("No GBIF registration exists for dp[${dp.uid}] - nothing to update")
         }
     }
 
@@ -161,10 +187,22 @@ class GbifRegistryService {
                         }
                     }
 
+                    if (Boolean.valueOf(grailsApplication.config.useGbifDoi)) {
+                        def created = loadDataset(it.gbifRegistryKey)
+                        it.gbifDoi = created.doi
+                        is.save(flush: true)
+                    }
+
                 }
             } else {
-                // ensure the organisation is correct in GBIF as ownership varies over time
+                // ensure the organisation is correct in GBIF as ownership varies over time, and that the DOI
+                // is used if configured
                 def dataset = loadDataset(it.gbifRegistryKey)
+                if (Boolean.valueOf(grailsApplication.config.useGbifDoi) && it.gbifDoi != dataset.doi) {
+                    log.info("Setting resource[${it.uid}] to use gbifDOI[${dataset.doi}]")
+                    it.gbifDoi = dataset.doi
+                    it.save(flush: true)
+                }
                 if (dataset.publishingOrganizationKey != dp.gbifRegistryKey) {
                     log.info("Updating the GBIF registry dataset[${it.gbifRegistryKey}] to point to " +
                              "organisation[${dp.gbifRegistryKey}]")
@@ -179,7 +217,6 @@ class GbifRegistryService {
                         }
                     }
                 }
-
             }
             syncEndpoints(it)
         }
