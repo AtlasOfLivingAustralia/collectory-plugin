@@ -79,6 +79,8 @@ class DataResource extends ProviderGroup implements Serializable {
     String methodStepDescription
     String qualityControlDescription
 
+    String gbifDoi
+
     static constraints = {
         rights(nullable:true)
         citation(nullable:true)
@@ -115,6 +117,7 @@ class DataResource extends ProviderGroup implements Serializable {
         endDate(nullable:true)
         methodStepDescription(nullable:true)
         qualityControlDescription(nullable:true)
+        gbifDoi(nullable:true)
     }
 
     static transients =  ['creativeCommons']

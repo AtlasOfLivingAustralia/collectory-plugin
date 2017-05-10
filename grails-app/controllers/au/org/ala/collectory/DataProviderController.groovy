@@ -16,8 +16,9 @@ class DataProviderController extends ProviderGroupController {
 
     // list all entities
     def list = {
-        if (params.message)
+        if (params.message) {
             flash.message = params.message
+        }
         params.max = Math.min(params.max ? params.int('max') : 50, 100)
         params.sort = params.sort ?: "name"
         ActivityLog.log username(), isAdmin(), Action.LIST
@@ -112,7 +113,13 @@ class DataProviderController extends ProviderGroupController {
         else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'dataProvider.label', default: 'dataProvider'), params.id])}"
             redirect(action: "list")
-        }
+    }
+    }
+
+    def updateAllGBIFRegistrations = {
+        gbifRegistryService.updateAllRegistrations()
+        flash.message = "${message(code: 'dataProvider.gbif.updateAll', default: 'Updating all GBIF registrations as a background task (please be patient).')}"
+        redirect(action: "list")
     }
 
     /**
