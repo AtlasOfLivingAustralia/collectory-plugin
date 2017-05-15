@@ -109,13 +109,17 @@ class ExternalResourceBean implements Comparable<ExternalResourceBean> {
     }
 
     static enum ResourceStatus {
-        UNKNOWN(order: 0),
-        NEW(order: 1),
-        CHANGED(order: 2),
-        UNCHANGED(order: 3),
-        LOCAL(order: 4)
+        UNKNOWN(0),
+        NEW(1),
+        CHANGED(2),
+        UNCHANGED(3),
+        LOCAL(4)
 
         int order
+
+        ResourceStatus(int order) {
+            this.order = order
+        }
     }
 }
 

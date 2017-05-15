@@ -163,13 +163,14 @@ class ExternalDataService {
                 if (!dr && resource.addResource) {
                     dr = crudService.insertDataResource(update)
                     if (!dr) {
-                        throw new ExternalResourceException("Can't created resource", "manage.note.note01", resource.name, resource.guid)
+                        throw new ExternalResourceException("Can't create resource", "manage.note.note01", resource.name, resource.guid)
                     }
                     if (dr.hasErrors()) {
                         throw new ExternalResourceException("Created resoruce has errors", "manage.note.note02", resource.name, dr.errors)
                     }
+                    dr.addExternalIdentifier(resource.guid, adaptor.source, resource.source)
                     resource.uid = dr.uid
-                    resource.addNote("Data resource created", "manage.note.note03", resource.uid)
+                    resource.addNote("manage.note.note03", resource.uid)
                 }
                 if (!dr || !resource.updateConnection) {
                     resource.phase = TaskPhase.COMPLETED

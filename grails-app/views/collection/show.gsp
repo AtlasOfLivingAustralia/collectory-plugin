@@ -189,7 +189,7 @@
       </g:if>
 
       <g:if test="${fieldValue(bean: instance, field: 'numRecordsDigitised') != '-1'}">
-        <p><g:message code="collection.show.des10" args="[fieldValue(bean: instance, field: "numRecordsDigitised")]" />.
+        <p><g:message code="collection.show.des10" args="[fieldValue(bean: instance, field: 'numRecordsDigitised')]" />.
         <g:message code="collection.show.des11" /> <cl:percentIfKnown dividend='${instance.numRecordsDigitised}' divisor='${instance.numRecords}' /> <g:message code="collection.show.des12" />.</p>
       </g:if>
 

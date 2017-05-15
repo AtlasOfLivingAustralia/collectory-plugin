@@ -135,7 +135,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
 
     @Override
     ExternalResourceBean createExternalResource(Map external) {
-        ExternalResourceBean ext = new ExternalResourceBean(name: external.name, guid: external.guid, source: external.doi, sourceUpdated: external.dataCurrency)
+        ExternalResourceBean ext = new ExternalResourceBean(name: external.name, guid: external.guid, source: external.source, sourceUpdated: external.dataCurrency)
         DataResource dr = ext.resolve(source)
         if (!dr) {
             ext.status = ExternalResourceBean.ResourceStatus.NEW
@@ -186,7 +186,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
         def license = LICENSE_MAP[dataset.license]
         def recordType = TYPE_MAP[dataset.type]
         def contentTypes = CONTENT_MAP[dataset.type]
-        def doi = dataset.doi?.replace("doi:", "http://doi.org/")
+        def source = dataset.doi?.replace("doi:", "http://doi.org/")
         try {
             currency = TIMESTAMP_FORMAT.clone().parse(dataset.pubDate)
         } catch (ParseException ex) {
@@ -209,7 +209,9 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
                 contentTypes: (contentTypes as JSON).toString(),
                 dataCurrency: currency,
                 lastChecked: new Date(),
-                doi: doi,
+                source: source,
+                gbifDoi: dataset.doi,
+                gbifRegistryKey: dataset.key,
                 gbifDataset: true
         ]
         addDefaultDatasetValues(resource)
@@ -224,7 +226,20 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
      */
     @Override
     boolean isDataAvailableForResource(String guid) throws ExternalResourceException {
-        String count = getJSONWS(DATASET_RECORD_COUNT.format([guid].toArray())) // Not really JSON but that's what GBIF says it is
+        def http = new HTTPBuilder(new URL(configuration.endpoint, DATASET_RECORD_COUNT.format([guid].toArray())))
+        def count = null
+        if (configuration.username) {
+            http.auth.basic(configuration.username, configuration.password)
+        }
+        http.request(Method.GET, ContentType.TEXT) { req ->
+            headers.Accept = ContentType.ANY.acceptHeader
+            response.failure = { resp ->
+                throw new ExternalResourceException("Unable check for data", "manage.note.note11", guid, resp.statusLine)
+            }
+            response.success = { resp, responseBody ->
+                count = responseBody.text
+            }
+        }
         return count && count.toInteger() > 0
     }
 

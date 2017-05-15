@@ -9,29 +9,33 @@ package au.org.ala.collectory.resources
  */
 enum TaskPhase {
     /** New load */
-    NEW(terminal: false),
+    NEW(false),
     /** Not queued for processing */
-    IGNORED(terminal: true),
+    IGNORED(true),
     /** Load queued for processing */
-    QUEUED(terminal: false),
+    QUEUED(false),
     /** Load updating metadata */
-    METADATA(terminal: false),
+    METADATA(false),
     /** Generating occurrence data */
-    GENERATING(terminal: false),
+    GENERATING(false),
     /** Downloading occurrence data */
-    DOWNLOADING(terminal: false),
+    DOWNLOADING(false),
     /** Processing downloaded occurrence data */
-    PROCESSING(terminal: false),
+    PROCESSING(false),
     /** Connecting to occurrence data */
-    CONNECITNG(terminal: false),
+    CONNECITNG(false),
     /** Load empty */
-    EMPTY(terminal: true),
+    EMPTY(true),
     /** Load completed */
-    COMPLETED(terminal: true),
+    COMPLETED(true),
     /** Load error */
-    ERROR(terminal: true),
+    ERROR(true),
     /** Load cancelled */
-    CANCELLED(terminal: true)
+    CANCELLED(true)
 
     boolean terminal
+
+    TaskPhase(boolean terminal) {
+        this.terminal = terminal
+    }
 }

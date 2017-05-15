@@ -34,7 +34,11 @@
                     </tr>
                     <g:each in="${configuration.resources}" var="res" status="rs">
                     <tr class="resource-scan-${res.status}">
-                        <td><g:hiddenField id="resources-${rs}-uid" name="resources[${rs}].uid" value="${res.uid}"/><g:hiddenField name="resources[${rs}].guid" value="${res.guid}"/><g:textField name="resources[${rs}].name" value="${res.name}"/></td>
+                        <td>
+                            <g:hiddenField id="resources-${rs}-uid" name="resources[${rs}].uid" value="${res.uid}"/>
+                            <g:hiddenField name="resources[${rs}].guid" value="${res.guid}"/>
+                            <g:hiddenField name="resources[${rs}].source" value="${res.source}"/>
+                            <g:textField name="resources[${rs}].name" value="${res.name}"/></td>
                         <td><a href="${res.source}"><g:fieldValue field="guid" bean="${res}"/></a></td>
                         <td><span title="<g:message code="manage.extstatus.${res.status}.detail"/>"><g:message code="manage.extstatus.${res.status}"/></span></td>
                         <td><span id="existing-${rs}"><g:if test="${res.uid}"><g:fieldValue field="uid" bean="${res}"/> - <g:fieldValue field="name" bean="${res}"/></g:if></span><span class="btn" onclick="existingDialog('#existing-${rs}', '#resources-${rs}-uid'); return false"><g:message code="manage.extloadr.button01" default="..."/></span> </td>
