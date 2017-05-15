@@ -65,31 +65,34 @@
                     <p><g:message code="public.lsidtext.des" />.</p>
                 </div>
             </div>
-        </div>
-
-        <div class="span4">
-            <g:if test="${dp?.logoRef?.file}">
-                <g:link action="show" id="${dp.uid}">
-                    <img class="institutionImage"
-                         src='${resource(absolute: "true", dir: "data/dataProvider/", file: fieldValue(bean: dp, field: 'logoRef.file'))}'/>
-                </g:link>
-            </g:if>
-            <g:elseif test="${instance?.logoRef?.file}">
-                <img class="institutionImage"
-                     src='${resource(absolute: "true", dir: "data/dataResource/", file: fieldValue(bean: instance, field: 'logoRef.file'))}'/>
-            </g:elseif>
-        </div>
-    </div>
-</div><!--close header-->
-<div class="row-fluid">
-    <div class="span8">
         <g:if test="${instance.pubDescription || instance.techDescription || instance.focus}">
             <h2><g:message code="public.des" /></h2>
         </g:if>
         <cl:formattedText>${fieldValue(bean: instance, field: "pubDescription")}</cl:formattedText>
         <cl:formattedText>${fieldValue(bean: instance, field: "techDescription")}</cl:formattedText>
         <cl:formattedText>${fieldValue(bean: instance, field: "focus")}</cl:formattedText>
+
         <cl:dataResourceContribution resourceType="${instance.resourceType}" status="${instance.status}" tag="p"/>
+
+            <g:if test="${instance.geographicDescription}">
+                <h2><g:message code="public.geographicDescription" default="Purpose"/></h2>
+                <cl:formattedText>${fieldValue(bean: instance, field: "geographicDescription")}</cl:formattedText>
+            </g:if>
+
+        <g:if test="${instance.purpose}">
+            <h2><g:message code="public.purpose" default="Purpose"/></h2>
+            <cl:formattedText>${fieldValue(bean: instance, field: "purpose")}</cl:formattedText>
+        </g:if>
+
+        <g:if test="${instance.qualityControlDescription}">
+            <h2><g:message code="public.qualityControlDescription" /></h2>
+            <cl:formattedText>${fieldValue(bean: instance, field: "qualityControlDescription")}</cl:formattedText>
+        </g:if>
+
+        <g:if test="${instance.methodStepDescription}">
+            <h2><g:message code="public.methodStepDescription" /></h2>
+            <cl:formattedText>${fieldValue(bean: instance, field: "methodStepDescription")}</cl:formattedText>
+        </g:if>
 
         <g:if test="${instance.contentTypes}">
             <h2><g:message code="public.sdr.content.label02" /></h2>
@@ -103,10 +106,9 @@
             <p><g:message code="public.sdr.content.des01" />.</p>
         </g:else>
 
-        <g:if test="${instance.rights || instance.licenseType}">
+        <g:if test="${instance.rights}">
             <h2><g:message code="public.sdr.content.label04" /></h2>
             <cl:formattedText>${fieldValue(bean: instance, field: "rights")}</cl:formattedText>
-            <p><cl:displayLicenseType type="${instance.licenseType}" version="${instance.licenseVersion}"/></p>
         </g:if>
 
         <g:if test="${instance.dataGeneralizations}">
@@ -173,7 +175,19 @@
         </g:if>
         <cl:lastUpdated date="${instance.lastUpdated}"/>
     </div><!--close column-one-->
-    <div class="span4">
+        <div class="span4">
+
+            <g:if test="${dp?.logoRef?.file}">
+                <g:link action="show" id="${dp.uid}">
+                    <img class="institutionImage"
+                         src='${resource(absolute: "true", dir: "data/dataProvider/", file: fieldValue(bean: dp, field: 'logoRef.file'))}'/>
+                </g:link>
+            </g:if>
+            <g:elseif test="${instance?.logoRef?.file}">
+                <img class="institutionImage"
+                     src='${resource(absolute: "true", dir: "data/dataResource/", file: fieldValue(bean: instance, field: 'logoRef.file'))}'/>
+            </g:elseif>
+
         <g:if test="${fieldValue(bean: instance, field: 'imageRef') && fieldValue(bean: instance, field: 'imageRef.file')}">
             <div class="section">
                 <img alt="${fieldValue(bean: instance, field: "imageRef.file")}"
@@ -190,6 +204,27 @@
         <div id="dataAccessWrapper" style="display:none;">
             <g:render template="dataAccess" model="[instance:instance]"/>
         </div>
+
+        <g:if test="${instance.isVerified()}">
+            <h3>
+                <g:message code="public.verified" default="Verified dataset"/>
+                <i class="fa fa-check-circle tooltips" style="color:green;"></i>
+            </h3>
+        </g:if>
+
+        <g:if test="${instance.licenseType}">
+            <h3><g:message code="public.license" default="Licence" /></h3>
+            <p><cl:displayLicenseType type="${instance.licenseType}" version="${instance.licenseVersion}"/></p>
+        </g:if>
+
+        <g:if test="${instance.beginDate}">
+            <h3><g:message code="public.temporal" default="Temporal scope" /></h3>
+            <p>${instance.beginDate}
+                <g:if test="${instance.endDate}">
+                    - ${instance.endDate}
+                </g:if>
+            </p>
+        </g:if>
 
         <!-- use parent location if the collection is blank -->
         <g:set var="address" value="${instance.address}"/>

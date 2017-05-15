@@ -1,5 +1,8 @@
 package au.org.ala.collectory
 
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 import java.sql.Timestamp
 
 class DataResource extends ProviderGroup implements Serializable {
@@ -29,6 +32,10 @@ class DataResource extends ProviderGroup implements Serializable {
         networkMembership type: "text"
         gbifDataset defaultValue: "false"
         makeContactPublic defaultValue: "true"
+        methodStepDescription type: "text"
+        qualityControlDescription type: "text"
+        geographicDescription type: "text"
+        purpose type: "text"
     }
 
     String rights
@@ -60,6 +67,20 @@ class DataResource extends ProviderGroup implements Serializable {
     Institution institution         // optional link to the institution whose records are served by this resource
     Boolean makeContactPublic = true
 
+    //Additional EML fields
+    String purpose
+    String geographicDescription
+    String westBoundingCoordinate
+    String eastBoundingCoordinate
+    String northBoundingCoordinate
+    String southBoundingCoordinate
+    String beginDate
+    String endDate
+    String methodStepDescription
+    String qualityControlDescription
+
+    String gbifDoi
+
     static constraints = {
         rights(nullable:true)
         citation(nullable:true)
@@ -86,6 +107,17 @@ class DataResource extends ProviderGroup implements Serializable {
         gbifDataset(nullable:false)
         contentTypes(nullable:true, maxSize:2048)
         makeContactPublic(nullable:false)
+        purpose(nullable:true)
+        geographicDescription(nullable:true)
+        westBoundingCoordinate(nullable:true)
+        eastBoundingCoordinate(nullable:true)
+        northBoundingCoordinate(nullable:true)
+        southBoundingCoordinate(nullable:true)
+        beginDate(nullable:true)
+        endDate(nullable:true)
+        methodStepDescription(nullable:true)
+        qualityControlDescription(nullable:true)
+        gbifDoi(nullable:true)
     }
 
     static transients =  ['creativeCommons']
@@ -148,6 +180,57 @@ class DataResource extends ProviderGroup implements Serializable {
             drs.institutionUid = drs.relatedInstitutions[0].uid
         }
         return drs
+    }
+
+    Boolean isVerified(){
+
+        if(defaultDarwinCoreValues){
+            def js = new JsonSlurper()
+            def values = js.parseText(defaultDarwinCoreValues)
+            if(
+               values.georeferenceVerificationStatus
+               &&
+               values.identificationVerificationStatus
+               &&
+               values.georeferenceVerificationStatus == "verified"
+               &&
+               values.identificationVerificationStatus == "verified"
+            ){
+                true
+            } else {
+                false
+            }
+        } else {
+            false
+        }
+    }
+
+    def markAsVerified(){
+
+        if(!defaultDarwinCoreValues){
+            defaultDarwinCoreValues = "{}"
+        }
+
+        def js = new JsonSlurper()
+        def values = js.parseText(defaultDarwinCoreValues)
+        values.georeferenceVerificationStatus = "verified"
+        values.identificationVerificationStatus = "verified"
+        defaultDarwinCoreValues = JsonOutput.toJson(values)
+        save(flush:true)
+    }
+
+    def markAsUnverified(){
+
+        if(!defaultDarwinCoreValues){
+            defaultDarwinCoreValues = "{}"
+        }
+
+        def js = new JsonSlurper()
+        def values = js.parseText(defaultDarwinCoreValues)
+        values.georeferenceVerificationStatus = ""
+        values.identificationVerificationStatus = ""
+        defaultDarwinCoreValues = JsonOutput.toJson(values)
+        save(flush:true)
     }
 
     /**

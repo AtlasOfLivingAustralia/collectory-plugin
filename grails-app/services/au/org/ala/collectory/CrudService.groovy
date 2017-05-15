@@ -17,8 +17,8 @@ class CrudService {
 
     static baseStringProperties = ['guid','name','acronym','phone','email','state','pubShortDescription',
                                    'pubDescription','techDescription','notes', 'isALAPartner','focus','attributions',
-                                   'websiteUrl','networkMembership','altitude',
-                'street','postBox','postcode','city','state','country','file','caption','attribution','copyright']
+                                   'websiteUrl','networkMembership','altitude', 'street','postBox','postcode','city',
+                                   'state','country','file','caption','attribution','copyright', 'gbifRegistryKey']
     static baseNumberProperties = ['latitude','longitude']
     static baseObjectProperties = ['address', 'imageRef','logoRef']
     static baseJSONArrays = ['networkMembership']
@@ -32,7 +32,10 @@ class CrudService {
     static dataResourceStringProperties = ['rights','citation','dataGeneralizations','informationWithheld',
                 'permissionsDocument','licenseType','licenseVersion','status','mobilisationNotes','provenance',
                 'harvestingNotes','connectionParameters','resourceType','permissionsDocumentType','riskAssessment',
-                'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata']
+                'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata',
+                'geographicDescription','northBoundingCoordinate','southBoundingCoordinate','eastBoundingCoordinate',
+                'westBoundingCoordinate','beginDate','endDate','qualityControlDescription','methodStepDescription'
+    ]
     static dataResourceNumberProperties = ['harvestFrequency','downloadLimit']
     static dataResourceTimestampProperties = ['lastChecked','dataCurrency']
     static dataResourceBooleanProperties = ['gbifDataset']
@@ -133,6 +136,7 @@ class CrudService {
                 if (p.hiddenJSON) {
                     hiddenJSON = p.hiddenJSON.formatJSON()
                 }
+                gbifRegistryKey = p.gbifRegistryKey
             }
         }
         return result
@@ -362,6 +366,8 @@ class CrudService {
                 publicArchiveUrl = grailsApplication.config.resource.publicArchive.url.template.replaceAll('@UID@',p.uid)
                 downloadLimit = p.downloadLimit
                 gbifDataset = p.gbifDataset
+                verified = p.isVerified()
+                gbifRegistryKey = p.gbifRegistryKey
                 if (p.externalIdentifiers) {
                     externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }
@@ -391,7 +397,7 @@ class CrudService {
         dr.userLastModified = obj.user ?: 'Data services'
         if (!dr.hasErrors()) {
              dr.save(flush: true)
-         }
+        }
         return dr
     }
 
@@ -551,6 +557,7 @@ class CrudService {
                 if (p.listProviders()) {
                     linkedRecordProviders = p.listProviders().formatEntitiesFromUids()
                 }
+                gbifRegistryKey = p.gbifRegistryKey
                 if (p.externalIdentifiers) {
                     externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }
@@ -689,6 +696,7 @@ class CrudService {
                 if (p.listProviders()) {
                     linkedRecordProviders = p.listProviders().formatEntitiesFromUids()
                 }
+                gbifRegistryKey = p.gbifRegistryKey
                 if (p.externalIdentifiers) {
                     externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }

@@ -1,6 +1,9 @@
 package au.org.ala.collectory
 
 class DataProviderController extends ProviderGroupController {
+
+    def gbifRegistryService
+
     DataProviderController() {
         entityName = "DataProvider"
         entityNameLower = "dataProvider"
@@ -13,8 +16,9 @@ class DataProviderController extends ProviderGroupController {
 
     // list all entities
     def list = {
-        if (params.message)
+        if (params.message) {
             flash.message = params.message
+        }
         params.max = Math.min(params.max ? params.int('max') : 50, 100)
         params.sort = params.sort ?: "name"
         ActivityLog.log username(), isAdmin(), Action.LIST
@@ -109,10 +113,49 @@ class DataProviderController extends ProviderGroupController {
         else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'dataProvider.label', default: 'dataProvider'), params.id])}"
             redirect(action: "list")
-        }
+    }
+    }
+
+    def updateAllGBIFRegistrations = {
+        gbifRegistryService.updateAllRegistrations()
+        flash.message = "${message(code: 'dataProvider.gbif.updateAll', default: 'Updating all GBIF registrations as a background task (please be patient).')}"
+        redirect(action: "list")
     }
 
     /**
+     * This will update the GBIF Registry with the metadata and contacts for the data provider.
+     */
+    def updateGBIF = {
+        def instance = get(params.id)
+        if (instance) {
+            try {
+                gbifRegistryService.updateRegistration(instance)
+                flash.message = "${message(code: 'dataProvider.gbif.update.success', default: 'GBIF Registration Updated')}"
+            } catch (Exception e) {
+                flash.message = "${e.getMessage()}"
+            }
+
+            redirect(action: "show", id: params.id)
+        }
+    }
+
+    def registerGBIF = {
+        log.info("REGISTERING")
+        def instance = get(params.id)
+        if (instance) {
+            try {
+                gbifRegistryService.register(instance)
+                flash.message = "${message(code: 'dataProvider.gbif.register.success', default: 'Successfully Registered in GBIF')}"
+                instance.save()
+            } catch (Exception e) {
+                flash.message = "${e.getMessage()}"
+            }
+
+            redirect(action: "show", id: params.id)
+        }
+    }
+
+        /**
      * Get the instance for this entity based on either uid or DB id.
      *
      * @param id UID or DB id

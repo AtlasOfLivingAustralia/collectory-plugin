@@ -6,7 +6,9 @@
         <g:set var="entityName" value="${instance.ENTITY_TYPE}" />
         <g:set var="entityNameLower" value="${cl.controller(type: instance.ENTITY_TYPE)}"/>
         <title><g:message code="default.show.label" args="[entityName]" /></title>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=${grailsApplication.config.google?.apikey}"
+                type="text/javascript"></script>
     </head>
     <body onload="initializeLocationMap('${instance.canBeMapped()}',${instance.latitude},${instance.longitude});">
     <style>
@@ -22,6 +24,7 @@
             <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
             <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
             <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
+            <span class="button"><cl:emlDataLink uid="${instance.uid}"/></span>
             </p>
 
             <ul>
@@ -31,7 +34,6 @@
             </ul>
 
         </div>
-
 
         <div class="body">
             <g:if test="${flash.message}">
@@ -81,10 +83,22 @@
                 <!-- last edit -->
                 <p><span class="category"><g:message code="datahub.show.lastchange" />: </span> ${fieldValue(bean: instance, field: "userLastModified")} on ${fieldValue(bean: instance, field: "lastUpdated")}</p>
 
-
                 <g:if test="${instance.gbifDataset}">
                     <p>This dataset was downloaded from GBIF. <a href="http://www.gbif.org/dataset/${instance.guid}">View details on GBIF.org</a></p>
                 </g:if>
+
+
+                <p>
+                    <span class="category"><g:message code="dataresource.show.verificationStatus" default="Verification status"/>: </span>
+                    <g:if test="${instance.isVerified()}">
+                        Currently this data resource is marked as verified <i class="fa fa-check-circle tooltips" style="color:green;"></i>
+                        <g:link class="btn btn-small" controller="dataResource" action="markAsUnverified" id="${instance.id}">Mark as <strong>unverified</strong></g:link>
+                    </g:if>
+                    <g:else>
+                        Currently this data resource is marked as unverified
+                            <g:link class="btn btn-small" controller="dataResource" action="markAsVerified" id="${instance.id}">Mark as <strong>verified</strong></g:link>
+                    </g:else>
+                </p>
 
                 <cl:editButton uid="${instance.uid}" page="/shared/base" notAuthorisedMessage="You are not authorised to edit this resource."/>
               </div>
@@ -105,9 +119,37 @@
                 <span class="category"><g:message code="collection.show.span05" /></span><br/>
                 <cl:formattedText body="${instance.techDescription?:'Not provided'}"/>
 
-                <!-- Focus -->
-                <span class="category"><g:message code="providerGroup.focus.label" /></span><br/>
-                <cl:formattedText>${instance.focus?:'Not provided'}</cl:formattedText>
+                <!-- Bounding box -->
+                <span class="category"><g:message code="collection.show.boundingbox" default="Bounding box (decimal degrees WGS84)"/></span><br/>
+                <p>
+                    <ul>
+                        <li><g:message code="collection.show.northBoundingCoordinate" default="North" />: ${instance.northBoundingCoordinate?:'Not provided'}</li>
+                        <li><g:message code="collection.show.southBoundingCoordinate" default="South" />: ${instance.southBoundingCoordinate?:'Not provided'}</li>
+                        <li><g:message code="collection.show.eastBoundingCoordinate" default="East" />: ${instance.eastBoundingCoordinate?:'Not provided'}</li>
+                        <li><g:message code="collection.show.westBoundingCoordinate" default="West" />: ${instance.westBoundingCoordinate?:'Not provided'}</li>
+                    </ul>
+                </p>
+
+                <!-- Temporal range -->
+                <span class="category"><g:message code="collection.show.temporalrange" default="Temporal range"/></span><br/>
+                <p>
+                <ul>
+                    <li><g:message code="collection.show.beginDate" default="Start date" />: ${instance.beginDate?:'Not provided'}</li>
+                    <li><g:message code="collection.show.endDate" default="End date" />: ${instance.endDate?:'Not provided'}</li>
+                </ul>
+                </p>
+
+                <!-- Data Quality -->
+                <span class="category"><g:message code="collection.show.qualityControlDescription" /></span><br/>
+                <cl:formattedText body="${instance.qualityControlDescription?:'Not provided'}"/>
+
+                <!-- Methods -->
+                <span class="category"><g:message code="collection.show.methodStepDescription" /></span><br/>
+                <cl:formattedText body="${instance.methodStepDescription?:'Not provided'}"/>
+
+                <!-- Focus / purpose -->
+                <span class="category"><g:message code="providerGroup.purpose.label" default="Purpose"/></span><br/>
+                <cl:formattedText>${instance.purpose?:'Not provided'}</cl:formattedText>
 
                 <!-- generalisations -->
                 <p><span class="category"><g:message code="dataresource.show.dg" />: </span> ${fieldValue(bean: instance, field: "dataGeneralizations")}</p>
@@ -287,6 +329,7 @@
                 <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
                 <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
                 <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
+                <span class="button"><cl:emlDataLink uid="${instance.uid}"/></span>
               </div>
               <g:form>
                 <g:hiddenField name="id" value="${instance?.id}"/>

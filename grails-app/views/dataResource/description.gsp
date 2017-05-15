@@ -34,8 +34,8 @@
                             <td valign="top" class="name">
                                 <label for="pubShortDescription"><g:message code="providerGroup.pubShortDescription.label" default="Public Short Description" /></label>
                             </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'pubDescription', 'errors')}">
-                                <g:textArea name="pubShortDescription" class="input-xlarge"  rows="${cl.textAreaHeight(text:command.pubShortDescription)}" value="${command.pubDescription}" />
+                            <td valign="top" class="value ${hasErrors(bean: command, field: 'pubShortDescription', 'errors')}">
+                                <g:textArea name="pubShortDescription" class="input-xlarge"  rows="${cl.textAreaHeight(text:command.pubShortDescription)}" value="${command.pubShortDescription}" />
                                 <cl:helpText code="providerGroup.pubShortDescription"/>
                             </td>
                             <cl:helpTD/>
@@ -63,6 +63,88 @@
                                 <cl:helpText code="providerGroup.techDescription"/>
                               </td>
                               <cl:helpTD/>
+                        </tr>
+
+                        <!-- purpose -->
+                        <tr class="prop">
+                            <td valign="top" class="name">
+                                <label for="purpose"><g:message code="providerGroup.purpose.label" default="Purpose" /></label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: command, field: 'purpose', 'errors')}">
+                                <g:textArea name="purpose" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.purpose)}" value="${command?.purpose}" />
+                                <cl:helpText code="providerGroup.purpose"/>
+                            </td>
+                            <cl:helpTD/>
+                        </tr>
+
+                        <!-- geographicDescription -->
+                        <tr class="prop">
+                            <td valign="top" class="name">
+                                <label for="geographicDescription"><g:message code="providerGroup.geographicDescription.label" default="Geographic Description" /></label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: command, field: 'geographicDescription', 'errors')}">
+                                <g:textArea name="geographicDescription" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.geographicDescription)}" value="${command?.geographicDescription}" />
+                                <cl:helpText code="providerGroup.geographicDescription"/>
+                            </td>
+                            <cl:helpTD/>
+                        </tr>
+
+                        <!-- bounding box -->
+                        <tr class="prop">
+                            <td valign="top" class="name">
+                                <label for="boundingBox"><g:message code="providerGroup.boundingBox.label" default="Bounding Box" /></label>
+                            </td>
+                            <td valign="top" class="">
+                                <label for="northBoundingCoordinate"><g:message code="providerGroup.northBoundingCoordinate.label" default="North (decimal degrees WGS84)" /></label>
+                                <g:textField name="northBoundingCoordinate" class="input" value="${command?.northBoundingCoordinate}" />
+
+                                <label for="southBoundingCoordinate"><g:message code="providerGroup.southBoundingCoordinate.label" default="South (decimal degrees WGS84)" /></label>
+                                <g:textField name="southBoundingCoordinate" class="input" value="${command?.southBoundingCoordinate}" />
+
+                                <label for="eastBoundingCoordinate"><g:message code="providerGroup.eastBoundingCoordinate.label" default="East (decimal degrees WGS84)" /></label>
+                                <g:textField name="eastBoundingCoordinate" class="input" value="${command?.eastBoundingCoordinate}" />
+
+                                <label for="westBoundingCoordinate"><g:message code="providerGroup.westBoundingCoordinate.label" default="West (decimal degrees WGS84)" /></label>
+                                <g:textField name="westBoundingCoordinate" class="input" value="${command?.westBoundingCoordinate}" />
+                            </td>
+                        </tr>
+
+                        <!-- temporal range -->
+                        <tr class="prop">
+                            <td valign="top" class="name">
+                                <label for="temporalRange"><g:message code="providerGroup.temporal.label" default="Temporal range" /></label>
+                            </td>
+                            <td valign="top" class="">
+                                <label for="beginDate"><g:message code="providerGroup.beginDate.label" default="Start date (yyyy-mm-dd)" /></label>
+                                <g:textField name="beginDate" class="input" value="${command?.beginDate}" />
+
+                                <label for="endDate"><g:message code="providerGroup.endDate.label" default="End date (yyyy-mm-dd)" /></label>
+                                <g:textField name="endDate" class="input" value="${command?.endDate}" />
+                            </td>
+                        </tr>
+
+                        <!-- qualityControlDescription -->
+                        <tr class="prop">
+                            <td valign="top" class="name">
+                                <label for="qualityControlDescription"><g:message code="providerGroup.qualityControlDescription.label" default="Data Quality Description" /></label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: command, field: 'qualityControlDescription', 'errors')}">
+                                <g:textArea name="qualityControlDescription" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.qualityControlDescription)}" value="${command?.qualityControlDescription}" />
+                                <cl:helpText code="providerGroup.qualityControlDescription"/>
+                            </td>
+                            <cl:helpTD/>
+                        </tr>
+
+                        <!-- methodStepDescription -->
+                        <tr class="prop">
+                            <td valign="top" class="name">
+                                <label for="methodStepDescription"><g:message code="providerGroup.methodStepDescription.label" default="Methods" /></label>
+                            </td>
+                            <td valign="top" class="value ${hasErrors(bean: command, field: 'methodStepDescription', 'errors')}">
+                                <g:textArea name="methodStepDescription" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.methodStepDescription)}" value="${command?.methodStepDescription}" />
+                                <cl:helpText code="providerGroup.methodStepDescription"/>
+                            </td>
+                            <cl:helpTD/>
                         </tr>
 
                         <!-- focus -->

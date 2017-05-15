@@ -246,3 +246,14 @@ function loadDownloadStats(loggerServicesUrl, uid, name, eventType) {
         }
     });
 }
+
+/* capitalises the first letter of the passed string */
+function capitalise(item) {
+    if (!item) {
+        return item;
+    }
+    if (item.length == 1) {
+        return item.toUpperCase();
+    }
+    return item.substring(0, 1).toUpperCase() + item.substring(1, item.length);
+}

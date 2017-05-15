@@ -74,6 +74,7 @@ abstract class ProviderGroup implements Serializable {
     Date lastUpdated
     String userLastModified
     String keywords             // json list of terms
+    String gbifRegistryKey      // the entity identifier in the GBIF central registry (used for all GBIF.org API calls)
 
     static embedded = ['address', 'logoRef', 'imageRef']
 
@@ -122,6 +123,7 @@ abstract class ProviderGroup implements Serializable {
         attributions(nullable:true, maxSize:256)
         taxonomyHints(nullable:true)
         keywords(nullable:true)
+        gbifRegistryKey(nullable:true, maxSize:36)
     }
 
     /**
@@ -342,7 +344,7 @@ abstract class ProviderGroup implements Serializable {
         }
         return false
     }
-    
+
     /**
      * Returns a truncated name.
      */
@@ -472,7 +474,7 @@ abstract class ProviderGroup implements Serializable {
         uids.remove attributionUid
         attributions = uids.join(' ')
     }
-    
+
     /*
      * Injects common group attributes into the summary object.
      */

@@ -11,6 +11,8 @@ class DataProvider extends ProviderGroup implements Serializable {
 
     String hiddenJSON // web service only (non-UI) JSON; used by fieldcapture to store project data
 
+    String gbifCountryToAttribute      // the 3 digit iso code of the country to attribute in GBIF
+
     static mapping = {
         sort: 'name'
         hiddenJSON type: "text"
@@ -26,6 +28,7 @@ class DataProvider extends ProviderGroup implements Serializable {
     static constraints = {
         hiddenJSON(nullable:true, blank: false)
         keywords(nullable:true)
+        gbifCountryToAttribute(nullable:true, maxSize: 3)
     }
 
     /**

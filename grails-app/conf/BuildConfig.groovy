@@ -26,12 +26,11 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
 
-    repositories {        
+    repositories {
         mavenLocal()
         mavenRepo("http://nexus.ala.org.au/content/groups/public/") {
             updatePolicy 'always'
         }
-        //mavenRepo "http://repository.gbif.org/content/groups/gbif/"
     }
 
     dependencies {
@@ -46,19 +45,19 @@ grails.project.dependency.resolution = {
 
     plugins {
         build(  ":tomcat:7.0.52.1",
-                ":release:3.1.2",
-                ":rest-client-builder:2.1.1") {
+                ":release:3.0.1",
+                ":rest-client-builder:1.0.3") {
             export = false
         }
-        compile ":cache:1.1.8"
-        runtime ":hibernate:3.6.10.19"
+        compile ":cache:1.1.2"
+        runtime ":hibernate:3.6.10.11"
         runtime ":jquery:1.11.1"
-        runtime ":resources:1.2.14"
-        runtime ":audit-logging:1.1.1"
-        runtime ":cache-headers:1.1.7"
+        runtime ":resources:1.2.7"
+        runtime ":audit-logging:0.5.5.3"
+        runtime ":cache-headers:1.1.6"
         runtime ":rest:0.8"
-        //runtime ":richui:0.8"
-        runtime ":tiny-mce:3.4.9"
+        runtime ":richui:0.8"
+        runtime ":tiny-mce:3.4.4"
         runtime ":cors:1.1.8"
     }
 }

@@ -6,7 +6,9 @@
   <g:set var="entityName" value="${command.ENTITY_TYPE}"/>
   <g:set var="entityNameLower" value="${command.ENTITY_TYPE.toLowerCase()}"/>
   <title><g:message code="collection.base.label" default="Edit ${entityNameLower} metadata" /></title>
-  <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
+  <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key=${grailsApplication.config.google?.apikey}"
+          type="text/javascript"></script>
 </head>
 <body onload="load();">
   <style>
@@ -38,12 +40,13 @@
         <!-- state -->
         <tr class="prop">
           <td valign="top" class="name">
-            <label for="state"><g:message code="providerGroup.state.label" default="State"/>
+            <label for="state"><g:message code="providerGroup.state.label" default="State/Territory/County"/>
               <br/><span class=hint>(where the ${entityNameLower}<br>resides)</span>
             </label>
           </td>
           <td valign="top" colspan="3" class="value ${hasErrors(bean: command, field: 'state', 'errors')}">
-            <g:select id="state" name="state" from="${ProviderGroup.statesList}" value="${command?.state}" valueMessagePrefix="providerGroup.state" noSelection="['': '']"/>
+            %{--<g:select id="state" name="state" from="${ProviderGroup.statesList}" value="${command?.state}" valueMessagePrefix="providerGroup.state" noSelection="['': '']"/>--}%
+            <g:textField name="sate" maxLength="256" value="${command?.state}"/>
             <cl:helpText code="${entityNameLower}.state"/>
           </td>
           <cl:helpTD/>

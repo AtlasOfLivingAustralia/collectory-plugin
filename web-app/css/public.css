@@ -49,6 +49,7 @@ div.center {
     -icab-border-radius: 0;
     -khtml-border-radius: 0;
     padding-bottom: 5px;
+    max-height:250px;
 }
 
 /* allow logo to rise to level of name text */
