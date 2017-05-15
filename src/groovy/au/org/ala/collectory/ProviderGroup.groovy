@@ -16,6 +16,7 @@
 package au.org.ala.collectory
 
 import grails.converters.JSON
+import grails.util.Holders
 
 /**
  *  Base class for an organisational group in the collectory, such as an
@@ -302,7 +303,7 @@ abstract class ProviderGroup implements Serializable {
      * @return The external identifiers
      */
     List<ExternalIdentifier> getExternalIdentifiers() {
-        if (dbId()) {
+        if (id != null) {
             return ExternalIdentifier.findAllByEntityUid(uid)
         } else {
             return []
@@ -678,7 +679,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     String buildUri() {
-        return grailsApplication.config.grails.serverURL + "/ws/" + urlForm() + "/" + uid
+        return Holders.config.grails.serverURL + "/ws/" + urlForm() + "/" + uid
     }
 
     /**
@@ -686,7 +687,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     String buildPublicUrl() {
-        return grailsApplication.config.grails.serverURL + "/public/show/" + uid
+        return Holders.config.grails.serverURL + "/public/show/" + uid
     }
 
     /**
@@ -694,8 +695,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     def buildLogoUrl() {
-        return logoRef?.file ?
-            grailsApplication.config.grails.serverURL + "/data/" + urlForm() + "/" + logoRef.file :
+        return logoRef?.file ? Holders.config.grails.serverURL + "/data/" + urlForm() + "/" + logoRef.file :
             ""
     }
 

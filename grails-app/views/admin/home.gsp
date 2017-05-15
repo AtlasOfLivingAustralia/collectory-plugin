@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.grailsApplication; au.org.ala.collectory.ProviderGroup" %>
+<%@ page import="au.org.ala.collectory.ProviderGroup" %>
 <html>
     <head>
         <title><g:message code="admin.home.title" /></title>

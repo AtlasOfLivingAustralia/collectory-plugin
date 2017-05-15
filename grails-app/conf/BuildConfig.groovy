@@ -31,15 +31,17 @@ grails.project.dependency.resolution = {
         mavenRepo("http://nexus.ala.org.au/content/groups/public/") {
             updatePolicy 'always'
         }
+        //mavenRepo "http://repository.gbif.org/content/groups/gbif/"
     }
 
     dependencies {
-        runtime 'mysql:mysql-connector-java:5.1.5'
+//        runtime 'mysql:mysql-connector-java:5.1.5'
+        runtime 'mysql:mysql-connector-java:5.1.42' // Needed if you have newer versions of mysql installed
         runtime 'net.sf.opencsv:opencsv:2.3'
 	    //runtime 'ant:ant:1.6.5'
         runtime 'commons-httpclient:commons-httpclient:3.1'
         runtime 'org.aspectj:aspectjweaver:1.6.6'
-        compile "org.gbif.registry:registry-ws-client:2.62"
+        compile "com.fasterxml.jackson.core:jackson-databind:2.7.0"
     }
 
     plugins {

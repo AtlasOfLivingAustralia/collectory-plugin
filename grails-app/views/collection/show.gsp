@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.collectory.ProviderGroup; org.codehaus.groovy.grails.commons.grailsApplication; au.org.ala.collectory.Collection" %>
+<%@ page import="au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.Collection" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

@@ -1,10 +1,13 @@
 package au.org.ala.collectory
 
 import au.org.ala.audit.AuditLogEvent
+import au.org.ala.collectory.resources.DataSourceLoad
+import au.org.ala.collectory.resources.gbif.GbifDataSourceAdapter
 
 class ManageController {
 
     def collectoryAuthService
+    def externalDataService
     def gbifService
 
     /**
@@ -26,66 +29,64 @@ class ManageController {
     /**
      * Renders the view that allows a user to load all the gbif resources for a country
      */
-    def gbifLoadCountry = {
-        render(view: "gbifLoadCountry",
+    def loadExternalResources = {
+        DataSourceConfiguration configuration = new DataSourceConfiguration(
+                guid: UUID.randomUUID().toString(),
+                name: '',
+                description: '',
+                adaptorClass: GbifDataSourceAdapter.class,
+                endpoint: new URL(grailsApplication.config.gbifApiUrl + '/'),
+                username: '',
+                password: '',
+                country: Locale.default.getCountry(),
+                recordType: 'OCCURRENCE',
+                defaultDatasetValues: [:],
+                keyTerms: [],
+                resources: []
+        )
+        def adaptor = configuration.create()
+        render(view: "externalLoad",
                model: [
-                'pubMap': gbifService.getPublishingCountriesMap(),
-                'dataProviders': DataProvider.all.sort { it.name }
-        ])
+                    configuration: configuration,
+                    countryMap: adaptor.countryMap,
+                    datasetTypeMap: adaptor.datasetTypeMap,
+                    adaptors: externalDataService.ADAPTORMAP,
+                    dataProviders: DataProvider.all.sort { it.name }
+                ]
+        )
     }
 
     /**
-     * Search for resources that may be loaded.
-     *
-     * dataProvider - The data provider attached to the resources (GBIF)
-     * country - the country to load
-     * gbifUsername - the username used to instantiate a download
-     * gbifPassword - the password for the supplied gbif user
-     *
-     * @return
+     * Search for resources that may be loaded from an external source
      */
     def searchForResources() {
-        log.debug "Searching for resources from GBIF: ${params}"
-        DataProvider dp = DataProvider.findByUid(params.dataProvider)
-        if (!dp || !params.gbifUsername || !params.gbifPassword) {
-            redirect(action: 'gbifLoadCountry')
-        }
-        def dataResources = DataResource.all.findAll({ dr -> dr.resourceType == 'records' }).collectEntries({ [(it.uid): it] })
-        def resources = gbifService.searchForDatasets(dp, params.country, params.maxRecords)
-        render(view: 'gbifLoadReview',
+        log.debug "Searching for resources from external source: ${params}"
+        DataSourceConfiguration configuration = new DataSourceConfiguration(params)
+        def dataResources = DataResource.all.findAll({ dr -> dr.resourceType == 'records' }).sort({ it.name })
+        def resources = externalDataService.searchForDatasets(configuration)
+        configuration.resources = resources
+        def dataProvider = DataProvider.findByUid(configuration.dataProviderUid)
+        render(view: 'externalLoadReview',
                model: [
-                      dataProvider: dp,
-                      resources: resources,
-                      dataResources: dataResources,
-                      gbifUsername: params.gbifUsername,
-                      gbifPassword: params.gbifPassword,
+                       loadGuid: UUID.randomUUID().toString(),
+                       dataResources: dataResources,
+                       dataProvider: dataProvider,
+                       configuration: configuration,
                ]
         )
     }
 
     /**
-     * Submits the task required to load the GBIF resources for a country
-     * country - the country to load
-     * gbifUsername - the username used to instantiate a download
-     * gbifPassword - the password for the supplied gbif user
-     * @return
+     * Update from an externbal source
+     * <p>
+     * The web pade
      */
-    def loadAllGbifForCountry(){
-        log.debug("Loading resources from GBIF: " + params)
-        if(params.gbifUsername && params.gbifPassword){
-            Boolean reloadExistingResources = false
-            if (params.reloadExistingResources) {
-                reloadExistingResources = true
-            }
-            Integer maxResources = params.maxResources ? params.getInt("maxResources") : null
-            gbifService.loadResourcesFor(
-                    params.country,
-                    params.gbifUsername,
-                    params.gbifPassword,
-                    maxResources,
-                    reloadExistingResources)
-            redirect(action: 'gbifCountryLoadStatus', params: [country:params.country])
-        }
+    def updateFromExternalSources() {
+        log.debug "Update resources from external source: ${params}"
+        DataSourceConfiguration configuration = new DataSourceConfiguration(params)
+        externalDataService.updateFromExternalSources(configuration, params.loadGuid)
+        redirect(action: 'externalLoadStatus', params: [loadGuid: params.loadGuid])
+
     }
 
     /**
@@ -135,6 +136,16 @@ class ManageController {
     def gbifCountryLoadStatus(){
         def gbifSummary = gbifService.getStatusInfoFor(params.country)
         [country: params.country, gbifSummary:gbifSummary]
+    }
+
+    /**
+     *
+     * Display the load status for the supplied load
+     */
+    def externalLoadStatus(){
+        DataSourceLoad load = externalDataService.getStatusInfoFor(params.loadGuid)
+        DataSourceConfiguration configuration = load?.configuration
+        [configuration: configuration, load :load, refreshInterval: externalDataService.POLL_INTERVAL]
     }
 
     /**

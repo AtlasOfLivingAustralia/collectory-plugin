@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.grailsApplication; au.org.ala.collectory.CollectionLocation" %>
+<%@ page import="au.org.ala.collectory.CollectionLocation" %>
 <html>
     <head>
         <!-- this is not the current version - use map3 -->

@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.collectory.Contact; org.codehaus.groovy.grails.commons.grailsApplication; au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.Collection" %>
+<%@ page import="au.org.ala.collectory.Contact; au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.Collection" %>
 <html>
     <head>
         <title><g:message code="manage.show.title" /></title>
@@ -248,7 +248,7 @@
                         <p class="mainText"><g:message code="manage.list.addtools.des14" /></p>
                     </div>
                     <div class="homeCell">
-                        <g:link class="mainLink" controller="manage" action="gbifLoadCountry"><g:message code="manage.list.addtools.addgbif" /></g:link>
+                        <g:link class="mainLink" controller="manage" action="loadExternalResources"><g:message code="manage.list.addtools.addexternal" /></g:link>
                         <p class="mainText"r><g:message code="manage.list.addtools.des15" /></p>
                     </div>
                     <div class="homeCell">

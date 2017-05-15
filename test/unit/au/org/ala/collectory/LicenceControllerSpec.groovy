@@ -1,4 +1,4 @@
-package collectory
+package au.org.ala.collectory
 
 import grails.test.mixin.TestFor
 import spock.lang.Specification

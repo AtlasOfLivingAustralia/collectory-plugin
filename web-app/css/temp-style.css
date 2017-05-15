@@ -282,3 +282,18 @@ ul.facets {
 #adminNavMenu { margin-top:10px; }
 
 .entityLogo { margin-bottom: 10px; }
+
+.resource-table th,td {
+    padding-left: 1ex;
+    padding-right: 1ex;
+}
+
+/* Styling for datatables */
+#existing-dialog table {
+    padding: 1ex;
+    width: 100%;
+}
+
+#existing-dataresources_wrapper div {
+    font-size: smaller;
+}

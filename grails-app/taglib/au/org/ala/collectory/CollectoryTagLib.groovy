@@ -2075,4 +2075,17 @@ class CollectoryTagLib {
             out << ' selected'
         }
     }
+
+    def notes = { attrs ->
+        def list = attrs.notes as List
+        if (list) {
+            out << "<table class=\"notes\">\n"
+            list.each {
+                out << "<tr><td>"
+                out << message(code: it.code, args: it.args)
+                out << "</td></tr>\n"
+            }
+            out << "</table>"
+        }
+    }
 }
