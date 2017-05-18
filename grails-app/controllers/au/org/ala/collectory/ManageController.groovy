@@ -44,7 +44,7 @@ class ManageController {
                 keyTerms: [],
                 resources: []
         )
-        def adaptor = configuration.create()
+        def adaptor = configuration.createAdaptor()
         render(view: "externalLoad",
                model: [
                     configuration: configuration,

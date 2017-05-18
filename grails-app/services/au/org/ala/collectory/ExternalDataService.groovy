@@ -1,6 +1,7 @@
 package au.org.ala.collectory
 
 import au.org.ala.collectory.exception.ExternalResourceException
+import au.org.ala.collectory.resources.DataSourceAdapter
 import au.org.ala.collectory.resources.DataSourceLoad
 import au.org.ala.collectory.resources.TaskPhase
 import au.org.ala.collectory.resources.gbif.GbifDataSourceAdapter
@@ -75,7 +76,7 @@ class ExternalDataService {
      * @return A list of external resource descriptions, possibly mapped against
      */
     def searchForDatasets(DataSourceConfiguration configuration) {
-        def adaptor = configuration.create()
+        def adaptor = configuration.createAdaptor()
         List<Map> datasets = adaptor.datasets()
         List<ExternalResourceBean> resources = datasets.collect { adaptor.createExternalResource(it) }
         return resources.sort()
@@ -90,23 +91,28 @@ class ExternalDataService {
      */
     def updateFromExternalSources(DataSourceConfiguration configuration, String loadGuid) {
         DataSourceLoad load = new DataSourceLoad(guid: loadGuid, startTime: new Date(), configuration: configuration)
+        DataSourceAdapter adaptor = load.configuration.createAdaptor()
         loadMap[loadGuid] = load
+        load.resources.each { resource ->
+            resource.phase = TaskPhase.NEW
+            processResourceMetadata(adaptor, load, resource)
+        }
+        load.resources.each { resource ->
+            if (!resource.phase.terminal) {
+                resource.phase = TaskPhase.QUEUED
+                pool.submit({ processResource(load, resource) } as Callable)
+            }
+        }
         pool.submit({ processLoad(load) } as Callable)
     }
 
     /**
-     * Process a data source load.
-     * <p>
-     * Submits the resource loads individually
+     * Process that waits on a data load for completion.
      *
      * @param load The load to process
      */
     def processLoad(DataSourceLoad load) {
         try {
-            load.resources.each { resource ->
-                resource.phase = TaskPhase.QUEUED
-                pool.submit({ processResource(load, resource) } as Callable)
-            }
             while (!load.isComplete()) {
                 Thread.sleep(POLL_INTERVAL)
             }
@@ -118,114 +124,56 @@ class ExternalDataService {
     }
 
     /**
-     * Load a single external resource
-     *
-     * @param load The load process
-     * @param resource The resource to load
+     * Update any metadata on the resource.
+     * <p>
+     * Done sequentially to avoid transaction problems leading to race conditions.
      */
-    def processResource(DataSourceLoad load, ExternalResourceBean resource) {
+    def processResourceMetadata(DataSourceAdapter adaptor, DataSourceLoad load, ExternalResourceBean resource) {
         try {
-            DataResource.withTransaction {
-                if (resource.phase.terminal) return // Cancelled externally
+            if (resource.phase.terminal) return // Cancelled externally
 
-                def adaptor = load.configuration.create()
-
-                // Before any other updates we must link the external identifier, if there isn't one available
-                resource.phase = TaskPhase.METADATA
-                DataResource dr = null
-                ExternalIdentifier ext = null
-                if (resource.uid) {
-                    dr = DataResource.findByUid(resource.uid)
-                    if (!dr) {
-                        resource.addError("Data resource ${resource.uid} not found")
-                        return
-                    }
-                    ext = dr.getExternalIdentifiers().find({
-                        it.source == adaptor.source && it.identifier == resource.guid
-                    })
-                    if (dr && !ext) {
-                        dr.addExternalIdentifier(resource.guid, adaptor.source, resource.source)
-                    }
+            // Before any other updates we must link the external identifier, if there isn't one available
+            resource.phase = TaskPhase.METADATA
+            DataResource dr = null
+            ExternalIdentifier ext = null
+            if (resource.uid) {
+                dr = DataResource.findByUid(resource.uid)
+                if (!dr) {
+                    throw new ExternalResourceException("Can't find resource", "manage.note.note12", resource.uid)
                 }
-
-                if (!resource.updateRequired) {
-                    resource.phase = (dr && !ext) ? TaskPhase.COMPLETED : TaskPhase.IGNORED
-                    return
-                }
-
-                def update = adaptor.getDataset(resource.guid)
-                if (load.configuration.dataProviderUid)
-                    update.dataProvider = [uid: load.configuration.dataProviderUid]
-                update = convertToJSON(update)
-                if (dr && update && resource.updateMetadata) {
-                    dr = crudService.updateDataResource(dr, update)
-                }
-                if (!dr && resource.addResource) {
-                    dr = crudService.insertDataResource(update)
-                    if (!dr) {
-                        throw new ExternalResourceException("Can't create resource", "manage.note.note01", resource.name, resource.guid)
-                    }
-                    if (dr.hasErrors()) {
-                        throw new ExternalResourceException("Created resoruce has errors", "manage.note.note02", resource.name, dr.errors)
-                    }
+                ext = dr.getExternalIdentifiers().find({
+                    it.source == adaptor.source && it.identifier == resource.guid
+                })
+                if (dr && !ext) {
                     dr.addExternalIdentifier(resource.guid, adaptor.source, resource.source)
-                    resource.uid = dr.uid
-                    resource.addNote("manage.note.note03", resource.uid)
                 }
-                if (!dr || !resource.updateConnection) {
-                    resource.phase = TaskPhase.COMPLETED
-                    return
+            }
+
+            if (!resource.updateRequired) {
+                resource.phase = (dr && !ext) ? TaskPhase.COMPLETED : TaskPhase.IGNORED
+                return
+            }
+
+            def update = adaptor.getDataset(resource.guid)
+            if (load.configuration.dataProviderUid)
+                update.dataProvider = [uid: load.configuration.dataProviderUid]
+            update = convertToJSON(update)
+            if (dr && update && resource.updateMetadata) {
+                dr = crudService.updateDataResource(dr, update)
+            }
+            if (!dr && resource.addResource) {
+                dr = crudService.insertDataResource(update)
+                if (!dr) {
+                    throw new ExternalResourceException("Can't create resource", "manage.note.note01", resource.name, resource.guid)
                 }
-
-                // See if we have any data
-                def hasData = adaptor.isDataAvailableForResource(resource.guid)
-                if (!hasData) {
-                    resource.phase = TaskPhase.EMPTY
-                    return
+                if (dr.hasErrors()) {
+                    throw new ExternalResourceException("Created resoruce has errors", "manage.note.note02", resource.name, dr.errors)
                 }
-                if (resource.phase.terminal) return // Cancelled externally
-
-                if (adaptor.isGeneratable()) {
-                    resource.phase = TaskPhase.GENERATING
-                    resource.occurrenceId = adaptor.generateData(resource.guid)
-                    if (resource.phase.terminal) return // Cancelled externally
-
-                    TaskPhase status = TaskPhase.GENERATING
-                    while (!status.terminal && !resource.phase.terminal) {
-                        status = adaptor.generateStatus(resource.occurrenceId)
-                        if (!status.terminal) {
-                            Thread.sleep(POLL_INTERVAL)
-                        }
-                    }
-                    if (resource.phase.terminal) return // Cancelled externally
-                    if (status != TaskPhase.COMPLETED) {
-                        throw new ExternalResourceException("Unable to generate occurrence data", "manage.note.note04", status)
-                    }
-                }
-
-                File uploadFileName = null
-                if (adaptor.isDownloadable()) {
-                    resource.phase = TaskPhase.DOWNLOADING
-                    File uploadDir = new File(grailsApplication.config.uploadFilePath as String)
-                    File uploadTmpDir = new File(new File(uploadDir, "tmp"), resource.occurrenceId);
-                    FileUtils.forceMkdir(uploadTmpDir)
-                    File tmpFileName = new File(uploadTmpDir, resource.occurrenceId);
-                    adaptor.downloadData(resource.occurrenceId, tmpFileName)
-                    if (resource.phase.terminal) return // Cancelled externally
-
-                    resource.phase = TaskPhase.PROCESSING
-                    String fileId = Long.toString(System.currentTimeMillis())
-                    File uploadWorkDir = new File(uploadDir, fileId)
-                    FileUtils.forceMkdir(uploadWorkDir)
-                    uploadFileName = adaptor.processData(tmpFileName, uploadWorkDir, resource)
-                    if (resource.phase.terminal) return // Cancelled externally
-                }
-
-                resource.phase = TaskPhase.CONNECITNG
-                def connection = (new JsonSlurper()).parseText(dr.connectionParameters ?: '{}')
-                update = convertToJSON(adaptor.buildConnection(uploadFileName, connection, resource))
-                crudService.updateDataResource(dr, update)
-
+                dr.addExternalIdentifier(resource.guid, adaptor.source, resource.source)
+                resource.uid = dr.uid
+                resource.addNote("manage.note.note03", resource.uid)
+            }
+            if (!dr || !resource.updateConnection) {
                 resource.phase = TaskPhase.COMPLETED
             }
         } catch (ExternalResourceException ex) {
@@ -236,6 +184,93 @@ class ExternalDataService {
             resource.addError("manage.note.note05", ex.message ?: ex.class.name)
         }
 
+    }
+
+    /**
+     * Load a single external resource
+     *
+     * @param load The load process
+     * @param resource The resource to load
+     */
+    def processResource(DataSourceLoad load, ExternalResourceBean resource) {
+        try {
+            if (resource.phase.terminal) return // Cancelled externally
+
+            Thread.sleep(100) // Allow transaction to complete
+            def adaptor = load.configuration.createAdaptor()
+            DataResource dr = null
+            DataResource.withTransaction {
+                dr = DataResource.findByUid(resource.uid)
+            }
+
+            if (!dr) {
+                throw new ExternalResourceException("Can't find resource", "manage.note.note12", resource.uid)
+            }
+
+            if (!resource.updateConnection) {
+                resource.phase = TaskPhase.COMPLETED
+                return
+            }
+
+            // See if we have any data
+            def hasData = adaptor.isDataAvailableForResource(resource.guid)
+            if (!hasData) {
+                resource.phase = TaskPhase.EMPTY
+                return
+            }
+            if (resource.phase.terminal) return // Cancelled externally
+
+            if (adaptor.isGeneratable()) {
+                resource.phase = TaskPhase.GENERATING
+                resource.occurrenceId = adaptor.generateData(resource.guid)
+                if (resource.phase.terminal) return // Cancelled externally
+
+                TaskPhase status = TaskPhase.GENERATING
+                while (!status.terminal && !resource.phase.terminal) {
+                    status = adaptor.generateStatus(resource.occurrenceId)
+                    if (!status.terminal) {
+                        Thread.sleep(POLL_INTERVAL)
+                    }
+                }
+                if (resource.phase.terminal) return // Cancelled externally
+                if (status != TaskPhase.COMPLETED) {
+                    throw new ExternalResourceException("Unable to generate occurrence data", "manage.note.note04", status)
+                }
+            }
+
+            File uploadFileName = null
+            if (adaptor.isDownloadable()) {
+                resource.phase = TaskPhase.DOWNLOADING
+                File uploadDir = new File(grailsApplication.config.uploadFilePath as String)
+                File uploadTmpDir = new File(new File(uploadDir, "tmp"), resource.occurrenceId);
+                FileUtils.forceMkdir(uploadTmpDir)
+                File tmpFileName = new File(uploadTmpDir, resource.occurrenceId);
+                adaptor.downloadData(resource.occurrenceId, tmpFileName)
+                if (resource.phase.terminal) return // Cancelled externally
+
+                resource.phase = TaskPhase.PROCESSING
+                String fileId = Long.toString(System.currentTimeMillis())
+                File uploadWorkDir = new File(uploadDir, fileId)
+                FileUtils.forceMkdir(uploadWorkDir)
+                uploadFileName = adaptor.processData(tmpFileName, uploadWorkDir, resource)
+                if (resource.phase.terminal) return // Cancelled externally
+            }
+
+            resource.phase = TaskPhase.CONNECITNG
+            def connection = (new JsonSlurper()).parseText(dr.connectionParameters ?: '{}')
+            def update = convertToJSON(adaptor.buildConnection(uploadFileName, connection, resource))
+            DataResource.withTransaction {
+                crudService.updateDataResource(dr, update)
+            }
+
+            resource.phase = TaskPhase.COMPLETED
+        } catch (ExternalResourceException ex) {
+            log.error("Unable to process resource ${resource} ${ex.class}", ex)
+            resource.addError(ex.code, ex.args)
+        } catch (Exception ex) {
+            log.error("Unable to process resource ${resource} ${ex.class}", ex)
+            resource.addError("manage.note.note05", ex.message ?: ex.class.name)
+        }
     }
 
     /**

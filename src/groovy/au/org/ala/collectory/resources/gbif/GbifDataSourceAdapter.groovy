@@ -7,7 +7,6 @@ import au.org.ala.collectory.ProviderGroup
 import au.org.ala.collectory.exception.ExternalResourceException
 import au.org.ala.collectory.resources.DataSourceAdapter
 import au.org.ala.collectory.resources.TaskPhase
-import grails.converters.JSON
 import groovy.json.JsonOutput
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
@@ -181,14 +180,14 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
                 postcode: originator.postalCode,
                 country: originator.country
         ]
-        def phone = originator?.phone?.first()
-        def email = originator?.email?.first()
+        def phone = originator?.phone ? originator.phone.first() : null
+        def email = originator?.email ? originator?.email?.first() : null
         def license = LICENSE_MAP[dataset.license]
         def recordType = TYPE_MAP[dataset.type]
-        def contentTypes = CONTENT_MAP[dataset.type]
+        def contentTypes = CONTENT_MAP[dataset.type] ?: []
         def source = dataset.doi?.replace("doi:", "http://doi.org/")
         try {
-            currency = TIMESTAMP_FORMAT.clone().parse(dataset.pubDate)
+            currency = dataset.pubDate ? TIMESTAMP_FORMAT.clone().parse(dataset.pubDate) : null
         } catch (ParseException ex) {
         }
         def resource = [
@@ -199,14 +198,14 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
                 phone: phone,
                 email: email,
                 pubDescription: dataset.description,
-                state: ProviderGroup.statesList.contains(address.state) ? address.state : null,
+                state: address?.state && ProviderGroup.statesList.contains(address.state) ? address.state : null,
                 websiteUrl: dataset.homepage,
                 rights: dataset.rights,
                 licenseType: license?.licenseType,
                 licenseVersion: license?.licenseVersion,
                 citation: dataset.citation?.identifier ? dataset.citation.identifier : dataset.citation?.text,
                 resourceType: recordType,
-                contentTypes: (contentTypes as JSON).toString(),
+                contentTypes: JsonOutput.toJson(contentTypes),
                 dataCurrency: currency,
                 lastChecked: new Date(),
                 source: source,

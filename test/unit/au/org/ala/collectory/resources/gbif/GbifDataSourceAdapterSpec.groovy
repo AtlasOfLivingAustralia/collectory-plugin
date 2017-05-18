@@ -1,7 +1,7 @@
 package au.org.ala.collectory.resources.gbif
 
 import au.org.ala.collectory.resources.DataSourceAdapter
-import au.org.ala.collectory.resources.DataSourceConfiguration
+import au.org.ala.collectory.DataSourceConfiguration
 import spock.lang.Specification
 
 /**
@@ -25,7 +25,7 @@ class GbifDataSourceAdapterSpec extends Specification {
                 country: "AU",
                 recordType: "OCCURRENCE"
         )
-        adaptor = config.create()
+        adaptor = config.createAdaptor()
     }
 
     def cleanup() {

@@ -1,6 +1,6 @@
 {
   "guid" : "1",
-  "title" : "test-1",
+  "name" : "test-1",
   "description" : "description-1",
   "adaptorClass" : "au.org.ala.collectory.resources.gbif.GbifDataSourceAdapter",
   "endpoint" : "http://api.gbif.org/v1/",

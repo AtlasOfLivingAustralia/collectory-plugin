@@ -8,7 +8,7 @@
     <r:require module="datatables"/>
 </head>
 <body>
-<h1><g:message code="manage.extloadr.title01" args="${[ dataProvider?.name ?: 'none' ]}"/></h1>
+<h1><g:message code="manage.extloadr.title01" args="${[ configuration.name, dataProvider?.name ?: 'none' ]}"/></h1>
 <div id="baseForm">
     <g:form action="updateFromExternalSources" controller="manage">
         <g:hiddenField name="loadGuid" value="${loadGuid}"/>

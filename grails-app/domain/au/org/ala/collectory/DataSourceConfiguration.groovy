@@ -1,6 +1,7 @@
 package au.org.ala.collectory
 
 import au.org.ala.collectory.resources.DataSourceAdapter
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 /**
  * Configuration details for a data source.
@@ -10,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
  * @copyright Copyright (c) 2017 CSIRO
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(['adaptorString', 'id', 'errors', 'version', '$changedProperties', 'dirtyPropertyNames', 'properties', 'dirty', 'attached'])
 class DataSourceConfiguration {
     static mapWith = 'none'
     static hasMany = [resources: ExternalResourceBean]
@@ -36,7 +38,7 @@ class DataSourceConfiguration {
      *
      * @return An initalised adaptor
      */
-    DataSourceAdapter create() {
+    DataSourceAdapter createAdaptor() {
         return adaptorClass.newInstance(this)
     }
 

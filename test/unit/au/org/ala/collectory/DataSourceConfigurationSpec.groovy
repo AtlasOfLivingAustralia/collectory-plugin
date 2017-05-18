@@ -1,11 +1,9 @@
-package au.org.ala.collectory.resources
+package au.org.ala.collectory
 
-import au.org.ala.collectory.DataSourceConfiguration
 import au.org.ala.collectory.resources.gbif.GbifDataSourceAdapter
-import au.org.ala.util.TestUtil
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import jline.internal.InputStreamReader
+import grails.test.mixin.TestFor
 import spock.lang.Specification
 /**
  * Test cases for {@link DataSourceConfiguration}.
@@ -17,7 +15,8 @@ import spock.lang.Specification
  *
  * @copyright Copyright (c) 2017 CSIRO
  */
-class DataSourceConfigurationSpec extends Specification implements TestUtil {
+@TestFor(DataSourceConfiguration)
+class DataSourceConfigurationSpec extends Specification {
     ObjectMapper mapper
 
     def setup() {
@@ -26,6 +25,18 @@ class DataSourceConfigurationSpec extends Specification implements TestUtil {
     }
 
     def cleanup() {
+    }
+
+    def resourceAsString(String resource) {
+        def reader = new InputStreamReader(this.class.getResourceAsStream(resource))
+        def writer = new StringWriter()
+        def buffer = new char[1024]
+        def n
+        while ((n = reader.read(buffer)) >= 0) {
+            writer.write(buffer, 0, n)
+            Thread.yield()
+        }
+        return writer.toString()
     }
 
     def readConfig(String config) {
@@ -82,9 +93,9 @@ class DataSourceConfigurationSpec extends Specification implements TestUtil {
     def "test create 1"() {
         when:
         def config = readConfig("config2.json")
-        def adapter = config.create()
+        def adapter = config.createAdaptor()
         then:
-        adapter!= null
+        adapter != null
         adapter instanceof GbifDataSourceAdapter
     }
 

@@ -9,7 +9,7 @@ import jline.internal.InputStreamReader
  *
  * @copyright Copyright (c) 2017 CSIRO
  */
-trait TestUtil {
+class TestUtil {
     /**
      * Read a resource file into a string
      *
