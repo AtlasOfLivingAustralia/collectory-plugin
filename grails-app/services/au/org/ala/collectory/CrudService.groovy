@@ -4,7 +4,6 @@ import org.codehaus.groovy.grails.web.json.JSONArray
 import grails.converters.JSON
 
 import grails.web.JSONBuilder
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import java.text.SimpleDateFormat
 import org.codehaus.groovy.grails.web.json.JSONObject
@@ -107,7 +106,7 @@ class CrudService {
                     caption = p.imageRef?.caption
                     copyright = p.imageRef?.copyright
                     attribution = p.imageRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/dataProvider/" + p.imageRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/dataProvider/" + p.imageRef.file
                 }
             }
             if (p.logoRef?.file) {
@@ -116,7 +115,7 @@ class CrudService {
                     caption = p.logoRef?.caption
                     copyright = p.logoRef?.copyright
                     attribution = p.logoRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/dataProvider/" + p.logoRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/dataProvider/" + p.logoRef.file
                 }
             }
             use (OutputFormat) {
@@ -130,6 +129,9 @@ class CrudService {
                 dataResources = p.resources.briefEntity()
                 if (p.listConsumers()) {
                     linkedRecordConsumers = p.listConsumers().formatEntitiesFromUids()
+                }
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }
                 if (p.hiddenJSON) {
                     hiddenJSON = p.hiddenJSON.formatJSON()
@@ -164,6 +166,7 @@ class CrudService {
     private void updateDataProviderProperties(DataProvider dp, obj) {
         convertJSONToString(obj, dataProviderJSONArrays)
         dp.properties[dataProviderStringProperties] = obj
+        updateExternalIdentifiers(dp, obj)
     }
 
     /* data hub */
@@ -205,7 +208,7 @@ class CrudService {
                     caption = p.imageRef?.caption
                     copyright = p.imageRef?.copyright
                     attribution = p.imageRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/dataHub/" + p.imageRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/dataHub/" + p.imageRef.file
                 }
             }
             if (p.logoRef?.file) {
@@ -214,7 +217,7 @@ class CrudService {
                     caption = p.logoRef?.caption
                     copyright = p.logoRef?.copyright
                     attribution = p.logoRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/dataHub/" + p.logoRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/dataHub/" + p.logoRef.file
                 }
             }
             use (OutputFormat) {
@@ -223,6 +226,9 @@ class CrudService {
                 dateCreated = p.dateCreated
                 lastUpdated = p.lastUpdated
                 userLastModified = p.userLastModified
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
+                }
             }
             // hub specific
             members = p.listMembers()
@@ -256,6 +262,7 @@ class CrudService {
     def updateDataHubProperties(dh, obj){
         dh.properties[dataHubStringProperties] = obj
         dh.properties[dataHubNumberProperties] = obj
+        updateExternalIdentifiers(dh, obj)
     }
 
     /* data resource */
@@ -297,7 +304,7 @@ class CrudService {
                     caption = p.imageRef?.caption
                     copyright = p.imageRef?.copyright
                     attribution = p.imageRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/dataResource/" + p.imageRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/dataResource/" + p.imageRef.file
                 }
             }
             if (p.logoRef?.file) {
@@ -306,7 +313,7 @@ class CrudService {
                     caption = p.logoRef?.caption
                     copyright = p.logoRef?.copyright
                     attribution = p.logoRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/dataResource/" + p.logoRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/dataResource/" + p.logoRef.file
                 }
             }
             use (OutputFormat) {
@@ -358,8 +365,12 @@ class CrudService {
                 publicArchiveAvailable = p.publicArchiveAvailable
                 publicArchiveUrl = grailsApplication.config.resource.publicArchive.url.template.replaceAll('@UID@',p.uid)
                 downloadLimit = p.downloadLimit
+                gbifDataset = p.gbifDataset
                 verified = p.isVerified()
                 gbifRegistryKey = p.gbifRegistryKey
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
+                }
             }
         }
         return result
@@ -417,6 +428,7 @@ class CrudService {
                 dr.institution = ins
             }
         }
+        updateExternalIdentifiers(dr, obj)
     }
 
     /* temp data resource */
@@ -517,7 +529,7 @@ class CrudService {
                     caption = p.imageRef?.caption
                     copyright = p.imageRef?.copyright
                     attribution = p.imageRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/institution/" + p.imageRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/institution/" + p.imageRef.file
                 }
             }
             if (p.logoRef?.file) {
@@ -526,7 +538,7 @@ class CrudService {
                     caption = p.logoRef?.caption
                     copyright = p.logoRef?.copyright
                     attribution = p.logoRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/institution/" + p.logoRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/institution/" + p.logoRef.file
                 }
             }
             use (OutputFormat) {
@@ -546,6 +558,9 @@ class CrudService {
                     linkedRecordProviders = p.listProviders().formatEntitiesFromUids()
                 }
                 gbifRegistryKey = p.gbifRegistryKey
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
+                }
             }
         }
         return result
@@ -574,6 +589,7 @@ class CrudService {
 
     private void updateInstitutionProperties(Institution inst, obj) {
         inst.properties[institutionStringProperties] = obj
+        updateExternalIdentifiers(inst, obj)
     }
 
     /* collection */
@@ -624,7 +640,7 @@ class CrudService {
                     caption = p.imageRef?.caption
                     copyright = p.imageRef?.copyright
                     attribution = p.imageRef?.attribution
-                    uri = ConfigurationHolder.config.grails.serverURL + "/data/collection/" + p.imageRef.file
+                    uri = grailsApplication.config.grails.serverURL + "/data/collection/" + p.imageRef.file
                 }
             }
             use (OutputFormat) {
@@ -681,6 +697,9 @@ class CrudService {
                     linkedRecordProviders = p.listProviders().formatEntitiesFromUids()
                 }
                 gbifRegistryKey = p.gbifRegistryKey
+                if (p.externalIdentifiers) {
+                    externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
+                }
             }
         }
         return result
@@ -777,6 +796,7 @@ class CrudService {
             }
             co.providerMap = pm
         }
+        updateExternalIdentifiers(co, obj)
     }
 
     private void updateBaseProperties(pg, obj) {
@@ -797,6 +817,45 @@ class CrudService {
             }
         }
     }
+
+    /**
+     * Update the list of external identifiers, if supplied.
+     * <p>
+     * Identifiers are merged, based on source and identifier.
+     * Note that this needs to be done <em>after</em> the resource has got a uid.
+     *
+     * @param pg The provider group object
+     * @param obj The new object
+     */
+    private void updateExternalIdentifiers(pg, obj) {
+        if (obj["externalIdentifiers"]) {
+            def update = obj.externalIdentifiers.collect { ext ->
+                def source = ext["source"]
+                def identifier = ext["identifier"]
+                source && identifier ? new ExternalIdentifier(entityUid: pg.uid, source: source, identifier: identifier, uri: ext["uri"]) : null
+            }
+            def existing = pg.externalIdentifiers
+            update.each { ext ->
+                if (ext) {
+                    def old = existing.find { it.same(ext) }
+                    if (old) {
+                        old.uri = ext.uri
+                        existing.remove(old)
+                        old.save(flush: true)
+                        log.debug "Updating old identifier ${old.source} ${old.identifier} ${old.uri}"
+                    } else {
+                        ext.save(flush: true)
+                        log.debug "Adding new identifier ${ext.source} ${ext.identifier} ${ext.uri}"
+                    }
+                }
+            }
+            existing.each { old ->
+                old.delete(flush: true)
+                log.debug "Deleting old identifier ${old.source} ${old.identifier} ${old.uri}"
+            }
+        }
+    }
+
 //
 //    /**
 //     * We don't want to create objects in the target if there is no data for them.
@@ -844,7 +903,8 @@ class CrudService {
 
     def updateBooleans(pg, obj, properties) {
         properties.each {
-            pg."${it}" = (obj."${it}"?:"false").toBoolean()
+            if (obj.has(it))
+                pg."${it}" = obj."${it}".toBoolean()
         }
     }
 
@@ -936,19 +996,19 @@ class OutputFormat {
             switch (it) {
                 case 'CHAFC':
                     result << [name: 'Council of Heads of Australian Faunal Collections', acronym: it,
-                            logo: ConfigurationHolder.config.grails.serverURL + "/data/network/CHAFC_sm.jpg"]
+                            logo: grailsApplication.config.grails.serverURL + "/data/network/CHAFC_sm.jpg"]
                     break
                 case 'CHAEC':
                     result << [name: 'Council of Heads of Australian Entomological Collections', acronym: it,
-                            logo: ConfigurationHolder.config.grails.serverURL + "/data/network/chaec-logo.png"]
+                            logo: grailsApplication.config.grails.serverURL + "/data/network/chaec-logo.png"]
                     break
                 case 'CHAH':
                     result << [name: 'Council of Heads of Australasian Herbaria', acronym: it,
-                            logo: ConfigurationHolder.config.grails.serverURL + "/data/network/CHAH_logo_col_70px_white.gif"]
+                            logo: grailsApplication.config.grails.serverURL + "/data/network/CHAH_logo_col_70px_white.gif"]
                     break
                 case 'CHACM':
                     result << [name: 'Council of Heads of Australian Collections of Microorganisms', acronym: it,
-                            logo: ConfigurationHolder.config.grails.serverURL + "/data/network/chacm.png"]
+                            logo: grailsApplication.config.grails.serverURL + "/data/network/chacm.png"]
                     break
                 default:
                     result << "did not match"
@@ -956,6 +1016,10 @@ class OutputFormat {
             }
         }
         return result
+    }
+
+    static def formatExternalIdentifiers(externalIdentifiers) {
+        return externalIdentifiers.collect { [source: it.source, identifier: it.identifier, uri: it.uri ] }
     }
 
 }

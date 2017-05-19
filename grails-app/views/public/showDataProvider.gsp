@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" import="org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.collectory.DataProvider" %>
+<%@ page contentType="text/html;charset=UTF-8" import="au.org.ala.collectory.DataProvider" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -184,7 +184,11 @@
                         </g:if>
                     </div>
                 </g:if>
-            </div>
+
+            <!-- external identifiers -->
+                <g:render template="externalIdentifiers" model="[instance:instance]"/>
+
+        </div>
         </div><!--close column-two-->
     </div>
 </div><!--close content-->

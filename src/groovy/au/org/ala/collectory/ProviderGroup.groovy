@@ -15,8 +15,8 @@
 
 package au.org.ala.collectory
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import grails.converters.JSON
+import grails.util.Holders
 
 /**
  *  Base class for an organisational group in the collectory, such as an
@@ -279,6 +279,46 @@ abstract class ProviderGroup implements Serializable {
      */
     void deleteFromContacts(Contact contact) {
         ContactFor.findByEntityUidAndContact(uid, contact)?.delete()
+    }
+
+    /**
+     * Add an external identifier to this object
+     *
+     * @param identifier The identifier
+     * @param source The identifier source (eg. 'GBIF')
+     * @param link A link to the oreiginal source
+     * @return
+     */
+    ExternalIdentifier addExternalIdentifier(String identifier, String source, String link) {
+        ExternalIdentifier ext = new ExternalIdentifier(entityUid: uid, identifier: identifier, source: source, uri: link)
+
+        ext.save(flush: true)
+        if (ext.hasErrors()) {
+            ext.errors.each { println it.toString() }
+        }
+        return ext
+    }
+
+    /**
+     * Get the external identifiers associated with this entity
+     *
+     * @return The external identifiers
+     */
+    List<ExternalIdentifier> getExternalIdentifiers() {
+        if (id != null) {
+            return ExternalIdentifier.findAllByEntityUid(uid)
+        } else {
+            return []
+        }
+    }
+
+    /**
+     * Remove an external identifier
+     *
+     * @param identifier
+     */
+    void deleteExternalIdentifier(ExternalIdentifier identifier) {
+        ExternalIdentifier.findByEntityUidAndIdentifierAndSource(uid, identifier.identifier, identifier.source)?.delete()
     }
 
     /**
@@ -641,7 +681,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     String buildUri() {
-        return ConfigurationHolder.config.grails.serverURL + "/ws/" + urlForm() + "/" + uid
+        return Holders.config.grails.serverURL + "/ws/" + urlForm() + "/" + uid
     }
 
     /**
@@ -649,7 +689,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     String buildPublicUrl() {
-        return ConfigurationHolder.config.grails.serverURL + "/public/show/" + uid
+        return Holders.config.grails.serverURL + "/public/show/" + uid
     }
 
     /**
@@ -657,8 +697,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     def buildLogoUrl() {
-        return logoRef?.file ?
-            ConfigurationHolder.config.grails.serverURL + "/data/" + urlForm() + "/" + logoRef.file :
+        return logoRef?.file ? Holders.config.grails.serverURL + "/data/" + urlForm() + "/" + logoRef.file :
             ""
     }
 

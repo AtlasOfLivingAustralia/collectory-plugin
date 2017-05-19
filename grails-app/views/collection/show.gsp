@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.collectory.ProviderGroup; org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.collectory.Collection" %>
+<%@ page import="au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.Collection" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -189,7 +189,7 @@
       </g:if>
 
       <g:if test="${fieldValue(bean: instance, field: 'numRecordsDigitised') != '-1'}">
-        <p><g:message code="collection.show.des10" args="[fieldValue(bean: instance, field: "numRecordsDigitised")]" />.
+        <p><g:message code="collection.show.des10" args="[fieldValue(bean: instance, field: 'numRecordsDigitised')]" />.
         <g:message code="collection.show.des11" /> <cl:percentIfKnown dividend='${instance.numRecordsDigitised}' divisor='${instance.numRecords}' /> <g:message code="collection.show.des12" />.</p>
       </g:if>
 
@@ -246,6 +246,10 @@
     <!-- taxonomy hints -->
     <g:render template="/shared/taxonomyHints" model="[instance: instance]"/>
 
+    <!-- external identifiers -->
+    <g:render template="/shared/externalIdentifiers" model="[instance: instance]"/>
+
+
     <!-- change history -->
     <g:render template="/shared/changes" model="[changes: changes, instance: instance]"/>
 
@@ -275,7 +279,7 @@
 \************************************************************/
 function onLoadCallback() {
   // summary biocache data
-  var biocacheRecordsUrl = "${ConfigurationHolder.config.grails.context}/public/biocacheRecords.json?uid=${instance.uid}";
+  var biocacheRecordsUrl = "${grailsApplication.config.grails.context}/public/biocacheRecords.json?uid=${instance.uid}";
   $.get(biocacheRecordsUrl, {}, biocacheRecordsHandler);
 }
 /************************************************************\

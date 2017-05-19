@@ -316,6 +316,9 @@
               <!-- taxonomy hints -->
               <g:render template="/shared/taxonomyHints" model="[instance: instance]"/>
 
+              <!-- external identifiers -->
+              <g:render template="/shared/externalIdentifiers" model="[instance: instance]"/>
+
               <!-- change history -->
               <g:render template="/shared/changes" model="[changes: changes, instance: instance]"/>
 

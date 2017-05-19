@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.collectory.CollectionLocation" %>
+<%@ page import="au.org.ala.collectory.CollectionLocation" %>
 <html>
     <head>
         <!-- this is not the current version - use map3 -->
@@ -18,7 +18,7 @@
     <div id="content">
       <div id="header">
         <!--Breadcrumbs-->
-        <div id="breadcrumb"><a href="${grailsApplication.config.ala.baseURL}"><g:message code="public.map.breadcrumb.home" /></a> <a href="${ConfigurationHolder.config.ala.baseURL}/explore/"><g:message code="public.map.breadcrumb.explore" /></a><span class="current"><g:message code="public.map.breadcrumb.des" /></span></div>
+        <div id="breadcrumb"><a href="${grailsApplication.config.ala.baseURL}"><g:message code="public.map.breadcrumb.home" /></a> <a href="${grailsApplication.config.ala.baseURL}/explore/"><g:message code="public.map.breadcrumb.explore" /></a><span class="current"><g:message code="public.map.breadcrumb.des" /></span></div>
         <div class="section full-width">
           <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>

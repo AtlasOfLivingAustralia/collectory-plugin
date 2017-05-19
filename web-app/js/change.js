@@ -53,7 +53,7 @@ var validator = {
             var isUnique = true;
             // make a synchronous call to check existence of the name
             $.ajax({
-                url: "${ConfigurationHolder.config.grails.serverURL}/collection/nameExists?name=" + o.val(),
+                url: "${grailsApplication.config.grails.serverURL}/collection/nameExists?name=" + o.val(),
                 dataType: 'json',
                 async: false,
                 success: function(data) {

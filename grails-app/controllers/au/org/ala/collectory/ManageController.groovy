@@ -1,11 +1,14 @@
 package au.org.ala.collectory
 
-import groovy.json.JsonSlurper
-import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
+import au.org.ala.audit.AuditLogEvent
+import au.org.ala.collectory.resources.DataSourceLoad
+import au.org.ala.collectory.resources.gbif.GbifDataSourceAdapter
 
 class ManageController {
 
-    def collectoryAuthService, gbifService
+    def collectoryAuthService
+    def externalDataService
+    def gbifService
 
     /**
      * Landing page for self-service management of entities.
@@ -26,34 +29,64 @@ class ManageController {
     /**
      * Renders the view that allows a user to load all the gbif resources for a country
      */
-    def gbifLoadCountry = {
-        //get country list
-        render(view: "gbifLoadCountry", model: ['pubMap': gbifService.getPublishingCountriesMap()])
+    def loadExternalResources = {
+        DataSourceConfiguration configuration = new DataSourceConfiguration(
+                guid: UUID.randomUUID().toString(),
+                name: '',
+                description: '',
+                adaptorClass: GbifDataSourceAdapter.class,
+                endpoint: new URL(grailsApplication.config.gbifApiUrl + '/'),
+                username: '',
+                password: '',
+                country: Locale.default.getCountry(),
+                recordType: 'OCCURRENCE',
+                defaultDatasetValues: [:],
+                keyTerms: [],
+                resources: []
+        )
+        def adaptor = configuration.createAdaptor()
+        render(view: "externalLoad",
+               model: [
+                    configuration: configuration,
+                    countryMap: adaptor.countryMap,
+                    datasetTypeMap: adaptor.datasetTypeMap,
+                    adaptors: externalDataService.ADAPTORMAP,
+                    dataProviders: DataProvider.all.sort { it.name }
+                ]
+        )
     }
 
     /**
-     * Submits the task required to load the GBIF resources for a country
-     * country - the country to load
-     * gbifUsername - the username used to instantiate a download
-     * gbifPassword - the password for the supplied gbif user
-     * @return
+     * Search for resources that may be loaded from an external source
      */
-    def loadAllGbifForCountry(){
-        log.debug("Loading resources from GBIF: " + params)
-        if(params.gbifUsername && params.gbifPassword){
-            Boolean reloadExistingResources = false
-            if (params.reloadExistingResources) {
-                reloadExistingResources = true
-            }
-            Integer maxResources = params.maxResources ? params.getInt("maxResources") : null
-            gbifService.loadResourcesFor(
-                    params.country,
-                    params.gbifUsername,
-                    params.gbifPassword,
-                    maxResources,
-                    reloadExistingResources)
-            redirect(action: 'gbifCountryLoadStatus', params: [country:params.country])
-        }
+    def searchForResources() {
+        log.debug "Searching for resources from external source: ${params}"
+        DataSourceConfiguration configuration = new DataSourceConfiguration(params)
+        def dataResources = DataResource.all.findAll({ dr -> dr.resourceType == 'records' }).sort({ it.name })
+        def resources = externalDataService.searchForDatasets(configuration)
+        configuration.resources = resources
+        def dataProvider = DataProvider.findByUid(configuration.dataProviderUid)
+        render(view: 'externalLoadReview',
+               model: [
+                       loadGuid: UUID.randomUUID().toString(),
+                       dataResources: dataResources,
+                       dataProvider: dataProvider,
+                       configuration: configuration,
+               ]
+        )
+    }
+
+    /**
+     * Update from an externbal source
+     * <p>
+     * The web pade
+     */
+    def updateFromExternalSources() {
+        log.debug "Update resources from external source: ${params}"
+        DataSourceConfiguration configuration = new DataSourceConfiguration(params)
+        externalDataService.updateFromExternalSources(configuration, params.loadGuid)
+        redirect(action: 'externalLoadStatus', params: [loadGuid: params.loadGuid])
+
     }
 
     /**
@@ -106,6 +139,16 @@ class ManageController {
     }
 
     /**
+     *
+     * Display the load status for the supplied load
+     */
+    def externalLoadStatus(){
+        DataSourceLoad load = externalDataService.getStatusInfoFor(params.loadGuid)
+        DataSourceConfiguration configuration = load?.configuration
+        [configuration: configuration, load :load, refreshInterval: externalDataService.POLL_INTERVAL]
+    }
+
+    /**
      * Landing page for self-service management of entities.
      * 
      * @param show = user will display user login/cookie/roles details
@@ -137,4 +180,6 @@ class ManageController {
         // get audit records
         return AuditLogEvent.findAllByUri(uid,[sort:'lastUpdated',order:'desc',max:20])
     }
+
+
 }

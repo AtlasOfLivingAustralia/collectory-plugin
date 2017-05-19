@@ -1,7 +1,6 @@
 package au.org.ala.collectory
 import grails.converters.JSON
 import groovy.xml.MarkupBuilder
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 import org.xml.sax.SAXException
 
@@ -13,7 +12,7 @@ import java.text.SimpleDateFormat
 
 class DataController {
 
-    def crudService, emlRenderService, collectoryAuthService, metadataService
+    def crudService, emlRenderService, collectoryAuthService, metadataService, grailsApplication
 
     /** make sure that uid params point to an existing entity and json is parsable **/
     def beforeInterceptor = this.&check
@@ -476,7 +475,7 @@ class DataController {
      *
      */
     def delete = {
-        if (ConfigurationHolder.config.deletesForbidden) {
+        if (grailsApplication.config.deletesForbidden) {
             render(status:405, text:'delete is currently unavailable')
             return
         }
@@ -638,7 +637,7 @@ class DataController {
         return new LinkedHashMap(
             [contact: buildContactModel(cf.contact), role: cf.role, primaryContact: cf.primaryContact,
                     editor: cf.administrator, notify: cf.notify, dateCreated: cf.dateCreated, lastUpdated: cf.dateLastModified,
-                    uri: "${ConfigurationHolder.config.grails.serverURL}/ws/${urlContext}/${cf.entityUid}/contacts/${cf.id}"])
+                    uri: "${grailsApplication.config.grails.serverURL}/ws/${urlContext}/${cf.entityUid}/contacts/${cf.id}"])
     }
 
     /**
@@ -806,7 +805,7 @@ class DataController {
             map.contactName = it.primaryContact?.contact?.buildName() ?: ""
             map.contactEmail = it.primaryContact?.contact?.email ?: ""
             map.contactPhone = it.primaryContact?.contact?.phone ?: ""
-            map.uri = it.primaryContact ? "${ConfigurationHolder.config.grails.serverURL}/ws/${ProviderGroup.urlFormFromUid(it.uid)}/${it.uid}/contacts/${it.primaryContact?.id}" : ''
+            map.uri = it.primaryContact ? "${grailsApplication.config.grails.serverURL}/ws/${ProviderGroup.urlFormFromUid(it.uid)}/${it.uid}/contacts/${it.primaryContact?.id}" : ''
 
             return map
         }

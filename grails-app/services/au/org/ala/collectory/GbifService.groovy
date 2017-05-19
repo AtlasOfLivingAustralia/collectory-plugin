@@ -3,9 +3,6 @@ package au.org.ala.collectory
 import grails.converters.JSON
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import groovyx.net.http.ContentType
-import groovyx.net.http.HTTPBuilder
-import groovyx.net.http.Method
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 import org.apache.http.HttpException
@@ -27,14 +24,10 @@ import org.apache.http.protocol.HTTP
 import org.apache.http.protocol.HttpContext
 import org.apache.tools.zip.ZipFile
 import org.codehaus.groovy.grails.web.json.JSONObject
-import org.springframework.web.multipart.MultipartFile
 
-import java.sql.Timestamp
 import java.text.MessageFormat
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
 /**
  * Services required to auto-load GBIF data into the collectory.
  *
@@ -43,7 +36,9 @@ import java.util.zip.ZipOutputStream
 class GbifService {
 
     def grailsApplication
+    def crudService
 
+    static final POLL_INTERVAL = 15000
     static final String CITATION_FILE = "citations.txt"
     static final String RIGHTS_FILE = "rights.txt"
     static final String EML_DIRECTORY = "dataset"
@@ -54,7 +49,6 @@ class GbifService {
     static final String DATASET_SEARCH = "/dataset/search?publishingCountry={0}&type=OCCURRENCE" //GET request to this
     static final String DATASET_RECORD_COUNT = "/occurrence/count?datasetKey={0}"
 
-    def crudService
     def CONCURRENT_LOADS = 3
     def DOWNLOAD_LIMIT = 50
 
@@ -63,208 +57,16 @@ class GbifService {
     def loadMap = [:]
     def stopStatus = ["CANCELLED", "FAILED", "KILLED", "SUCCEEDED", "UNKNOWN"]
 
-    def getPublishingCountriesMap(){
-        def js = new JsonSlurper()
-        def jsonText = new URL(grailsApplication.config.gbifApiUrl + "/node/country").text
-        def isoCodeList = js.parseText(jsonText)
-        //intersect with iso names
-        def isoMap = [:]
-        this.class.classLoader.getResourceAsStream("isoCodes.csv").readLines().each{
-            def codeAndName = it.split("\t")
-            isoMap.put(codeAndName[0], codeAndName[1])
-        }
-        def pubMap = [:]
-        isoCodeList.each {
-            def name = isoMap.get(it)
-            pubMap.put(it, name)
-        }
-        pubMap
-    }
 
     /**
-     * Returns the status information for the supplied country
-     * @param country
+     * Returns the status information for a specific losd
+     *
+     * @param guid The load guid
+     *
      * @return
      */
     def getStatusInfoFor(String country){
-        return loadMap[(country.toUpperCase())]
-    }
-
-    /**
-     * Loads all or a limited number of datasets for the supplied country
-     *
-     * @param country A GBIF country
-     * @param username A registered GBIF username
-     * @param password The password for the registered GBIF user
-     * @param limit null when all datasets should be load OR the number of datasets to load
-     * @return A GBIFLoadSummary that should be used to display details - which will need to be updated
-     */
-    def loadResourcesFor(String country, final String username, final String password, Integer limit, Boolean reloadExisting) {
-        country = country.toUpperCase()
-        final GBIFLoadSummary gls = new GBIFLoadSummary()
-        //check to see if a load is already running. We can only have one at a time
-        if (!loading){
-            loading = true
-            //get a list of loads that need to be performed
-            List<GBIFActiveLoad> loadList = getListOfGbifResources(country, limit)
-
-            if(loadList){
-                //gls.total = loadList.size()
-                gls.startTime = new Date()
-                gls.country = country
-                gls.loads = loadList
-                loadMap[(country)] = gls
-                //at this point we need to return to the user and perform remaining tasks asynchronously
-                pool.submit(new Runnable(){
-                    public void run(){
-                        def defer = { c -> pool.submit(c as Callable) }
-                        gls.loads.each { l ->
-                            defer {
-
-                                Boolean skipReload = false
-                                def existingDataResource = DataResource.findByGuid(l.gbifResourceUid)
-                                if(!reloadExisting){
-                                    log.info("Reload existing resources set to false. Checking for " + l.gbifResourceUid)
-                                    if(existingDataResource){
-                                        skipReload = true
-                                    }
-                                }
-
-                                // is data available
-                                if(!isDataAvailableForResource(l.gbifResourceUid)){
-                                    l.phase = "Data is currently not available for this resource through GBIF"
-                                    loading = false
-                                    l.setCompleted()
-                                    return null
-                                }
-
-                                if(skipReload){
-                                    l.phase = "Resource is already loaded. To reload check the reload existing resource checkbox"
-                                    loading = false
-                                    l.dataResourceUid = existingDataResource.uid
-                                    l.setCompleted()
-                                    return null
-
-                                } else {
-
-                                    log.info("Submitting " + l + " to be processed")
-                                    //1) Start the download
-                                    String downloadId = startGBIFDownload(l.gbifResourceUid, username, password)
-                                    if (downloadId) {
-                                        l.downloadId = downloadId
-                                        //2) Monitor the download
-                                        l.phase = "Generating Download..."
-                                        String status = ""
-                                        while (!stopStatus.contains(status)) {
-                                            //sleep for 30 seconds between checks.
-                                            Thread.sleep(3000)
-                                            status = getDownloadStatus(l.downloadId, username, password)
-                                        }
-                                        log.debug("Download status: " + status)
-                                        //3) if the status was "SUCCEEDED" then starts the download
-                                        if (status == "SUCCEEDED") {
-                                            l.phase = "Downloading..."
-                                            File localTmpDir = new File(grailsApplication.config.uploadFilePath + File.separator + "tmp" + File.separator + l.downloadId)
-                                            FileUtils.forceMkdir(localTmpDir)
-                                            String tmpFileName = localTmpDir.getAbsolutePath() + File.separator + l.downloadId
-
-                                            // https://github.com/AtlasOfLivingAustralia/collectory-plugin/issues/53
-                                            InputStream instream = new URL(grailsApplication.config.gbifApiUrl + OCCURRENCE_DOWNLOAD +
-                                                    "/" + l.downloadId + ".zip").openStream();
-                                            FileOutputStream outstream = new FileOutputStream(tmpFileName);
-                                            try {
-                                                IOUtils.copy(instream, outstream);
-                                            } catch (Exception e) {
-                                                l.phase = "Failed To download from GBIF."
-                                                loading = false;
-                                                return null;
-
-                                            } finally {
-                                                IOUtils.closeQuietly(instream);
-                                                IOUtils.closeQuietly(outstream);
-                                            }
-
-                                            //4) Now create the data resource using the file downloaded
-                                            l.phase = "Creating GBIF Data resource..."
-                                            def dr = createOrUpdateGBIFResource(new File(tmpFileName))
-                                            l.phase = "GBIF Data resource created..."
-                                            if (dr && existingDataResource) {
-                                                l.dataResourceUid = dr.uid
-                                                l.phase = "Data Resource Updated"
-                                            } else if(dr){
-                                                l.dataResourceUid = dr.uid
-                                                l.phase = "Data Resource Created"
-                                            } else {
-                                                l.phase = "Data Resource Creation Failed."
-                                            }
-                                        } else {
-                                            l.phase = "Download Failed: " + status
-                                        }
-                                        //Thread.sleep(5000)
-                                        l.setCompleted()
-                                        //l.dataResourceUid="dr123"
-                                        //check to see if all the items have finished loading
-                                        log.debug("Is load still running : " + gls.isLoadRunning())
-                                        loading = gls.isLoadRunning()
-                                        if (!loading) {
-                                            gls.finishTime = new Date()
-                                        }
-                                    } else {
-                                        l.phase = "Failed. Please check your authentication credentials are valid."
-                                        loading = false
-                                        return null
-                                    }
-                                }
-                            }
-                        }
-                    }
-                })
-                return gls
-            } else {
-                loading = false
-                return gls
-            }
-        }
-    }
-
-    /**
-     * Queries the GBIF search API for the list of datasets to load
-     * @param country The country for the datasets
-     * @param userLimit The user supplied limit on the number of datasets
-     * @return
-     */
-    def getListOfGbifResources(String country, Integer userLimit){
-        country = country.toUpperCase()
-        //first get a request so we know how many we are dealing with
-        log.debug(DATASET_SEARCH + " " + country)
-        String url = grailsApplication.config.gbifApiUrl + MessageFormat.format(DATASET_SEARCH, country)
-        JSONObject countJson = getJSONWS(url + "&limit=1")
-        log.debug("Search URL: " + url);
-        if (countJson){
-            def total = countJson.getInt("count")
-            def limit = (userLimit == null || userLimit > total) ? total : userLimit
-            log.debug("We will create " + limit + " data resources for the supplied country " + country)
-            int i = 0
-            def list = []
-            while(i < limit){
-                def newLimit = userLimit && userLimit > DOWNLOAD_LIMIT ? userLimit-i:limit
-                def locallimit = newLimit < DOWNLOAD_LIMIT ? newLimit : DOWNLOAD_LIMIT
-                JSONObject pageObject = getJSONWS(url + "&limit=" + locallimit + "&offset=" + i)
-                log.debug(pageObject.get("results").getClass())
-                pageObject.get("results").each {result ->
-                    GBIFActiveLoad gal = new GBIFActiveLoad()
-                    gal.gbifResourceUid = result.get("key")
-                    gal.name = result.get("title")
-                    list << gal
-                    i += 1
-                }
-            }
-            log.debug("Finished collecting list " + list.size)
-            return list
-        } else {
-            loading = false
-            return null
-        }
+        return loadMap[country]
     }
 
     /**
@@ -449,26 +251,6 @@ class GbifService {
             return slurper.parseText(respText)
         } else {
             return null
-        }
-    }
-
-    /**
-     * Uses a HTTP "GET" to return the JSON output of the supplied url
-     * @param url
-     * @return
-     */
-    def getJSONWS(String url){
-        def http = new HTTPBuilder(url)
-        http.request(Method.GET, ContentType.JSON){
-            response.success = { resp, json ->
-                log.debug("[getJSONWS] SUCCESS: " + resp)
-                log.debug(json)
-                return json
-            }
-            response.failure ={ resp ->
-                log.debug("[getJSONWS] FAILURE: " + resp)
-                return null
-            }
         }
     }
 
@@ -710,5 +492,4 @@ class GbifService {
     def getDatasetKeyStatusInfoFor(String datasetKey){
         return loadMap[datasetKey]
     }
-
 }

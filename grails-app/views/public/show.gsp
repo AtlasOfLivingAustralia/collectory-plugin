@@ -1,4 +1,4 @@
-<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder; java.text.DecimalFormat; au.org.ala.collectory.Collection; au.org.ala.collectory.Institution" %>
+<%@ page import="java.text.DecimalFormat; au.org.ala.collectory.Collection; au.org.ala.collectory.Institution" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -251,6 +251,10 @@
                       </ul>
                     </div>
                   </g:if>
+
+               <!-- external identifiers -->
+                   <g:render template="externalIdentifiers" model="[instance:instance]"/>
+
                </div>
             </div>
             <div id="recordsTab" class="tab-pane">

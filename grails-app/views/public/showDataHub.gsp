@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" import="org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.collectory.DataHub"%>
+<%@ page contentType="text/html;charset=UTF-8" import="au.org.ala.collectory.DataHub"%>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />

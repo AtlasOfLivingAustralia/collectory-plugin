@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.collectory.Contact; org.codehaus.groovy.grails.commons.ConfigurationHolder; au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.Collection" %>
+<%@ page import="au.org.ala.collectory.Contact; au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.Collection" %>
 <html>
     <head>
         <title><g:message code="manage.show.title" /></title>
@@ -248,7 +248,7 @@
                         <p class="mainText"><g:message code="manage.list.addtools.des14" /></p>
                     </div>
                     <div class="homeCell">
-                        <g:link class="mainLink" controller="manage" action="gbifLoadCountry"><g:message code="manage.list.addtools.addgbif" /></g:link>
+                        <g:link class="mainLink" controller="manage" action="loadExternalResources"><g:message code="manage.list.addtools.addexternal" /></g:link>
                         <p class="mainText"r><g:message code="manage.list.addtools.des15" /></p>
                     </div>
                     <div class="homeCell">
@@ -270,7 +270,7 @@
             }
 
             function edit(uid) {
-                document.location.href = "${ConfigurationHolder.config.grails.serverURL}/manage/show/" + uid;
+                document.location.href = "${grailsApplication.config.grails.serverURL}/manage/show/" + uid;
             }
             $('#instructions-link').click(function() {
                 var height = $('#instructions').css('height');
@@ -329,7 +329,7 @@
                 var isUnique = true;
                 // make a synchronous call to check existence of the name
                 $.ajax({
-                    url: "${ConfigurationHolder.config.grails.serverURL}/collection/nameExists?name=" + o.val(),
+                    url: "${grailsApplication.config.grails.serverURL}/collection/nameExists?name=" + o.val(),
                     dataType: 'json',
                     async: false,
                     success: function(data) {
@@ -378,7 +378,7 @@
                             %{--//alert(fieldValues);--}%
                              %{--// redirect to create collection--}%
                             %{--document.location.href =--}%
-                               %{--"${ConfigurationHolder.config.grails.serverURL}/collection/create?name=" +--}%
+                               %{--"${grailsApplication.config.grails.serverURL}/collection/create?name=" +--}%
                                        %{--$name.val() + fieldValues;--}%
                         %{--}--}%
                     %{--},--}%

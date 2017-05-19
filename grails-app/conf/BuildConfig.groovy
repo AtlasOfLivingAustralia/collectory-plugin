@@ -2,8 +2,8 @@ grails.servlet.version = "2.5"
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir	= "target/test-reports"
-grails.project.target.level = 1.6
-grails.project.source.level = 1.6
+grails.project.target.level = 1.7
+grails.project.source.level = 1.7
 
 grails.project.fork = [
         // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
@@ -35,11 +35,12 @@ grails.project.dependency.resolution = {
 
     dependencies {
         runtime 'mysql:mysql-connector-java:5.1.5'
+        //runtime 'mysql:mysql-connector-java:5.1.42' // Needed if you have newer versions of mysql installed and want ot test the plugin
         runtime 'net.sf.opencsv:opencsv:2.3'
-        runtime 'ant:ant:1.6.5'
+	    //runtime 'ant:ant:1.6.5'
         runtime 'commons-httpclient:commons-httpclient:3.1'
         runtime 'org.aspectj:aspectjweaver:1.6.6'
-
+        compile "com.fasterxml.jackson.core:jackson-databind:2.7.0"
     }
 
     plugins {
@@ -48,7 +49,6 @@ grails.project.dependency.resolution = {
                 ":rest-client-builder:1.0.3") {
             export = false
         }
-
         compile ":cache:1.1.2"
         runtime ":hibernate:3.6.10.11"
         runtime ":jquery:1.11.1"

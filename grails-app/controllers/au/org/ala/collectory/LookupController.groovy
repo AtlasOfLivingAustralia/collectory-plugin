@@ -3,7 +3,6 @@ package au.org.ala.collectory
 import java.text.ParseException
 import java.text.NumberFormat
 import grails.converters.JSON
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import au.com.bytecode.opencsv.CSVWriter
 
 import groovy.xml.StreamingMarkupBuilder
@@ -11,7 +10,7 @@ import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 
 class LookupController {
 
-    def idGeneratorService
+    def idGeneratorService, grailsApplication
 
     static allowedMethods = [citation:['POST','GET']]
 
@@ -331,7 +330,7 @@ class LookupController {
     }
 
     String makeLink(uid) {
-        return "${ConfigurationHolder.config.grails.serverURL}/public/show/${uid}"
+        return "${grailsApplication.config.grails.serverURL}/public/show/${uid}"
     }
 
     private findInstitution(id) {

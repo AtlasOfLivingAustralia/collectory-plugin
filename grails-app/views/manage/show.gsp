@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.collectory.ContactFor; grails.converters.deep.JSON; org.codehaus.groovy.grails.commons.ConfigurationHolder; java.text.DecimalFormat; au.org.ala.collectory.Collection; au.org.ala.collectory.Institution" %>
+<%@ page import="au.org.ala.collectory.ContactFor; grails.converters.deep.JSON; java.text.DecimalFormat; au.org.ala.collectory.Collection; au.org.ala.collectory.Institution" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -326,7 +326,7 @@
             originalValues.name = "${instance.name}";
             originalValues.acronym = "${instance.acronym}";
             originalValues.pubDescription = "";
-            var baseUrl = "${ConfigurationHolder.config.grails.serverURL}",
+            var baseUrl = "${grailsApplication.config.grails.serverURL}",
                 uid = "${instance.uid}",
                 username = "<cl:loggedInUsername/>",
                 currentValue = {

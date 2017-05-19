@@ -1,16 +1,12 @@
 package au.org.ala.collectory
 
+import au.org.ala.audit.AuditLogEvent
 import grails.converters.JSON
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
-import org.apache.commons.io.FileUtils
-import org.apache.commons.io.IOUtils
-import org.apache.tools.zip.ZipFile
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogListener
+
+//import au.org.ala.audit.AuditLogEvent
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.multipart.MultipartFile
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
-import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
-import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogListener
 
 /**
  * This is a base class for all provider group entities types.
@@ -422,6 +418,54 @@ abstract class ProviderGroupController {
         }
     }
 
+    def updateExternalIdentifiers = {
+        def pg = get(params.id)
+        if (pg) {
+            if (checkLocking(pg,'/shared/editExternalIdentifiers')) { return }
+
+            // if there isn't a source, discard it
+            def sources = params.findAll { key, value ->
+                key.startsWith('source_') && value
+            }
+            def external = sources.sort().collect { key, value ->
+                def idx = key.substring(7)
+                def source = params[key]
+                def identifier = params."identifier_${idx}"
+                def uri = params."uri_${idx}"
+                if (!uri)
+                    uri = null
+                return new ExternalIdentifier(entityUid: pg.uid, source: source, identifier: identifier, uri: uri)
+            }
+            def existing = pg.externalIdentifiers
+            external.each { ext ->
+                def old = existing.find { prev -> prev.same(ext) }
+                if (!old) {
+                    ext.save(flush: true)
+                } else {
+                    old.uri = ext.uri
+                     old.save(flush: true)
+                    existing.remove(old)
+                }
+            }
+            // Delete non-matching, existing external IDs
+            existing.each { ext -> ext.delete(flush: true) }
+            pg.userLastModified = collectoryAuthService?.username()
+            if (!pg.hasErrors() && pg.save(flush: true)) {
+                flash.message =
+                        "${message(code: 'default.updated.message', args: [message(code: "${pg.urlForm()}.label", default: pg.entityType()), pg.uid])}"
+                redirect(action: "show", id: pg.uid)
+            }
+            else {
+                render(view: "/shared/editExternalIdentifiers", model: [command: pg])
+            }
+        } else {
+            flash.message =
+                    "${message(code: 'default.not.found.message', args: [message(code: "${entityNameLower}.label", default: entityNameLower), params.id])}"
+            redirect(action: "show", id: params.id)
+        }
+
+    }
+
     def updateContactRole = {
         def contactFor = ContactFor.get(params.contactForId)
         if (contactFor) {
@@ -630,7 +674,7 @@ abstract class ProviderGroupController {
                     pg."${target}" = new Image(file: filename)
                     String subDir = pg.urlForm()
 
-                    def colDir = new File(ConfigurationHolder.config.repository.location.images as String, subDir)
+                    def colDir = new File(grailsApplication.config.repository.location.images as String, subDir)
                     colDir.mkdirs()
                     File f = new File(colDir, filename)
                     log.debug "saving ${filename} to ${f.absoluteFile}"

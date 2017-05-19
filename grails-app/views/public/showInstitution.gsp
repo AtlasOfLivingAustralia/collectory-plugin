@@ -194,7 +194,11 @@
                         </g:if>
                     </div>
                 </g:if>
-            </div>
+
+            <!-- external identifiers -->
+                <g:render template="externalIdentifiers" model="[instance:instance]"/>
+
+    </div>
         </div><!--close content-->
 </div>
 <r:script type="text/javascript">

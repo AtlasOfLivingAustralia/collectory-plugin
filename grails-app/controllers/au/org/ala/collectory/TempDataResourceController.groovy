@@ -15,7 +15,6 @@
 
 package au.org.ala.collectory
 
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import grails.converters.JSON
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 import org.grails.datastore.mapping.query.api.Criteria
@@ -70,7 +69,7 @@ class TempDataResourceController {
     }
 
     def addLocation(relativeUri) {
-        response.addHeader 'location', ConfigurationHolder.config.grails.serverURL + relativeUri
+        response.addHeader 'location', grailsApplication.config.grails.serverURL + relativeUri
     }
 
     def badRequest = {text ->
@@ -78,7 +77,7 @@ class TempDataResourceController {
     }
 
     def addContentLocation(relativeUri) {
-        response.addHeader 'content-location', ConfigurationHolder.config.grails.serverURL + relativeUri
+        response.addHeader 'content-location', grailsApplication.config.grails.serverURL + relativeUri
     }
 
     def success = { text ->

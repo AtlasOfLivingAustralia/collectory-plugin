@@ -1,4 +1,3 @@
-<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
 <html>
     <head>
         <title><g:message code="admin.sr.title" /></title>
