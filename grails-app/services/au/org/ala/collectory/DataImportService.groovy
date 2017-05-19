@@ -94,8 +94,10 @@ class DataImportService {
                 newFile = new File(uploadDirPath + File.separatorChar + filetoImport.getName())
                 FileUtils.copyFile(filetoImport, newFile)
             }
+            importDataFileForDataResource(dataResource, newFile, params)
+        } else {
+            importDataFileForDataResource(dataResource, filetoImport, params)
         }
-        importDataFileForDataResource(dataResource, filetoImport, params)
     }
 
     /**
