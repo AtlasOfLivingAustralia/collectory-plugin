@@ -190,7 +190,7 @@ class GbifRegistryService {
                     if (Boolean.valueOf(grailsApplication.config.useGbifDoi)) {
                         def created = loadDataset(it.gbifRegistryKey)
                         it.gbifDoi = created.doi
-                        is.save(flush: true)
+                        it.save(flush: true)
                     }
 
                 }
