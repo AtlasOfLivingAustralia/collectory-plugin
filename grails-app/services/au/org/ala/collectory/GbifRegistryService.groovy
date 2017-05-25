@@ -190,7 +190,7 @@ class GbifRegistryService {
                     if (Boolean.valueOf(grailsApplication.config.useGbifDoi)) {
                         def created = loadDataset(it.gbifRegistryKey)
                         it.gbifDoi = created.doi
-                        is.save(flush: true)
+                        it.save(flush: true)
                     }
 
                 }
@@ -238,7 +238,8 @@ class GbifRegistryService {
             if (dataset) {
                 http.parser.'application/json' = http.parser.'text/plain' // handle sloppy responses from GBIF
 
-                def dwcaUrl = grailsApplication.config.gbifExportUrlBase + "dr" + resource.getId() + ".dwca";
+//                def dwcaUrl = grailsApplication.config.gbifExportUrlBase + "dr" + resource.getId() + ".dwca";
+                def dwcaUrl = grailsApplication.config.gbifExportUrlBase + resource.getUid() + ".zip";
 
                 if (dataset.endpoints && dataset.endpoints.size() == 1 && dwcaUrl.equals(dataset.endpoints.get(0).url)) {
                     log.info("Dataset[${resource.gbifRegistryKey}] has correct URL[${dwcaUrl}]")
