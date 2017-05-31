@@ -1711,7 +1711,7 @@ class CollectoryTagLib {
     def emlDataLink = { attrs, body ->
         def uri = "${grailsApplication.config.grails.serverURL}/ws/eml/${attrs.uid}"
         // have to use this method rather than 'link' so we can specify the accept format as json
-        out << "<a class='json' href='${uri}'><img class='eml' alt='json' src='${resource(dir:"images", file:"xml.png")}'/> View EML </a>"
+        out << "<a class='eml' href='${uri}'><img class='eml' alt='EML' src='${resource(dir:"images", file:"xml.png")}'/> View EML </a>"
     }
 
     def viewLink = {attrs, body ->

@@ -62,7 +62,7 @@ class DataResource extends ProviderGroup implements Serializable {
     int downloadLimit = 0           // max number of records that can be included in a single download - 0 = no limit
     String contentTypes             // json array of type of content provided by the resource
     boolean publicArchiveAvailable = false  // true if a DwC archive is allowed to be downloaded
-    boolean gbifDataset = false
+    Boolean gbifDataset = false
     DataProvider dataProvider
     Institution institution         // optional link to the institution whose records are served by this resource
     Boolean makeContactPublic = true

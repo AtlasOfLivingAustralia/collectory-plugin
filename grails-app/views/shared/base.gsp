@@ -67,6 +67,16 @@
                           </tr>
 
                         <g:if test="${command.ENTITY_TYPE == 'DataResource'}">
+
+                            <tr class="prop">
+                                <td valign="top" class="name">
+                                    <label for="gbifDoi"><g:message code="collection.gbifDoi.label" default="DOI" /></label>
+                                </td>
+                                <td valign="top" class="value ${hasErrors(bean: command, field: 'gbifDoi', 'errors')}">
+                                    <g:textField name="gbifDoi" maxlength="45" value="${command?.gbifDoi}" class="input-xlarge"/>
+                                </td>
+                            </tr>
+
                             <tr class="prop">
                                 <td valign="top" class="name">
                                   <label for="resourceType"><g:message code="collection.resourceType.label" default="Resource type" /></label>

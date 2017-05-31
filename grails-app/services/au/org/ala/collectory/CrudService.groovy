@@ -34,7 +34,8 @@ class CrudService {
                 'harvestingNotes','connectionParameters','resourceType','permissionsDocumentType','riskAssessment',
                 'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata',
                 'geographicDescription','northBoundingCoordinate','southBoundingCoordinate','eastBoundingCoordinate',
-                'westBoundingCoordinate','beginDate','endDate','qualityControlDescription','methodStepDescription'
+                'westBoundingCoordinate','beginDate','endDate','qualityControlDescription','methodStepDescription',
+                'gbifDoi'
     ]
     static dataResourceNumberProperties = ['harvestFrequency','downloadLimit']
     static dataResourceTimestampProperties = ['lastChecked','dataCurrency']
@@ -371,6 +372,7 @@ class CrudService {
                 if (p.externalIdentifiers) {
                     externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }
+                doi = p.gbifDoi
             }
         }
         return result

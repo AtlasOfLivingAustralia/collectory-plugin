@@ -236,7 +236,8 @@ class EmlRenderService {
 
                     /* alt identifier */
                     alternateIdentifier ids.uuid
-                    alternateIdentifier "${grailsApplication.config.grails.serverURL}/public/show/" +ids.id
+
+                    alternateIdentifier "${grailsApplication.config.grails.serverURL}/public/show/" + ids.id
                     if (ids.altId) {
                         alternateIdentifier(ids.altId)
                     }
@@ -451,6 +452,13 @@ class EmlRenderService {
 
                     /* alt identifier */
                     alternateIdentifier ids.uuid
+                    if(pg.gbifDoi){
+                        alternateIdentifier pg.gbifDoi
+                    }
+                    if(pg.gbifRegistryKey){
+                        alternateIdentifier pg.gbifRegistryKey
+                    }
+
                     alternateIdentifier ids.id
                     if (ids.altId) {
                         alternateIdentifier(ids.altId)
@@ -477,7 +485,10 @@ class EmlRenderService {
                         if (pg.rights) {
                             para (){
                                 mkp.yield pg.rights
-                                mkp.yield  pg.citation
+                                if(pg.rights && pg.citation){
+                                    mkp.yield " "
+                                }
+                                mkp.yield pg.citation
                                 if(licence) {
                                     ulink(url: licence.url) {
                                         citetitle "${licence.name} (${licence.acronym}${licence.licenceVersion ? ' ' + licence.licenceVersion : ''})"
@@ -544,14 +555,7 @@ class EmlRenderService {
                             }
                         }
                     }
-
-
-
-
                 }
-
-
-
 
                 additionalMetadata() {
                     metadata() {
@@ -563,8 +567,6 @@ class EmlRenderService {
                         }
                     }
                 }
-
-
             }
          }
         

@@ -61,6 +61,9 @@
                 <!-- GUID    -->
                 <p><span class="category"><g:message code="dataresource.show.guid" />: </span> <cl:guid target="_blank" guid='${fieldValue(bean: instance, field: "guid")}'/></p>
 
+                <!-- DOI    -->
+                <p><span class="category"><g:message code="dataresource.show.doi" default="doi" />: </span> <cl:guid target="_blank" guid='${fieldValue(bean: instance, field: "gbifDoi")}'/></p>
+
                 <!-- UID    -->
                 <p><span class="category"><g:message code="providerGroup.uid.label" />: </span> ${fieldValue(bean: instance, field: "uid")}</p>
 
@@ -81,12 +84,11 @@
                 </g:if>
 
                 <!-- last edit -->
-                <p><span class="category"><g:message code="datahub.show.lastchange" />: </span> ${fieldValue(bean: instance, field: "userLastModified")} on ${fieldValue(bean: instance, field: "lastUpdated")}</p>
+                <p><span class="category"><g:message code="dataresource.show.lastchange" />: </span> ${fieldValue(bean: instance, field: "userLastModified")} on ${fieldValue(bean: instance, field: "lastUpdated")}</p>
 
                 <g:if test="${instance.gbifDataset}">
                     <p>This dataset was downloaded from GBIF. <a href="http://www.gbif.org/dataset/${instance.guid}">View details on GBIF.org</a></p>
                 </g:if>
-
 
                 <p>
                     <span class="category"><g:message code="dataresource.show.verificationStatus" default="Verification status"/>: </span>

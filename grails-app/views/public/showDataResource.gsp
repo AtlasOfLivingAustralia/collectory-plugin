@@ -212,6 +212,14 @@
             </h3>
         </g:if>
 
+        <g:if test="${instance.gbifDoi}">
+            <p>
+                <a href="https://${instance.gbifDoi.replaceAll('doi:', 'doi.org/')}">
+                    <span class="label label-info">${instance.gbifDoi}</span>
+                </a>
+            </p>
+        </g:if>
+
         <g:if test="${instance.licenseType}">
             <h3><g:message code="public.license" default="Licence" /></h3>
             <p><cl:displayLicenseType type="${instance.licenseType}" version="${instance.licenseVersion}"/></p>
