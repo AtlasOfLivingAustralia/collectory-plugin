@@ -225,7 +225,7 @@ class LookupController {
     def csvCitations(uids) {
         StringWriter sw = new StringWriter()
         CSVWriter writer = new CSVWriter(sw)
-        writer.writeNext(["Resource name","Citation","Rights","More information", "Data generalizations", "Information withheld","Download limit","UID"] as String[])
+        writer.writeNext(["Resource name","Citation","Rights","More information", "Data generalizations", "Information withheld","Download limit","UID", "DOI"] as String[])
         uids.each {
             def pg = it.startsWith('drt') ? TempDataResource.findByUid(it) : ProviderGroup._get(it)
             if (pg) {
@@ -263,6 +263,7 @@ class LookupController {
         def dataGen = ''
         def infoWithheld = ''
         def downloadLimit = ''
+        def doi = ''
         if (pg instanceof DataResource) {
             def cit = pg.getCitation()
             citation = cit ? cit : citation
@@ -284,6 +285,7 @@ class LookupController {
             def ih = pg.getInformationWithheld()
             infoWithheld = ih ?: infoWithheld
             downloadLimit = pg.downloadLimit ?: ""
+            doi = pg.gbifDoi ?: ""
         }
         if (pg instanceof TempDataResource) {
             citation = "This is a temporary data set"
@@ -295,10 +297,10 @@ class LookupController {
         def link = grailsApplication.config.citation.link.template
         link =  link.replaceAll("@link@",makeLink(pg.uid))
         switch (format) {
-            case "tab separated": return "${name}\t${citation}\t${rights}\t${link}\t${dataGen}\t${infoWithheld}\t${downloadLimit}\t${pg.uid}"
+            case "tab separated": return "${name}\t${citation}\t${rights}\t${link}\t${dataGen}\t${infoWithheld}\t${downloadLimit}\t${pg.uid}\t${doi}"
             case "map": return ['name': name, 'citation': citation, 'rights': rights, 'link': link,
-                'dataGeneralizations': dataGen, 'informationWithheld': infoWithheld, 'downloadLimit': downloadLimit, 'uid': pg.uid]
-            case "array": return [name, citation, rights, link, dataGen, infoWithheld, downloadLimit, pg.uid]
+                'dataGeneralizations': dataGen, 'informationWithheld': infoWithheld, 'downloadLimit': downloadLimit, 'uid': pg.uid, 'doi':doi]
+            case "array": return [name, citation, rights, link, dataGen, infoWithheld, downloadLimit, pg.uid, doi]
         }
     }
 
