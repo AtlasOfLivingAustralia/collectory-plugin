@@ -28,11 +28,11 @@
                   <g:set var="consumer" value="${ProviderGroup._get(link.consumer)}"/>
                   <tr>
                     <td><g:link controller="${cl.controllerFromUid(uid: link.provider)}" action="show" id="${link.provider}">
-                      ${provider.name} <cl:entityIndicator entity="${provider}"/>
+                        <g:if test="${provider}">${provider.name} <cl:entityIndicator entity="${provider}"/></g:if><g:else><g:message code="reports.dl.invalid" args="${[link.provider]}"/></g:else>
                     </g:link></td>
                     <td> &lt;=&gt; </td>
                     <td><g:link controller="${cl.controllerFromUid(uid: link.consumer)}" action="show" id="${link.consumer}">
-                      ${consumer.name} <cl:entityIndicator entity="${consumer}"/>
+                        <g:if test="${consumer}">${consumer.name} <cl:entityIndicator entity="${consumer}"/></g:if><g:else><g:message code="reports.dl.invalid" args="${[link.consumer]}"/></g:else>
                     </g:link></td>
                   </tr>
                 </g:each>

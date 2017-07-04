@@ -2,8 +2,8 @@ grails.servlet.version = "2.5"
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir	= "target/test-reports"
-grails.project.target.level = 1.7
-grails.project.source.level = 1.7
+grails.project.target.level = 1.8
+grails.project.source.level = 1.8
 
 grails.project.fork = [
         // configure settings for compilation JVM, note that if you alter the Groovy version forked compilation is required
@@ -34,10 +34,10 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        runtime 'mysql:mysql-connector-java:5.1.5'
-        //runtime 'mysql:mysql-connector-java:5.1.42' // Needed if you have newer versions of mysql installed and want ot test the plugin
+        //runtime 'mysql:mysql-connector-java:5.1.5' // Needed if you have older versions of mysql installed (5.6)
+        runtime 'mysql:mysql-connector-java:5.1.42'
         runtime 'net.sf.opencsv:opencsv:2.3'
-	    //runtime 'ant:ant:1.6.5'
+	    runtime 'org.apache.ant:ant:1.10.1'
         runtime 'commons-httpclient:commons-httpclient:3.1'
         runtime 'org.aspectj:aspectjweaver:1.6.6'
         compile "com.fasterxml.jackson.core:jackson-databind:2.7.0"
@@ -45,19 +45,19 @@ grails.project.dependency.resolution = {
 
     plugins {
         build(  ":tomcat:7.0.52.1",
-                ":release:3.0.1",
-                ":rest-client-builder:1.0.3") {
+                ":release:3.1.2",
+                ":rest-client-builder:2.1.1") {
             export = false
         }
-        compile ":cache:1.1.2"
-        runtime ":hibernate:3.6.10.11"
+        compile ":cache:1.1.8"
+        runtime ":hibernate:3.6.10.19"
         runtime ":jquery:1.11.1"
-        runtime ":resources:1.2.7"
-        runtime ":audit-logging:0.5.5.3"
-        runtime ":cache-headers:1.1.6"
+        runtime ":resources:1.2.14"
+        runtime ":audit-logging:1.1.1"
+        runtime ":cache-headers:1.1.7"
         runtime ":rest:0.8"
-        runtime ":richui:0.8"
-        runtime ":tiny-mce:3.4.4"
+        //runtime ":richui:0.8"
+        runtime ":tiny-mce:3.4.9"
         runtime ":cors:1.1.8"
     }
 }

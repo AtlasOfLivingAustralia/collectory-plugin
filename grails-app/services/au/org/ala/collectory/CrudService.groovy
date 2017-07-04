@@ -1,5 +1,6 @@
 package au.org.ala.collectory
 
+import grails.util.Holders
 import org.codehaus.groovy.grails.web.json.JSONArray
 import grails.converters.JSON
 
@@ -987,6 +988,7 @@ class OutputFormat {
 
     static def formatNetworkMembership(jsonListStr) {
         if (!jsonListStr) return null
+        def grailsApplication = Holders.grailsApplication
         def list
         try {
             list = JSON.parse(jsonListStr)

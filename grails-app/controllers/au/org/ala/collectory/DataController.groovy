@@ -1,5 +1,6 @@
 package au.org.ala.collectory
 import grails.converters.JSON
+import grails.util.Holders
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 import org.xml.sax.SAXException
@@ -805,7 +806,7 @@ class DataController {
             map.contactName = it.primaryContact?.contact?.buildName() ?: ""
             map.contactEmail = it.primaryContact?.contact?.email ?: ""
             map.contactPhone = it.primaryContact?.contact?.phone ?: ""
-            map.uri = it.primaryContact ? "${grailsApplication.config.grails.serverURL}/ws/${ProviderGroup.urlFormFromUid(it.uid)}/${it.uid}/contacts/${it.primaryContact?.id}" : ''
+            map.uri = it.primaryContact ? "${Holders.grailsApplication.config.grails.serverURL}/ws/${ProviderGroup.urlFormFromUid(it.uid)}/${it.uid}/contacts/${it.primaryContact?.id}" : ''
 
             return map
         }

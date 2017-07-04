@@ -1,12 +1,11 @@
 language: groovy
 jdk:
-- oraclejdk7
+- oraclejdk8
 sudo: false
 branches:
   only:
   - master
   - develop
-  - 1.7.x  
 before_install:
 - wget -q https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/ala_common.sh
 - chmod +x ala_common.sh
