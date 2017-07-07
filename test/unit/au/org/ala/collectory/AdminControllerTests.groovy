@@ -1,17 +1,15 @@
 package au.org.ala.collectory
 
 import grails.test.*
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
-class AdminControllerTests extends ControllerUnitTestCase {
-    protected void setUp() {
-        super.setUp()
-    }
-
-    protected void tearDown() {
-        super.tearDown()
-    }
-
-    void testSomething() {
-
+@TestFor(AdminController)
+class AdminControllerTests extends Specification {
+    void testIndex() {
+        when:
+        controller.index()
+        then:
+        response.redirectedUrl == '/manage'
     }
 }

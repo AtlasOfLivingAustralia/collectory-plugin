@@ -15,18 +15,20 @@
 
 package au.org.ala.collectory.resources
 
-import grails.test.GrailsUnitTestCase
+import spock.lang.Specification
 
 /**
  * User: markew
  * Date: 28/06/11
  */
-class ProfileTests extends GrailsUnitTestCase {
+class ProfileTests extends Specification {
 
     void testList() {
+        when:
         def list = Profile.list()
-        assert list.size() == 9
-        assert list[4] == 'Custom web service'
+        then:
+        10 == list.size()
+        'Custom web service' == list[4]
     }
 
 }

@@ -6,3 +6,4 @@ workDir='/data/dwc-archive/work'
 gbifApiUrl='http://api.gbif.org/v1'
 uploadFilePath='/data/collectory-plugin/upload'
 google.apikey = "PLEASE_SPECIFY_IN_CONFIG_FILE"
+institution.codeLoaderURL='file:/data/collectory/bootstrap/institution_codes.xml'

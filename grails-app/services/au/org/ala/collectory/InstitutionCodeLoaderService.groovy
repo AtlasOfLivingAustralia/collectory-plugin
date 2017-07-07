@@ -7,14 +7,16 @@ package au.org.ala.collectory
  * NOT used for looking up institution codes within the Collectory.
  */
 class InstitutionCodeLoaderService {
+    def grailsApplication
 
     static transactional = false
     static xml = null
-    static final String INPUT_FILE = '/data/collectory/bootstrap/institution_codes.xml'
 
     def lookupInstitutionCode(String institutionName) {
         if (!xml) {
-            xml = new XmlSlurper().parse(new File(INPUT_FILE))
+            InputStream is = new URL(grailsApplication.config.institution.codeLoaderURL).openStream()
+            xml = new XmlSlurper().parse(is)
+            is.close()
         }
 
         String code = null

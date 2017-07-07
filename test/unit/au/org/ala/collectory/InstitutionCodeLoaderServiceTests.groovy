@@ -1,28 +1,26 @@
 package au.org.ala.collectory
 
-import grails.test.*
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
-class InstitutionCodeLoaderServiceTests extends GrailsUnitTestCase {
-    def service
-
-    protected void setUp() {
-        super.setUp()
-        // need to instantiate explicitly in unit tests
-        service = new InstitutionCodeLoaderService()
-    }
-
-    protected void tearDown() {
-        super.tearDown()
+@TestFor(InstitutionCodeLoaderService)
+class InstitutionCodeLoaderServiceTests extends Specification {
+    static doWithConfig = { c ->
+        c.institution.codeLoaderURL = InstitutionCodeLoaderServiceTests.getResource("institution-codes-1.xml").toString()
     }
 
     void testLoading() {
-        def institutions = new XmlSlurper().parse(new File(InstitutionCodeLoaderService.INPUT_FILE))
-        assertNotNull institutions
-        assertEquals 929, institutions.tr.size()
+        when:
+        def institutions = new XmlSlurper().parse(new URL(service.grailsApplication.config.institution.codeLoaderURL).openStream())
+        then:
+        institutions != null
+        institutions.tr.size() == 2
 
     }
     
     void testLookup() {
-        assertEquals 'ANU', service.lookupInstitutionCode('Australian National University')
+        expect:
+        def code = service.lookupInstitutionCode('Australian National University')
+        code == "ANU"
     }
 }

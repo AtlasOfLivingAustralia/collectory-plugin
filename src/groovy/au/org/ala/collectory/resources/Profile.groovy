@@ -15,6 +15,9 @@
 
 package au.org.ala.collectory.resources
 
+import org.codehaus.groovy.grails.plugins.codecs.URLCodec
+import org.codehaus.groovy.util.StringUtil
+
 class PP {
     final static PP LOCATION_URL = new PP(name:'url',display:'Location URL', type:'text')
     final static PP SERVICE_URL = new PP(name:'url',display:'Service URL', type:'text')
@@ -54,8 +57,8 @@ class PP {
     static String HT_CHAR = "\u0009"
     static String VT_CHAR = "\u000b"
     static String FF_CHAR = "\u000c"
-    static String CR_CHAR = "%0D".decodeURL()
-    static String LF_CHAR = "%0A".decodeURL()
+    static String CR_CHAR = URLDecoder.decode("%0D", "UTF-8")
+    static String LF_CHAR = URLDecoder.decode("%0A", "UTF-8")
 
     String name
     String display

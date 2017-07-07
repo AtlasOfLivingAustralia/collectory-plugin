@@ -1,44 +1,33 @@
 package au.org.ala.collectory
 
 import grails.test.*
+import grails.test.mixin.TestFor
 import org.codehaus.groovy.grails.plugins.codecs.HTMLCodec
+import spock.lang.Specification
 
-class CollectoryTagLibTests extends TagLibUnitTestCase {
+@TestFor(CollectoryTagLib)
+class CollectoryTagLibTests extends Specification {
 
-    protected void setUp() {
-        super.setUp()
-        loadCodec org.codehaus.groovy.grails.plugins.codecs.HTMLCodec
-        /*
-        alternative:
-        String.metaClass.encodeAsHTML = {
-            org.codehaus.groovy.grails.plugins.codecs.HTMLCodec.encode(delegate)
-        }
-        */
-    }
-
-    protected void tearDown() {
-        super.tearDown()
+    protected void setup() {
+        //loadCodec org.codehaus.groovy.grails.plugins.codecs.HTMLCodec
     }
 
     void testRoleIfPresent() {
-        tagLib.roleIfPresent(role: 'Manager') { role ->
-            out << role
-        }
-        assertEquals ' - Manager', tagLib.out.toString()
+        expect:
+        applyTemplate('<cl:roleIfPresent role="Manager"/>') == ' - Manager'
+        applyTemplate('<cl:roleIfPresent role=""/>') == ''
     }
 
     void testAdminIfPresent() {
-        tagLib.adminIfPresent(admin: true) { admin ->
-            out << admin
-        }
-        assertEquals '(Authorised to edit this collection)', tagLib.out.toString()
+        expect:
+        applyTemplate('<cl:adminIfPresent admin="${true}"/>') == '(Authorised to edit this collection)'
+        applyTemplate('<cl:adminIfPresent admin="${false}"/>') == ''
     }
 
-    void testNumberIfKnown_NotKnown() {
-        tagLib.numberIfKnown(number: -1, body:'&deg;') { number ->
-            out << number
-        }
-        assertEquals '', tagLib.out.toString()
+    void testNumberIfKnown() {
+        expect:
+        applyTemplate('<cl:numberIfKnown number="${20}">&deg;</cl:numberIfKnown>') == '20&deg;'
+        applyTemplate('<cl:numberIfKnown number="${-1}">&deg;</cl:numberIfKnown>') == ''
     }
 
     /*void testFormattedText_1() {

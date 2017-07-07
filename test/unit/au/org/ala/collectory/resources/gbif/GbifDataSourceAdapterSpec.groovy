@@ -22,7 +22,7 @@ class GbifDataSourceAdapterSpec extends Specification {
         config = new DataSourceConfiguration(
                 adaptorClass: GbifDataSourceAdapter.class,
                 endpoint: new URL("http://api.gbif.org/v1/"),
-                country: "AU",
+                country: "AD", // Andorra
                 recordType: "OCCURRENCE"
         )
         adaptor = config.createAdaptor()
