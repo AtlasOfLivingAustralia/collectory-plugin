@@ -23,6 +23,15 @@ environments {
     }
     test {
         dataSource {
+            pooled = true
+            dbCreate = 'update'
+            driverClassName = "org.h2.Driver"
+            url = "jdbc:h2:mem:default"
+            username = ""
+            password = ""
+        }
+        /*
+        dataSource {
             dialect = org.hibernate.dialect.MySQL5InnoDBDialect
             dbCreate = "update"
             url = "jdbc:mysql://localhost:3306/collectory?autoReconnect=true&connectTimeout=0"
@@ -40,6 +49,7 @@ environments {
                 validationQuery = ""
             }
         }
+        */
     }
     production {
         dataSource {

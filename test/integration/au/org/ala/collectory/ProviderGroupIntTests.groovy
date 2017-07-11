@@ -15,45 +15,39 @@
 
 package au.org.ala.collectory
 
-import grails.test.GrailsUnitTestCase
+import grails.test.mixin.integration.Integration
+import spock.lang.Specification
 
 /**
  * User: markew
  * Date: 15/07/11
  */
-class ProviderGroupIntTests extends GrailsUnitTestCase {
+@Integration
+class ProviderGroupIntTests extends Specification {
 
-    protected void setUp() {
-        super.setUp()
-    }
-
-    protected void tearDown() {
-        super.tearDown()
-    }
-
-    void testGetContacts() {
+    def testGetContacts() {
+        when:
         Collection cc = new Collection(uid: "co1",name: "test",userLastModified: 'test')
-        cc.save()
+        cc.save(flush: true, failOnError: true)
 
         Contact c1 = new Contact(firstName: "contact1", userLastModified: 'test', publish: false)
-        c1.save()
+        c1.save(flush: true, failOnError: true)
         Contact c2 = new Contact(firstName: "contact2", userLastModified: 'test', publish: true)
-        c2.save()
+        c2.save(flush: true, failOnError: true)
         Contact c3 = new Contact(firstName: "contact3", userLastModified: 'test', publish: false)
-        c3.save()
+        c3.save(flush: true, failOnError: true)
         Contact c4 = new Contact(firstName: "contact4", userLastModified: 'test', publish: true)
-        c4.save()
+        c4.save(flush: true, failOnError: true)
 
         ContactFor cf1 = cc.addToContacts(c1, 'role', false, false, 'test') // not primary, not public
         ContactFor cf2 = cc.addToContacts(c2, 'role', false, false, 'test')  // not primary, public
         ContactFor cf3 = cc.addToContacts(c3, 'role', false, true, 'test')  // primary, not public
         ContactFor cf4 = cc.addToContacts(c4, 'role', false, true, 'test') // primary, public
 
-        cc.save()
-
-        assert cc.getContacts().size() == 4
-        assert cc.getPrimaryContact() in [cf3,cf4] // don't know which is the first found
-        assert cc.getPrimaryPublicContact() == cf4
-        assert cc. getPublicContactsPrimaryFirst()[0] == cf4
+        then:
+        cc.getContacts().size() == 4
+        cc.getPrimaryContact() in [cf3,cf4] // don't know which is the first found
+        cc.getPrimaryPublicContact() == cf4
+        cc.getPublicContactsPrimaryFirst()[0] == cf4
     }
 }

@@ -3,20 +3,19 @@ package au.org.ala.collectory
  * Tests the interaction between contacts and ProviderGroups/Infosources
  */
 import grails.test.*
+import grails.test.mixin.integration.Integration
+import spock.lang.Specification
 
-class ContactGroupTests extends GrailsUnitTestCase {
+@Integration
+class ContactGroupTests extends Specification {
+    Contact pete
+    Contact mark
+    ProviderGroup group
 
-    // some contacts
-    Contact pete = new Contact(firstName: "Peter", lastName: "Flemming", publish: true, email: "pete@csiro.au", userLastModified: "test").save(flush: true)
-    Contact mark = new Contact(firstName: "Mark", lastName: "Woolston", publish: true, userLastModified: "test").save(flush: true)
-    // an entity of type ProviderGroup
-    def group = new Institution(guid: "ABC", uid:'in13', name: "XYZ", userLastModified: "test").save(flush: true)
-
-    protected void setUp() {
-        super.setUp()
-        if (pete.hasErrors()) pete.errors.each {println it}
-        if (mark.hasErrors()) mark.errors.each {println it}
-        if (group.hasErrors()) group.errors.each {println it}
+    protected void setup() {
+        pete = new Contact(firstName: "Peter", lastName: "Flemming", publish: true, email: "pete@csiro.au", userLastModified: "test").save(flush: true, failOnError: true)
+        mark = new Contact(firstName: "Mark", lastName: "Woolston", publish: true, userLastModified: "test").save(flush: true, failOnError: true)
+        group = new Institution(guid: "ABC", uid:'in13', name: "XYZ", userLastModified: "test").save(flush: true, failOnError: true)
         // clear any existing contacts
         def cfs = ContactFor.list()
         cfs.each {
@@ -24,114 +23,104 @@ class ContactGroupTests extends GrailsUnitTestCase {
         }
    }
 
-    protected void tearDown() {
-        super.tearDown()
-    }
-
-    void testLinks() {
-
-        // make sure contacts are stored in the db
-        assertEquals 2, Contact.count()
-
-        assertEquals 0, ContactFor.count()
-
+    def testLinks1() {
+        setup:
+        assert Contact.count() == 2
+        assert ContactFor.count() == 0
+        when:
         // create a contact link
-        new ContactFor(contact: pete, entityUid: group.uid, role: "Manager",
-                administrator: true, primaryContact: true, userLastModified: "test").save(flush: true)
-
-        assertEquals 1, ContactFor.count()
-
-        // retrieve contact links
+        def ncf = new ContactFor(contact: pete, entityUid: group.uid, role: "Manager", administrator: true, primaryContact: true, userLastModified: "test")
+        ncf.save(flush: true, failOnError: true)
+        then:
+        ContactFor.count() == 1
         def contacts = ContactFor.findAll()
-        assertEquals 1, contacts.size()
-
-        // examine it
+        contacts.size() == 1
         ContactFor cf = contacts.get(0)
-        println cf.print()
-
-        new ContactFor(contact: mark, entityUid: group.uid, role: "Asst Manager",
-                administrator: true, primaryContact: false, userLastModified: "test").save(flush: true)
-
-        // retrieve links for an entity
-        def ecf = ContactFor.findAllByEntityUid(group.uid)
-        assertEquals 2, ecf.size()
+        cf.contact == ncf.contact
+        cf.role == ncf.role
     }
 
-    void testGroupContactsManualAdd() {
-        println "entering testGroupContactsManualAdd " + group.getContacts().size()
-        // create contact links manually
-        new ContactFor(contact: pete, entityUid: group.uid, role: "Manager",
-                administrator: true, primaryContact: true, userLastModified: "test").save(flush: true)
-        new ContactFor(contact: mark, entityUid: group.uid, role: "Asst Manager",
-                administrator: true, primaryContact: false, userLastModified: "test").save(flush: true)
+    def testLinks2() {
+        setup:
+        assert Contact.count() == 2
+        assert ContactFor.count() == 0
+        when:
+        // create a contact link
+        def ncf1 = new ContactFor(contact: pete, entityUid: group.uid, role: "Manager", administrator: true, primaryContact: true, userLastModified: "test")
+        ncf1.save(flush: true, failOnError: true)
+        def ncf2 = new ContactFor(contact: mark, entityUid: group.uid, role: "Asst Manager", administrator: true, primaryContact: false, userLastModified: "test")
+        ncf2.save(flush: true, failOnError: true)
+        then:
+        def ecf = ContactFor.findAllByEntityUid(group.uid)
+        ecf.size() == 2
+    }
 
-        // test getContacts
-        assertEquals 2, group.getContacts().size()
+    def testGroupContactsManualAdd1() {
+        when:
+        def ncf1 = new ContactFor(contact: pete, entityUid: group.uid, role: "Manager", administrator: true, primaryContact: true, userLastModified: "test")
+        ncf1.save(flush: true)
+        def ncf2 = new ContactFor(contact: mark, entityUid: group.uid, role: "Asst Manager", administrator: true, primaryContact: false, userLastModified: "test")
+        ncf2.save(flush: true)
+        then:
+        group.getContacts().size() == 2
+    }
 
-        // test deleteContact
+    def testGroupContactsManualAdd2() {
+        when:
+        def ncf1 = new ContactFor(contact: pete, entityUid: group.uid, role: "Manager", administrator: true, primaryContact: true, userLastModified: "test")
+        ncf1.save(flush: true)
+        def ncf2 = new ContactFor(contact: mark, entityUid: group.uid, role: "Asst Manager", administrator: true, primaryContact: false, userLastModified: "test")
+        ncf2.save(flush: true)
         group.deleteFromContacts(mark)
         group.deleteFromContacts(pete)
-        assertEquals 0, group.getContacts().size()
-
-        assertEquals 0, ContactFor.count()
+        then:
+        group.getContacts().size() == 0
+        ContactFor.count() == 0
     }
 
-    void testGroupContactsUsingAddContact() {
-
+    def testGroupContactsUsingAddContact() {
+        when:
         group.addToContacts(mark, "Project Officer", false, false, 'test')
         group.addToContacts(pete, "Manager", true, true, 'test')
-
-        assertEquals 2, group.getContacts().size()
+        then:
+        ContactFor.count() == 2
+        group.getContacts().size() == 2
         List<ContactFor> contacts = group.getContacts()
         contacts.sort {item -> item.contact.id}
-        println contacts[0].print()
-        println contacts[1].print()
-        assertEquals "Peter", contacts[0].contact.firstName
-        assertEquals "Manager", contacts[0].role
-        assertEquals true, contacts[0].administrator
-        assertEquals true, contacts[0].primaryContact
-        assertEquals "Mark", contacts[1].contact.firstName
-        assertEquals "Project Officer", contacts[1].role
-        assertEquals false, contacts[1].administrator
-        assertEquals false, contacts[1].primaryContact
+        contacts[0].contact.firstName == "Peter"
+        contacts[0].role == "Manager"
+        contacts[0].administrator
+        contacts[0].primaryContact
+        contacts[1].contact.firstName == "Mark"
+        contacts[1].role == "Project Officer"
+        !contacts[1].administrator
+        !contacts[1].primaryContact
 
-        // make sure the links were written to the db
-        assertEquals 2, ContactFor.count()
     }
 
     // tests to see if the dynamic wiring in integration tests breaks the isAdministrator call
-    void testIsAdministrator() {
-        // create a contact link
-        new ContactFor(contact: pete, entityUid: group.uid, role: "Manager",
-                administrator: true, primaryContact: true, userLastModified: "test").save(flush: true)
-
-        assertEquals 1, ContactFor.count()
-
+    def testIsAdministrator() {
+        when:
+        def ncf1 = new ContactFor(contact: pete, entityUid: group.uid, role: "Manager", administrator: true, primaryContact: true, userLastModified: "test")
+        ncf1.save(flush: true, failOnError: true)
+        then:
+        ContactFor.count() == 1
         ContactFor cf = ContactFor.findByContact(pete)
-        assertNotNull cf
-        assertEquals 'Peter', cf.contact.firstName
-        assertTrue cf.administrator
+        cf != null
+        cf.contact.firstName == 'Peter'
+        cf.administrator
 
     }
 
     void testSearchByUser() {
-        // create a contact link
-        new ContactFor(contact: pete, entityUid: group.uid, role: "Manager",
-                administrator: true, primaryContact: true, userLastModified: "test").save(flush: true)
-
-        assertEquals 1, ContactFor.count()
-
+        when:
+        def ncf1 = new ContactFor(contact: pete, entityUid: group.uid, role: "Manager", administrator: true, primaryContact: true, userLastModified: "test")
+        ncf1.save(flush: true, failOnError: true)
+        then:
+        ContactFor.count() == 1
         def userContact = Contact.findByEmail("pete@csiro.au")
-        assertNotNull userContact
-
-        def collectionList = []
-        ContactFor.findAllByContact(pete).each {
-            println it.entityUid
-            def pg = ProviderGroup._get(it.entityUid)
-            if (pg) {
-                collectionList << pg
-            }
-        }
-        assertEquals 1, collectionList.size()
+        userContact != null
+        def collections = ContactFor.findAllByContact(pete).collect({ ProviderGroup._get(it.entityUid) }).findAll({ it != null }) as Set
+        collections.size() == 1
     }
 }

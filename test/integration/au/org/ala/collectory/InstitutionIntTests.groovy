@@ -1,31 +1,18 @@
 package au.org.ala.collectory
 
-import grails.test.*
+import grails.test.mixin.integration.Integration
+import spock.lang.Specification
 
-class InstitutionIntTests extends GrailsUnitTestCase {
-    protected void setUp() {
-        super.setUp()
-    }
-
-    protected void tearDown() {
-        super.tearDown()
-    }
-
+@Integration
+class InstitutionIntTests extends Specification {
     void testCollections() {
-        def inst = new Institution(name:'institution',userLastModified:'test')
-        inst.validate()
-        if (inst.hasErrors()) {
-            inst.errors.each {
-                println it.toString()
-            }
-        } else {
-            inst.save()
-        }
-        def c1 = new Collection(name:'Collection 1',userLastModified:'test')
-        //assertFalse c1.hasErrors()
+        when:
+        def inst = new Institution(uid: 'in1000', name:'institution',userLastModified:'test')
+        inst.save(flush: true, failOnError: true)
+        def c1 = new Collection(uid: 'co1000', name:'Collection 1',userLastModified:'test')
         inst.addToCollections(c1)
-
-        assertEquals 1, inst.getCollections().size()
-        assertEquals inst, c1.getInstitution()
+        then:
+        inst.getCollections().size() == 1
+        c1.getInstitution() == inst
     }
 }

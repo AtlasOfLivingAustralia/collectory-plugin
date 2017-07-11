@@ -4,152 +4,175 @@ package au.org.ala.collectory
 
 import org.junit.*
 import grails.test.mixin.*
+import spock.lang.Specification
 
 @TestFor(ProviderCodeController)
 @Mock(ProviderCode)
-class ProviderCodeControllerTests {
+class ProviderCodeControllerTests extends Specification {
 
     def populateValidParams(params) {
         assert params != null
-        // TODO: Populate valid properties like...
-        //params["name"] = 'someValidName'
+        params.code = "code-1"
     }
 
     void testIndex() {
+        when:
         controller.index()
-        assert "/providerCode/list" == response.redirectedUrl
+        then:
+        response.redirectedUrl == "/providerCode/list"
     }
 
     void testList() {
-
+        when:
         def model = controller.list()
-
-        assert model.providerCodeInstanceList.size() == 0
-        assert model.providerCodeInstanceTotal == 0
+        then:
+        model.providerCodeInstanceList.size() == 0
+        model.providerCodeInstanceTotal == 0
     }
 
     void testCreate() {
+        when:
         def model = controller.create()
-
-        assert model.providerCodeInstance != null
+        then:
+        model.providerCodeInstance != null
     }
 
-    void testSave() {
+    void testSave1() {
+        when:
+        request.method = 'POST'
         controller.save()
+        then:
+        model.providerCodeInstance != null
+        view == '/providerCode/create'
+    }
 
-        assert model.providerCodeInstance != null
-        assert view == '/providerCode/create'
-
-        response.reset()
-
+    void testSave2() {
+        when:
         populateValidParams(params)
+        request.method = 'POST'
         controller.save()
-
-        assert response.redirectedUrl == '/providerCode/show/1'
-        assert controller.flash.message != null
-        assert ProviderCode.count() == 1
+        then:
+        response.redirectedUrl == '/providerCode/show/1'
+        controller.flash.message != null
+        ProviderCode.count() == 1
     }
 
-    void testShow() {
+    void testShow1() {
+        when:
         controller.show()
-
+        then:
         assert flash.message != null
         assert response.redirectedUrl == '/providerCode/list'
+    }
 
+    void testShow2() {
+        when:
         populateValidParams(params)
         def providerCode = new ProviderCode(params)
-
-        assert providerCode.save() != null
-
+        providerCode.save(flush: true, failOnError: true)
         params.id = providerCode.id
-
         def model = controller.show()
-
-        assert model.providerCodeInstance == providerCode
+        then:
+        model != null
+        model.providerCodeInstance == providerCode
     }
 
-    void testEdit() {
+    void testEdit1() {
+        when:
         controller.edit()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/providerCode/list'
-
-        populateValidParams(params)
-        def providerCode = new ProviderCode(params)
-
-        assert providerCode.save() != null
-
-        params.id = providerCode.id
-
-        def model = controller.edit()
-
-        assert model.providerCodeInstance == providerCode
+        then:
+        flash.message != null
+        response.redirectedUrl == '/providerCode/list'
     }
 
-    void testUpdate() {
-        controller.update()
-
-        assert flash.message != null
-        assert response.redirectedUrl == '/providerCode/list'
-
-        response.reset()
-
+    void testEdit2() {
+        when:
         populateValidParams(params)
         def providerCode = new ProviderCode(params)
+        providerCode.save(flush: true, failOnError: true)
+        params.id = providerCode.id
+        def model = controller.edit()
+        then:
+        model.providerCodeInstance == providerCode
+    }
 
-        assert providerCode.save() != null
+    void testUpdate1() {
+        when:
+        request.method = 'POST'
+        controller.update()
+        then:
+        flash.message != null
+        response.redirectedUrl == '/providerCode/list'
+    }
 
+
+    void testUpdate2() {
+        when:
+        request.method = 'POST'
+        populateValidParams(params)
+        def providerCode = new ProviderCode(params)
+        providerCode.save(flush: true, failOnError: true)
         // test invalid parameters in update
         params.id = providerCode.id
+        params.code = null
         //TODO: add invalid values to params object
-
         controller.update()
+        then:
+        view == "/providerCode/edit"
+        model.providerCodeInstance != null
+    }
 
-        assert view == "/providerCode/edit"
-        assert model.providerCodeInstance != null
-
-        providerCode.clearErrors()
-
+    void testUpdate3() {
+        when:
+        request.method = 'POST'
         populateValidParams(params)
+        def providerCode = new ProviderCode(params)
+        providerCode.save(flush: true, failOnError: true)
+        populateValidParams(params)
+        params.id = providerCode.id
         controller.update()
+        then:
+        response.redirectedUrl == "/providerCode/show/$providerCode.id"
+        flash.message != null
+    }
 
-        assert response.redirectedUrl == "/providerCode/show/$providerCode.id"
-        assert flash.message != null
-
-        //test outdated version number
-        response.reset()
-        providerCode.clearErrors()
-
+    void testUpdate4() {
+        when:
+        request.method = 'POST'
+        populateValidParams(params)
+        def providerCode = new ProviderCode(params)
+        providerCode.save(flush: true, failOnError: true)
         populateValidParams(params)
         params.id = providerCode.id
         params.version = -1
         controller.update()
-
-        assert view == "/providerCode/edit"
-        assert model.providerCodeInstance != null
-        assert model.providerCodeInstance.errors.getFieldError('version')
-        assert flash.message != null
+        then:
+        view == "/providerCode/edit"
+        model.providerCodeInstance != null
+        model.providerCodeInstance.errors.getFieldError('version')
     }
 
-    void testDelete() {
+
+    void testDelete1() {
+        when:
+        request.method = 'POST'
         controller.delete()
-        assert flash.message != null
-        assert response.redirectedUrl == '/providerCode/list'
+        then:
+        flash.message != null
+        response.redirectedUrl == '/providerCode/list'
+    }
 
-        response.reset()
-
+    void testDelete2() {
+        when:
+        request.method = 'POST'
         populateValidParams(params)
         def providerCode = new ProviderCode(params)
-
-        assert providerCode.save() != null
-        assert ProviderCode.count() == 1
-
+        providerCode.save(flush: true, failOnError: true)
         params.id = providerCode.id
-
         controller.delete()
-
-        assert ProviderCode.count() == 0
-        assert ProviderCode.get(providerCode.id) == null
-        assert response.redirectedUrl == '/providerCode/list'
+        then:
+        ProviderCode.count() == 0
+        ProviderCode.get(providerCode.id) == null
+        response.redirectedUrl == '/providerCode/list'
     }
 }
