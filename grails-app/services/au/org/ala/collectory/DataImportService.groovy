@@ -62,7 +62,7 @@ class DataImportService {
                     dr.save(flush:true)
                 }
 
-                importDataFileForDataResource(dr, file, ["protocol":"DwCA"], false)
+                importDataFileForDataResource(dr, file, ["protocol":"DwCA"], true)
             }
         }
     }
