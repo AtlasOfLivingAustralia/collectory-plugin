@@ -240,6 +240,8 @@
         loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "1002");
       }
 
+      var facetsParam = "";
+
       $.each(facetChartOptions.charts, function( index, value ) {
           facetsParam += "&facets=" + value;
       });
