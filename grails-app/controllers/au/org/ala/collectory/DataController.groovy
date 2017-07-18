@@ -283,6 +283,9 @@ class DataController {
         def idx = request.forwardURI.lastIndexOf(dirpath) + dirpath.length()
         def fullFileName = request.forwardURI.substring(idx)
         def file = new File(grailsApplication.config.uploadFilePath + File.separator + params.directory, fullFileName)
+        if(!file.exists()){
+            file = new File(grailsApplication.config.uploadFilePath + File.separator + params.directory, URLDecoder.decode(fullFileName, "UTF-8"))
+        }
         if(file.exists()){
             //set the content type
             response.setContentType("application/octet-stream")
