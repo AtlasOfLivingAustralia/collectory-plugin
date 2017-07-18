@@ -332,8 +332,7 @@
             (unless the facet data is passed in directly AND clickThru is set to false) */
           instanceUid: "${instance.uid}",
           /* the list of charts to be drawn (these are specified in the one call because a single request can get the data for all of them) */
-          charts: ['country','state','species_group','assertions','type_status',
-              'biogeographic_region','data_resource_uid','state_conservation','occurrence_year']
+          charts: ${raw(grailsApplication.config.collectionChartsJSON)}
           /* override default options for individual charts */
       }
       var taxonomyChartOptions = {
@@ -379,9 +378,17 @@ function onLoadCallback() {
     loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "1002");
   }
 
+  var facetsParam = "";
+
+  $.each(facetChartOptions.charts, function( index, value ) {
+      facetsParam += "&facets=" + value;
+  });
+
+  var queryUrl = urlConcat(biocacheServicesUrl, "/occurrences/search.json?pageSize=0&q=") + buildQueryString("${instance.uid}" + facetsParam;
+
   // records
   $.ajax({
-    url: urlConcat(biocacheServicesUrl, "/occurrences/search.json?pageSize=0&q=") + buildQueryString("${instance.uid}"),
+    url: queryUrl,
     dataType: 'jsonp',
     timeout: 20000,
     complete: function(jqXHR, textStatus) {

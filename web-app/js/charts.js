@@ -130,36 +130,39 @@ function cleanUp(chartOptions) {
          window[chartOptions.error]();
     }
 }
-/*********************************************************************\
-* Loads charts based on the facets declared in the config object.
-* - does not require any markup other than div#charts element
-\*********************************************************************/
-function drawFacetCharts(data, chartOptions) {
-    // check that we have results
-    if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
-        return;
-    }
-
-    // update total if requested
-    if (chartOptions.totalRecordsSelector) {
-      $(chartOptions.totalRecordsSelector).html(addCommas(data.totalRecords));
-    }
-
-    // transform facet results into map
-    var facetMap = {};
-    $.each(data.facetResults, function(idx, obj) {
-      facetMap[obj.fieldName] = obj.fieldResult;
-    });
-
-    // draw the charts
-    var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
-    var query = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
-    $.each(chartOptions.charts, function(index, name) {
-        if (facetMap[name] != undefined) {
-            buildGenericFacetChart(name, facetMap[name], query, chartsDiv, chartOptions);
-        }
-    });
-}
+///*********************************************************************\
+//* Loads charts based on the facets declared in the config object.
+//* - does not require any markup other than div#charts element
+//\*********************************************************************/
+//function drawFacetCharts(data, chartOptions) {
+//    // check that we have results
+//    if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
+//        return;
+//    }
+//
+//    // update total if requested
+//    if (chartOptions.totalRecordsSelector) {
+//      $(chartOptions.totalRecordsSelector).html(addCommas(data.totalRecords));
+//    }
+//
+//    console.log('drawFacetCharts - charts....');
+//
+//
+//    // transform facet results into map
+//    var facetMap = {};
+//    $.each(data.facetResults, function(idx, obj) {
+//      facetMap[obj.fieldName] = obj.fieldResult;
+//    });
+//
+//    // draw the charts
+//    var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
+//    var query = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
+//    $.each(chartOptions.charts, function(index, name) {
+//        if (facetMap[name] != undefined) {
+//            buildGenericFacetChart(name, facetMap[name], query, chartsDiv, chartOptions);
+//        }
+//    });
+//}
 /************************************************************\
 * Create and show a generic facet chart
 \************************************************************/

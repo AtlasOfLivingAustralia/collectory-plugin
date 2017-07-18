@@ -733,6 +733,7 @@ function cleanUp(chartOptions) {
  * - does not require any markup other than div#charts element
  \*********************************************************************/
 function drawFacetCharts(data, chartOptions) {
+
     // check that we have results
     if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
         return;

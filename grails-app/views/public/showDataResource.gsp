@@ -357,8 +357,7 @@
           /* a uid or list of uids to chart - either this or query must be present */
           instanceUid: "${instance.uid}",
           /* the list of charts to be drawn (these are specified in the one call because a single request can get the data for all of them) */
-          charts: ['country','state','species_group','assertions','type_status',
-              'biogeographic_region','state_conservation','occurrence_year']
+          charts: ${raw(grailsApplication.config.dataResourceChartsJSON)}
       }
       var taxonomyChartOptions = {
           /* base url of the collectory */
@@ -414,26 +413,20 @@
           }
       }
 
-      // species pages
-      $.ajax({
-          url: bieUrl + "search.json?q=*&fq=uid:${instance.uid}",
-          dataType: 'jsonp',
-          success: function(data) {
-              var pages = data.searchResults.totalRecords;
-              if (pages) {
-                  var $contrib = $('#pagesContributed');
-                  $contrib.append($('<h2>Contribution to the Atlas</h2><p>This resource has contributed to <strong>' +
-                      pages + '</strong> pages of taxa. ' +
-                      '<a href="' + bieUrl + 'search?q=*&fq=uid:' + "${instance.uid}" + '">View a list</a></p>'));
-              }
-          }
-      });
-
       // records
       if (${instance.resourceType == 'records'}) {
           // summary biocache data
+
+          var facetsParam = "";
+
+          $.each(facetChartOptions.charts, function( index, value ) {
+              facetsParam += "&facets=" + value;
+          });
+
+          var queryUrl = CHARTS_CONFIG.biocacheServicesUrl + "/occurrences/search.json?pageSize=0&q=data_resource_uid:${instance.uid}" + facetsParam;
+
           $.ajax({
-            url: CHARTS_CONFIG.biocacheServicesUrl + "/occurrences/search.json?pageSize=0&q=data_resource_uid:${instance.uid}",
+            url: queryUrl,
             dataType: 'jsonp',
             timeout: 30000,
             complete: function(jqXHR, textStatus) {
@@ -454,7 +447,6 @@
                     setNumbers(data.totalRecords);
                     facetChartOptions.response = data;
                     // draw the charts
-                    drawFacetCharts(data, facetChartOptions);
                     drawFacetCharts(data, facetChartOptions);
                     if(data.totalRecords > 0){
                         $('#dataAccessWrapper').css({display:'block'});
