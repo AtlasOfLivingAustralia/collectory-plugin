@@ -384,7 +384,7 @@ function onLoadCallback() {
       facetsParam += "&facets=" + value;
   });
 
-  var queryUrl = urlConcat(biocacheServicesUrl, "/occurrences/search.json?pageSize=0&q=") + buildQueryString("${instance.uid}" + facetsParam;
+  var queryUrl = urlConcat(biocacheServicesUrl, "/occurrences/search.json?pageSize=0&q=") + buildQueryString("${instance.uid}") + facetsParam;
 
   // records
   $.ajax({

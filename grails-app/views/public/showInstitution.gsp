@@ -244,7 +244,7 @@
           facetsParam += "&facets=" + value;
       });
 
-      var queryUrl = urlConcat(biocacheServicesUrl, "/occurrences/search.json?pageSize=0&q=") + buildQueryString("${instance.descendantUids().join(',')}" + facetsParam;
+      var queryUrl = urlConcat(biocacheServicesUrl, "/occurrences/search.json?pageSize=0&q=") + buildQueryString("${instance.descendantUids().join(',')}") + facetsParam;
 
       // records
       $.ajax({
