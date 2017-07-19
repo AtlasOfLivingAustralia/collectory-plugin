@@ -43,33 +43,6 @@ var baseFacetChart = {
     column1DataType: 'string',
     datasets: 1,
     backgroundColor: {fill: 'transparent'},
-    // defaults for individual facet charts
-    /*
-    individualChartOptions: {
-        state_conservation: {chartArea: {left:60, height: "58%"}, title: jQuery.i18n.prop('charts2.js.stateconservationstatus')},
-        occurrence_year: {chartArea: {left:60, height: "55%"}, requestFacetName: 'decade'},
-        decade: {chartArea: {left:60, height: "55%"}, responseFacetName: 'occurrence_year'},
-        year: {width: 600},
-        month: {width: 600},
-        institution_uid: {chartArea: {left: 0, width: "100%"}},
-        collection_uid: {chartArea: {left: 0, width: "100%"}},
-        species_group: {title: jQuery.i18n.prop('charts2.js.higherlevelgroup'), ignore: ['Animals'], chartType: 'column',
-            width: 450, chartArea: {left:60, height:"58%"},
-            vAxis: {minValue: 0, textPosition:'in', gridlines:{color: '#ddd', count: 4}},
-            colors: ['#108628'], reverseCategories:true, hAxis:{slantedTextAngle:60}},
-        state: {ignore: ['Unknown1']},
-        type_status: {title: jQuery.i18n.prop('charts2.js.typestatus'), ignore: ['notatype']},
-        el895: {hAxis: {title: jQuery.i18n.prop('charts2.js.moistureindex')}},
-        el882: {hAxis: {title: jQuery.i18n.prop('charts2.js.mm')}},
-        el889: {hAxis: {title: jQuery.i18n.prop('charts2.js.mm')}},
-        el887: {hAxis: {title: jQuery.i18n.prop('charts2.js.mjm2day')}},
-        el865: {hAxis: {title: jQuery.i18n.prop('charts2.js.moistureindex')}},
-        el894: {hAxis: {title: jQuery.i18n.prop('charts2.js.mjmeday')}},
-        radiation: {hAxis: {title:jQuery.i18n.prop('charts2.js.mjm2day')}, chartArea: {width: "65%"}, facets: ['el887','el894'], facetLabels: [jQuery.i18n.prop('charts2.js.seasonalitybio23'),jQuery.i18n.prop('charts2.js.warmestquarter')]},
-        precipitation: {hAxis: {title:jQuery.i18n.prop('charts2.js.mm')}, chartArea: {width: "65%"}, facets: ['el882','el889'], facetLabels: [jQuery.i18n.prop('charts2.js.seasonalitybio15'),jQuery.i18n.prop('charts2.js.driestquarterbio17')]},
-        moisture: {hAxis: {title:jQuery.i18n.prop('charts2.js.moistureindex')}, chartArea: {width: "65%"}, facets: ['el895','el865'], facetLabels: [jQuery.i18n.prop('charts2.js.lowestperiodbio30'),jQuery.i18n.prop('charts2.js.highestquartermeanbio32')]}
-    },
-    */
 
     individualChartOptions: {
         state_conservation: {chartArea: {left:60, height: "58%"}, title: 'By state conservation status'},
@@ -106,26 +79,6 @@ var baseFacetChart = {
             return {};
         }
     },
-
-    // these override the facet names in chart titles
-    /*
-    chartLabels: {
-        institution_uid: jQuery.i18n.prop('charts2.js.institution'),
-        data_resource_uid: jQuery.i18n.prop('charts2.js.dataset'),
-        assertions: jQuery.i18n.prop('charts2.js.dataassertion'),
-        biogeographic_region: jQuery.i18n.prop('charts2.js.biogeographicregion'),
-        occurrence_year: jQuery.i18n.prop('charts2.js.decade'),
-        el895: jQuery.i18n.prop('charts2.js.bio30'),
-        el882: jQuery.i18n.prop('charts2.js.bio15'),
-        el889: jQuery.i18n.prop('charts2.js.bio17'),
-        el887: jQuery.i18n.prop('charts2.js.bio23'),
-        el865: jQuery.i18n.prop('charts2.js.bio32'),
-        el894: jQuery.i18n.prop('charts2.js.bio26'),
-        radiation: jQuery.i18n.prop('charts2.js.radiation'),
-        precipitation: jQuery.i18n.prop('charts2.js.precipitation'),
-        moisture: jQuery.i18n.prop('charts2.js.moisture')
-    },
-    */
 
     chartLabels: {
         institution_uid: 'institution',
@@ -329,6 +282,9 @@ var baseFacetChart = {
 
                 // build the facet query
                 var facetQuery = name + ":" + id;
+                if(!id){
+                    facetQuery = "-" + name + ":[* TO *]";
+                }
 
                 // the facet query can be overridden for date ranges
                 if (name == 'occurrence_year' || name == 'decade') {
@@ -705,6 +661,11 @@ function loadFacetCharts(chartOptions) {
     var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
     chartsDiv.append($("<span>Loading charts...</span>"));
     var query = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
+
+    $.each(chartOptions.charts, function( index, value ) {
+        query += "&facets=" + value;
+    });
+
     $.ajax({
         url: urlConcat(biocacheServicesUrl, "/occurrences/search.json?pageSize=0&q=") + query,
         dataType: 'jsonp',
@@ -819,7 +780,6 @@ function buildGenericFacetChart(name, data, query, chartsDiv, chartOptions) {
         case 'bar': chart = new google.visualization.BarChart(document.getElementById(name)); break;
         default: chart = new google.visualization.PieChart(document.getElementById(name)); break;
     }
-    opts['backgroundColor'] = 'red';
     chart.draw(dataTable, opts);
 
     // kick off post-draw asynch actions
@@ -836,6 +796,9 @@ function buildGenericFacetChart(name, data, query, chartsDiv, chartOptions) {
 
             // build the facet query
             var facetQuery = name + ":" + id;
+            if(!id){
+                facetQuery = "-" + name + ":[* TO *]";
+            }
 
             // the facet query can be overridden for date ranges
             if (name == 'occurrence_year') {
@@ -1137,7 +1100,7 @@ var taxonomyChart = {
                 else if (clickThru) {
                     // show occurrence records
                     document.location = urlConcat(biocacheWebappUrl, "/occurrences/search?q=") + query +
-                            "&fq=" + data.rank + ":" + name;
+                        "&fq=" + data.rank + ":\"" + name + "\"";
                 }
             });
         }
@@ -1146,7 +1109,7 @@ var taxonomyChart = {
         // show occurrence records
         var fq = "";
         if (this.rank != undefined && this.name != undefined) {
-            fq = "&fq=" + this.rank + ":" + this.name;
+            fq = "&fq=" + this.rank + ":\"" + this.name + "\"";
         }
         document.location = urlConcat(biocacheWebappUrl, "/occurrences/search?q=") +
                 this.query + fq;
@@ -1276,7 +1239,7 @@ function showRecords(node, query) {
     var name = node.attr('id');
     // url for records list
     var recordsUrl = urlConcat(biocacheWebappUrl, "/occurrences/search?q=") + query +
-            "&fq=" + rank + ":" + name;
+            "&fq=" + rank + ":\"" + name + "\"";
     document.location.href = recordsUrl;
 }
 /************************************************************\
