@@ -281,7 +281,7 @@ var baseFacetChart = {
                 var id = dataTable.getValue(that.chart.getSelection()[0].row,0);
 
                 // build the facet query
-                var facetQuery = name + ":" + id;
+                var facetQuery = name + ":\"" + id + "\"";
                 if(!id){
                     facetQuery = "-" + name + ":[* TO *]";
                 }
@@ -795,7 +795,7 @@ function buildGenericFacetChart(name, data, query, chartsDiv, chartOptions) {
             var id = dataTable.getValue(chart.getSelection()[0].row,0);
 
             // build the facet query
-            var facetQuery = name + ":" + id;
+            var facetQuery = name + ":\"" + id + "\"";
             if(!id){
                 facetQuery = "-" + name + ":[* TO *]";
             }
