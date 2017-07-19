@@ -299,7 +299,7 @@ class LookupController {
         switch (format) {
             case "tab separated": return "${name}\t${citation}\t${rights}\t${link}\t${dataGen}\t${infoWithheld}\t${downloadLimit}\t${pg.uid}\t${doi}"
             case "map": return ['name': name, 'citation': citation, 'rights': rights, 'link': link,
-                'dataGeneralizations': dataGen, 'informationWithheld': infoWithheld, 'downloadLimit': downloadLimit, 'uid': pg.uid, 'doi':doi]
+                'dataGeneralizations': dataGen, 'informationWithheld': infoWithheld, 'downloadLimit': downloadLimit, 'uid': pg.uid, 'DOI':doi]
             case "array": return [name, citation, rights, link, dataGen, infoWithheld, downloadLimit, pg.uid, doi]
         }
     }
