@@ -37,7 +37,7 @@
                     </div>
                     <div class="form-group">
                         <label for="rightsHolder">Rights holder</label>
-                        <g:textArea name="rightsHolder" rows="3" class="input-xxlarge" placeholder="Type something…" value="${imageMetadata?.rightsHolder}"/>
+                        <g:textArea name="rightsHolder" rows="3" class="form-control" placeholder="Type something…" value="${imageMetadata?.rightsHolder}"/>
                     </div>
                     <div class="form-group">
                         <label for="license">Licence</label>

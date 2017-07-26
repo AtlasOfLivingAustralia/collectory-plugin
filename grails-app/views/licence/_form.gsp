@@ -7,12 +7,12 @@
 
 <div class="fieldcontain ${hasErrors(bean: licenceInstance, field: 'acronym', 'error')} form-group">
     <label for="name"><cl:required><g:message code="licenceInstance.acronym.label" default="Acronym" /></cl:required></label>
-    <g:textField name="acronym" maxlength="200" required="" value="${licenceInstance?.acronym}"/>
+    <g:textField name="acronym" class="form-control" maxlength="200" required="" value="${licenceInstance?.acronym}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: licenceInstance, field: 'acronym', 'error')} form-group">
     <label for="name"><cl:required><g:message code="licenceInstance.licenceVersion.label" default="Version" /></cl:required></label>
-    <g:textField name="licenceVersion" maxlength="200" required="" value="${licenceInstance?.licenceVersion}"/>
+    <g:textField name="licenceVersion" class="form-control" maxlength="200" required="" value="${licenceInstance?.licenceVersion}"/>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: licenceInstance, field: 'url', 'error')} form-group">
