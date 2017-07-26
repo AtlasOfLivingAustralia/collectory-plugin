@@ -1,6 +1,6 @@
 <g:if test="${it?.size() > 0}">
-  <div class="section">
-    <h3><g:message code="public.show.contacts.contact" default="Contact"/></h3>
+  <section class="public-metadata">
+    <h4><g:message code="public.show.contacts.contact" default="Contact"/></h4>
     <g:each in="${it}" var="cf">
       <div class="contact">
         <p>
@@ -12,5 +12,5 @@
         </p>
       </div>
     </g:each>
-  </div>
+  </section>
 </g:if>

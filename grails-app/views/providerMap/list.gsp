@@ -7,17 +7,17 @@
         <title><g:message code="default.list.label" args="[entityName]" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="create" action="create" params="[returnTo: returnTo]"><g:message code="default.new.label" args="[entityName]" /></g:link></span></li>
-             <g:if test="${returnTo}"><span class="menuButton"><cl:returnLink uid="${returnTo}"/></span></g:if>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create" params="[returnTo: returnTo]"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <g:if test="${returnTo}"><span class="menuButton"><cl:returnLink uid="${returnTo}"/></span></g:if>
             </ul>
         </div>
         <div class="body content">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
-            <div class="message alert">${flash.message}</div>
+            <div class="message alert alert-warning">${flash.message}</div>
             </g:if>
             <div class="list">
                 <table class="table table-bordered table-striped">
@@ -63,8 +63,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="pagination">
-                <g:paginate total="${providerMapInstanceTotal}" />
+            <div class="nav">
+                <tb:paginate controller="providerMap" action="list" total="${providerMapInstanceTotal}" />
             </div>
         </div>
     </body>

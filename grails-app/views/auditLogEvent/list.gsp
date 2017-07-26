@@ -5,10 +5,10 @@
         <title><g:message code="ale.list.title" /></title>
     </head>
     <body class="content">
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:message code="ale.list.li01" /></span></li>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="ale.list.li01"/></g:link></li>
             </ul>
         </div>
         <div class="body">
@@ -56,8 +56,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="pagination">
-                <g:paginate total="${auditLogEventInstanceTotal}" />
+            <div class="nav">
+                <tb:paginate controller="licence" action="list" total="${auditLogEventInstanceTotal}" />
             </div>
         </div>
     </body>

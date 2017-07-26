@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
-        <title><g:message code="collection.base.label" default="Edit collection metadata" /></title>
+        <title><g:message code="collection.base.label" args="[command.ENTITY_TYPE]" default="Edit collection metadata" /></title>
     </head>
     <body>
         <div class="nav">
@@ -31,131 +31,71 @@
                         <tbody>
 
                         <!-- geographic range -->
-                        <tr><td colspan="3"><h3><g:message code="collection.range.title" /></h3></td></tr>
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="geographicDescription"><g:message code="collection.range.label01" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'geographicDescription', 'errors')}">
-                                <g:textField name="geographicDescription" class="input-xxlarge" value="${command?.geographicDescription}" />
-                                <cl:helpText code="collection.geographicDescription"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        <div><h3><g:message code="collection.range.title" /></h3></div>
+                        <div class="form-group">
+                                <label for="geographicDescription"><g:message code="collection.range.label01" /><cl:helpText code="collection.geographicDescription"/></label>
+                                <g:textField name="geographicDescription" class="form-control" value="${command?.geographicDescription}" />
+                         </div>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="states"><g:message code="collection.range.label02" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'states', 'errors')}">
-                                <g:textField name="states" value="${command?.states}" />
-                                <cl:helpText code="collection.states"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="states"><g:message code="collection.range.label02" /><cl:helpText code="collection.states"/></label>
+                                <g:textField name="states" class="form-control" value="${command?.states}" />
+                        </div>
 
-                        <tr class="prop">
-                          <td colspan="2"><g:message code="collection.range.label03" />.</td>
-                        </tr>
+                        <div class="form-group">
+                          <g:message code="collection.range.label03" />.
+                        </div>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="eastCoordinate"><g:message code="collection.range.label04" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'eastCoordinate', 'errors')}">
-                              <g:textField name="eastCoordinate" value="${cl.showDecimal(value: command.eastCoordinate)}" />
-                              <cl:helpText code="collection.eastCoordinate"/>
-                          </td>
-                          <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                               <label for="eastCoordinate"><g:message code="collection.range.label04" /><cl:helpText code="collection.eastCoordinate"/></label>
+                              <g:field type="number" class="form-control" name="eastCoordinate" min="-180.0" max="180.0" step="any" value="${cl.showDecimal(value: command.eastCoordinate)}" />
+                        </div>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="westCoordinate"><g:message code="collection.range.label05" /></label>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'westCoordinate', 'errors')}">
-                              <g:textField name="westCoordinate" value="${cl.showDecimal(value: command.westCoordinate)}" />
-                              <cl:helpText code="collection.westCoordinate"/>
-                          </td>
-                          <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="westCoordinate"><g:message code="collection.range.label05" /><cl:helpText code="collection.westCoordinate"/></label>
+                              <g:field type="number" class="form-control" name="westCoordinate" min="-180.0" max="180.0" step="any"  value="${cl.showDecimal(value: command.westCoordinate)}" />
+                         </div>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="northCoordinate"><g:message code="collection.range.label06" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'northCoordinate', 'errors')}">
-                                <g:textField name="northCoordinate" value="${cl.showDecimal(value: command.northCoordinate)}" />
-                                <cl:helpText code="collection.northCoordinate"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="northCoordinate"><g:message code="collection.range.label06" /><cl:helpText code="collection.northCoordinate"/></label>
+                                <g:field type="number" class="form-control" name="northCoordinate" min="-90.0" max="90.0" step="any" value="${cl.showDecimal(value: command.northCoordinate)}" />
+                        </div>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="southCoordinate"><g:message code="collection.range.label07" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'southCoordinate', 'errors')}">
-                              <g:textField name="southCoordinate" value="${cl.showDecimal(value: command.southCoordinate)}" />
-                              <cl:helpText code="collection.southCoordinate"/>
-                          </td>
-                          <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="southCoordinate"><g:message code="collection.range.label07" /><cl:helpText code="collection.southCoordinate"/></label>
+                              <g:field type="number" class="form-control" name="southCoordinate" min="-90.0" max="90.0" step="any" value="${cl.showDecimal(value: command.southCoordinate)}" />
+                        </div>
 
                         <!-- taxonomic range -->
-                        <tr><td colspan="3"><h3><g:message code="collection.range.title02" /></h3></td></tr>
-                        <tr class="prop">
-                            <td valign="top" class="checkbox">
-                              <label for="kingdomCoverage"><g:message code="collection.range.label08" /></label>
-                            </td>
-                            <td valign="top" class="checkbox">
+                        <div><h3><g:message code="collection.range.title02" /></h3></div>
+                        <div class="form-group">
+                              <label for="kingdomCoverage"><g:message code="collection.range.label08" /><cl:helpText code="collection.kingdomCoverage"/></label>
                                 <cl:checkBoxList name="kingdomCoverage" from="${Collection.kingdoms}" value="${command?.kingdomCoverage}" />
-                                <cl:helpText code="collection.kingdomCoverage"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        </div>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="scientificNames"><g:message code="collection.range.label09" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'scientificNames', 'errors')}">
-                                <!--richui:autoComplete name="scientificNames" controller="collection" action="scinames" title="sci name"/-->
-                              <g:textArea name="scientificNames" value="${command.listScientificNames().join(',')}"/>
-                              <cl:helpText code="collection.scientificNames"/>
-                          </td>
-                          <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="scientificNames"><g:message code="collection.range.label09" /><cl:helpText code="collection.scientificNames"/></label>
+                               <g:textArea name="scientificNames" class="form-control" value="${command.listScientificNames().join(',')}"/>
+                        </div>
 
                         <!-- stats -->
-                        <tr><td colspan="3"><h3><g:message code="collection.range.title03" /></h3></td></tr>
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="numRecords"><g:message code="collection.numRecords.label" default="Number of specimens" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'numRecords', 'errors')}">
-                                <g:textField name="numRecords" value="${cl.showNumber(value: command.numRecords)}" />
-                                <cl:helpText code="collection.numRecords"/>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
+                        <tr><h3><g:message code="collection.range.title03" /></h3></div>
+                        <div class="form-group">
+                              <label for="numRecords"><g:message code="collection.numRecords.label" default="Number of specimens" /><cl:helpText code="collection.numRecords"/></label>
+                                <g:field type="number" name="numRecords" class="form-control" value="${cl.showNumber(value: command.numRecords)}" />
+                        </div>
 
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="numRecordsDigitised"><g:message code="collection.numRecordsDigitised.label" default="Number of records digitised" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'numRecordsDigitised', 'errors')}">
-                                <g:textField name="numRecordsDigitised" value="${cl.showNumber(value: command.numRecordsDigitised)}" />
-                                <cl:helpText code="collection.numRecordsDigitised"/>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
-                        </tbody>
-                    </table>
+                        <div class="form-group">
+                              <label for="numRecordsDigitised"><g:message code="collection.numRecordsDigitised.label" default="Number of records digitised" /><cl:helpText code="collection.numRecordsDigitised"/></label>
+                            
+                            
+                                <g:field type="number" name="numRecordsDigitised" class="form-control" value="${cl.showNumber(value: command.numRecordsDigitised)}" />
+                        </div>
                 </div>
 
                 <div class="buttons">
-                    <span class="button"><input type="submit" name="_action_updateRange" value="${message(code:"collection.button.update")}" class="save btn"></span>
-                    <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"collection.button.cancel")}" class="cancel btn"></span>
+                    <span class="button"><input type="submit" name="_action_updateRange" value="${message(code:"collection.button.update")}" class="save btn btn-success"></span>
+                    <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"collection.button.cancel")}" class="cancel btn btn-default"></span>
                 </div>
             </g:form>
         </div>

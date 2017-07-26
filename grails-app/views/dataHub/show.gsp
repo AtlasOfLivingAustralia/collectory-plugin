@@ -18,13 +18,19 @@
       float: right;
     }
     </style>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></span></li>
-            <li><span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span></li>
-            </ul>
-        </div>
+    <div class="btn-toolbar">
+        <ul class="btn-group">
+            <li class="btn"><cl:homeLink/></li>
+            <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+            <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+        </ul>
+        <ul class="btn-group pull-right">
+            <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+            <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+            <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
+            <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
+        </ul>
+    </div>
         <div class="body">
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -57,7 +63,7 @@
                 <!-- last edit -->
                 <p><span class="category"><g:message code="datahub.show.lastchange" />:</span> ${fieldValue(bean: instance, field: "userLastModified")} on ${fieldValue(bean: instance, field: "lastUpdated")}</p>
 
-                <div><span class="buttons"><g:link class="edit btn" action='edit' params="[page:'/shared/base']" id="${instance.id}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
+                <div><span class="buttons"><g:link class="edit btn btn-default" action='edit' params="[page:'/shared/base']" id="${instance.id}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
               </div>
 
               <!-- description -->
@@ -65,18 +71,18 @@
                 <h2><g:message code="collection.show.title.description" /></h2>
 
                 <!-- Pub Desc -->
-                <div class="source">[Public description]</div><div style="clear:both;"></div>
-                <cl:formattedText body="${instance.pubDescription}"/>
+                <span class="category"><g:message code="datahub.show.pubDesc" /></span><br/>
+                <cl:formattedText body="${instance.pubDescription?:'Not provided'}"/>
 
                 <!-- Tech Desc -->
-                <div class="source">[Technical description]</div><div style="clear:both;"></div>
-                <cl:formattedText body="${instance.techDescription}"/>
+                <span class="category"><g:message code="datahub.show.techDesc" /></span><br/>
+                <cl:formattedText body="${instance.techDescription?:'Not provided'}"/>
 
                 <!-- Contribution -->
-                <div class="source">[Contribution]</div><div style="clear:both;"></div>
-                <cl:formattedText>${fieldValue(bean: instance, field: "focus")}</cl:formattedText>
+                <span class="category"><g:message code="datahub.show.contribution" /></span><br/>
+                <cl:formattedText body="${instance.focus?:'Not provided'}"/>
 
-                <div><span class="buttons"><g:link class="edit btn" action='edit' params="[page:'description']" id="${instance.id}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
+                <div><span class="buttons"><g:link class="edit btn btn-default" action='edit' params="[page:'description']" id="${instance.id}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
               </div>
 
               <!-- members -->
@@ -107,7 +113,7 @@
                     </ul>
                 </g:if>
 
-                <div><span class="buttons"><g:link class="edit btn" action='edit' params="[page:'members']" id="${instance.id}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
+                <div><span class="buttons"><g:link class="edit btn btn-default" action='edit' params="[page:'members']" id="${instance.id}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
             </div>
 
               <!-- images -->
@@ -127,17 +133,20 @@
               <g:render template="/shared/changes" model="[changes: changes, instance: instance]"/>
 
             </div>
-            <div class="buttons">
-              <g:form>
-                <g:hiddenField name="id" value="${instance?.id}"/>
-                <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
-                  <span class="button"><g:actionSubmit class="delete btn btn-danger" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
-                </cl:ifGranted>
-                <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
-                <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
-                <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
-              </g:form>
+            <div class="btn-toolbar">
+                <g:form class="btn-group">
+                    <g:hiddenField name="id" value="${instance?.id}"/>
+                    <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
+                        <g:actionSubmit class="delete btn btn-danger" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/>
+                    </cl:ifGranted>
+                </g:form>
+                <ul class="btn-group pull-right">
+                    <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                    <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                    <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                </ul>
             </div>
+        </div>
         </div>
     </body>
 </html>

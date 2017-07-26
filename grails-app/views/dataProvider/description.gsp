@@ -22,80 +22,45 @@
                 <g:hiddenField name="id" value="${command?.id}" />
                 <g:hiddenField name="version" value="${command.version}" />
                 <div class="dialog">
-                    <table>
-                        <tbody>
-
                         <!-- public short description -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="pubShortDescription"><g:message code="providerGroup.pubShortDescription.label" default="Public Short Description" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'pubShortDescription', 'errors')}">
-                                <g:textArea name="pubShortDescription" class="input-large"  rows="${cl.textAreaHeight(text:command.pubShortDescription)}" value="${command.pubShortDescription}" />
-                                <cl:helpText code="providerGroup.pubShortDescription"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                                <label for="pubShortDescription"><g:message code="providerGroup.pubShortDescription.label" default="Public Short Description" /><cl:helpText code="providerGroup.pubShortDescription"/></label>
+                                 <g:textArea name="pubShortDescription" class="form-control"  rows="${cl.textAreaHeight(text:command.pubShortDescription)}" value="${command.pubShortDescription}" />
+                        </div>
 
                         <!-- public description -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="pubDescription"><g:message code="providerGroup.pubDescription.label" default="Public Description" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'pubDescription', 'errors')}">
-                                <g:textArea name="pubDescription" class="input-xxlarge" cols="40" rows="${cl.textAreaHeight(text:command.pubDescription)}" value="${command.pubDescription}" />
-                                <cl:helpText code="providerGroup.pubDescription"/>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="pubDescription"><g:message code="providerGroup.pubDescription.label" default="Public Description" /><cl:helpText code="providerGroup.pubDescription"/></label>
+                                <g:textArea name="pubDescription" class="form-control" cols="40" rows="${cl.textAreaHeight(text:command.pubDescription)}" value="${command.pubDescription}" />
+                         </div>
 
                         <!-- tech description -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="techDescription"><g:message code="providerGroup.techDescription.label" default="Technical Description" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'techDescription', 'errors')}">
-                                <g:textArea name="techDescription" class="input-xxlarge" cols="40" rows="${cl.textAreaHeight(text:command.techDescription)}" value="${command?.techDescription}" />
-                                <cl:helpText code="providerGroup.techDescription"/>
-                              </td>
+                        <div class="form-group">
+                              <label for="techDescription"><g:message code="providerGroup.techDescription.label" default="Technical Description" /><cl:helpText code="providerGroup.techDescription"/></label>
+                            <g:textArea name="techDescription" class="form-control" cols="40" rows="${cl.textAreaHeight(text:command.techDescription)}" value="${command?.techDescription}" />
                               <cl:helpTD/>
-                        </tr>
+                        </div>
 
                         <!-- focus -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="focus"><g:message code="providerGroup.focus.label" default="Contribution" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'focus', 'errors')}">
-                                <g:textArea name="focus" cols="40" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.focus)}" value="${command?.focus}" />
-                                <cl:helpText code="providerGroup.focus"/>
-                            </td>
-                          <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="focus"><g:message code="providerGroup.focus.label" default="Contribution" /><cl:helpText code="providerGroup.focus"/></label>
+                                <g:textArea name="focus" cols="40" class="form-control" rows="${cl.textAreaHeight(text:command.focus)}" value="${command?.focus}" />
+                        </div>
 
                         <!-- keywords -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="focus"><g:message code="providerGroup.keywords.label" default="Keywords" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'keywords', 'errors')}">
-                                <g:textField name="keywords" cols="40" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.keywords)}" value="${command?.keywords}" />
-                                <cl:helpText code="providerGroup.focus"/>
-                                <p>Recognised keywords include: ${au.org.ala.collectory.Classification.keywordSynonyms.values().flatten().toSet().sort().join(", ")}</p>
+                        <div class="form-group">
+                                <label for="focus"><g:message code="providerGroup.keywords.label" default="Keywords" /><cl:helpText code="providerGroup.focus"/></label>
+                                <g:textField name="keywords" cols="40" class="form-control" rows="${cl.textAreaHeight(text:command.keywords)}" value="${command?.keywords}" />
+                                <p class="help-block">Recognised keywords include: ${au.org.ala.collectory.Classification.keywordSynonyms.values().flatten().toSet().sort().join(", ")}
                                 The keywords should be comma separated. These keywords are used to drive the
-                                selections of providers on the <g:link controller="public" action="map">map</g:link></p>.
+                                selections of providers on the <g:link controller="public" action="map">map</g:link>.
                                 </p>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
-
-                      </tbody>
-                    </table>
+                        </div>
                 </div>
 
                 <div class="buttons">
-                    <span class="button"><input type="submit" name="_action_updateDescription" value="${message(code:"collection.button.update")}" class="save btn"></span>
-                    <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"collection.button.cancel")}" class="cancel btn"></span>
+                    <span class="button"><input type="submit" name="_action_updateDescription" value="${message(code:"collection.button.update")}" class="save btn btn-success"></span>
+                    <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"collection.button.cancel")}" class="cancel btn btn-default"></span>
                 </div>
             </g:form>
         </div>

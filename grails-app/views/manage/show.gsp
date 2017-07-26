@@ -32,11 +32,6 @@
     <body class="two-column-right">
       <div id="content">
         <div id="header" class="collectory">
-          <!--Breadcrumbs-->
-          <div id="breadcrumb"><cl:breadcrumbTrail/>
-            <span class="icon icon-arrow-right"></span>
-            <cl:pageOptionsLink>${fieldValue(bean:instance,field:'name')}</cl:pageOptionsLink>
-          </div>
           <cl:pageOptionsPopup instance="${instance}"/>
           <div class="section full-width">
             <g:if test="${flash.message}"><div class="message">${flash.message}</div></g:if>

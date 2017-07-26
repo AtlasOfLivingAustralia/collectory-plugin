@@ -8,12 +8,6 @@
     <body class="two-column-right">
       <div id="content">
         <div id="header" class="collectory">
-          <div id="breadcrumb">
-            <ol class="breadcrumb">
-                <li><cl:breadcrumbTrail/> <span class=" icon icon-arrow-right"></span></li>
-                <li><cl:pageOptionsLink>${fieldValue(bean:instance,field:'name')}</cl:pageOptionsLink></li>
-            </ol>
-          </div>
         </div><!--close header-->
         <div id="column-one">
 

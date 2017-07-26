@@ -10,7 +10,7 @@
       <div class="content">
 
         <div class="pull-right">
-            <g:link class="mainLink btn" controller="public" action="map"><g:message code="manage.list.link01" /></g:link>
+            <g:link class="mainLink btn btn-default" controller="public" action="map"><g:message code="manage.list.link01" /></g:link>
         </div>
 
         <h1><g:message code="manage.list.title01" /></h1>
@@ -19,16 +19,16 @@
             <div class="message">${flash.message}</div>
         </g:if>
 
-        <div class="row-fluid">
-            <div class="span3">
+        <div class="row">
+            <div class="col-md-3">
                 <ul id="adminNavMenu" class="nav nav-list nav-stacked nav-tabs">
-                    <li><a href="javascript:showSection('adminTools');"><i class="icon-chevron-right">&nbsp;</i> <g:message code="manage.list.li01" /></a></li>
-                    <li><a href="javascript:showSection('yourMetadata');"><i class="icon-chevron-right">&nbsp;</i> <g:message code="manage.list.li02" /></a></li>
-                    <li><a href="javascript:showSection('addCollection');"><i class="icon-chevron-right">&nbsp;</i> <g:message code="manage.list.li03" /></a></li>
+                    <li><a href="javascript:showSection('adminTools');"><i class="glyphicon-chevron-right">&nbsp;</i> <g:message code="manage.list.li01" /></a></li>
+                    <li><a href="javascript:showSection('yourMetadata');"><i class="glyphicon-chevron-right">&nbsp;</i> <g:message code="manage.list.li02" /></a></li>
+                    <li><a href="javascript:showSection('addCollection');"><i class="glyphicon-chevron-right">&nbsp;</i> <g:message code="manage.list.li03" /></a></li>
                 </ul>
             </div>
 
-            <div class="span9">
+            <div class="col-md-9">
 
                 <div id="yourMetadata" class="infoSection hide">
                     <g:if test="${show == 'user'}">
@@ -61,10 +61,10 @@
                             <g:each in="${entities}" var="ent">
                                 <tr>
                                     <td style="text-align: center;"><g:link controller="public" action="show" id="${ent.uid}">
-                                        <i class="icon-eye-open"></i></g:link>
+                                        <i class="glyphicon-eye-open"></i></g:link>
                                     </td>
                                     <td style="text-align: center;">
-                                        <i class="icon-edit"></i>
+                                        <i class="glyphicon-edit"></i>
                                     </td>
                                     <g:set var="name" value="${ent.uid[0..1] == 'in' ? ent.name + ' (Institution)' : ent.name}"/>
                                     <td style="padding-left: 5px;">${name}</td>
@@ -149,7 +149,7 @@
                             <li><g:message code="manage.list.addcollection.li02" />.</li>
                         </ul>
 
-                        <g:link controller="dataResource" action="create" class="btn"><g:message code="manage.list.addcollection.link01" /></g:link>
+                        <g:link controller="dataResource" action="create" class="btn btn-default"><g:message code="manage.list.addcollection.link01" /></g:link>
 
                         <h2><g:message code="manage.list.addcollection.title02" /></h2>
                         <p><g:message code="manage.list.addcollection.des02" />:</p>
@@ -162,7 +162,7 @@
                             <li><g:message code="manage.list.addcollection.li08" />.</li>
                         </ul>
 
-                        <g:link controller="collection" action="create" class="btn"><g:message code="manage.list.addcollection.link02" /></g:link>
+                        <g:link controller="collection" action="create" class="btn btn-default"><g:message code="manage.list.addcollection.link02" /></g:link>
                     </cl:ifGranted>
                 </div>
 
@@ -181,9 +181,9 @@
 
                         <p class="mainText"><g:message code="manage.list.addtools.des03" /></p>
                         <g:form controller="collection" action="searchList" method="get">
-                            <div class="input-append">
+                            <div class="input-group">
                                 <g:textField class="mainText" name="term" placeholder="Search for collection"/>
-                                <g:submitButton class="btn" name="search" value="Search"/>
+                                <g:submitButton class="btn btn-default" name="search" value="Search"/>
                             </div>
                         </g:form>
                     </div>

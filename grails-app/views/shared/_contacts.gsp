@@ -1,5 +1,5 @@
 <!-- Contacts -->
- <div class="show-section well">
+ <section class="public-metadata show-section well">
  <h2><g:message code="shared.contacts.title01" /></h2>
  <ul class="fancy">
    <g:each in="${contacts}" var="c">
@@ -15,4 +15,4 @@
  </ul>
  <div style="clear:both;"></div>
  <cl:editButton uid="${instance.uid}" page="/shared/showContacts"/>
- </div>
+ </section>

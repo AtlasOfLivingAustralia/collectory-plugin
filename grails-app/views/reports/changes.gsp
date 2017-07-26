@@ -5,10 +5,10 @@
         <title><g:message code="reports.changes.title" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="list" action="list"><g:message code="reports.li.reports" /></g:link></span></li>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-th-list"></span><g:link class="list" action="list"> <g:message code="reports.li.reports"/></g:link></li>
             </ul>
         </div>
         <div class="body">
@@ -25,9 +25,9 @@
                         <g:hiddenField name="offset" value="${offset}"/>
                         <label for="who"><g:message code="reports.changes.who" />: <g:textField name="who" value="${who}"/></label>
                         <label for="what"><g:message code="reports.changes.what" />: <g:textField name="what" value="${what}"/></label>
-                        <g:submitButton class="submit btn " name="filter" value="Search"/>
-                        <g:submitButton class="submit btn" name="reset" value="Reset"/>
-                        <g:submitButton name="next "  class="btn" value="Next 100»"/>
+                        <g:submitButton class="submit btn btn-default " name="filter" value="Search"/>
+                        <g:submitButton class="submit btn btn-default" name="reset" value="Reset"/>
+                        <g:submitButton name="next "  class="btn btn-default" value="Next 100»"/>
                     </fieldset>
                   </g:form>
               </div>

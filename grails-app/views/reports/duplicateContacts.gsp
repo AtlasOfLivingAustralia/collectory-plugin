@@ -6,10 +6,10 @@
         <title><g:message code="reports.title" /> - <g:message code="reports.dc.title" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="list" action="list"><g:message code="reports.li.reports" /></g:link></span></li>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-th-list"></span><g:link class="list" action="list"> <g:message code="reports.li.reports"/></g:link></li>
             </ul>
         </div>
         <div class="body reports">

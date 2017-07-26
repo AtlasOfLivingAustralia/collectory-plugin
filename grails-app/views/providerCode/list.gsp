@@ -8,11 +8,11 @@
 		<title><g:message code="default.list.label" args="[entityName]" /></title>
 	</head>
 	<body>
-		<a href="#list-providerCode" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
-		<div class="nav" role="navigation">
-			<ul>
-				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
+		<div class="btn-toolbar">
+			<ul class="btn-group">
+				<li class="btn"><cl:homeLink/></li>
+				<li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+				<li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
 			</ul>
 		</div>
 		<div id="list-providerCode" class="content scaffold-list" role="main">
@@ -38,8 +38,9 @@
 				</g:each>
 				</tbody>
 			</table>
-			<div class="pagination">
-				<g:paginate total="${providerCodeInstanceTotal}" />
+
+			<div class="nav">
+				<tb:paginate controller="providerCode" action="list" total="${providerCodeInstanceTotal}" />
 			</div>
 		</div>
 	</body>

@@ -266,8 +266,9 @@ class DataController {
 
     def serveFile = {
         def dirpath =  "/" + params.directory + "/"
-        def idx = request.forwardURI.lastIndexOf(dirpath) + dirpath.length()
-        def fullFileName = request.forwardURI.substring(idx)
+        def uri = URLDecoder.decode(request.forwardURI, "UTF-8")
+        def idx = uri.lastIndexOf(dirpath) + dirpath.length()
+        def fullFileName = uri.substring(idx)
         def file = new File(grailsApplication.config.repository.location.images + File.separator + params.directory, fullFileName)
         if(file.exists()){
             if(fullFileName.endsWith(".json")){

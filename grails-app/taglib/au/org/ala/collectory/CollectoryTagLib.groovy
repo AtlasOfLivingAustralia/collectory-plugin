@@ -60,7 +60,7 @@ class CollectoryTagLib {
             link += '&baseUrlForWS=' + grailsApplication.config.biocacheServicesUrl
             link += '&baseUrlForUI=' + grailsApplication.config.biocacheUiURL
             link += '&resourceName=' + grailsApplication.config.alertResourceName
-            out << "<a href=\"" + link +"\" class='btn' alt='"+attrs.altText+"'><i class='icon icon-bell'></i> "+ attrs.linkText + "</a>"
+            out << "<a href=\"" + link +"\" class='btn btn-default' alt='"+attrs.altText+"'><i class='glyphicon glyphicon-bell'></i> "+ attrs.linkText + "</a>"
         }
     }
 
@@ -671,12 +671,15 @@ class CollectoryTagLib {
      * body content should contain the help text
      */
     def helpText = { attrs, body ->
-        def _default = attrs.default ? attrs.default : ""
+        def _default = attrs.default ?: ""
+        def helpText = message(code:attrs.code, default: _default)
         def helpTitle = message(code:attrs.code+".title", default: '')
-        def mb = new MarkupBuilder(out)
-        mb.a(href:'#', class:'helphover', 'data-original-title':helpTitle, 'data-content':message(code:attrs.code, default: _default)) {
-            i(class:'icon-question-sign') {
-                mkp.yieldUnescaped("&nbsp;")
+        if (helpText || helpTitle) {
+            def mb = new MarkupBuilder(out)
+            mb.span(class: 'helphover', 'data-original-title': helpTitle, 'data-content': helpText) {
+                span(class: 'glyphicon glyphicon-question-sign') {
+                    mkp.yieldUnescaped("&nbsp;")
+                }
             }
         }
     }
@@ -787,7 +790,6 @@ class CollectoryTagLib {
      * Takes the values as java list or JSON string and sets up checkboxes.
      */
     def checkboxSelect = {attrs ->
-        out << "<table class='span8'><tr>"
         //log.info "attrs.value=${attrs.value}"
         attrs.from.eachWithIndex { it, index ->
             def checked
@@ -796,12 +798,8 @@ class CollectoryTagLib {
             } else {
                 checked = (it in attrs.value) ? "checked='checked'" : ""
             }
-            out << "<td><input name='${attrs.name}' type='checkbox' ${checked}' value='${it}'/>${it}</td>"
-            if (index > 0 && ((index+1) % 6) == 0) {
-                out << "</tr>"
-            }
+            out << "<label class='checkbox-inline'><input name='${attrs.name}' type='checkbox' ${checked}' value='${it}'/>${it}</label>"
         }
-        out << "</tr></table>"
     }
 
     def raw = { attrs->
@@ -1163,14 +1161,14 @@ class CollectoryTagLib {
     }
 
     def homeLink = {
-        out << '<a class="home" href="' + createLink(uri:"/manage") + '">Home</a>'
+        out << '<span class="glyphicon glyphicon-home"></span> <a class="home" href="' + createLink(uri:"/manage") + '">Home</a>'
     }
 
     def returnLink = { attrs ->
         if (attrs.uid) {
             def pg = ProviderGroup._get(attrs.uid)
             if (pg) {
-                out << link(class: 'return', controller: controllerFromUid(uid: attrs.uid), action: 'show', id: pg.uid) {'Return to ' + pg.name}
+                out << link(class: 'return', controller: controllerFromUid(uid: attrs.uid), action: 'show', id: pg.uid) { '<span class="glyphicon glyphicon-arrow-left"></span> Return to ' + pg.name}
             }
         }
     }
@@ -1287,7 +1285,12 @@ class CollectoryTagLib {
      * Adds site context to page title.
      */
     def pageTitle = { attrs, body ->
-        out << "${body()} | Natural History Collections | Atlas of Living Australia"
+        def title = body().toString().trim()
+        if (title) {
+            out << title
+            out << " | "
+        }
+        out << grailsApplication.config.skin.orgNameLong.encodeAsHTML()
     }
 
     /**
@@ -1465,7 +1468,7 @@ class CollectoryTagLib {
                         link(controller:'public', action:'map') {"Collections"}
         }
         if (grailsApplication.config.skin.includeBaseUrl) {
-            out << "<a href='${grailsApplication.config.ala.baseURL}'>Home</a> <span class=\"icon icon-arrow-right\"></span> "
+            out << "<a href='${grailsApplication.config.ala.baseURL}'>Home</a> <span class=\"glyphicon glyphicon-arrow-right\"></span> "
         }
         out <<   hereLink
     }
@@ -1574,7 +1577,7 @@ class CollectoryTagLib {
         if (isAuthorisedToEdit(attrs.uid, request.getUserPrincipal()?.attributes?.email)) {
             def paramsMap
             // anchor class
-            paramsMap = [class:'edit btn']
+            paramsMap = [class:'edit btn btn-default']
             // action
             paramsMap << [action: (attrs.containsKey('action')) ? attrs.remove('action').toString() : 'edit']
             // optional controller
@@ -1849,22 +1852,18 @@ class CollectoryTagLib {
         }
 
         // show the protocol selector
-        out << """<tr class="prop">
-            <td valign="top" class="name">
-              <label for="protocol">Protocol</label>
-            </td>
-            <td valign="top" class="value">""" +
-                select(id:'protocolSelector',
+        out << "<div class=\"form-group\"><label for=\"protocol\">Protocol"
+        out << helpText(code: "dataResource.connectionParameters.protocol")
+        out << "</label>"
+        out <<  select(id:'protocolSelector',
                         name:"protocol",
+                        class: "form-control",
                         from:metadataService.getConnectionProfilesAsList(),
                         value:protocol,
                         optionValue:'display',
                         optionKey:'name',
-                        onchange:'changeProtocol()') +
-                """<cl:helpText code="dataResource.connectionParameters.protocol"/>
-              </td>
-              <cl:helpTD/>
-        </tr>"""
+                        onchange:'changeProtocol()')
+        out << "</div>"
 
         // create the widgets for each protocol (profile)
         metadataService.getConnectionProfilesAsList().each {
@@ -1894,42 +1893,39 @@ class CollectoryTagLib {
                     displayedValue = encodeControlChars(displayedValue)
                 }
 
-                def attributes = [name:pp.paramName, value:displayedValue, class:'input-xlarge']
+                def attributes = [name:pp.paramName, value:displayedValue, class:'form-control']
                 if (!selected) {
                     attributes << [disabled:true]
                 }
                 if (pp.paramName == "termsForUniqueKey") {
                     // handle terms specially
-                    out << """<tr class='labile' id="${it.name}" style="${hidden}">
-                                  <td class='be-careful' colspan='2'>
-                                        <div class='alert alert-danger'>Don't change the following terms unless you know what you are doing.
-                                        Incorrect values can cause major devastation.</div>
-                                  </td>
-                               </tr>
-                        <tr class="prop labile" style="${hidden}" id="${it.name}">
-                        <td valign="top" class="name"
-                          <label for="termsForUniqueKey">${pp.display}</label>
-                        </td>
-                        <td valign="top" class="value">""" +
-                            textField(attributes) +
-                            helpText(code:'dataResource.termsForUniqueKey') +
-                            "</td>" +  helpTD() + "</tr>"
-                } else {
+                    out << """<div class="form-group labile" id="${it.name}" style="${hidden}">"""
+                    out << """<div class='alert alert-danger'>Don't change the following terms unless you know what you are doing. Incorrect values can cause major devastation.</div>"""
+                    out << "</div>"
+                    out << """<div class="form-group labile" style="${hidden}" id="${it.name}">"""
+                    out << """<label for="termsForUniqueKey">${pp.display}${helpText(code:'dataResource.termsForUniqueKey')}</label>"""
+                    out << textField(attributes)
+                    out << "</div>"
+                 } else if (pp.type == 'boolean') {
+                    attributes.remove('class')
+                    out << """<div class="form-group labile" style="${hidden}" id="${it.name}">"""
+                    out << """<label for="${pp.paramName}">"""
+                    out << checkBox(attributes)
+                    out << " "
+                    out << pp.display
+                    out << helpText(code:'dataResource.' + pp.paramName)
+                    out << "</label></div>"
+                 } else {
                     // all others
                     def widget
                     switch (pp.type) {
                         case 'textArea': widget = 'textArea'; break
-                        case 'boolean': widget = 'checkBox'; break
                         default: widget = 'textField'; break
                     }
-                    out << """<tr class="prop labile" style="${hidden}" id="${it.name}">
-                        <td valign="top" class="name"
-                          <label for="${pp.paramName}">${pp.display}</label>
-                        </td>
-                        <td valign="top" class="value">""" +
-                            "${widget}"(attributes) +
-                            helpText(code:'dataResource.' + pp.paramName) +
-                            "</td>" +  helpTD() + "</tr>"
+                    out << """<div class="form-group labile" style="${hidden}" id="${it.name}">"""
+                    out << """<label for="${pp.paramName}">${pp.display}${helpText(code:'dataResource.' + pp.paramName)}</label>"""
+                    out << "${widget}"(attributes)
+                    out << "</div>"
                 }
             }
         }
@@ -2093,5 +2089,14 @@ class CollectoryTagLib {
             }
             out << "</table>"
         }
+    }
+
+    def required = { attrs, body ->
+        def title = message(code: 'default.required.label', default: 'required')
+        out << "<span class=\"required-field\" title=\"${title}\">"
+        out << body()
+        out << '<span class="required-icon glyphicon glyphicon-star"></span>'
+        out << "<span class=\"required-message\">${title}</span>"
+        out << '</span>'
     }
 }

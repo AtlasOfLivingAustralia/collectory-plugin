@@ -7,10 +7,10 @@
         <title><g:message code="ale.show.title" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="list" action="list"><g:message code="ale.show.li.audit" /></g:link></span></li>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="ale.list.li01"/></g:link></li>
             </ul>
         </div>
         <div class="body">

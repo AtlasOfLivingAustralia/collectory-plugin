@@ -89,7 +89,7 @@ modules = {
         resource url:[ dir: 'js',file:'jquery-migrate-1.2.1.min.js', plugin:'collectory-plugin']
     }
     datatables {
-        // Datatables configured via https://datatables.net/download/ with no css framework and select plugin
+        // Datatables configured via https://datatables.net/download/ with bootstrap css framework and select plugin
         dependsOn 'jquery'
         resource url:[ dir: 'css', file:'datatables.css', plugin:'collectory-plugin']
         resource url:[ dir: 'js', file:'datatables.min.js', plugin:'collectory-plugin']

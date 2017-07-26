@@ -28,192 +28,96 @@
             <g:form method="post" name="baseForm" action="base">
                 <g:hiddenField name="id" value="${command?.id}" />
                 <g:hiddenField name="version" value="${command.version}" />
-                <div class="span12">
-                    <table>
-                        <tbody>
-                          <tr class="prop">
-                              <td valign="top" class="name span2">
-                                <label for="guid"><g:message code="collection.guid.label" default="Guid" /></label>
-                              </td>
-                              <td valign="top" class="value ${hasErrors(bean: command, field: 'guid', 'errors')}">
-                                <g:textField name="guid" maxlength="100" value="${command?.guid}" class="input-xxlarge"/>
-                                <cl:helpText code="${entityNameLower}.guid"/>
-                              </td>
-                              <cl:helpTD/>
-                          </tr>
-
-                          <tr class="prop">
-                              <td valign="top" class="name">
-                                <label for="name"><g:message code="collection.name.label" default="Name" />
-                                  <br/><span class=hint>* required field</span>
-                                </label>
-                              </td>
-                              <td id="previous" valign="top" class="value ${hasErrors(bean: command, field: 'name', 'errors')}">
-                                <g:textField name="name" class="input-xxlarge" value="${command?.name}"/>
-                                <cl:helpText code="${entityNameLower}.name"/>
-                              </td>
-                            <cl:helpTD/>
-                          </tr>
-
-                          <tr class="prop">
-                              <td valign="top" class="name">
-                                <label for="acronym"><g:message code="collection.acronym.label" default="Acronym" /></label>
-                              </td>
-                              <td valign="top" class="value ${hasErrors(bean: command, field: 'acronym', 'errors')}">
-                                  <g:textField name="acronym" maxlength="45" value="${command?.acronym}" class="input-xlarge"/>
-                                  <cl:helpText code="providerGroup.acronym"/>
-                              </td>
-                            <cl:helpTD/>
-                          </tr>
-
-                        <g:if test="${command.ENTITY_TYPE == 'DataResource'}">
-
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="gbifDoi"><g:message code="collection.gbifDoi.label" default="DOI" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: command, field: 'gbifDoi', 'errors')}">
-                                    <g:textField name="gbifDoi" maxlength="45" value="${command?.gbifDoi}" class="input-xlarge"/>
-                                </td>
-                            </tr>
-
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="resourceType"><g:message code="collection.resourceType.label" default="Resource type" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: command, field: 'resourceType', 'errors')}">
-                                    <g:select name="resourceType"
-                                            from="${DataResource.resourceTypeList}"
-                                            value="${command.resourceType}" class="input-xlarge"/>
-                                    <cl:helpText code="providerGroup.resourceType"/>
-                                    <cl:helpTD/>
-                                </td>
-                            </tr>
-                        </g:if>
-
-                        <g:if test="${command.ENTITY_TYPE == 'DataProvider'}">
-                          <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="resourceType"><g:message code="dataprovider.gbif.country" default="GBIF Attribution" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'gbifCountryToAttribute', 'errors')}">
-                              <g:countrySelect id="country" name="gbifCountryToAttribute" value="${command?.gbifCountryToAttribute}"
-                                               noSelection="['':'-Leave empty for international organisations-']"/>
-                              <cl:helpText code="dataprovider.gbifCountryToAttribute" default="Select the country to attribute within GBIF.org as the publishing country"/>
-                              <cl:helpTD/>
-                            </td>
-                          </tr>
-                        </g:if>
-
-                        <g:if test="${command.ENTITY_TYPE == 'Collection'}">
-                          <!-- institution -->
-                          <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="institution.id"><g:message code="collection.institution.label" default="Institution"/></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'institution', 'errors')}">
-                              <g:select name="institution.id"
-                                    from="${Institution.list([sort:'name'])}"
-                                    optionKey="id"
-                                    noSelection="${['null':'Select an institution']}"
-                                    value="${command.institution?.id}" class="input-xlarge"/>
-                              <cl:helpText code="collection.institution"/>
-                              <cl:helpTD/>
-                            </td>
-                          </tr>
-                        </g:if>
-
-                        <g:if test="${command.ENTITY_TYPE == 'DataResource'}">
-                          <!-- data provider -->
-                          <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="dataProvider.id"><g:message code="dataResource.dataProvider.label" default="Data provider"/></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'dataProvider', 'errors')}">
-                              <g:select name="dataProvider.id"
-                                      from="${DataProvider.list([sort:'name'])}"
-                                      optionKey="id"
-                                      noSelection="${['null':'Select a data provider']}"
-                                      value="${command.dataProvider?.id}" class="input-xlarge"/>
-                              <cl:helpText code="dataResource.dataProvider"/>
-                              <cl:helpTD/>
-                            </td>
-                          </tr>
-
-                          <!-- institution -->
-                          <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="institution.id"><g:message code="institution.dataProvider.label" default="Institution"/></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'institution', 'errors')}">
-                              <g:select name="institution.id"
-                                      from="${Institution.list([sort:'name'])}"
-                                      optionKey="id"
-                                      noSelection="${['null':'Select an institution']}"
-                                      value="${command.institution?.id}"/>
-                              <cl:helpText code="dataResource.institution"/>
-                              <cl:helpTD/>
-                            </td>
-                          </tr>
-                        </g:if>
-
-                        <!-- ALA partner -->
-                        <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
-                          <tr class="prop">
-                              <td valign="top" class="name">
-                                <label for="isALAPartner">
-                                    <g:message code="providerGroup.isALAPartner.label" default="=Is Atlas Partner" />
-                                </label>
-                              </td>
-                              <td valign="top" class="value ${hasErrors(bean: command, field: 'isALAPartner', 'errors')}">
-                                  <g:checkBox name="isALAPartner" value="${command?.isALAPartner}" />
-                              </td>
-                          </tr>
-                        </cl:ifGranted>
-
-                        <!-- network membership -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="networkMembership"><g:message code="providerGroup.networkMembership.label" default="Belongs to" /></label>
-                            </td>
-                            <td valign="top" class="checkbox ${hasErrors(bean: command, field: 'networkMembership', 'errors')}">
-                                <cl:checkboxSelect name="networkMembership" from="${ProviderGroup.networkTypes}" value="${command?.networkMembership}" multiple="yes" valueMessagePrefix="providerGroup.networkMembership" noSelection="['': '']" />
-                                <cl:helpText code="providerGroup.networkMembership"/>
-                                <cl:helpTD/>
-                            </td>
-                        </tr>
-
-                        <!-- web site url -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="websiteUrl"><g:message code="providerGroup.websiteUrl.label" default="Website Url" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'websiteUrl', 'errors')}">
-                                <g:textField name="websiteUrl" class="input-xxlarge" value="${command?.websiteUrl}" />
-                                <cl:helpText code="providerGroup.websiteUrl"/>
-                                <cl:helpTD/>
-                            </td>
-                        </tr>
-
-                        <!-- notes -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="notes"><g:message code="providerGroup.notes.label" default="Notes" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'notes', 'errors')}">
-                                <g:textArea name="notes" cols="40" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.notes)}" value="${command?.notes}" />
-                                <cl:helpText code="collection.notes"/>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
-
-                        </tbody>
-                    </table>
+                <div class="form-group">
+                    <label for="guid"><g:message code="collection.guid.label" default="Guid"/><cl:helpText code="${entityNameLower}.guid"/></label>
+                    <g:textField name="guid" class="form-control" maxlength="100" value="${command?.guid}" />
                 </div>
+                <div class="form-group">
+                    <label for="name"><cl:required><g:message code="collection.name.label" default="Name"/></cl:required><cl:helpText code="${entityNameLower}.name"/></label>
+                    <g:textField name="name" class="form-control" value="${command?.name}"/>
+                </div>
+                <div class="form-group">
+                    <label for="acronym"><g:message code="collection.acronym.label" default="Acronym"/><cl:helpText code="providerGroup.acronym"/></label>
+                    <g:textField name="acronym"  class="form-control" maxlength="45" value="${command?.acronym}" />
 
+                </div>
+                <g:if test="${command.ENTITY_TYPE == 'DataResource'}">
+                    <div class="form-group">
+                        <label for="gbifDoi"><g:message code="collection.gbifDoi.label" default="DOI"/></label>
+                        <g:textField name="gbifDoi" class="form-control" maxlength="45" value="${command?.gbifDoi}" />
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceType"><g:message code="collection.resourceType.label" default="Resource type"/> <cl:helpText code="providerGroup.resourceType"/></label>
+                        <g:select name="resourceType" class="form-control"
+                                  from="${DataResource.resourceTypeList}"
+                                  value="${command.resourceType}" />
+                    </div>
+                </g:if>
+                <g:if test="${command.ENTITY_TYPE == 'DataProvider'}">
+                    <div class="form-group">
+                        <label for="resourceType"><g:message code="dataprovider.gbif.country" default="GBIF Attribution" /> <cl:helpText code="dataprovider.gbifCountryToAttribute" default="Select the country to attribute within GBIF.org as the publishing country"/></label>
+                        <g:countrySelect id="country"  class="form-control" name="gbifCountryToAttribute" value="${command?.gbifCountryToAttribute}"
+                                         noSelection="['':'-Leave empty for international organisations-']"/>
+                    </div>
+                </g:if>
+                <g:if test="${command.ENTITY_TYPE == 'Collection'}">
+                    <!-- institution -->
+                    <div class="form-group">
+                        <label for="institution.id"><g:message code="collection.institution.label" default="Institution"/><cl:helpText code="collection.institution"/></label>
+                        <g:select name="institution.id" class="form-control"
+                                  from="${Institution.list([sort:'name'])}"
+                                  optionKey="id"
+                                  noSelection="${['null':'Select an institution']}"
+                                  value="${command.institution?.id}" />
+                    </div>
+                </g:if>
+                <g:if test="${command.ENTITY_TYPE == 'DataResource'}">
+                    <!-- data provider -->
+                    <div class="form-group">
+                        <label for="dataProvider.id"><g:message code="dataResource.dataProvider.label" default="Data provider"/><cl:helpText code="dataResource.dataProvider"/></label>
+                        <g:select name="dataProvider.id" class="form-control"
+                                  from="${DataProvider.list([sort:'name'])}"
+                                  optionKey="id"
+                                  noSelection="${['null':'Select a data provider']}"
+                                  value="${command.dataProvider?.id}" />
+                    </div>
+                    <!-- institution -->
+                    <div class="form-group">
+                        <label for="institution.id"><g:message code="institution.dataProvider.label" default="Institution"/><cl:helpText code="dataResource.institution"/></label>
+                        <g:select name="institution.id" class="form-control"
+                                  from="${Institution.list([sort:'name'])}"
+                                  optionKey="id"
+                                  noSelection="${['null':'Select an institution']}"
+                                  value="${command.institution?.id}"/>
+                    </div>
+                </g:if>
+                <!-- ALA partner -->
+                <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
+                    <div class="checkbox">
+                        <label for="isALAPartner">
+                            <g:checkBox name="isALAPartner" value="${command?.isALAPartner}" />
+                            <g:message code="providerGroup.isALAPartner.label" default="=Is Atlas Partner" />
+                        </label>
+                    </div>
+                </cl:ifGranted>
+                <!-- network membership -->
+                <div class="form-group">
+                    <label for="networkMembership"><g:message code="providerGroup.networkMembership.label" default="Belongs to" /><cl:helpText code="providerGroup.networkMembership"/></label>
+                    <cl:checkboxSelect name="networkMembership" from="${ProviderGroup.networkTypes}" value="${command?.networkMembership}" multiple="yes" valueMessagePrefix="providerGroup.networkMembership" noSelection="['': '']" />
+                </div>
+                <!-- web site url -->
+                <div class="form-group">
+                    <label for="websiteUrl"><g:message code="providerGroup.websiteUrl.label" default="Website Url" /><cl:helpText code="providerGroup.websiteUrl"/></label>
+                    <g:textField name="websiteUrl"  class="form-control" value="${command?.websiteUrl}" />
+                </div>
+                <!-- notes -->
+                <div class="form-group">
+                    <label for="notes"><g:message code="providerGroup.notes.label" default="Notes" /><cl:helpText code="collection.notes"/></label>
+                    <g:textArea name="notes" cols="40"  class="form-control" rows="${cl.textAreaHeight(text:command.notes)}" value="${command?.notes}" />
+                </div>
                 <div class="buttons">
-                    <span class="button"><input type="submit" name="_action_updateBase" value="Update" class="save btn"></span>
-                    <span class="button"><input type="submit" name="_action_cancel" value="Cancel" class="cancel btn"></span>
+                    <span class="button"><input type="submit" name="_action_updateBase" value="Update" class="save btn btn-success"></span>
+                    <span class="button"><input type="submit" name="_action_cancel" value="Cancel" class="cancel btn btn-default"></span>
                 </div>
             </g:form>
         </div>

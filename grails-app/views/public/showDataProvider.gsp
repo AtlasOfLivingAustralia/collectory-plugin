@@ -37,16 +37,9 @@
 <body class="two-column-right">
 <div id="content">
     <div id="header" class="collectory">
-        <!--Breadcrumbs-->
-        <div id="breadcrumb">
-            <ol class="breadcrumb">
-                <li><cl:breadcrumbTrail home="dataSets"/> <span class=" icon icon-arrow-right"></span></li>
-                <li><cl:pageOptionsLink>${fieldValue(bean:instance,field:'name')}</cl:pageOptionsLink></li>
-            </ol>
-        </div>
         <cl:pageOptionsPopup instance="${instance}"/>
-        <div class="row-fluid">
-            <div class="span8">
+        <div class="row">
+            <div class="col-md-8">
                 <cl:h1 value="${instance.name}"/>
                 <cl:valueOrOtherwise value="${instance.acronym}"><span
                         class="acronym">Acronym: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
@@ -108,16 +101,19 @@
 
             </div><!--close section-->
             </div><!--close column-one-->
-            <div class="span4">
+            <div class="col-md-4">
 
         <!-- logo -->
-            <div class="section">
+
                 <g:if test="${fieldValue(bean: instance, field: 'logoRef') && fieldValue(bean: instance, field: 'logoRef.file')}">
+                    <section class="public-metadata">
                     <img class="institutionImage"
                          src='${resource(absolute: "true", dir: "data/" + instance.urlForm() + "/", file: fieldValue(bean: instance, field: 'logoRef.file'))}'/>
+                    </section>
                 </g:if>
 
                 <g:if test="${fieldValue(bean: instance, field: 'imageRef') && fieldValue(bean: instance, field: 'imageRef.file')}">
+                    <section class="public-metadata">
                         <img class="entityLogo" alt="${fieldValue(bean: instance, field: "imageRef.file")}"
                              src="${resource(absolute: "true", dir: "data/" + instance.urlForm() + "/", file: instance.imageRef.file)}"/>
                         <cl:formattedText
@@ -126,9 +122,11 @@
                                 class="caption">${fieldValue(bean: instance, field: "imageRef.attribution")}</p></cl:valueOrOtherwise>
                         <cl:valueOrOtherwise value="${instance.imageRef?.copyright}"><p
                                 class="caption">${fieldValue(bean: instance, field: "imageRef.copyright")}</p></cl:valueOrOtherwise>
+                    </section>
                 </g:if>
 
-                <h3><g:message code="public.location" /></h3>
+            <section class="public-metadata">
+                <h4><g:message code="public.location" /></h4>
                 <g:if test="${instance.address != null && !instance.address.isEmpty()}">
                     <p>
                         <cl:valueOrOtherwise
@@ -145,26 +143,27 @@
                 </g:if>
                 <g:if test="${instance.email}"><cl:emailLink>${fieldValue(bean: instance, field: "email")}</cl:emailLink><br/></g:if>
                 <cl:ifNotBlank value='${fieldValue(bean: instance, field: "phone")}'/>
+            </section>
 
             <!-- contacts -->
                 <g:render template="contacts" bean="${instance.getPublicContactsPrimaryFirst()}"/>
 
             <!-- web site -->
                 <g:if test="${instance.websiteUrl}">
-                    <div class="section">
-                        <h3><g:message code="public.website" /></h3>
+                    <section class="public-metadata">
+                        <h4><g:message code="public.website" /></h4>
 
                         <div class="webSite">
                             <a class='external_icon' target="_blank"
                                href="${instance.websiteUrl}"><g:message code="public.sdp.content.link01" /></a>
                         </div>
-                    </div>
+                    </section>
                 </g:if>
 
             <!-- network membership -->
                 <g:if test="${instance.networkMembership}">
-                    <div class="section">
-                        <h3><g:message code="public.network.membership.label" /></h3>
+                    <section class="public-metadata">
+                        <h4><g:message code="public.network.membership.label" /></h4>
                         <g:if test="${instance.isMemberOf('CHAEC')}">
                             <p><g:message code="public.network.membership.des01" /></p>
                             <img src="${resource(absolute: "true", dir: "data/network/", file: "butflyyl.gif")}"/>
@@ -182,7 +181,7 @@
                             <p><g:message code="public.network.membership.des04" /></p>
                             <img src="${resource(absolute: "true", dir: "data/network/", file: "chacm.png")}"/>
                         </g:if>
-                    </div>
+                    </section>
                 </g:if>
 
             <!-- external identifiers -->

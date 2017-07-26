@@ -64,7 +64,7 @@
     <div class="buttons">
       <g:form>
         <g:hiddenField name="id" value="${instance.id}"/>
-        <span class="button"><g:link class="returnAction btn" controller="${instance.urlForm()}" action='show' id="${instance.uid}">Return to ${instance.name}</g:link></span>
+        <span class="button"><g:link class="returnAction btn btn-default" controller="${instance.urlForm()}" action='show' id="${instance.uid}">Return to ${instance.name}</g:link></span>
       </g:form>
     </div>
 </div>

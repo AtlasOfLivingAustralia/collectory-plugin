@@ -18,6 +18,14 @@
  * Time: 8:47 AM
  */
 
+/* i18n */
+jQuery.i18n.properties({
+    name: 'messages',
+    path: COLLECTORY_CONF.contextPath + '/messages/i18n/',
+    mode: 'map',
+    language: COLLECTORY_CONF.locale // default is to use browser specified locale
+});
+
 /* holds full list of resources */
 var allResources;
 
@@ -328,28 +336,28 @@ function showPaginator() {
     }
     var currentPage = Math.floor(offset / pageSize()) + 1;
     var maxPage = Math.ceil(total / pageSize());
-    var $pago = $("<div class='pagination'></div>");
+    var $pago = $("<ul class='pagination'></ul>");
     // add prev
     if (offset > 0) {
-        $pago.append('<a href="javascript:prevPage();">« Previous</a></li>');
+        $pago.append('<li class="pre"><a href="javascript:prevPage();">«</a></li>');
     }
     else {
-        $pago.append('« Previous</span>');
+        $pago.append('<li class="prev disabled"><span>«</span></li>');
     }
     for (var i = 1; i <= maxPage && i<20; i++) {
         if (i == currentPage) {
-            $pago.append('<span class="currentPage disabled">' + i + '</span>');
+            $pago.append('<li class="active"><span>' + i + '</span></li>');
         }
         else {
-            $pago.append('<a href="javascript:gotoPage(' + i + ');">' + i + '</a>');
+            $pago.append('<li><a href="javascript:gotoPage(' + i + ');">' + i + '</a></li>');
         }
     }
     // add next
     if ((offset + pageSize()) < total) {
-        $pago.append('<a href="javascript:nextPage();">Next »</a>');
+        $pago.append('<li class="next"><a href="javascript:nextPage();">»</a><li>');
     }
     else {
-        $pago.append('Next »');
+        $pago.append('<li class="next disabled">»</li>');
     }
 
     $('div#navLinks').html($pago);
@@ -543,7 +551,7 @@ function displayFacet(facet, list) {
     return $div;
 }
 function moreLink() {
-    var $more = $('<li class="link"><i class="icon-hand-right"></i> '+ jQuery.i18n.prop('datasets.js.morelink')+'</li>');
+    var $more = $('<li class="link"><span class="glyphicon glyphicon-hand-right"></span> '+ jQuery.i18n.prop('datasets.js.morelink')+'</li>');
     $more.click(function() {
         // make following items visible and add a 'less' link
         $(this).parent().find('li').css('display','list-item');
@@ -555,7 +563,7 @@ function moreLink() {
     return $more
 }
 function lessLink() {
-    var $less = $('<li class="link"><i class="icon-hand-right"></i> ' + jQuery.i18n.prop('datasets.js.lesslink') + '</li>');
+    var $less = $('<li class="link"><span class="glyphicon glyphicon-hand-right"></span> ' + jQuery.i18n.prop('datasets.js.lesslink') + '</li>');
     $less.click(function() {
         // make items > 5 hidden and add a 'more' link
         $(this).parent().find('li:gt(4)').css('display','none');

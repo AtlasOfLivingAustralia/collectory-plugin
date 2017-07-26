@@ -23,8 +23,8 @@
             <g:render template="collectionList"
                     model="[collectionInstanceList: providerGroupInstanceList]"
                     params="[term: '${term}']"/>
-            <div class="pagination">
-                <g:paginate controller="collection" action="searchList" params="${[term:term]}" total="${providerGroupInstanceTotal}" />
+            <div class="nav">
+                <tb:paginate controller="collection" action="searchList" params="${[term:term]}" total="${providerGroupInstanceTotal}" />
             </div>
         </div>
     </body>

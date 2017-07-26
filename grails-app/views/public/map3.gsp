@@ -9,12 +9,6 @@
     <body id="page-collections-map" class="nav-datasets">
     <div id="content">
       <div id="header">
-        <!--Breadcrumbs-->
-        <div id="breadcrumb">
-          <ol class="breadcrumb">
-              <li><cl:breadcrumbTrail /></li>
-          </ol>
-        </div>
         <div class="section full-width">
           <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -26,8 +20,8 @@
         </div><!--close section-->
       </div><!--close header-->
 
-      <div class="row-fluid"><!-- wrap map and list-->
-        <div class="span4">
+      <div class="row"><!-- wrap map and list-->
+        <div class="col-md-4">
           <div class="section">
             <p><g:message code="public.map3.des01" />.</p>
           </div>
@@ -62,7 +56,7 @@
           </div>
         </div><!--close column-one-->
 
-        <div class="span8" id="map-list-col">
+        <div class="col-md-8" id="map-list-col">
             <div class="tabbable">
                 <ul class="nav nav-tabs" id="home-tabs">
                     <li class="active"><a href="#map" data-toggle="tab"><g:message code="public.map3.maplistcol.map" /></a></li>

@@ -8,13 +8,6 @@
   <title>Edit ${entityNameLower} metadata</title>
 </head>
 <body onload="load();">
-  <style>
-  #mapCanvas {
-    width: 300px;
-    height: 300px;
-    float: right;
-  }
-  </style>
 <div class="nav">
   <h1>Editing: ${fieldValue(bean: command, field: "name")}</h1>
 </div>
@@ -30,64 +23,42 @@
   <g:form method="post" enctype="multipart/form-data" action="editCollection">
     <g:hiddenField name="id" value="${command?.id}"/>
     <g:hiddenField name="version" value="${command.version}"/>
-    <div class="dialog">
-      <table>
-        <tbody>
-
-        <!-- BCI -->
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="BCI"><g:message code="shared.attributes.label01" /></label>
-          </td>
-          <td valign="top" class="value">
-            <g:checkBox name="BCI" value="${BCI}"/>
-            <cl:helpText code="providerGroup.attribution.BCI"/>
-          </td>
-          <cl:helpTD/>
-        </tr>
-
-        <!-- CHAH -->
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="CHAH"><g:message code="shared.attributes.label02" /></label>
-          </td>
-          <td valign="top" class="value">
-            <g:checkBox name="CHAH" value="${CHAH}"/>
-            <cl:helpText code="providerGroup.attribution.CHAH"/>
-          </td>
-          <cl:helpTD/>
-        </tr>
-
-        <!-- CHACM -->
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="CHACM"><g:message code="shared.attributes.label03" /></label>
-          </td>
-          <td valign="top" class="value">
-            <g:checkBox name="CHACM" value="${CHACM}"/>
-            <cl:helpText code="providerGroup.attribution.CHACM"/>
-          </td>
-          <cl:helpTD/>
-        </tr>
-
-        <!-- institution -->
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="institution"><g:message code="shared.attributes.label04" /></label>
-          </td>
-          <td valign="top" class="value">
-            <g:checkBox disabled="true" name="institution" value="${true}"/>
-            <cl:helpText code="providerGroup.attribution.institution"/>
-          </td>
-          <cl:helpTD/>
-        </tr>
-
-        </tbody>
-      </table>
+    <!-- BCI -->
+    <div class="form-group">
+      <label for="BCI">
+        <g:checkBox name="BCI" value="${BCI}"/>
+        <g:message code="shared.attributes.label01" /><cl:helpText code="providerGroup.attribution.BCI"/>
+      </label>
     </div>
+
+    <!-- CHAH -->
+    <div class="form-group">
+      <label for="CHAH">
+        <g:checkBox name="CHAH" value="${CHAH}"/>
+        <g:message code="shared.attributes.label02" /><cl:helpText code="providerGroup.attribution.CHAH"/>
+      </label>
+    </div>
+
+    <!-- CHACM -->
+    <div class="form-group">
+      <label for="CHACM">
+        <g:checkBox name="CHACM" value="${CHACM}"/>
+        <g:message code="shared.attributes.label03" /><cl:helpText code="providerGroup.attribution.CHACM"/>
+      </label>
+    </div>
+
+    <!-- institution -->
+    <div class="form-group">
+
+      <label for="institution">
+        <g:checkBox disabled="true" name="institution" value="${true}"/>
+        <g:message code="shared.attributes.label04" /><cl:helpText code="providerGroup.attribution.institution"/>
+      </label>
+    </div>
+
     <div class="buttons">
-      <span class="button"><input type="submit" name="_action_updateAttributions" value="Update" class="save"></span>
-      <span class="button"><input type="submit" name="_action_cancel" value="Cancel" class="cancel"></span>
+      <span class="button"><input type="submit" name="_action_updateAttributions" value="Update" class="save btn btn-success"></span>
+      <span class="button"><input type="submit" name="_action_cancel" value="Cancel" class="cancel btn btn-default"></span>
     </div>
   </g:form>
 </div>

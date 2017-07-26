@@ -6,12 +6,12 @@
         <title><g:message code="default.list.label" args="[entityName]" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span></li>
-            </ul>
-        </div>
+    <div class="btn-toolbar">
+        <ul class="btn-group">
+            <li class="btn"><cl:homeLink/></li>
+            <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+        </ul>
+    </div>
         <div class="body content">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
@@ -19,8 +19,8 @@
             </g:if>
             <g:render template="/shared/institutionList" model="[institutionInstanceList: institutionInstanceList, showALAPartner: 'true' ]" />
 
-            <div class="pagination">
-                <g:paginate controller="institution" action="list" total="${institutionInstanceTotal}" />
+            <div class="nav">
+                <tb:paginate controller="institution" action="list" total="${institutionInstanceTotal}" />
             </div>
         </div>
     </body>

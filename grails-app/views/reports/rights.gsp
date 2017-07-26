@@ -8,10 +8,10 @@
         <r:require modules="jquery, jquery_ui_custom"/>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="list" action="list"><g:message code="reports.li.reports" /></g:link></span></li>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-th-list"></span><g:link class="list" action="list"> <g:message code="reports.li.reports"/></g:link></li>
             </ul>
         </div>
         <div class="body">
@@ -45,7 +45,7 @@
 
                       <tr ${hide} class="ui-state-active">
                         <td><g:if test="${r.rights || r.permissionsDocument}">
-                            <span onclick="toggleParams(this)" class="ui-icon ui-icon-triangle-1-e"> </span>
+                            <span onclick="toggleParams(this)" class="ui-icon ui-glyphicon-triangle-1-e"> </span>
                         </g:if></td>
                         <td align="left">
                             <g:link controller="dataResource" action="show" id="${r.uid}">

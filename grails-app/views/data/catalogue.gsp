@@ -13,14 +13,6 @@
     <body class="two-column-right" onload="">
     <div id="content">
       <div id="header">
-        <!--Breadcrumbs-->
-      <div id="breadcrumb">
-        <ol class="breadcrumb">
-            <li><a href='http://www.ala.org.au'><g:message code="data.catalogue.home" /></a> <span class="icon icon-arrow-right"></span></li>
-            <li><g:link controller="public"><g:message code="data.catalogue.collections" /></g:link> <span class="icon icon-arrow-right"></span></li>
-            <li><g:message code="data.catalogue.webservices" /></li>
-        </ol>
-      </div>
         <div class="section full-width">
           <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -258,7 +250,7 @@
 
           <p><g:message code="data.catalogue.ws0032.des03" />.
           <br/>
-          <a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_citation_text_for_a_list_of_UIDs" class="btn"><g:message code="data.catalogue.ws0032.link02" />.</a></p>
+          <a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_citation_text_for_a_list_of_UIDs" class="btn btn-default"><g:message code="data.catalogue.ws0032.link02" />.</a></p>
 
           <h2><g:message code="data.catalogue.ws0032.title02" /></h2>
           <p><g:message code="data.catalogue.ws0032.des04" />.</p>
@@ -274,7 +266,7 @@
               <td><a href="${grailsApplication.config.grails.serverURL}/lookup/inst/ANIC/coll/Insects.json">http://collections.ala.org.au/lookup/inst/ANIC/coll/Insects</a></td>
             </tr>
             <tr>
-              <td colspan="2"><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_collection_from_institution_and_collection_codes" class="btn">More information.</a></td>
+              <td colspan="2"><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_collection_from_institution_and_collection_codes" class="btn btn-default">More information.</a></td>
             </tr>
           </table>
 
@@ -295,7 +287,7 @@
           <h3 id="WS0029"><g:message code="data.catalogue.ws0029.title" /></h3>
           <p><g:message code="data.catalogue.ws0029.des01" />: </p>
           <p><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/lookup/name/<strong>{uid}</strong></span></p>
-          <p><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_name_from_UID" class="btn"><g:message code="data.catalogue.ws0029.link01" />.</a></p>
+          <p><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_name_from_UID" class="btn btn-default"><g:message code="data.catalogue.ws0029.link01" />.</a></p>
 
           <h3 id="WS0030"><g:message code="data.catalogue.ws0030.title" /></h3>
           <p><g:message code="data.catalogue.ws0030.des01" />:</p>
@@ -309,7 +301,7 @@
               <td><a href="${grailsApplication.config.grails.serverURL}/lookup/taxonomyCoverageHints/co12.json">http://collections.ala.org.au/lookup/taxonomyCoverageHints/co12</a></td>
             </tr>
             <tr>
-              <td colspan="2"><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_taxonomic_coverage_hints_from_UID" class="btn">More information.</a></td>
+              <td colspan="2"><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_taxonomic_coverage_hints_from_UID" class="btn btn-default">More information.</a></td>
             </tr>
           </table>
 
@@ -321,7 +313,7 @@
           <h3><g:message code="data.catalogue.ws0030.title02" /></h3>
           <p><g:message code="data.catalogue.ws0030.des04" />:</p>
           <p><span class="code">GET http://collections.ala.org.au/lookup/generateDataResourceUid</span></p>
-          <p><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Generate_UID_for_a_new_entity" class="btn"><g:message code="data.catalogue.ws0030.link01" />.</a></p>
+          <p><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Generate_UID_for_a_new_entity" class="btn btn-default"><g:message code="data.catalogue.ws0030.link01" />.</a></p>
 
         </div><!--close section-->
       </div><!--close column-one-->

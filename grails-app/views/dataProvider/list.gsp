@@ -7,15 +7,14 @@
         <title><g:message code="default.list.label" args="[entityName]" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-                <li><span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span></li>
-             <g:if test="${grailsApplication.config.gbifRegistrationEnabled == 'true'}">
-                <li><span class="menuButton"><g:link class="create" action="updateAllGBIFRegistrations">
-                    <g:message code="dataProvider.gbif.update.all" default="Update all existing GBIF registrations" />
-                </g:link></span></li>
-             </g:if>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <g:if test="${grailsApplication.config.gbifRegistrationEnabled == 'true'}">
+                    <li class="btn"><g:link class="create" action="updateAllGBIFRegistrations"><g:message code="dataProvider.gbif.update.all" default="Update all existing GBIF registrations" /></g:link></li>
+                </g:if>
             </ul>
         </div>
         <div class="body">
@@ -76,8 +75,8 @@
                 </table>
             </div>
 
-            <div class="paginateButtons">
-                <g:paginate controller="dataProvider" action="list" total="${instanceTotal}" />
+            <div class="nav">
+                <tb:paginate controller="dataProvider" action="list" total="${instanceTotal}" />
             </div>
         </div>
     </body>

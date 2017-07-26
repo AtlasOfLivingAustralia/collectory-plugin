@@ -3,8 +3,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
+    <meta name="breadcrumbParent" content="${createLink(controller:'public', action:'dataSets', absolute:true)},${message(code: 'breadcrumb.datasets')}"/>
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
-    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper, jquery_i18n"/>
+    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper, jquery_i18n, collectory"/>
     <r:script>
         // define biocache server
         bieUrl = "${grailsApplication.config.bie.baseURL}";
@@ -30,17 +31,10 @@
 </head>
 <body class="nav-datasets">
 <div id="content">
-<div id="header">
-    <!--Breadcrumbs-->
-    <div id="breadcrumb">
-        <ol class="breadcrumb">
-            <li><cl:breadcrumbTrail home="dataSets"/> <span class=" icon icon-arrow-right"></span></li>
-            <li><cl:pageOptionsLink>${fieldValue(bean:instance,field:'name')}</cl:pageOptionsLink></li>
-        </ol>
-    </div>
+<section id="header">
     <cl:pageOptionsPopup instance="${instance}"/>
-    <div class="row-fluid">
-        <div class="span8">
+    <section class="row">
+        <div class="col-md-8">
             <cl:h1 value="${instance.name}"/>
             <g:set var="dp" value="${instance.dataProvider}"/>
             <g:if test="${dp}">
@@ -175,7 +169,7 @@
         </g:if>
         <cl:lastUpdated date="${instance.lastUpdated}"/>
     </div><!--close column-one-->
-        <div class="span4">
+        <section class="col-md-4">
 
             <g:if test="${dp?.logoRef?.file}">
                 <g:link action="show" id="${dp.uid}">
@@ -189,7 +183,7 @@
             </g:elseif>
 
         <g:if test="${fieldValue(bean: instance, field: 'imageRef') && fieldValue(bean: instance, field: 'imageRef.file')}">
-            <div class="section">
+            <section>
                 <img alt="${fieldValue(bean: instance, field: "imageRef.file")}"
                      src="${resource(absolute: "true", dir: "data/dataResource/", file: instance.imageRef.file)}"/>
                 <cl:formattedText
@@ -198,7 +192,7 @@
                         class="caption">${fieldValue(bean: instance, field: "imageRef.attribution")}</p></cl:valueOrOtherwise>
                 <cl:valueOrOtherwise value="${instance.imageRef?.copyright}"><p
                         class="caption">${fieldValue(bean: instance, field: "imageRef.copyright")}</p></cl:valueOrOtherwise>
-            </div>
+            </section>
         </g:if>
 
         <div id="dataAccessWrapper" style="display:none;">
@@ -206,32 +200,38 @@
         </div>
 
         <g:if test="${instance.isVerified()}">
-            <h3>
+            <section class="public-metadata">
+            <h5>
                 <g:message code="public.verified" default="Verified dataset"/>
                 <i class="fa fa-check-circle tooltips" style="color:green;"></i>
-            </h3>
+            </h5>
+            </section>
         </g:if>
 
         <g:if test="${instance.gbifDoi}">
-            <p>
+            <section class="public-metadata">
                 <a href="https://${instance.gbifDoi.replaceAll('doi:', 'doi.org/')}">
                     <span class="label label-info">${instance.gbifDoi}</span>
                 </a>
-            </p>
+            </section>
         </g:if>
 
         <g:if test="${instance.licenseType}">
-            <h3><g:message code="public.license" default="Licence" /></h3>
+            <section class="public-metadata">
+            <h4><g:message code="public.license" default="Licence" /></h4>
             <p><cl:displayLicenseType type="${instance.licenseType}" version="${instance.licenseVersion}"/></p>
+            </section>
         </g:if>
 
         <g:if test="${instance.beginDate}">
-            <h3><g:message code="public.temporal" default="Temporal scope" /></h3>
+            <section class="public-metadata">
+            <h4><g:message code="public.temporal" default="Temporal scope" /></h4>
             <p>${instance.beginDate}
                 <g:if test="${instance.endDate}">
                     - ${instance.endDate}
                 </g:if>
             </p>
+            </section>
         </g:if>
 
         <!-- use parent location if the collection is blank -->
@@ -243,8 +243,8 @@
         </g:if>
 
         <g:if test="${address != null && !address?.isEmpty()}">
-            <div class="section">
-                <h3><g:message code="public.location" /></h3>
+            <section class="public-metadata">
+                <h4><g:message code="public.location" /></h4>
 
                 <g:if test="${!address?.isEmpty()}">
                     <p>
@@ -258,7 +258,7 @@
 
                 <g:if test="${instance.email}"><cl:emailLink>${fieldValue(bean: instance, field: "email")}</cl:emailLink><br/></g:if>
                 <cl:ifNotBlank value='${fieldValue(bean: instance, field: "phone")}'/>
-            </div>
+            </section>
         </g:if>
 
     <!-- contacts -->
@@ -276,28 +276,28 @@
 
     <!-- web site -->
         <g:if test="${instance.resourceType == 'species-list'}">
-            <div class="section">
-                <h3><g:message code="public.sdr.content.label12" /></h3>
+            <section class="'public-metadata">
+                <h4><g:message code="public.sdr.content.label12" /></h4>
                 <div class="webSite">
                     <a class='external_icon' target="_blank"
                        href="${grailsApplication.config.speciesListToolUrl}${instance.uid}"><g:message code="public.sdr.content.link03" /></a>
                 </div>
-            </div>
+            </section>
         </g:if>
         <g:elseif test="${instance.websiteUrl}">
-            <div class="section">
-                <h3><g:message code="public.website" /></h3>
+            <section class="public-metadata">
+                <h4><g:message code="public.website" /></h4>
                 <div class="webSite">
                     <a class='external_icon' target="_blank"
                        href="${instance.websiteUrl}"><g:message code="public.sdr.content.link04" /></a>
                 </div>
-            </div>
+            </section>
         </g:elseif>
 
     <!-- network membership -->
         <g:if test="${instance.networkMembership}">
-            <div class="section">
-                <h3><g:message code="public.network.membership.label" /></h3>
+            <section class="public-metadata">
+                <h4><g:message code="public.network.membership.label" /></h4>
                 <g:if test="${instance.isMemberOf('CHAEC')}">
                     <p><g:message code="public.network.membership.des01" /></p>
                     <img src="${resource(absolute: "true", dir: "data/network/", file: "butflyyl.gif")}"/>
@@ -322,14 +322,14 @@
     <!-- attribution -->
         <g:set var='attribs' value='${instance.getAttributionList()}'/>
         <g:if test="${attribs.size() > 0}">
-            <div class="section" id="infoSourceList">
+            <section class="public-metadata" id="infoSourceList">
                 <h4><g:message code="public.sdr.infosourcelist.title" /></h4>
                 <ul>
                     <g:each var="a" in="${attribs}">
                         <li><a href="${a.url}" class="external" target="_blank">${a.name}</a></li>
                     </g:each>
                 </ul>
-            </div>
+            </section>
         </g:if>
 
      <!-- external identifiers -->
