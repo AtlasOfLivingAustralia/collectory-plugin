@@ -140,13 +140,19 @@ class DataProviderController extends ProviderGroupController {
     }
 
     def registerGBIF = {
-        log.info("REGISTERING")
+        log.info("REGISTERING data partner ${collectoryAuthService.username()}")
         def instance = get(params.id)
         if (instance) {
             try {
-                gbifRegistryService.register(instance)
-                flash.message = "${message(code: 'dataProvider.gbif.register.success', default: 'Successfully Registered in GBIF')}"
-                instance.save()
+                log.info("REGISTERING ${instance.uid}, triggered by user: ${collectoryAuthService.username()}")
+                if(collectoryAuthService.userInRole(grailsApplication.config.gbifRegistrationRole)){
+                    gbifRegistryService.register(instance)
+                    flash.message = "${message(code: 'dataProvider.gbif.register.success', default: 'Successfully Registered in GBIF')}"
+                    instance.save()
+                } else {
+                    log.info("REGISTERING FAILED for ${instance.uid}, triggered by user: ${collectoryAuthService.username()} - user not in role")
+                    flash.message = "You don't have permission to do register this data partner."
+                }
             } catch (Exception e) {
                 flash.message = "${e.getMessage()}"
             }
@@ -155,7 +161,25 @@ class DataProviderController extends ProviderGroupController {
         }
     }
 
-        /**
+//    def userDownloadReport = {
+//        def instance = get(params.uid)
+//        if (instance) {
+//            response.setHeader("Content-disposition", "attachment; filename=user-download-report-${params.uid}.csv");
+//            response.setContentType("text/csv");
+//            response.outputStream << "Email,Data Resource UID,Data Resource name,Download reason,Number of downloads,Number of records\n"
+//
+//            //get a user list
+//            //hit URL logger for report
+//            new File("/tmp/bto.txt").eachLine { line ->
+//                def parts = line.split('\t')
+//                def dr = DataResource.findByUid(parts[1])
+//                response.outputStream << parts[0] + ','+ parts[1] + ',"' + dr.name  + '",'+ parts[2] + ','+ parts[3] + ','+ parts[4] + '\n'
+//            }
+//            response.outputStream.flush()
+//        }
+//    }
+
+    /**
      * Get the instance for this entity based on either uid or DB id.
      *
      * @param id UID or DB id

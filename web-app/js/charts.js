@@ -99,171 +99,174 @@ var syncTransforms = {
 /********************************************************************************\
 * Ajax request for charts based on the facets available in the biocache breakdown.
 \********************************************************************************/
-function loadFacetCharts(chartOptions) {
-    if (chartOptions.collectionsUrl != undefined) { collectionsUrl = chartOptions.collectionsUrl; }
-    if (chartOptions.biocacheServicesUrl != undefined) { biocacheServicesUrl = chartOptions.biocacheServicesUrl; }
-    if (chartOptions.biocacheWebappUrl != undefined) { biocacheWebappUrl = chartOptions.biocacheWebappUrl; }
-
-    var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
-    chartsDiv.append($("<span>" + jQuery.i18n.prop('charts.js.loading') + "</span>"));
-    var query = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
-    $.ajax({
-      url: urlConcat(biocacheServicesUrl, "/occurrences/search.json?flimit=-1pageSize=0&q=") + query,
-      dataType: 'jsonp',
-      error: function() {
-        cleanUp();
-      },
-      success: function(data) {
-
-          // clear loading message
-          chartsDiv.find('span').remove();
-
-          // draw all charts
-          drawFacetCharts(data, chartOptions);
-
-      }
-    });
-}
+//function loadFacetCharts(chartOptions) {
+//    if (chartOptions.collectionsUrl != undefined) { collectionsUrl = chartOptions.collectionsUrl; }
+//    if (chartOptions.biocacheServicesUrl != undefined) { biocacheServicesUrl = chartOptions.biocacheServicesUrl; }
+//    if (chartOptions.biocacheWebappUrl != undefined) { biocacheWebappUrl = chartOptions.biocacheWebappUrl; }
+//
+//    var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
+//    chartsDiv.append($("<span>" + jQuery.i18n.prop('charts.js.loading') + "</span>"));
+//    var query = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
+//    $.ajax({
+//      url: urlConcat(biocacheServicesUrl, "/occurrences/search.json?flimit=-1pageSize=0&q=") + query,
+//      dataType: 'jsonp',
+//      error: function() {
+//        cleanUp();
+//      },
+//      success: function(data) {
+//
+//          // clear loading message
+//          chartsDiv.find('span').remove();
+//
+//          // draw all charts
+//          drawFacetCharts(data, chartOptions);
+//
+//      }
+//    });
+//}
 function cleanUp(chartOptions) {
     $('img.loading').remove();
     if (chartOptions != undefined && chartOptions.error) {
          window[chartOptions.error]();
     }
 }
-/*********************************************************************\
-* Loads charts based on the facets declared in the config object.
-* - does not require any markup other than div#charts element
-\*********************************************************************/
-function drawFacetCharts(data, chartOptions) {
-    // check that we have results
-    if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
-        return;
-    }
-
-    // update total if requested
-    if (chartOptions.totalRecordsSelector) {
-      $(chartOptions.totalRecordsSelector).html(addCommas(data.totalRecords));
-    }
-
-    // transform facet results into map
-    var facetMap = {};
-    $.each(data.facetResults, function(idx, obj) {
-      facetMap[obj.fieldName] = obj.fieldResult;
-    });
-
-    // draw the charts
-    var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
-    var query = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
-    $.each(chartOptions.charts, function(index, name) {
-        if (facetMap[name] != undefined) {
-            buildGenericFacetChart(name, facetMap[name], query, chartsDiv, chartOptions);
-        }
-    });
-}
+///*********************************************************************\
+//* Loads charts based on the facets declared in the config object.
+//* - does not require any markup other than div#charts element
+//\*********************************************************************/
+//function drawFacetCharts(data, chartOptions) {
+//    // check that we have results
+//    if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
+//        return;
+//    }
+//
+//    // update total if requested
+//    if (chartOptions.totalRecordsSelector) {
+//      $(chartOptions.totalRecordsSelector).html(addCommas(data.totalRecords));
+//    }
+//
+//    console.log('drawFacetCharts - charts....');
+//
+//
+//    // transform facet results into map
+//    var facetMap = {};
+//    $.each(data.facetResults, function(idx, obj) {
+//      facetMap[obj.fieldName] = obj.fieldResult;
+//    });
+//
+//    // draw the charts
+//    var chartsDiv = $('#' + (chartOptions.targetDivId ? chartOptions.targetDivId : 'charts'));
+//    var query = chartOptions.query ? chartOptions.query : buildQueryString(chartOptions.instanceUid);
+//    $.each(chartOptions.charts, function(index, name) {
+//        if (facetMap[name] != undefined) {
+//            buildGenericFacetChart(name, facetMap[name], query, chartsDiv, chartOptions);
+//        }
+//    });
+//}
 /************************************************************\
 * Create and show a generic facet chart
 \************************************************************/
-function buildGenericFacetChart(name, data, query, chartsDiv, chartOptions) {
-
-    // resolve chart label
-    var chartLabel = chartLabels[name] ? chartLabels[name] : name;
-
-    // resolve the chart options
-    var opts = $.extend({}, genericChartOptions);
-    if (chartLabel == "state") {
-        opts.title = jQuery.i18n.prop('charts.js.byregion');
-    }else{
-        if (chartLabel == "country"){
-            opts.title = jQuery.i18n.prop('charts.js.bycountry');
-        }else{
-            opts.title = jQuery.i18n.prop('charts.js.by') + " " + chartLabel;  // default title
-        }
-    }
-    var individualOptions = individualChartOptions[name] ? individualChartOptions[name] : {};
-    // merge generic, individual and user options
-    opts = $.extend(true, {}, opts, individualOptions, chartOptions[name]);
-    //Dumper.alert(opts);
-
-    // optionally transform the data
-    var xformedData = data;
-    if (syncTransforms[name]) {
-        xformedData = window[syncTransforms[name].method](data);
-    }
-
-    // create the data table
-    var dataTable = new google.visualization.DataTable();
-    dataTable.addColumn('string', chartLabel);
-    dataTable.addColumn('number','records');
-    $.each(xformedData, function(i,obj) {
-        // filter any crap
-        if (opts == undefined || opts.ignore == undefined || $.inArray(obj.label, opts.ignore) == -1) {
-            if (detectCamelCase(obj.label)) {
-                dataTable.addRow([{v: obj.label, f: capitalise(expandCamelCase(obj.label))}, obj.count]);
-            }
-            else {
-                dataTable.addRow([obj.label, obj.count]);
-            }
-        }
-    });
-
-    // reject the chart if there is only one facet value (after filtering)
-    if (dataTable.getNumberOfRows() < 2) {
-        return;
-    }
-
-    // create the container
-    var $container = $('#' + name);
-    if ($container.length == 0) {
-        $container = $("<div id='" + name + "'></div>");
-        chartsDiv.append($container);
-    }
-
-    // specify the type (for css tweaking)
-    $container.addClass('chart-' + opts.chartType);
-            
-    // create the chart
-    var chart;
-    switch (opts.chartType) {
-        case 'column': chart = new google.visualization.ColumnChart(document.getElementById(name)); break;
-        case 'bar': chart = new google.visualization.BarChart(document.getElementById(name)); break;
-        default: chart = new google.visualization.PieChart(document.getElementById(name)); break;
-    }
-
-    chart.draw(dataTable, opts);
-
-    // kick off post-draw asynch actions
-    if (asyncTransforms[name]) {
-        window[asyncTransforms[name].method](chart, dataTable, opts, asyncTransforms[name].param);
-    }
-
-    // setup a click handler - if requested
-    if (chartOptions.clickThru != false) {  // defaults to true
-        google.visualization.events.addListener(chart, 'select', function() {
-
-            // default facet value is the name selected
-            var id = dataTable.getValue(chart.getSelection()[0].row,0);
-
-            // build the facet query
-            var facetQuery = name + ":" + id;
-
-            // the facet query can be overridden for date ranges
-            if (name == 'occurrence_year') {
-                if (id.match("^before") == 'before') { // startWith
-                    facetQuery = "occurrence_year:[*%20TO%20" + "1850" + "-01-01T00:00:00Z]";
-                }
-                else {
-                    var decade = id.substr(0,4);
-                    var dateTo = parseInt(decade) + 10;
-                    facetQuery = "occurrence_year:[" + decade + "-01-01T00:00:00Z%20TO%20" + dateTo + "-01-01T00:00:00Z]";
-                }
-            }
-
-            // show the records
-            document.location = urlConcat(biocacheWebappUrl,"/occurrences/search?q=") + query +
-                    "&fq=" + facetQuery;
-        });
-    }
-}
+//function buildGenericFacetChart(name, data, query, chartsDiv, chartOptions) {
+//
+//    // resolve chart label
+//    var chartLabel = chartLabels[name] ? chartLabels[name] : name;
+//
+//    // resolve the chart options
+//    var opts = $.extend({}, genericChartOptions);
+//    if (chartLabel == "state") {
+//        opts.title = jQuery.i18n.prop('charts.js.byregion');
+//    }else{
+//        if (chartLabel == "country"){
+//            opts.title = jQuery.i18n.prop('charts.js.bycountry');
+//        }else{
+//            opts.title = jQuery.i18n.prop('charts.js.by') + " " + chartLabel;  // default title
+//        }
+//    }
+//    var individualOptions = individualChartOptions[name] ? individualChartOptions[name] : {};
+//    // merge generic, individual and user options
+//    opts = $.extend(true, {}, opts, individualOptions, chartOptions[name]);
+//    //Dumper.alert(opts);
+//
+//    // optionally transform the data
+//    var xformedData = data;
+//    if (syncTransforms[name]) {
+//        xformedData = window[syncTransforms[name].method](data);
+//    }
+//
+//    // create the data table
+//    var dataTable = new google.visualization.DataTable();
+//    dataTable.addColumn('string', chartLabel);
+//    dataTable.addColumn('number','records');
+//    $.each(xformedData, function(i,obj) {
+//        // filter any crap
+//        if (opts == undefined || opts.ignore == undefined || $.inArray(obj.label, opts.ignore) == -1) {
+//            if (detectCamelCase(obj.label)) {
+//                dataTable.addRow([{v: obj.label, f: capitalise(expandCamelCase(obj.label))}, obj.count]);
+//            }
+//            else {
+//                dataTable.addRow([obj.label, obj.count]);
+//            }
+//        }
+//    });
+//
+//    // reject the chart if there is only one facet value (after filtering)
+//    if (dataTable.getNumberOfRows() < 2) {
+//        return;
+//    }
+//
+//    // create the container
+//    var $container = $('#' + name);
+//    if ($container.length == 0) {
+//        $container = $("<div id='" + name + "'></div>");
+//        chartsDiv.append($container);
+//    }
+//
+//    // specify the type (for css tweaking)
+//    $container.addClass('chart-' + opts.chartType);
+//
+//    // create the chart
+//    var chart;
+//    switch (opts.chartType) {
+//        case 'column': chart = new google.visualization.ColumnChart(document.getElementById(name)); break;
+//        case 'bar': chart = new google.visualization.BarChart(document.getElementById(name)); break;
+//        default: chart = new google.visualization.PieChart(document.getElementById(name)); break;
+//    }
+//
+//    chart.draw(dataTable, opts);
+//
+//    // kick off post-draw asynch actions
+//    if (asyncTransforms[name]) {
+//        window[asyncTransforms[name].method](chart, dataTable, opts, asyncTransforms[name].param);
+//    }
+//
+//    // setup a click handler - if requested
+//    if (chartOptions.clickThru != false) {  // defaults to true
+//        google.visualization.events.addListener(chart, 'select', function() {
+//
+//            // default facet value is the name selected
+//            var id = dataTable.getValue(chart.getSelection()[0].row,0);
+//
+//            // build the facet query
+//            var facetQuery = name + ":" + id;
+//
+//            // the facet query can be overridden for date ranges
+//            if (name == 'occurrence_year') {
+//                if (id.match("^before") == 'before') { // startWith
+//                    facetQuery = "occurrence_year:[*%20TO%20" + "1850" + "-01-01T00:00:00Z]";
+//                }
+//                else {
+//                    var decade = id.substr(0,4);
+//                    var dateTo = parseInt(decade) + 10;
+//                    facetQuery = "occurrence_year:[" + decade + "-01-01T00:00:00Z%20TO%20" + dateTo + "-01-01T00:00:00Z]";
+//                }
+//            }
+//
+//            // show the records
+//            document.location = urlConcat(biocacheWebappUrl,"/occurrences/search?q=") + query +
+//                    "&fq=" + facetQuery;
+//        });
+//    }
+//}
 
 /*---------------------- DATA TRANSFORMATION METHODS ----------------------*/
 function transformDecadeData(data) {
@@ -466,7 +469,7 @@ function drawTaxonomyChart(data, chartOptions, query) {
             // show occurrence records
             var fq = "";
             if (chartOptions.rank != undefined && chartOptions.name != undefined) {
-                fq = "&fq=" + chartOptions.rank + ":" + chartOptions.name;
+                fq = "&fq=" + chartOptions.rank + ":\"" + chartOptions.name + "\"";
             }
             document.location = urlConcat(biocacheWebappUrl, "/occurrences/search?q=") + query + fq;
         });
@@ -508,7 +511,7 @@ function drawTaxonomyChart(data, chartOptions, query) {
             else {
                 // show occurrence records
                 document.location = urlConcat(biocacheWebappUrl, "/occurrences/search?q=") + query +
-                    "&fq=" + data.rank + ":" + name;
+                    "&fq=" + data.rank + ":\"" + name + "\"";
             }
         });
     }
@@ -637,7 +640,7 @@ function showRecords(node, query) {
   var name = node.attr('id');
   // url for records list
   var recordsUrl = urlConcat(biocacheWebappUrl, "/occurrences/search?q=") + query +
-    "&fq=" + rank + ":" + name;
+    "&fq=" + rank + ":\"" + name + "\"";
   document.location.href = recordsUrl;
 }
 /************************************************************\
