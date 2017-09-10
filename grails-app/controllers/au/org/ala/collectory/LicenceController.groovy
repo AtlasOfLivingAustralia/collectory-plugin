@@ -55,7 +55,7 @@ class LicenceController {
             return
         }
 
-        [licenceInsnce: licenceInstance]
+        [licenceInstance: licenceInstance]
     }
 
     def update(Long id, Long version) {
