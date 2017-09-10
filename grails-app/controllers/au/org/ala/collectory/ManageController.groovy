@@ -86,7 +86,6 @@ class ManageController {
         DataSourceConfiguration configuration = new DataSourceConfiguration(params)
         externalDataService.updateFromExternalSources(configuration, params.loadGuid)
         redirect(action: 'externalLoadStatus', params: [loadGuid: params.loadGuid])
-
     }
 
     /**

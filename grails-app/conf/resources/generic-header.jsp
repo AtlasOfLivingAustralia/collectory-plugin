@@ -1,13 +1,13 @@
 <div class="navbar navbar-inverse navbar-static-top">
     <div class="navbar-inner ">
         <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
+            <button type="button" class="btn navbar-btn" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="glyphicon-bar"></span>
+                <span class="glyphicon-bar"></span>
+                <span class="glyphicon-bar"></span>
             </button>
-            <a class="brand" href="#">${orgNameLong}</a>
-            <div class="nav-collapse collapse">
+            <a class="navbar-brand" href="#">${orgNameLong}</a>
+            <div class="navbar-collapse collapse">
                 <p class="navbar-text pull-right">
                     Logged in as <a href="#" class="navbar-link">${username}</a>
                 </p>

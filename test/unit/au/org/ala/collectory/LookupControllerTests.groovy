@@ -11,4 +11,8 @@ class LookupControllerTests extends ControllerUnitTestCase {
         super.tearDown()
     }
 
+    def testSomething() {
+        // Just to avoid an error message
+    }
+
 }

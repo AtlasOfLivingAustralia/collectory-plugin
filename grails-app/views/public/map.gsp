@@ -17,8 +17,6 @@
     <body id="page-collections-map" onload="initMap('${grailsApplication.config.grails.serverURL}')">
     <div id="content">
       <div id="header">
-        <!--Breadcrumbs-->
-        <div id="breadcrumb"><a href="${grailsApplication.config.ala.baseURL}"><g:message code="public.map.breadcrumb.home" /></a> <a href="${grailsApplication.config.ala.baseURL}/explore/"><g:message code="public.map.breadcrumb.explore" /></a><span class="current"><g:message code="public.map.breadcrumb.des" /></span></div>
         <div class="section full-width">
           <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -37,7 +35,7 @@
           </ul>
       </div>
 
-      <div class="row-fluid"><!-- wrap map and list-->
+      <div class="row"><!-- wrap map and list-->
         <div id="span6" class="fudge">
           <div class="section">
             <p style="padding:15px 10px 0 10px"><g:message code="public.map.label01" />:</p>
@@ -60,7 +58,7 @@
             </div>
           </div><!--close section-->
         </div><!--close column-one-->
-        <div id="map" class="span6">
+        <div id="map" class="col-md-6">
           <div class="map-column">
             <div class="section">
               <p style="width:588px;padding-bottom:8px;padding-left:30px;"><g:message code="public.map.map.des01" />.</p>
@@ -71,7 +69,7 @@
             </div><!--close section-->
           </div><!--close column-two-->
         </div><!--close map-->
-        <div id="list" class="span6">
+        <div id="list" class="col-md-6">
           <div class="list-column">
             <div class="nameList section" id="names">
               <p><g:message code="public.map.list.des01" />.</p>

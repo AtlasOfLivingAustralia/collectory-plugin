@@ -1,17 +1,16 @@
 package au.org.ala.collectory
 
-import grails.test.*
+import grails.test.mixin.Mock
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
-class DataLinkControllerTests extends ControllerUnitTestCase {
-    protected void setUp() {
-        super.setUp()
-    }
-
-    protected void tearDown() {
-        super.tearDown()
-    }
-
-    void testSomething() {
-
+@TestFor(DataLinkController)
+@Mock(DataLink)
+class DataLinkControllerTests extends Specification {
+    void testList() {
+        when:
+        def list = controller.list()
+        then:
+        list != null
     }
 }

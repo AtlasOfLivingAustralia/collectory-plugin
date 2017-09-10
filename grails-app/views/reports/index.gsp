@@ -6,12 +6,12 @@
 
     </head>
     <body>
-      <div class="nav">
-          <ul>
-          <li><span class="menuButton"><cl:homeLink/></span></li>
-          <li><span class="menuButton"><i class="icon-th-list"></i> <g:message code="reports.li.reports" /></span></li>
-          </ul>
-      </div>
+    <div class="btn-toolbar">
+        <ul class="btn-group">
+            <li class="btn"><cl:homeLink/></li>
+            <li class="btn"><span class="glyphicon glyphicon-th-list"></span><g:link class="list" action="list"> <g:message code="reports.li.reports"/></g:link></li>
+        </ul>
+    </div>
       <div id="welcome">
         <h1><g:message code="reports.index.title01" /></h1>
         <p><g:message code="reports.index.des01" />.</p>

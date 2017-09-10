@@ -53,6 +53,7 @@ div > div#map-container {
 
 .filter-buttons h2 a span {
     padding-top:.3em;
+    padding-bottom:.3em;
     display:block;
     color:#000;
     font-size:13px;
@@ -66,6 +67,9 @@ div > div#map-container {
     padding: 4px 10px 3px 10px;
     height: 60px;
     display:block;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
     overflow:hidden;
     border:1px solid #ccc;
     -moz-border-radius: 7px; /* FF1+ */
@@ -264,6 +268,11 @@ ul.facets {
     padding: 0;
 }
 
+.public-metadata  {
+    marign-top: 1em;
+    margin-bottom: 1em;
+}
+
 .dataAccess a {
     text-align: left;
     max-width:80%;
@@ -288,6 +297,14 @@ ul.facets {
     padding-right: 1ex;
 }
 
+.resource-name {
+    width: 20em;
+}
+
+.resource-mapping {
+    width: 20em;
+}
+
 /* Styling for datatables */
 #existing-dialog table {
     padding: 1ex;
@@ -296,4 +313,21 @@ ul.facets {
 
 #existing-dataresources_wrapper div {
     font-size: smaller;
+}
+
+.required-field .required-icon {
+    font-size: smaller;
+    padding-left: 0.5ex;
+    padding-right: 0.5ex;
+    color: red;
+}
+
+.required-field .required-message {
+    display: none;
+}
+
+/* Pagination */
+.pagination .step {
+    padding-left: 0.5ex;
+    padding-right: 0.5ex;
 }

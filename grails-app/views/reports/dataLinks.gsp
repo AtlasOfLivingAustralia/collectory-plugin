@@ -6,10 +6,10 @@
         <title><g:message code="reports.title" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="list" action="list"><g:message code="reports.li.reports" /></g:link></span></li>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-th-list"></span><g:link class="list" action="list"> <g:message code="reports.li.reports"/></g:link></li>
             </ul>
         </div>
         <div class="body">
@@ -28,11 +28,11 @@
                   <g:set var="consumer" value="${ProviderGroup._get(link.consumer)}"/>
                   <tr>
                     <td><g:link controller="${cl.controllerFromUid(uid: link.provider)}" action="show" id="${link.provider}">
-                      ${provider.name} <cl:entityIndicator entity="${provider}"/>
+                        <g:if test="${provider}">${provider.name} <cl:entityIndicator entity="${provider}"/></g:if><g:else><g:message code="reports.dl.invalid" args="${[link.provider]}"/></g:else>
                     </g:link></td>
                     <td> &lt;=&gt; </td>
                     <td><g:link controller="${cl.controllerFromUid(uid: link.consumer)}" action="show" id="${link.consumer}">
-                      ${consumer.name} <cl:entityIndicator entity="${consumer}"/>
+                        <g:if test="${consumer}">${consumer.name} <cl:entityIndicator entity="${consumer}"/></g:if><g:else><g:message code="reports.dl.invalid" args="${[link.consumer]}"/></g:else>
                     </g:link></td>
                   </tr>
                 </g:each>

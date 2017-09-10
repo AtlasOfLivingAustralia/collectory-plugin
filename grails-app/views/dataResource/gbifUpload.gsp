@@ -12,9 +12,9 @@
 
 <h1><g:message code="dataresource.gbifupload.title" /></h1>
 
-<div class="row-fluid">
+<div class="row">
 
-    <div class="well pull-right span6">
+    <div class="well pull-right col-md-6">
         <p>
             <g:message code="dataresource.gbifupload.des01" />
             <a href="http://www.gbif.org/"><g:message code="dataresource.gbifupload.link.gbifportal" /></a>.
@@ -33,13 +33,13 @@
         </p>
     </div>
 
-    <div class="span6" style="padding-left:0;margin-left:0;">
-        <div class="input-append">
-            <label for="url"><g:message code="dataresource.gbifupload.label" />:</label>
-            <input type="text" class="input-xxlarge" id="url" name="url" value=""/>
+    <div class="col-md-6" style="padding-left:0;margin-left:0;">
+        <div class="form-group">
+            <label for="url"><g:message code="dataresource.gbifupload.label" /></label>
+            <g:field type="url" class="form-control" name="url" value=""/>
         </div>
         <div>
-            <button class="btn" id="downloadArchiveBtn">
+            <button class="btn btn-default" id="downloadArchiveBtn">
                 <r:img class="spinner-progress hide" uri="/images/spinner.gif"></r:img>
                 <g:message code="dataresource.gbifupload.btn"/>
             </button>

@@ -18,21 +18,21 @@
       float: right;
     }
     </style>
-        <div class="nav">
-
-            <p class="pull-right">
-                <span class="button"><cl:viewPublicLink uid="${instance?.uid}"/></span>
-                <span class="button"><cl:jsonSummaryLink uid="${instance.uid}"/></span>
-                <span class="button"><cl:jsonDataLink uid="${instance.uid}"/></span>
-            </p>
-
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li><span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></span></li>
-            <li><span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></span></li>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
+                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+            </ul>
+            <ul class="btn-group pull-right">
+                <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
             </ul>
         </div>
-        <div class="body">
+    <div class="body">
             <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
             </g:if>
@@ -80,8 +80,8 @@
 
                   </p>
                   <p>
-                    <button class="iptCheck iptBtn btn"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img> Check endpoint</button>
-                    <button class="iptUpdate iptBtn btn"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img>  Update data resources</button>
+                    <button class="iptCheck iptBtn btn btn-default"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img> Check endpoint</button>
+                    <button class="iptUpdate iptBtn btn btn-warning"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img>  Update data resources</button>
                   </p>
               </div>
 
@@ -122,7 +122,7 @@
                   </g:each>
                 </ul>
                 <p>
-                    <g:link controller="dataResource"  class="btn" action="create" params='[dataProviderUid: "${instance.uid}"]'><g:message code="dataprovider.show.link01" /></g:link>
+                    <g:link controller="dataResource"  class="btn btn-default" action="create" params='[dataProviderUid: "${instance.uid}"]'><g:message code="dataprovider.show.link01" /></g:link>
                 </p>
               </div>
 

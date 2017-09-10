@@ -24,35 +24,23 @@
                 <g:hiddenField name="id" value="${command?.id}" />
                 <g:hiddenField name="version" value="${command.version}" />
                 <g:hiddenField name="target" value="${target}" />
-                <div class="dialog">
-                    <table>
-                        <tbody>
-
-                        <!-- image -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <!--label for="imageRef"><g:message code="providerGroup.${target}.label" default="Image" /></label-->
+                         <!-- image -->
+                        <div>
+                               <g:message code="providerGroup.${target}.label" default="Image" />
                               <g:if test="${target == 'logoRef'}"><g:message code="shared.images.des01" /></g:if>
-                              <g:else><g:message code="shared.images.des02" /><br/>image</g:else>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: target, 'errors')}">
-                              <g:if test="${target == 'logoRef'}">
+                              <g:else><g:message code="shared.images.des02" /><br/>image</g:else></label>
+                            </div>
+                               <g:if test="${target == 'logoRef'}">
                                 <g:render template="/shared/attributableLogo" model="[command: command, directory: entityNameLower, action: 'editCollection']"/>
                               </g:if>
                               <g:else>
                                 <g:render template="/shared/attributableImage" model="[command: command, directory: entityNameLower, action: 'editCollection']"/>
                               </g:else>
-                            </td>
-                        </tr>
-
-                        </tbody>
-                    </table>
-                </div>
 
                 <div class="buttons">
-                    <span class="button"><input type="submit" name="_action_updateImages" value="${message(code:"shared.images.button.update")}" class="save btn"></span>
-                    <span class="button"><input type="submit" name="_action_removeImage" value="${message(code:"shared.images.button.remove")}" class="cancel btn"></span>
-                    <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"shared.images.button.cancel")}" class="cancel btn"></span>
+                    <span class="button"><input type="submit" name="_action_updateImages" value="${message(code:"shared.images.button.update")}" class="save btn btn-success"></span>
+                    <span class="button"><input type="submit" name="_action_removeImage" value="${message(code:"shared.images.button.remove")}" class="cancel btn btn-danger"></span>
+                    <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"shared.images.button.cancel")}" class="cancel btn btn-default"></span>
                 </div>
             </g:uploadForm>
         </div>

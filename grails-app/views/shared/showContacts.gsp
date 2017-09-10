@@ -34,7 +34,7 @@
             </td>
             <td style="padding-bottom:20px;">
               <span class="contactButton buttonRight">
-                <g:link class="edit-small btn" controller="contact" action='edit' id="${cf.contact.id}"
+                <g:link class="edit-small btn btn-default" controller="contact" action='edit' id="${cf.contact.id}"
                         params='[returnTo: "/${command.urlForm()}/edit/${command.id}?page=/shared/showContacts"]'>
                   ${message(code: 'default.button.editContact.label', default: "Edit the contact's details")}
                 </g:link>
@@ -53,7 +53,7 @@
             </td>
             <td>
               <span class="contactButton buttonRight">
-                <g:link class="edit-small btn" action='editRole' id="${cf.id}"
+                <g:link class="edit-small btn btn-default" action='editRole' id="${cf.id}"
                   params='[returnTo: "/${command.urlForm()}/edit/${command.id}?page=/shared/showContacts"]'>
                   <g:message code="shared.scontact.link.edit" /> ${entityNameLower}
                 </g:link>
@@ -81,7 +81,7 @@
             <tr><td>
               <g:select name="addContact" from="${Contact.listOrderByLastName()}" optionKey="id" noSelection="${['null':'Select one to add']}" />
             </td><td>
-              <input type="submit" onclick="return anySelected('addContact','You must select a contact to add.');" class="addAction btn" value="Add existing contact"/>
+              <input type="submit" onclick="return anySelected('addContact','You must select a contact to add.');" class="addAction btn btn-default" value="Add existing contact"/>
             </td></tr>
           </table>
         </g:form>
@@ -91,7 +91,7 @@
           <tr><td><g:message code="shared.scontact02.cell0101" /> ${entityNameLower}:</td>
           <td>
           <span class="button">
-            <g:link class="addAction btn" controller="contact" action='create' params='[returnTo:"/${command.urlForm()}/addNewContact/${command.id}"]' id="${command.id}">${message(code: 'default.button.addContact.label', default: 'Add new contact')}</g:link>
+            <g:link class="addAction btn btn-default" controller="contact" action='create' params='[returnTo:"/${command.urlForm()}/addNewContact/${command.id}"]' id="${command.id}">${message(code: 'default.button.addContact.label', default: 'Add new contact')}</g:link>
           </span>
           </td></tr>
         </table>
@@ -101,7 +101,7 @@
     <div class="buttons">
       <g:form>
         <g:hiddenField name="id" value="${command.id}"/>
-        <span class="button"><g:link class="returnAction btn" controller="${command.urlForm()}" action='show' id="${command.id}">Return to ${command.name}</g:link></span>
+        <span class="button"><g:link class="returnAction btn btn-success" controller="${command.urlForm()}" action='show' id="${command.id}">Return to ${command.name}</g:link></span>
       </g:form>
     </div>
   </div>

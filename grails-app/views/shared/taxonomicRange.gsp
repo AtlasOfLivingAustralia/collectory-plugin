@@ -28,18 +28,18 @@
                   <h2><g:message code="shared.tr.title01" />.</h2>
                   <p class="lead"><g:message code="shared.tr.des01" />.</p>
                   %{--<p class="potential-problem">Note that IE<span> </span>&nbsp;has some minor problems with the list below. Nodes in the list will not close. You are still able to use the list to define your taxonomic scope.</p>--}%
-                  <div class="row-fluid">
-                      <div class=" span4" id="selections">
+                  <div class="row">
+                      <div class=" col-md-4" id="selections">
                         <h3><g:message code="shared.tr.title02" /></h3>
                         %{--<div> </div>--}%
                         <div id="taxa-tree"></div>
                       </div>
-                      <div class="span4 well" id="selected-list">
+                      <div class="col-md-4 well" id="selected-list">
                             <h3><g:message code="shared.tr.title03" /></h3>
                             <ul></ul>
-                            <button type="button" class="btn" id="clear"><g:message code="shared.tr.btn.clearall" /></button>
-                            <span class="button"><input type="submit" name="_action_updateTaxonomicRange" value="${message(code:"shared.button.update")}" class="save btn"></span>
-                            <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"shared.button.cancel")}" class="cancel btn"></span>
+                            <button type="button" class="btn btn-default" id="clear"><g:message code="shared.tr.btn.clearall" /></button>
+                            <span class="button"><input type="submit" name="_action_updateTaxonomicRange" value="${message(code:"shared.button.update")}" class="save btn btn-default"></span>
+                            <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"shared.button.cancel")}" class="cancel btn btn-default"></span>
                       </div>
                    </div>
                 </div>

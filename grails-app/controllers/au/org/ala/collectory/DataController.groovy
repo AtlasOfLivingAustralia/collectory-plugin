@@ -1,5 +1,6 @@
 package au.org.ala.collectory
 import grails.converters.JSON
+import grails.util.Holders
 import groovy.xml.MarkupBuilder
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 import org.xml.sax.SAXException
@@ -265,8 +266,9 @@ class DataController {
 
     def serveFile = {
         def dirpath =  "/" + params.directory + "/"
-        def idx = request.forwardURI.lastIndexOf(dirpath) + dirpath.length()
-        def fullFileName = request.forwardURI.substring(idx)
+        def uri = URLDecoder.decode(request.forwardURI, "UTF-8")
+        def idx = uri.lastIndexOf(dirpath) + dirpath.length()
+        def fullFileName = uri.substring(idx)
         def file = new File(grailsApplication.config.repository.location.images + File.separator + params.directory, fullFileName)
         if(file.exists()){
             if(fullFileName.endsWith(".json")){
@@ -808,7 +810,7 @@ class DataController {
             map.contactName = it.primaryContact?.contact?.buildName() ?: ""
             map.contactEmail = it.primaryContact?.contact?.email ?: ""
             map.contactPhone = it.primaryContact?.contact?.phone ?: ""
-            map.uri = it.primaryContact ? "${grailsApplication.config.grails.serverURL}/ws/${ProviderGroup.urlFormFromUid(it.uid)}/${it.uid}/contacts/${it.primaryContact?.id}" : ''
+            map.uri = it.primaryContact ? "${Holders.grailsApplication.config.grails.serverURL}/ws/${ProviderGroup.urlFormFromUid(it.uid)}/${it.uid}/contacts/${it.primaryContact?.id}" : ''
 
             return map
         }

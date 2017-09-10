@@ -9,7 +9,7 @@
 <h1><g:message code="manage.gbifdldataset.reload.title01" /></h1>
 <div id="baseForm">
 <g:form action="loadDataset" controller="manage">
-    <div class="span5">
+    <div class="col-md-5">
         <table>
             <tr class="prop">
                 <td valign="top" class="name"><label for="guid"><g:message code="manage.gbifdldataset.label01" />:</label></td>
@@ -25,11 +25,11 @@
             </tr>
         </table>
         <span class="button">
-            <input type="submit" name="performGBIFLoad" value="Reload" class="save btn">
+            <input type="submit" name="performGBIFLoad" value="Reload" class="save btn btn-default">
         </span>
     </div>
 
-    <div class="well pull-right span5">
+    <div class="well pull-right col-md-5">
         <p>
             <g:message code="manage.gbifdldataset.des01" />.<br/>
             <g:message code="manage.gbifdldataset.des02" />.

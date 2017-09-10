@@ -7,11 +7,13 @@
         <title><g:message code="default.edit.label" args="[entityName]" /></title>
     </head>
     <body>
-        <div class="nav">
-            <span class="menuButton"><cl:homeLink/></span>
-            <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></span>
-            <span class="menuButton"><g:link class="create" action="create" params="${[returnTo: returnTo]}"><g:message code="default.new.label" args="[entityName]" /></g:link></span>
-            <g:if test="${returnTo}"><span class="menuButton"><cl:returnLink uid="${returnTo}"/></span></g:if>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <g:if test="${returnTo}"><li><cl:returnLink uid="${returnTo}"/></li></g:if>
+            </ul>
         </div>
         <div class="body">
             <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
@@ -29,34 +31,17 @@
                 <g:hiddenField name="returnTo" value="${returnTo}"/>
                 <g:set var="provider" value="${ProviderGroup._get(dataLinkInstance.provider)}"/>
                 <g:set var="consumer" value="${ProviderGroup._get(dataLinkInstance.consumer)}"/>
-                <div class="dialog">
-                    <table>
-                        <tbody>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="consumer"><g:message code="dataLink.consumer.label" default="Consumer" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: dataLinkInstance, field: 'consumer', 'errors')}">
-                                  <g:select from="${Collection.list([sort:'name']) + Institution.list([sort:'name'])}" optionKey="uid" name="consumer" value="${consumer.uid}"/>
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                  <label for="provider"><g:message code="dataLink.provider.label" default="Provider" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: dataLinkInstance, field: 'provider', 'errors')}">
-                                  <g:select from="${DataResource.list([sort:'name']) + DataProvider.list([sort:'name'])}" optionKey="uid" name="provider" value="${provider.uid}"/>
-                                </td>
-                            </tr>
-                        
-                        </tbody>
-                    </table>
+                <div class="form-group ${hasErrors(bean: dataLinkInstance, field: 'consumer', 'errors')}">
+                    <label for="consumer"><g:message code="dataLink.consumer.label" default="Consumer" /></label>
+                    <g:select class="form-control" from="${Collection.list([sort:'name']) + Institution.list([sort:'name'])}" optionKey="uid" name="consumer" value="${consumer.uid}"/>
+                </div>
+                <div class="form-group ${hasErrors(bean: dataLinkInstance, field: 'provider', 'errors')}">
+                    <label for="provider"><g:message code="dataLink.provider.label" default="Provider" /></label>
+                    <g:select class="form-control" from="${DataResource.list([sort:'name']) + DataProvider.list([sort:'name'])}" optionKey="uid" name="provider" value="${provider.uid}"/>
                 </div>
                 <div class="buttons">
-                    <span class="button"><g:actionSubmit class="save" action="update" value="${message(code: 'default.button.update.label', default: 'Update')}" /></span>
-                    <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" /></span>
+                    <span class="button"><g:actionSubmit class="save btn btn-success" action="update" value="${message(code: 'default.button.update.label', default: 'Update')}" /></span>
+                    <span class="button"><g:actionSubmit class="delete brn btn-danger" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" /></span>
                 </div>
             </g:form>
         </div>

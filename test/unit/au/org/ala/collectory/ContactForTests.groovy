@@ -1,34 +1,40 @@
 package au.org.ala.collectory
 
 import grails.test.*
+import grails.test.mixin.Mock
+import grails.test.mixin.TestFor
+import spock.lang.Specification
 
-class ContactForTests extends GrailsUnitTestCase {
+@TestFor(ContactFor)
+@Mock(Contact)
+class ContactForTests extends Specification {
 
+    Contact contact
     ContactFor cf
 
-    protected void setUp() {
-        super.setUp()
-
+    protected void setup() {
+        contact = new Contact(id: 4, lastName: "Caution", userLastModified: 'fred')
+        contact.save(flush: true, failOnError: true)
         cf = new ContactFor(
-            contact: [id: 4, lastName: "Caution"] as Contact,  // mock list as Contact class 
+            contact: contact,
             entityUid: 'in27',
             role: "Manager",
             administrator: true,
-            primaryContact: true)
+            primaryContact: true,
+            userLastModified: 'fred'
+        )
+        cf.save(flush: true, failOnError: true)
 
-    }
-
-    protected void tearDown() {
-        super.tearDown()
     }
 
     void testPrint() {
-        assertEquals([
-            "Contact id: 4",
-            "Entity uid: in27",
-            "Role: Manager",
-            "isAdmin: true",
-            "isPrimary: true"]
-            , cf.print())
+        expect:
+        [ "Contact id: ${contact.id}",
+          "Entity uid: in27",
+          "Role: Manager",
+          "isAdmin: true",
+          "isPrimary: true",
+          "notify: false"
+        ] == cf.print()
     }
 }

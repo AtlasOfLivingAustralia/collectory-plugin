@@ -30,172 +30,113 @@
                         <tbody>
 
                         <!-- public short description -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="pubShortDescription"><g:message code="providerGroup.pubShortDescription.label" default="Public Short Description" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'pubShortDescription', 'errors')}">
-                                <g:textArea name="pubShortDescription" class="input-xlarge"  rows="${cl.textAreaHeight(text:command.pubShortDescription)}" value="${command.pubShortDescription}" />
-                                <cl:helpText code="providerGroup.pubShortDescription"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                            <label for="pubShortDescription"><g:message code="providerGroup.pubShortDescription.label" default="Public Short Description" /><cl:helpText code="providerGroup.pubShortDescription"/></label>
+                            <g:textArea name="pubShortDescription" class="form-control"  rows="${cl.textAreaHeight(text:command.pubShortDescription)}" value="${command.pubShortDescription}" />
+                        </div>
 
                         <!-- public description -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="pubDescription"><g:message code="providerGroup.pubDescription.label" default="Public Description" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'pubDescription', 'errors')}">
-                                <g:textArea name="pubDescription" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.pubDescription)}" value="${command.pubDescription}" />
-                                <cl:helpText code="providerGroup.pubDescription"/>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                            <label for="pubDescription"><g:message code="providerGroup.pubDescription.label" default="Public Description" /><cl:helpText code="providerGroup.pubDescription"/></label>
+                            <g:textArea name="pubDescription" class="form-control"  rows="${cl.textAreaHeight(text:command.pubDescription)}" value="${command.pubDescription}" />
+                        </div>
 
                         <!-- tech description -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="techDescription"><g:message code="providerGroup.techDescription.label" default="Technical Description" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'techDescription', 'errors')}">
-                                <g:textArea name="techDescription" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.techDescription)}" value="${command?.techDescription}" />
-                                <cl:helpText code="providerGroup.techDescription"/>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                            <label for="techDescription"><g:message code="providerGroup.techDescription.label" default="Technical Description" /><cl:helpText code="providerGroup.techDescription"/></label>
+                            <g:textArea name="techDescription" class="form-control"  rows="${cl.textAreaHeight(text:command.techDescription)}" value="${command?.techDescription}" />
+                        </div>
 
                         <!-- purpose -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="purpose"><g:message code="providerGroup.purpose.label" default="Purpose" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'purpose', 'errors')}">
-                                <g:textArea name="purpose" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.purpose)}" value="${command?.purpose}" />
-                                <cl:helpText code="providerGroup.purpose"/>
-                            </td>
+                        <div class="form-group">
+                            <label for="purpose"><g:message code="providerGroup.purpose.label" default="Purpose" /><cl:helpText code="providerGroup.purpose"/></label>
+                            <g:textArea name="purpose" class="form-control"  rows="${cl.textAreaHeight(text:command.purpose)}" value="${command?.purpose}" />
                             <cl:helpTD/>
-                        </tr>
+                        </div>
 
                         <!-- geographicDescription -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="geographicDescription"><g:message code="providerGroup.geographicDescription.label" default="Geographic Description" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'geographicDescription', 'errors')}">
-                                <g:textArea name="geographicDescription" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.geographicDescription)}" value="${command?.geographicDescription}" />
-                                <cl:helpText code="providerGroup.geographicDescription"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                            <label for="geographicDescription"><g:message code="providerGroup.geographicDescription.label" default="Geographic Description" /><cl:helpText code="providerGroup.geographicDescription"/></label>
+                            <g:textArea name="geographicDescription" class="form-control"  rows="${cl.textAreaHeight(text:command.geographicDescription)}" value="${command?.geographicDescription}" />
+                        </div>
 
                         <!-- bounding box -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="boundingBox"><g:message code="providerGroup.boundingBox.label" default="Bounding Box" /></label>
-                            </td>
-                            <td valign="top" class="">
-                                <label for="northBoundingCoordinate"><g:message code="providerGroup.northBoundingCoordinate.label" default="North (decimal degrees WGS84)" /></label>
-                                <g:textField name="northBoundingCoordinate" class="input" value="${command?.northBoundingCoordinate}" />
+                        <div class="form-group">
+                            <label><g:message code="providerGroup.boundingBox.label" default="Bounding Box" /></label>
+                            <p class="help-block"><g:message code="providerGroup.boundingBox.help" default="Decimal degrees, WGS84"/></p>
 
-                                <label for="southBoundingCoordinate"><g:message code="providerGroup.southBoundingCoordinate.label" default="South (decimal degrees WGS84)" /></label>
-                                <g:textField name="southBoundingCoordinate" class="input" value="${command?.southBoundingCoordinate}" />
+                            <div class="input-group">
+                                <label for="northBoundingCoordinate" class="input-group-addon"><g:message code="providerGroup.northBoundingCoordinate.label" default="North" /></label>
+                                <g:field type="number" name="northBoundingCoordinate" class="form-control" min="-90.0" max="90.0" step="any" value="${command?.northBoundingCoordinate}" />
 
-                                <label for="eastBoundingCoordinate"><g:message code="providerGroup.eastBoundingCoordinate.label" default="East (decimal degrees WGS84)" /></label>
-                                <g:textField name="eastBoundingCoordinate" class="input" value="${command?.eastBoundingCoordinate}" />
+                                <label for="southBoundingCoordinate" class="input-group-addon"><g:message code="providerGroup.southBoundingCoordinate.label" default="South" /></label>
+                                <g:field type="number" name="southBoundingCoordinate" class="form-control" min="-90.0" max="90.0" step="any" value="${command?.southBoundingCoordinate}" />
 
-                                <label for="westBoundingCoordinate"><g:message code="providerGroup.westBoundingCoordinate.label" default="West (decimal degrees WGS84)" /></label>
-                                <g:textField name="westBoundingCoordinate" class="input" value="${command?.westBoundingCoordinate}" />
-                            </td>
-                        </tr>
+                                <label for="eastBoundingCoordinate" class="input-group-addon"><g:message code="providerGroup.eastBoundingCoordinate.label" default="East" /></label>
+                                <g:field type="number" name="eastBoundingCoordinate" class="form-control" min="-180.0" max="180.0" step="any" value="${command?.eastBoundingCoordinate}" />
+
+                                <label for="westBoundingCoordinate" class="input-group-addon"><g:message code="providerGroup.westBoundingCoordinate.label" default="West" /></label>
+                                <g:field type="number" name="westBoundingCoordinate" class="form-control" min="-180.0" max="180.0" step="any" value="${command?.westBoundingCoordinate}" />
+                            </div>
+
+                        </div>
 
                         <!-- temporal range -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="temporalRange"><g:message code="providerGroup.temporal.label" default="Temporal range" /></label>
-                            </td>
-                            <td valign="top" class="">
-                                <label for="beginDate"><g:message code="providerGroup.beginDate.label" default="Start date (yyyy-mm-dd)" /></label>
-                                <g:textField name="beginDate" class="input" value="${command?.beginDate}" />
-
-                                <label for="endDate"><g:message code="providerGroup.endDate.label" default="End date (yyyy-mm-dd)" /></label>
-                                <g:textField name="endDate" class="input" value="${command?.endDate}" />
-                            </td>
-                        </tr>
+                        <div class="form-group">
+                            <label><g:message code="providerGroup.temporal.label" default="Temporal range" /></label>
+                            <p class="help-block"><g:message code="providerGroup.temporal.help" default="Date format yyyy-mm-dd"/></p>
+                            <div class="input-group">
+                                <label for="beginDate" class="input-group-addon"><g:message code="providerGroup.beginDate.label" default="Start date" /></label>
+                                <g:textField name="beginDate" class="form-control" pattern="\\d\\d\\d\\d-\\d\\d-\\d\\d" value="${command?.beginDate}" />
+                                <label for="endDate" class="input-group-addon"><g:message code="providerGroup.endDate.label" default="End date" /></label>
+                                <g:textField name="endDate" class="form-control" pattern="\\d\\d\\d\\d-\\d\\d-\\d\\d" value="${command?.endDate}" />
+                            </div>
+                            
+                        </div>
 
                         <!-- qualityControlDescription -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="qualityControlDescription"><g:message code="providerGroup.qualityControlDescription.label" default="Data Quality Description" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'qualityControlDescription', 'errors')}">
-                                <g:textArea name="qualityControlDescription" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.qualityControlDescription)}" value="${command?.qualityControlDescription}" />
-                                <cl:helpText code="providerGroup.qualityControlDescription"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                                <label for="qualityControlDescription"><g:message code="providerGroup.qualityControlDescription.label" default="Data Quality Description" /><cl:helpText code="providerGroup.qualityControlDescription"/></label>
+                                <g:textArea name="qualityControlDescription" class="form-control"  rows="${cl.textAreaHeight(text:command.qualityControlDescription)}" value="${command?.qualityControlDescription}" />
+                        </div>
 
                         <!-- methodStepDescription -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                                <label for="methodStepDescription"><g:message code="providerGroup.methodStepDescription.label" default="Methods" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'methodStepDescription', 'errors')}">
-                                <g:textArea name="methodStepDescription" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.methodStepDescription)}" value="${command?.methodStepDescription}" />
-                                <cl:helpText code="providerGroup.methodStepDescription"/>
-                            </td>
-                            <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                                <label for="methodStepDescription"><g:message code="providerGroup.methodStepDescription.label" default="Methods" /><cl:helpText code="providerGroup.methodStepDescription"/></label>
+                                <g:textArea name="methodStepDescription" class="form-control"  rows="${cl.textAreaHeight(text:command.methodStepDescription)}" value="${command?.methodStepDescription}" />
+                        </div>
 
                         <!-- focus -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="focus"><g:message code="providerGroup.focus.label" default="Focus" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'focus', 'errors')}">
-                                <g:textArea name="focus" class="input-xxlarge"  rows="${cl.textAreaHeight(text:command.focus)}" value="${command?.focus}" />
-                                <cl:helpText code="providerGroup.focus"/>
-                            </td>
-                          <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="focus"><g:message code="providerGroup.focus.label" default="Focus" /><cl:helpText code="providerGroup.focus"/><cl:helpText code="dataResource.focus"/></label>
+                            <g:textArea name="focus" class="form-control"  rows="${cl.textAreaHeight(text:command.focus)}" value="${command?.focus}" />
+                        </div>
 
                         <!-- data generalisations -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="dataGeneralizations"><g:message code="dataResource.dataGeneralizations.label" default="Data Generalisations" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'dataGeneralizations', 'errors')}">
-                                <g:textArea name="dataGeneralizations" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.dataGeneralizations)}" value="${command?.dataGeneralizations}" />
-                                <cl:helpText code="dataResource.dataGeneralizations"/>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                            <label for="dataGeneralizations"><g:message code="dataResource.dataGeneralizations.label" default="Data Generalisations" /><cl:helpText code="dataResource.dataGeneralizations"/></label>
+                            <g:textArea name="dataGeneralizations" class="form-control" rows="${cl.textAreaHeight(text:command.dataGeneralizations)}" value="${command?.dataGeneralizations}" />
+                        </div>
 
                         <!-- information withheld -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
-                              <label for="informationWithheld"><g:message code="dataResource.informationWithheld.label" default="Information withheld" /></label>
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'informationWithheld', 'errors')}">
-                                <g:textArea name="informationWithheld" class="input-xxlarge" rows="${cl.textAreaHeight(text:command.informationWithheld)}" value="${command?.informationWithheld}" />
-                                <cl:helpText code="dataResource.informationWithheld"/>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
+                        <div class="form-group">
+                              <label for="informationWithheld"><g:message code="dataResource.informationWithheld.label" default="Information withheld" /><cl:helpText code="dataResource.informationWithheld"/></label>
+                            <g:textArea name="informationWithheld" class="form-control" rows="${cl.textAreaHeight(text:command.informationWithheld)}" value="${command?.informationWithheld}" />
+                        </div>
 
                         <!-- content types -->
-                        <tr class="prop">
-                            <td valign="top" class="name">
+                        <div class="container">
+                            
                               <g:message code="dataResource.contentTypes.label" default="Content types" />
-                            </td>
-                            <td valign="top" class="value ${hasErrors(bean: command, field: 'contentTypes', 'errors')}">
+                            
+                            
                                 <g:hiddenField name="contentTypes" value="${command.contentTypes}"/>
                                 <p><g:message code="dataresource.description.des01" />.
                                 <cl:helpText code="dataResource.informationWithheld"/>
                                 </p>
 
-                                <div class="row-fluid">
-                                    <div class="source-box span6">
+                                <div class="row">
+                                    <div class="source-box col-md-6">
                                         <h4><g:message code="dataresource.description.title01" /></h4>
                                         <ul>
                                             <g:each var="ct" in="${DataResource.contentTypesList}">
@@ -203,24 +144,22 @@
                                             </g:each>
                                         </ul>
                                     </div>
-                                    <div class="sink-box span6 well well-small">
+                                    <div class="sink-box col-md-6 well well-small">
                                         <h4><g:message code="dataresource.description.title02" /></h4>
                                         <ul>
                                             <li class="msg"><g:message code="dataresource.description.des02" />.</li>
                                         </ul>
                                     </div>
                                 </div>
-                              </td>
-                              <cl:helpTD/>
-                        </tr>
+                        </div>
 
                       </tbody>
                     </table>
                 </div>
 
                 <div class="buttons">
-                    <span class="button"><input type="submit" name="_action_updateDescription" value="${message(code:"collection.button.update")}" class="save btn"></span>
-                    <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"collection.button.cancel")}" class="cancel btn"></span>
+                    <span class="button"><input type="submit" name="_action_updateDescription" value="${message(code:"collection.button.update")}" class="save btn btn-success"></span>
+                    <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"collection.button.cancel")}" class="cancel btn btn-default"></span>
                 </div>
             </g:form>
         </div>

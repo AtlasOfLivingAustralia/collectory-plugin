@@ -6,11 +6,12 @@
         <title><g:message code="reports.title" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            </ul>
-        </div>
+      <div class="btn-toolbar">
+        <ul class="btn-group">
+          <li class="btn"><cl:homeLink/></li>
+          <li class="btn"><span class="glyphicon glyphicon-th-list"></span><g:link class="list" action="list"> <g:message code="reports.li.reports"/></g:link></li>
+        </ul>
+      </div>
         <div class="body">
             <h1><g:message code="reports.li.reports" /></h1>
             <g:if test="${flash.message}">

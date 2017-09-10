@@ -17,6 +17,7 @@ abstract class ProviderGroupController {
 
     static String entityName = "ProviderGroup"
     static String entityNameLower = "providerGroup"
+    static int TRUNCATE_LENGTH = 255
 
     def idGeneratorService, collectoryAuthService, metadataService, gbifService, dataImportService
 
@@ -479,7 +480,7 @@ abstract class ProviderGroupController {
             }
 
         } else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'contactFor.label', default: "Contact for ${entityNameLower}"), params.contactForId])}"
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'contactFor.label', default: "Contact for ${entityNameLower}", args: [entityNameLower]), params.contactForId])}"
             redirect(action: "show", id: params.id)
         }
     }
@@ -550,7 +551,7 @@ abstract class ProviderGroupController {
     def editRole = {
         def contactFor = ContactFor.get(params.id)
         if (!contactFor) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'contactFor.label', default: "Contact for ${entityNameLower}"), params.id])}"
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'contactFor.label', default: "Contact for ${entityNameLower}", args: [entityNameLower]), params.id])}"
             redirect(action: "list")
         } else {
             ProviderGroup pg = ProviderGroup._get(contactFor.entityUid)
@@ -563,7 +564,7 @@ abstract class ProviderGroupController {
                     render(message(code: "provider.group.controller.04", default: "You are not authorised to access this page."))
                 }
             } else {
-                flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'contactFor.entityUid.label', default: "Entity for ${entityNameLower}"), params.id])}"
+                flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'contactFor.entityUid.label', default: "Entity for ${entityNameLower}", args: [entityNameLower]), params.id])}"
                 redirect(action: "list")
             }
         }
@@ -683,7 +684,6 @@ abstract class ProviderGroupController {
                 } else {
                     println "reject file of size ${file.size}"
                     pg.errors.rejectValue('imageRef', 'image.too.big', message(code: "provider.group.controller.13", default: "The image you selected is too large. Images are limited to 200KB."))
-                    response.setHeader("Content-type", "text/plain; charset=UTF-8")
                     render(view: "/shared/images", model: [command: pg, target: target])
                     return
                 }
@@ -863,7 +863,7 @@ abstract class ProviderGroupController {
     }
 
     private String truncate(str) {
-        return (str?.length() > AuditLogListener.TRUNCATE_LENGTH) ? str?.substring(0, AuditLogListener.TRUNCATE_LENGTH) : str
+        return (str?.length() > TRUNCATE_LENGTH) ? str?.substring(0, TRUNCATE_LENGTH) : str
     }
 
     protected boolean isAuthorisedToEdit(uid) {

@@ -440,7 +440,7 @@ class EmlRenderService {
         markupBuilder.encoding = 'UTF-8'
         markupBuilder.useDoubleQuotes = true
         def dp = pg.dataProvider
-        def licence = Licence.find({ acronym == pg.licenseType})
+        def licence = Licence.where({ acronym == pg.licenseType && (pg.licenseVersion == null || licenceVersion == pg.licenseVersion) }).list()
         def eml = markupBuilder.bind { builder ->
             mkp.xmlDeclaration()
             namespaces << ns
@@ -482,16 +482,28 @@ class EmlRenderService {
 
                     /* intellectual rights */
                     intellectualRights {
-                        if (pg.rights) {
+                        if (pg.rights || pg.citation || licence) {
                             para (){
                                 mkp.yield pg.rights
                                 if(pg.rights && pg.citation){
                                     mkp.yield " "
                                 }
                                 mkp.yield pg.citation
-                                if(licence) {
-                                    ulink(url: licence.url) {
-                                        citetitle "${licence.name} (${licence.acronym}${licence.licenceVersion ? ' ' + licence.licenceVersion : ''})"
+                                licence.each { Licence lic ->
+                                    mkp.yield " "
+                                    ulink(url: lic.url) {
+                                        citetitle() {
+                                            mkp.yield lic.name
+                                            if (lic.acronym) {
+                                                mkp.yield " ("
+                                                mkp.yield lic.acronym
+                                                if (lic.licenceVersion) {
+                                                    mkp.yield " "
+                                                    mkp.yield lic.licenceVersion
+                                                }
+                                                mkp.yield ")"
+                                            }
+                                        }
                                     }
                                 }
                             }

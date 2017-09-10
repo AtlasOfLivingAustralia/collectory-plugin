@@ -33,17 +33,9 @@
       <div id="content">
 
         <div id="header" class="collectory">
-          <!--Breadcrumbs-->
-          <div id="breadcrumb">
-            <ol class="breadcrumb">
-                <li><cl:breadcrumbTrail/> <span class=" icon icon-arrow-right"></span></li>
-                <li><cl:pageOptionsLink>${fieldValue(bean:instance,field:'name')}</cl:pageOptionsLink></li>
-            </ol>
-          </div>
-
           <cl:pageOptionsPopup instance="${instance}"/>
-          <div class="row-fluid">
-            <div class="span8">
+          <div class="row">
+            <div class="col-md-8">
               <cl:h1 value="${instance.name}"/>
               <g:set var="inst" value="${instance.getInstitution()}"/>
               <g:if test="${inst}">
@@ -61,13 +53,14 @@
                   </div>
               </div>
             </div>
-            <div class="span4">
+            <div class="col-md-4">
               <!-- institution logo -->
               <g:if test="${inst?.logoRef?.file}">
-                <g:link action="showInstitution" id="${inst.id}">
-                  <img class="institutionImage" src='${resource(absolute:"true", dir:"data/institution/",file:fieldValue(bean: inst, field: 'logoRef.file'))}' />
-                </g:link>
-                <!--div style="clear: both;"></div-->
+                  <section class="public-metadata">
+                      <g:link action="showInstitution" id="${inst.id}">
+                          <img class="institutionImage" src='${resource(absolute:"true", dir:"data/institution/",file:fieldValue(bean: inst, field: 'logoRef.file'))}' />
+                      </g:link>
+                  </section>
               </g:if>
             </div>
           </div>
@@ -82,8 +75,8 @@
         </div>
 
         <div class="tab-content">
-            <div id="overviewTab" class="tab-pane active row-fluid">
-               <div id="overview-content" class="span8">
+            <div id="overviewTab" class="tab-pane active row">
+               <div id="overview-content" class="col-md-8">
                   <h2><g:message code="public.des" /></h2>
                   <cl:formattedText body="${instance.pubDescription}"/>
                   <cl:formattedText>${fieldValue(bean: instance, field: "techDescription")}</cl:formattedText>
@@ -151,23 +144,23 @@
 
                   <cl:lastUpdated date="${instance.lastUpdated}"/>
                </div>
-               <div id="overview-sidebar" class="span4">
+               <div id="overview-sidebar" class="col-md-4">
                   <g:if test="${fieldValue(bean: instance, field: 'imageRef') && fieldValue(bean: instance, field: 'imageRef.file')}">
-                    <div class="section">
+                    <section class="public-metadata">
                       <img style="max-width:100%;max-height:350px;" alt="${fieldValue(bean: instance, field: "imageRef.file")}"
                               src="${resource(absolute:"true", dir:"data/collection/", file:instance.imageRef.file)}" />
                       <cl:formattedText pClass="caption">${fieldValue(bean: instance, field: "imageRef.caption")}</cl:formattedText>
                       <cl:valueOrOtherwise value="${instance.imageRef?.attribution}"><p class="caption">${fieldValue(bean: instance, field: "imageRef.attribution")}</p></cl:valueOrOtherwise>
                       <cl:valueOrOtherwise value="${instance.imageRef?.copyright}"><p class="caption">${fieldValue(bean: instance, field: "imageRef.copyright")}</p></cl:valueOrOtherwise>
-                    </div>
+                    </section>
                   </g:if>
 
                   <div id="dataAccessWrapper" style="display:none;">
                       <g:render template="dataAccess" model="[instance:instance]"/>
                   </div>
 
-                  <div class="section">
-                    <h3><g:message code="public.location" /></h3>
+                  <section class="public-metadata">
+                    <h4><g:message code="public.location" /></h4>
                     <!-- use parent location if the collection is blank -->
                     <g:set var="address" value="${instance.address}"/>
                     <g:if test="${address == null || address.isEmpty()}">
@@ -188,15 +181,15 @@
 
                     <g:if test="${instance.email}"><cl:emailLink>${fieldValue(bean: instance, field: "email")}</cl:emailLink><br/></g:if>
                     <cl:ifNotBlank value='${fieldValue(bean: instance, field: "phone")}'/>
-                  </div>
+                  </section>
 
                   <!-- contacts -->
                   <g:render template="contacts" bean="${instance.getPublicContactsPrimaryFirst()}"/>
 
                   <!-- web site -->
                   <g:if test="${instance.websiteUrl || instance.institution?.websiteUrl}">
-                    <div class="section">
-                      <h3><g:message code="public.website" /></h3>
+                    <section class="public-metadata">
+                      <h4><g:message code="public.website" /></h4>
                       <g:if test="${instance.websiteUrl}">
                         <div class="webSite">
                           <a class='external' rel='nofollow' target="_blank" href="${instance.websiteUrl}"><g:message code="public.show.osb.link01" /></a>
@@ -208,13 +201,13 @@
                             <g:message code="public.show.osb.link02"/>&nbsp;&nbsp;<cl:institutionType inst="${instance.institution}"/><g:message code="public.show.osb.link03" /></a>
                         </div>
                       </g:if>
-                    </div>
+                    </section>
                   </g:if>
 
                   <!-- network membership -->
                   <g:if test="${instance.networkMembership}">
-                    <div class="section">
-                      <h3><g:message code="public.network.membership.label" /></h3>
+                    <section class="public-metadata">
+                      <h4><g:message code="public.network.membership.label" /></h4>
                       <g:if test="${instance.isMemberOf('CHAEC')}">
                         <p><g:message code="public.network.membership.des01" /></p>
                         <img src="${resource(absolute:"true", dir:"data/network/",file:"chaec-logo.png")}"/>
@@ -231,13 +224,13 @@
                         <p><g:message code="public.network.membership.des04" /></p>
                         <img src="${resource(absolute:"true", dir:"data/network/",file:"chacm.png")}"/>
                       </g:if>
-                    </div>
+                    </section>
                   </g:if>
 
                   <!-- attribution -->
                   <g:set var='attribs' value='${instance.getAttributionList()}'/>
                   <g:if test="${attribs.size() > 0}">
-                    <div class="section" id="infoSourceList">
+                    <section class="public-metadata" id="infoSourceList">
                       <h4><g:message code="public.show.osb.label04" /></h4>
                       <ul>
                         <g:each var="a" in="${attribs}">
@@ -249,7 +242,7 @@
                           </g:else>
                         </g:each>
                       </ul>
-                    </div>
+                    </section>
                   </g:if>
 
                <!-- external identifiers -->
@@ -259,8 +252,8 @@
             </div>
             <div id="recordsTab" class="tab-pane">
               <h2><g:message code="public.show.rt.title" /></h2>
-              <div class="row-fluid">
-                  <div class="span8">
+              <div class="row">
+                  <div class="col-md-8">
                     <g:if test="${instance.numRecords != -1}">
                       <p><cl:collectionName prefix="The " name="${instance.name}"/> has an estimated ${fieldValue(bean: instance, field: "numRecords")} ${nouns}.
                         <g:if test="${instance.numRecordsDigitised != -1}">
@@ -269,10 +262,11 @@
                       </p>
                     </g:if>
                     <g:if test="${biocacheRecordsAvailable}">
-                      <p><span id="numBiocacheRecords"><g:message code="public.show.rt.des04" /></span> <g:message code="public.show.rt.des05" />.</p>
-                      <cl:warnIfInexactMapping collection="${instance}"/>
-                      <cl:recordsLink entity="${instance}">
-                      <g:message code="public.show.rt.des06" /> <cl:collectionName name="${instance.name}"/></cl:recordsLink>
+                      <p>
+                          <span id="numBiocacheRecords"><g:message code="public.show.rt.des04" /></span> <g:message code="public.show.rt.des05" />.
+                          <cl:warnIfInexactMapping collection="${instance}"/>
+                          <cl:recordsLink entity="${instance}"><g:message code="public.show.rt.des06" /> <cl:collectionName name="${instance.name}"/></cl:recordsLink>
+                      </p>
                     </g:if>
                     <g:else>
                       <p><g:message code="public.show.rt.des07" />.</p>
@@ -281,7 +275,7 @@
                         <div style="clear:both;"></div>
                           <g:if test="${!grailsApplication.config.disableOverviewMap?.asBoolean()}">
                               <div id="collectionRecordsMapContainer">
-                                  <h3><g:message code="public.show.crmc.title" /> ${grailsApplication.config.disableOverviewMap?.asBoolean()}</h3>
+                                  <h3><g:message code="public.show.crmc.title" /></h3>
                                   <cl:recordsMapDirect uid="${instance.uid}"/>
                               </div>
                           </g:if>
@@ -289,12 +283,12 @@
                           <div id="iehack"></div>
                     </g:if>
                   </div>
-                  <div class="span4">
+                  <div class="col-md-4">
                     <div id="progress" class="well">
                         <div class="progress">
-                          <div id="progressBar" class="bar bar-success" style="width: 0%;"></div>
+                          <div id="progressBar" class="progress-bar progress-bar-success" style="width: 0%;"></div>
                         </div>
-                        <p class="caption"><span id="speedoCaption"><g:message code="public.show.speedocaption" />.</span></p>
+                        <p class="caption"><span id="speedoCaption"><g:message code="public.show.setprogress.02" args="${[grailsApplication.config.skin.orgNameShort]}" />.</span></p>
                     </div>
                   </div>
               </div>
@@ -547,16 +541,20 @@ function decadeBreakdownRequestHandler(response) {
 \************************************************************/
 function setProgress(percentage){
   var captionText = "";
+  var orgName = '${grailsApplication.config.skin.orgNameShort}';
+  var noun = jQuery.i18n.prop('public.show.setprogress.${nouns}');
+  if (noun == null)
+      noun = '${nouns}';
   if (${instance.numRecords < 1}) {
-    captionText = jQuery.i18n.prop('public.show.setprogress.01')+ " " +  ${nouns} +  jQuery.i18n.prop('public.show.setprogress.02');
+    captionText = jQuery.i18n.prop('public.show.setprogress.01', noun, orgName);
   } else if (percentage == 0) {
-    captionText = jQuery.i18n.prop('public.show.setprogress.03');
+    captionText = jQuery.i18n.prop('public.show.setprogress.02', orgName);
   } else {
     var displayPercent = percentage.toFixed(1);
     if (percentage < 0.1) {displayPercent = percentage.toFixed(2)}
     if (percentage > 20) {displayPercent = percentage.toFixed(0)}
     if (percentage > 100) {displayPercent = "over 100"}
-    captionText = jQuery.i18n.prop('public.show.percentrecords.01') + " " + displayPercent + " " + jQuery.i18n.prop('public.show.percentrecords.02') + " " + jQuery.i18n.prop('public.show.percentrecords.${nouns}') + " " + jQuery.i18n.prop('public.show.percentrecords.03') +  ".";
+    captionText = jQuery.i18n.prop('public.show.percentrecords.01', displayPercent, noun, orgName);
   }
   $('#speedoCaption').html(captionText);
   if (percentage > 100) {

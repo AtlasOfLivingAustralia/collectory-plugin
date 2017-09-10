@@ -9,11 +9,11 @@
         <title><g:message code="default.list.label" args="[entityName]" /></title>
     </head>
     <body>
-        <div class="nav">
-            <ul>
-            <li><span class="menuButton"><cl:homeLink/></span></li>
-            <li></li><span class="menuButton"><g:link class="create" action="create" params="${[consumer: consumer, provider: provider, returnTo: returnTo]}"><g:message code="default.new.label" args="[entityName]" /></g:link></span></li>
-            <g:if test="${returnTo}"><span class="menuButton"><cl:returnLink uid="${returnTo}"/></span></g:if>
+        <div class="btn-toolbar">
+            <ul class="btn-group">
+                <li class="btn"><cl:homeLink/></li>
+                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <g:if test="${returnTo}"><li><cl:returnLink uid="${returnTo}"/></li></g:if>
             </ul>
         </div>
         <div class="body">
@@ -57,8 +57,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="paginateButtons">
-                <g:paginate total="${dataLinkInstanceTotal}" />
+            <div class="nav">
+                <tb:paginate controller="dataLink" action="list" total="${dataLinkInstanceTotal}" />
             </div>
         </div>
     </body>

@@ -22,7 +22,7 @@
 
     <div class="media">
       <a class="pull-left" href="#">
-        <img class="showImage img-polaroid" alt="${fieldValue(bean: image, field: "file")}"
+        <img class="showImage img-thumbnail" alt="${fieldValue(bean: image, field: "file")}"
             src="${resource(absolute: "true", dir: dir, file: image.file)}"/>
       </a>
       <div class="media-body">

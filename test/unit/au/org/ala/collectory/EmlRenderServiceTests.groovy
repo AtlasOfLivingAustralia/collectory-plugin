@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 
 @TestFor(EmlRenderService)
 @TestMixin(ControllerUnitTestMixin)
-@Mock([DataLink, Attribution, ContactFor])
+@Mock([DataLink, Attribution, ContactFor, Licence])
 class EmlRenderServiceTests extends Specification {
     static ORGANIZATION1 = "ALA"
     static ID1 = 2000
@@ -33,6 +33,7 @@ class EmlRenderServiceTests extends Specification {
     static ATTRIBUTIONS1 = 'co100 co101'
     static RIGHTS1 = 'Copyright CSIRO 2015'
     static CITATION1 = 'Some random person 2015'
+    static LICENCENAME1 = "CC-BY"
     static LICENCETYPE1 = "CC BY"
     static LICENCEVERSION1 = '3.0'
     static LASTUPDATED1 = new Date(100000000)
@@ -41,6 +42,7 @@ class EmlRenderServiceTests extends Specification {
     def dr
 
     protected void setup() {
+        grailsApplication.config.grails.serverURL = "http://localhost"
         grailsApplication.config.eml.organizationName = "Atlas of Living Australia (ALA)"
         grailsApplication.config.eml.deliveryPoint = "CSIRO Black Mountain Laboratories, Clunies Ross Street, ACTON"
         grailsApplication.config.eml.city = "Canberra"
@@ -80,6 +82,9 @@ class EmlRenderServiceTests extends Specification {
 
     void testDataResource1() {
         when:
+        def licence = new Licence(name: LICENCENAME1, acronym: LICENCETYPE1, licenceVersion: LICENCEVERSION1, url: WEBSITEURL1)
+        licence.save(flush: true, failOnError: true)
+        def all = Licence.all
         String emls = service.emlForResource(dr)
         XmlSlurper slurper = new XmlSlurper()
         def eml = slurper.parse(new StringReader(emls))
@@ -99,13 +104,8 @@ class EmlRenderServiceTests extends Specification {
         dataset.creator.electronicMailAddress.text() == EMAIL1
         dataset.creator.onlineUrl == WEBSITEURL1
         dataset.intellectualRights != null
-        dataset.intellectualRights.section.size() == 3
-        dataset.intellectualRights.section[0].title == "Rights"
-        dataset.intellectualRights.section[0].para == RIGHTS1
-        dataset.intellectualRights.section[1].title == "Citation"
-        dataset.intellectualRights.section[1].para == CITATION1
-        dataset.intellectualRights.section[2].title == "License"
-        dataset.intellectualRights.section[2].para == "Creative Commons Attribution 3.0"
+        dataset.intellectualRights.para.size() == 1
+        dataset.intellectualRights.para[0].toString() == RIGHTS1 + " " + CITATION1 + " " + LICENCENAME1 + " (" + LICENCETYPE1 + " " + LICENCEVERSION1 + ")"
         dataset.contact?.organizationName == grailsApplication.config.eml.organizationName
     }
 
@@ -133,9 +133,8 @@ class EmlRenderServiceTests extends Specification {
         dataset.creator.electronicMailAddress == EMAIL1
         dataset.creator.onlineUrl == WEBSITEURL1
         dataset.intellectualRights != null
-        dataset.intellectualRights.section.size() == 1
-        dataset.intellectualRights.section[0].title == "Citation"
-        dataset.intellectualRights.section[0].para == CITATION1
+        dataset.intellectualRights.para.size() == 1
+        dataset.intellectualRights.para[0].toString() == CITATION1
         dataset.contact?.organizationName == grailsApplication.config.eml.organizationName
     }
 

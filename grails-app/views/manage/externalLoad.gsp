@@ -7,89 +7,67 @@
 </head>
 <body>
 <h1><g:message code="manage.extload.title01" /></h1>
-<div id="baseForm">
-    <g:form action="searchForResources" controller="manage">
-        <g:hiddenField name="configuration.guid" value="${configuration.guid}"/>
-            <div class="span6">
-                    <table>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="name"><g:message code="manage.extload.label01" />:</label></td>
-                            <td valign="top" class="value">
-                                <g:field name="name" type="text" value="${configuration.name}"/>
-                                <cl:helpText code="manage.extload.label01.help"/>
-                            </td>
-                        </tr>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="description"><g:message code="manage.extload.label02" />:</label></td>
-                            <td valign="top" class="value">
-                                <g:field name="description" type="text" size="64" value="${configuration.description}"/>
-                                <cl:helpText code="manage.extload.label02.help"/>
-                            </td>
-                        </tr>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="dataProviderUid"><g:message code="manage.extload.label03" />:</label></td>
-                            <td valign="top" class="value">
-                                <g:select name="dataProviderUid" from="${dataProviders}" optionKey="uid" optionValue="name" value="${configuration.dataProviderUid}"/>
-                                <cl:helpText code="manage.extload.label03.help"/>
-                            </td>
-                        </tr>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="adaptorString"><g:message code="manage.extload.label04" />:</label></td>
-                            <td valign="top" class="value">
-                                <g:select name="adaptorString" from="${adaptors}" optionKey="adaptorString" optionValue="name" value="${configuration.adaptorString}"/>
-                                <cl:helpText code="manage.extload.label04.help"/>
-                            </td>
-                        </tr>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="endpoint"><g:message code="manage.extload.label05" />:</label></td>
-                            <td valign="top" class="value">
-                                <g:field name="endpoint" type="url" value="${configuration.endpoint}"/>
-                                <cl:helpText code="manage.extload.label05.help"/>
-                            </td>
-                        </tr>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="country"><g:message code="manage.extload.label06" />:</label></td>
-                            <td valign="top" class="value">
-                                <g:select name="country" from="${countryMap.entrySet()}" optionKey="key" optionValue="value" values="${configuration.country}"/>
-                                <cl:helpText code="manage.extload.label06.help"/>
-                            </td>
-                        </tr>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="recordType"><g:message code="manage.extload.label07" />:</label></td>
-                            <td valign="top" class="value">
-                                <g:select name="recordType" from="${datasetTypeMap.entrySet()}" optionKey="key" optionValue="value" values="${configuration.recordType}"/>
-                                <cl:helpText code="manage.extload.label07.help"/>
-                            </td>
-                        </tr>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="username"><g:message code="manage.extload.label08" />:</label></td>
-                            <td valign="top" class="value"><g:field type="text" name="username" required="true" value="${configuration.username}" />
-                            <cl:helpText code="manage.extload.label08.help"/>
-                            </td>
-                        </tr>
-                        <tr class="prop">
-                            <td valign="top" class="name"><label for="password"><g:message code="manage.extload.label09" />:</label></td>
-                            <td valign="top" class="value"><g:field type="text" name="password"  value="${configuration.password}" />
-                            <cl:helpText code="manage.extload.label09.help"/>
-                            </td>
-                        </tr>
-                    </table>
-                <span class="button"><input type="submit" name="performReview" value="Review" class="save btn"></span>
-            </div>
-
-            <div class="well pull-right span5">
-                <p>
-                    <g:message code="manage.extload.des01" />
-                    <g:message code="manage.extload.des02" />
-                </p>
-                <p>
-                     <g:message code="manage.extload.des03" />
-                 </p>
-            </div>
-        </div>
-
-    </g:form>
+<div class="btn-toolbar">
+    <ul class="btn-group">
+        <li class="btn"><cl:homeLink/></li>
+    </ul>
 </div>
+<div class="row">
+    <div id="baseForm" class="col-md-8">
+        <g:form action="searchForResources" controller="manage">
+            <g:hiddenField name="configuration.guid" value="${configuration.guid}"/>
+            <div class="form-group">
+                <label for="name"><g:message code="manage.extload.label01" /><cl:helpText code="manage.extload.label01.help"/></label>
+                <g:field name="name" class="form-control" type="text" value="${configuration.name}"/>
+            </div>
+            <div class="form-group">
+                <label for="description"><g:message code="manage.extload.label02" /><cl:helpText code="manage.extload.label02.help"/></label>
+                <g:field name="description" class="form-control" type="text" size="64" value="${configuration.description}"/>
+            </div>
+            <div class="form-group">
+                <label for="dataProviderUid"><g:message code="manage.extload.label03" /><cl:helpText code="manage.extload.label03.help"/></label>
+                <g:select name="dataProviderUid" class="form-control" from="${dataProviders}" optionKey="uid" optionValue="name" value="${configuration.dataProviderUid}"/>
 
+
+            </div>
+            <div class="form-group">
+                <label for="adaptorString"><g:message code="manage.extload.label04" /><cl:helpText code="manage.extload.label04.help"/></label>
+                <g:select name="adaptorString" class="form-control" from="${adaptors}" optionKey="adaptorString" optionValue="name" value="${configuration.adaptorString}"/>
+            </div>
+            <div class="form-group">
+                <label for="endpoint"><g:message code="manage.extload.label05" /><cl:helpText code="manage.extload.label05.help"/></label>
+                <g:field name="endpoint" class="form-control" type="url" value="${configuration.endpoint}"/>
+            </div>
+            <div class="form-group">
+                <label for="country"><g:message code="manage.extload.label06" /><cl:helpText code="manage.extload.label06.help"/></label>
+                <g:select name="country" class="form-control" from="${countryMap.entrySet()}" optionKey="key" optionValue="value" values="${configuration.country}"/>
+            </div>
+            <div class="form-group">
+                <label for="recordType"><g:message code="manage.extload.label07" /><cl:helpText code="manage.extload.label07.help"/></label>
+                <g:select name="recordType" class="form-control" from="${datasetTypeMap.entrySet()}" optionKey="key" optionValue="value" values="${configuration.recordType}"/>
+            </div>
+            <div class="form-group">
+                <label for="username"><g:message code="manage.extload.label08" /><cl:helpText code="manage.extload.label08.help"/></label>
+                <g:field type="text" name="username" class="form-control" value="${configuration.username}" />
+            </div>
+            <div class="form-group">
+                <label for="password"><g:message code="manage.extload.label09" /><cl:helpText code="manage.extload.label09.help"/></label>
+                <g:field type="text" name="password" class="form-control" value="${configuration.password}" />
+            </div>
+            <div>
+                <span class="button"><input type="submit" name="performReview" value="Review" class="save btn btn-default"></span>
+            </div>
+        </g:form>
+    </div>
+    <div class="well col-md-4">
+        <p>
+            <g:message code="manage.extload.des01" />
+            <g:message code="manage.extload.des02" />
+        </p>
+        <p>
+            <g:message code="manage.extload.des03" />
+        </p>
+    </div>
+</div>
 </body>
 </html>

@@ -12,6 +12,7 @@ class ContactController {
  * All methods require EDITOR role.
  * Delete requires ADMIN role.
  */
+
     def collectoryAuthService
     def beforeInterceptor = [action:this.&auth]
 
@@ -22,21 +23,24 @@ class ContactController {
         }
         return true
     }
+
 /*
  End access control
  */
 
-    def index = {
+    def index() {
         redirect(action: "list", params: params)
     }
 
-    def list = {
+    def list() {
         params.max = Math.min(params.max ? params.int('max') : 20, 100)
         params.sort = 'lastName'
         [contactInstanceList: Contact.list(params), contactInstanceTotal: Contact.count()]
     }
 
-    def name = {
+    // dfp 2017-07-06 If you have a closure here, the test framework fails,
+    // @see https://stackoverflow.com/questions/44917923/grails-2-5-5-controller-unit-test-cannot-cast-object-error
+    def name() {
         def contactInstance = Contact.get(params.id)
         if (!contactInstance) {
             render "contact not found"
@@ -45,15 +49,15 @@ class ContactController {
             render contactInstance.buildName()
         }
     }
-    
-    def create = {
+
+    def create() {
         def contactInstance = new Contact()
         contactInstance.properties = params
         contactInstance.userLastModified = collectoryAuthService?.username()
         return [contactInstance: contactInstance, returnTo: params.returnTo]
     }
 
-    def save = {
+    def save() {
         def contactInstance = new Contact(params)
         contactInstance.userLastModified = collectoryAuthService?.username()?:'not available'
         contactInstance.validate()
@@ -71,7 +75,7 @@ class ContactController {
         }
     }
 
-    def show = {
+    def show() {
         def contactInstance = Contact.get(params.id)
         if (!contactInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'contact.label', default: 'Contact'), params.id])}"
@@ -84,7 +88,7 @@ class ContactController {
         }
     }
 
-    def edit = {
+    def edit() {
         def contactInstance = Contact.get(params.id)
         if (!contactInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'contact.label', default: 'Contact'), params.id])}"
@@ -95,7 +99,7 @@ class ContactController {
         }
     }
 
-    def update = {
+    def update() {
         def contactInstance = Contact.get(params.id)
         if (contactInstance) {
             if (params.version) {
@@ -119,6 +123,7 @@ class ContactController {
                 }
             }
             else {
+
                 render(view: "edit", model: [contactInstance: contactInstance, returnTo: params.returnTo])
             }
         }
@@ -131,7 +136,7 @@ class ContactController {
     /**
      * MEW - modified to cascade delete all ContactFor links for the contact
      */
-    def delete = {
+    def delete() {
         def contactInstance = Contact.get(params.id)
         if (contactInstance) {
             if (collectoryAuthService?.userInRole(grailsApplication.config.auth.admin_role)) {
@@ -163,7 +168,7 @@ class ContactController {
      *
      * @param userEmail - optional email, defaults to the logged in user
      */
-    def showProfile = {
+    def showProfile() {
         def user = params.userEmail ?: collectoryAuthService?.username()
         def contact = Contact.findByEmail(user)
         if (contact) {
@@ -177,7 +182,7 @@ class ContactController {
         }
     }
 
-    def updateProfile = {
+    def updateProfile() {
         params.each {println it}
         def contactInstance = Contact.get(params.id)
         // only the user or admin can update
@@ -201,15 +206,8 @@ class ContactController {
         }
     }
 
-    def cancelProfile = {
+    def cancelProfile() {
         flash.message = "Your profile was not changed."
         redirect(uri: "/admin")
     }
-
-}
-
-
-class ContactRelationship {
-    ContactFor cf
-    String entityName
 }

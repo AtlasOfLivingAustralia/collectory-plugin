@@ -46,10 +46,10 @@
     </thead>
 <g:each in="${load.resources}" var = "resource" >
     <tr class="prop">
-        <td class="name span2">${resource.name}</td>
-        <td class="name span2"><span title="<g:message code="manage.phase.${resource.phase}.detail"/>"><g:message code="manage.phase.${resource.phase}"/></span></td>
-        <td class="name span4"><cl:notes notes="${resource.notes}"/></td>
-        <td class="name span2"><g:if test="${resource.uid && resource.phase.terminal}"><a href="${createLink(controller:'dataResource',action:'show', id:resource.uid)}"> View Data Resource Page </a></g:if></td>
+        <td class="name col-md-2">${resource.name}</td>
+        <td class="name col-md-2"><span title="<g:message code="manage.phase.${resource.phase}.detail"/>"><g:message code="manage.phase.${resource.phase}"/></span></td>
+        <td class="name col-md-4"><cl:notes notes="${resource.notes}"/></td>
+        <td class="name col-md-2"><g:if test="${resource.uid && resource.phase.terminal}"><a href="${createLink(controller:'dataResource',action:'show', id:resource.uid)}"> View Data Resource Page </a></g:if></td>
     </tr>
 </g:each>
 </table>

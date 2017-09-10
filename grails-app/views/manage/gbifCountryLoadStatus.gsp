@@ -45,9 +45,9 @@
     </thead>
 <g:each in="${gbifSummary.loads}" var = "load" >
     <tr class="prop">
-        <td class="name span4">${load.name}</td>
-        <td class="name span2">${load.phase}</td>
-        <td class="name span4"><g:if test="${load.dataResourceUid}"><a href="${createLink(controller:'dataResource',action:'show', id:load.dataResourceUid)}"> View Data Resource Page </a></g:if></td>
+        <td class="name col-md-4">${load.name}</td>
+        <td class="name col-md-2">${load.phase}</td>
+        <td class="name col-md-4"><g:if test="${load.dataResourceUid}"><a href="${createLink(controller:'dataResource',action:'show', id:load.dataResourceUid)}"> View Data Resource Page </a></g:if></td>
     </tr>
 </g:each>
 </table>

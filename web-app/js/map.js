@@ -66,14 +66,14 @@ function initMap(mapOptions) {
 
     var featureGraphicUrl = mapOptions.serverUrl + "/images/map/orange-dot.png";
     var clusterGraphicUrl = mapOptions.serverUrl + "/images/map/orange-dot-multiple.png";
-
+    var cartodbPattern = COLLECTORY_CONF.cartodbPattern;
+    var patterns = ['a', 'b', 'c', 'd'].map(function(s) { return cartodbPattern.replace('${s}', s)});
     // create the map
     map = new OpenLayers.Map('map_canvas', {
         controls: [],
         sphericalMercator: true,
         layers: [
-            new OpenLayers.Layer.XYZ("Base layer",
-            ["http://${s}.basemaps.cartocdn.com/light_all/${z}/${x}/${y}.png"], {
+            new OpenLayers.Layer.XYZ("Base layer", patterns, {
                 sphericalMercator: true,
                 wrapDateLine: true
             })

@@ -5,23 +5,22 @@
   <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
   <g:set var="entityName" value="${command.ENTITY_TYPE}"/>
   <g:set var="entityNameLower" value="${command.ENTITY_TYPE.toLowerCase()}"/>
-  <title><g:message code="collection.base.label" default="Edit ${entityNameLower} metadata" /></title>
+  <title><g:message code="collection.base.label" default="Edit ${entityNameLower} metadata" args="[entityNameLower]" /></title>
   <script async defer
           src="https://maps.googleapis.com/maps/api/js?key=${grailsApplication.config.google?.apikey}"
-          type="text/javascript"></script>
-</head>
+          type="text/javascript"></script></head>
 <body onload="load();">
   <style>
   #mapCanvas {
-    width: 500px;
-    height: 500px;
-    float: right;
+    width: 100%;
+    min-height: 200px;
+    min-width: 200px;
   }
   </style>
 <div class="nav">
   <h1><g:message code="shared.location.main.title01" />: ${fieldValue(bean: command, field: "name")}</h1>
 </div>
-<div class="body">
+<div class="container">
   <g:if test="${message}">
     <div class="message">${message}</div>
   </g:if>
@@ -33,160 +32,97 @@
   <g:form method="post" enctype="multipart/form-data" action="editCollection">
     <g:hiddenField name="id" value="${command?.id}"/>
     <g:hiddenField name="version" value="${command.version}"/>
-    <div class="dialog">
-      <table>
-        <tbody>
-
+    <div class="row">
+      <div class="col-md-8">
         <!-- state -->
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="state"><g:message code="providerGroup.state.label" default="State/Territory/County"/>
-              <br/><span class=hint>(where the ${entityNameLower}<br>resides)</span>
-            </label>
-          </td>
-          <td valign="top" colspan="3" class="value ${hasErrors(bean: command, field: 'state', 'errors')}">
-            %{--<g:select id="state" name="state" from="${ProviderGroup.statesList}" value="${command?.state}" valueMessagePrefix="providerGroup.state" noSelection="['': '']"/>--}%
-            <g:textField name="sate" maxLength="256" value="${command?.state}"/>
-            <cl:helpText code="${entityNameLower}.state"/>
-          </td>
-          <cl:helpTD/>
-        </tr>
+        <div class="form-group">
+          <label for="state"><g:message code="providerGroup.state.label" default="State/Territory/County"/><cl:helpText code="${entityNameLower}.state"/>
+            <br/><span class=hint>(where the ${entityNameLower}<br>resides)</span>
+          </label>
+          <g:textField class="form-control" name="sate" maxLength="256" value="${command?.state}"/>
+        </div>
 
         <!-- email -->
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="email"><g:message code="providerGroup.email.label" default="Email"/></label>
-          </td>
-          <td valign="top" colspan="3" class="value ${hasErrors(bean: command, field: 'email', 'errors')}">
-            <g:textField name="email" maxLength="256" value="${command?.email}"/>
-            <cl:helpText code="collection.email"/>
-          </td>
-          <cl:helpTD/>
-        </tr>
+        <div class="form-group">
+          <label for="email"><g:message code="providerGroup.email.label" default="Email"/><cl:helpText code="collection.email"/></label>
+          <g:field type="email" class="form-control" name="email" maxLength="256" value="${command?.email}"/>
+        </div>
 
         <!-- phone -->
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="phone"><g:message code="providerGroup.phone.label" default="Phone"/></label>
-          </td>
-          <td valign="top" colspan="3" class="value ${hasErrors(bean: command, field: 'phone', 'errors')}">
-            <g:textField name="phone" maxlength="45" value="${command?.phone}"/>
-            <cl:helpText code="collection.phone"/>
-          </td>
-          <cl:helpTD/>
-        </tr>
+        <div class="form-group">
+          <label for="phone"><g:message code="providerGroup.phone.label" default="Phone"/><cl:helpText code="collection.phone"/></label>
+          <g:field type="tel" class="form-control" name="phone" maxlength="45" value="${command?.phone}"/>
+        </div>
 
         <!-- address -->
-          <tr class='prop'>
-            <td valign="top" class="name">
-              <label for="address.street"><g:message code="providerGroup.address.street.label" default="Street"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: command, field: 'address.street', 'errors')}">
-              <g:textField id="street" name="address.street" maxlength="128" value="${command?.address?.street}"/>
-            </td>
-          </tr>
-          <tr class='prop'>
-            <td valign="top" class="name">
-              <label for="address.city"><g:message code="providerGroup.address.city.label" default="City"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: command, field: 'address.city', 'errors')}">
-              <g:textField id="city" name="address.city" maxlength="128" value="${command?.address?.city}"/>
-            </td>
-          </tr>
-          <tr class='prop'>
-            <td valign="top" class="name">
-              <label for="address.state"><g:message code="providerGroup.address.state.label" default="State or territory"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: command, field: 'address.state', 'errors')}">
-              <g:textField id="state" name="address.state" maxlength="128" value="${command?.address?.state}"/>
-            </td>
-          </tr>
-          <tr class='prop'>
-            <td valign="top" class="name">
-              <label for="address.postcode"><g:message code="providerGroup.address.postcode.label" default="Postcode"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: command, field: 'address.street', 'errors')}">
-              <g:textField name="address.postcode" maxlength="128" value="${command?.address?.postcode}"/>
-            </td>
-          </tr>
-          <tr class='prop'>
-            <td valign="top" class="name">
-              <label for="address.country"><g:message code="providerGroup.address.country.label" default="Country"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: command, field: 'address.country', 'errors')}">
-              <g:textField id="country" name="address.country" maxlength="128" value="${command?.address?.country}"/>
-            </td>
-          </tr>
-          <tr class='prop'>
-            <td valign="top" class="name">
-              <label for="address.postBox"><g:message code="providerGroup.address.postBox.label" default="Postal address"/></label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: command, field: 'address.postBox', 'errors')}">
-              <g:textField name="address.postBox" maxlength="128" value="${command?.address?.postBox}"/>
-            </td>
-          </tr>
+        <div class="form-group">
+          <label for="address.street"><g:message code="providerGroup.address.street.label" default="Street"/></label>
+          <g:textField class="form-control" id="street" name="address.street" maxlength="128" value="${command?.address?.street}"/>
+        </div>
+        <div class="form-group">
+          <label for="address.city"><g:message code="providerGroup.address.city.label" default="City"/></label>
+          <g:textField class="form-control" id="city" name="address.city" maxlength="128" value="${command?.address?.city}"/>
+        </div>
+        <div class="form-group">
+          <label for="address.state"><g:message code="providerGroup.address.state.label" default="State or territory"/></label>
+          <g:textField class="form-control" id="state" name="address.state" maxlength="128" value="${command?.address?.state}"/>
+        </div>
+        <div class="form-group">
+          <label for="address.postcode"><g:message code="providerGroup.address.postcode.label" default="Postcode"/></label>
+          <g:textField class="form-control" name="address.postcode" maxlength="128" value="${command?.address?.postcode}"/>
+        </div>
+        <div class="form-group">
+          <label for="address.country"><g:message code="providerGroup.address.country.label" default="Country"/></label>
+          <g:textField class="form-control" id="country" name="address.country" maxlength="128" value="${command?.address?.country}"/>
+        </div>
+        <div class="form-group">
+          <label for="address.postBox"><g:message code="providerGroup.address.postBox.label" default="Postal address"/></label>
+          <g:textField class="form-control" name="address.postBox" maxlength="128" value="${command?.address?.postBox}"/>
+        </div>
 
-        <!-- latitude -->
-        <div id="mapCanvas" class="pull-right"></div>
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="latitude"><g:message code="providerGroup.latitude.label" default="Latitude"/>
-              <br/><span class=hint>(decimal degrees)</span>
-            </label>
-          </td>
-          <td valign="top" class="value ${hasErrors(bean: command, field: 'latitude', 'errors')}">
-            <g:textField id="latitude" name="latitude" value="${cl.numberIfKnown(number:command.latitude)}"/>
-            <cl:helpText code="collection.latitude"/>
-          </td>
-          <cl:helpTD/>
-
+        <!-- latitude and longitude -->
+        <div class="form-group">
+          <label for="latitude"><g:message code="providerGroup.latitude.label" default="Latitude"/><cl:helpText code="collection.latitude"/>
+            <br/><span class=hint>(decimal degrees)</span>
+          </label>
+          <g:textField type="number" class="form-control" id="latitude" name="latitude" step="any" value="${cl.numberIfKnown(number:command.latitude)}"/>
           <!-- map spans 4-5 rows -->
-          <td rowspan="5">
-            </td>
-        </tr>
+        </div>
 
         <!-- longitude -->
-        <tr class="prop">
-          <td valign="top" class="name">
-            <label for="longitude">
-              <g:message code="providerGroup.longitude.label" default="Longitude"/>
-              <br/><span class=hint>(decimal degrees)</span>
-            </label>
-          </td>
-          <td valign="top" class="value ${hasErrors(bean: command, field: 'longitude', 'errors')}">
-            <g:textField id="longitude" name="longitude" value="${cl.numberIfKnown(number:command.longitude)}"/>
-            <cl:helpText code="collection.longitude"/>
-          </td>
-          <cl:helpTD/>
-        </tr>
+        <div class="form-group">
+          <label for="longitude">
+            <g:message code="providerGroup.longitude.label" default="Longitude"/><cl:helpText code="collection.longitude"/>
+            <br/><span class=hint>(decimal degrees)</span>
+          </label>
+          <g:field type="number" class="form-control" id="longitude" name="longitude" min="-180.0" max="180.0" step="any" value="${cl.numberIfKnown(number:command.longitude)}"/>
+        </div>
 
         <!-- lookup lat/lng -->
-        <tr>
-          <td></td><td colspan="2">
-            <input type="button" class="classicButton btn" onclick="return codeAddress();" value="Lookup"/> <g:message code="shared.location.lookup" />.<div style="width:100%;"></div>
-          </td>
-        </tr>
+        <div class="form-group">
+          <input type="button" class="classicButton btn btn-default" onclick="return codeAddress();" value="Lookup"/> <g:message code="shared.location.lookup" />.<div style="width:100%;"></div>
+        </div>
 
         <g:if test="${command.ENTITY_TYPE == 'Collection'}">
           <g:if test="${(command.latitude == -1 || command.longitude == -1) && command.inheritedLatLng()}">
-            <tr>
-              <td></td><td colspan="2">
-                <input type="button" class="classicButton" onclick="return useInherited();" value="Use inherited"/> <g:message code="shared.location.button.useinherited" />.<div style="width:100%;"></div>
-              </td>
-            </tr>
+            <div class="form-group">
+              <input type="button" class="classicButton" onclick="return useInherited();" value="Use inherited"/> <g:message code="shared.location.button.useinherited" />.<div style="width:100%;"></div>
+            </div>
           </g:if>
         </g:if>
-        <tr>
-          <td></td><td colspan="2"><g:message code="shared.location.main.des01" /> ${entityNameLower}.<br/>
-                <g:message code="shared.location.main.des02" />.</td>
-        </tr>
+        <div class="form-group">
+          <g:message code="shared.location.main.des01" /> ${entityNameLower}.<br/>
+          <g:message code="shared.location.main.des02" />.
+        </div>
 
-        </tbody>
-      </table>
+      </div>
+      <div class="col-md-4 pull-right">
+        <div id="mapCanvas"></div>
+      </div>
     </div>
     <div class="buttons">
-      <span class="button"><input type="submit" name="_action_updateLocation" value="${message(code:"shared.location.button.update")}" class="save btn"></span>
-      <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"shared.location.button.cancel")}" class="cancel btn"></span>
+      <span class="button"><input type="submit" name="_action_updateLocation" value="${message(code:"shared.location.button.update")}" class="save btn btn-success"></span>
+      <span class="button"><input type="submit" name="_action_cancel" value="${message(code:"shared.location.button.cancel")}" class="cancel btn btn-default"></span>
     </div>
   </g:form>
 </div>
@@ -198,8 +134,8 @@
     if (geocoder) {
       geocoder.geocode({ 'address': address}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
-          var lat = results[0].geometry.location.lat();
-          var lng = results[0].geometry.location.lng();
+          var lat = results[0].geometry.location.lat().toFixed(6);
+          var lng = results[0].geometry.location.lng().toFixed(6);
           $('input#latitude').val(lat);
           $('input#longitude').val(lng);
           map.setCenter(results[0].geometry.location);
@@ -219,8 +155,8 @@
     <script type="text/javascript">
       function useInherited() {
         var latLng = new google.maps.LatLng(${command.inheritedLatLng()?.lat}, ${command.inheritedLatLng()?.lng})
-        $('input#latitude').val(latLng.lat());
-        $('input#longitude').val(latLng.lng());
+        $('input#latitude').val(latLng.lat().toFixed(6));
+        $('input#longitude').val(latLng.lng().toFixed(6));
         map.setCenter(latLng);
         marker.setPosition(latLng);
       }
