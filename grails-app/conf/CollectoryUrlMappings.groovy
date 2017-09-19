@@ -46,6 +46,10 @@ class CollectoryUrlMappings {
 
         "/admin/export/$table" (controller:'admin',action:'export')
 
+        "/admin/gbif/healthcheck" (controller:'gbif',action:'healthCheck')
+
+        "/admin/gbif/sync" (controller:'gbif',action:'syncAllResources')
+
         // data sets
         "/datasets" (controller: 'public', action: 'dataSets')
 

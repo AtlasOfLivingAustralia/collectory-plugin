@@ -28,7 +28,7 @@
                             <g:sortableColumn property="name" title="${message(code: 'dataResource.name.label', default: 'Name')}" />
                             <g:sortableColumn property="uid" title="${message(code: 'providerGroup.uid.label', default: 'UID')}" />
                             <g:sortableColumn property="resourceType" title="${message(code: 'dataResource.resourceType.label', default: 'Type')}" />
-                            <th></th>
+                            <th>Licence</th>
                             <g:sortableColumn property="dataProvider" title="${message(code: 'dataResource.dataProvider.label', default: 'Provider')}" />
                         </tr>
                     </thead>

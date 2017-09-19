@@ -3,12 +3,12 @@ package au.org.ala.collectory
 class DataProviderController extends ProviderGroupController {
 
     def gbifRegistryService
+    def authService
 
     DataProviderController() {
         entityName = "DataProvider"
         entityNameLower = "dataProvider"
     }
-
 
     def index = {
         redirect(action:"list")
@@ -19,7 +19,7 @@ class DataProviderController extends ProviderGroupController {
         if (params.message) {
             flash.message = params.message
         }
-        params.max = Math.min(params.max ? params.int('max') : 50, 100)
+        params.max = Math.min(params.max ? params.int('max') : 10000, 10000)
         params.sort = params.sort ?: "name"
         ActivityLog.log username(), isAdmin(), Action.LIST
         [instanceList: DataProvider.list(params), entityType: 'DataProvider', instanceTotal: DataProvider.count()]
@@ -109,17 +109,21 @@ class DataProviderController extends ProviderGroupController {
             } else {
                 render("You are not authorised to access this page.")
             }
-        }
-        else {
+        } else {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'dataProvider.label', default: 'dataProvider'), params.id])}"
             redirect(action: "list")
-    }
+        }
     }
 
     def updateAllGBIFRegistrations = {
         gbifRegistryService.updateAllRegistrations()
         flash.message = "${message(code: 'dataProvider.gbif.updateAll', default: 'Updating all GBIF registrations as a background task (please be patient).')}"
         redirect(action: "list")
+    }
+
+    def updateGBIFDetails = {
+        def pg = get(params.id)
+        genericUpdate pg, 'gbif'
     }
 
     /**
@@ -129,31 +133,18 @@ class DataProviderController extends ProviderGroupController {
         def instance = get(params.id)
         if (instance) {
             try {
-                gbifRegistryService.updateRegistration(instance)
-                flash.message = "${message(code: 'dataProvider.gbif.update.success', default: 'GBIF Registration Updated')}"
-            } catch (Exception e) {
-                flash.message = "${e.getMessage()}"
-            }
+                if(authService.userInRole(grailsApplication.config.gbifRegistrationRole)) {
 
-            redirect(action: "show", id: params.id)
-        }
-    }
+                    Boolean syncDataResources = params.syncDataResources?:"false".toBoolean()
+                    Boolean syncContacts  = params.syncContacts?:"false".toBoolean()
+                    gbifRegistryService.updateRegistration(instance, syncContacts, syncDataResources)
 
-    def registerGBIF = {
-        log.info("REGISTERING data partner ${collectoryAuthService.username()}")
-        def instance = get(params.id)
-        if (instance) {
-            try {
-                log.info("REGISTERING ${instance.uid}, triggered by user: ${collectoryAuthService.username()}")
-                if(collectoryAuthService.userInRole(grailsApplication.config.gbifRegistrationRole)){
-                    gbifRegistryService.register(instance)
-                    flash.message = "${message(code: 'dataProvider.gbif.register.success', default: 'Successfully Registered in GBIF')}"
-                    instance.save()
+                    flash.message = "${message(code: 'dataProvider.gbif.update.success', default: 'GBIF Registration Updated')}"
                 } else {
-                    log.info("REGISTERING FAILED for ${instance.uid}, triggered by user: ${collectoryAuthService.username()} - user not in role")
-                    flash.message = "You don't have permission to do register this data partner."
+                    flash.message = "User does not have sufficient privileges to perform this. ${grailsApplication.config.gbifRegistrationRole} role required"
                 }
             } catch (Exception e) {
+                log.error(e.getMessage(), e)
                 flash.message = "${e.getMessage()}"
             }
 
@@ -161,23 +152,41 @@ class DataProviderController extends ProviderGroupController {
         }
     }
 
-//    def userDownloadReport = {
-//        def instance = get(params.uid)
-//        if (instance) {
-//            response.setHeader("Content-disposition", "attachment; filename=user-download-report-${params.uid}.csv");
-//            response.setContentType("text/csv");
-//            response.outputStream << "Email,Data Resource UID,Data Resource name,Download reason,Number of downloads,Number of records\n"
-//
-//            //get a user list
-//            //hit URL logger for report
-//            new File("/tmp/bto.txt").eachLine { line ->
-//                def parts = line.split('\t')
-//                def dr = DataResource.findByUid(parts[1])
-//                response.outputStream << parts[0] + ','+ parts[1] + ',"' + dr.name  + '",'+ parts[2] + ','+ parts[3] + ','+ parts[4] + '\n'
-//            }
-//            response.outputStream.flush()
-//        }
-//    }
+    /**
+     * Register this data provider as an Organisation with GBIF.
+     */
+    def registerGBIF = {
+        log.info("REGISTERING data partner ${collectoryAuthService.username()}")
+
+        if(authService.userInRole(grailsApplication.config.gbifRegistrationRole)) {
+            DataProvider instance = get(params.id)
+            if (instance) {
+                try {
+                    log.info("REGISTERING ${instance.uid}, triggered by user: ${collectoryAuthService.username()}")
+                    if (collectoryAuthService.userInRole(grailsApplication.config.gbifRegistrationRole)) {
+
+                        Boolean syncDataResources = params.syncDataResources?:"false".toBoolean()
+                        Boolean syncContacts  = params.syncContacts?:"false".toBoolean()
+
+                        gbifRegistryService.register(instance, syncContacts, syncDataResources)
+                        flash.message = "${message(code: 'dataProvider.gbif.register.success', default: 'Successfully Registered in GBIF')}"
+                        instance.save()
+                    } else {
+                        log.info("REGISTERING FAILED for ${instance.uid}, triggered by user: ${collectoryAuthService.username()} - user not in role")
+                        flash.message = "You don't have permission to do register this data partner."
+                    }
+                } catch (Exception e) {
+                    log.error(e.getMessage(), e)
+                    flash.message = "${e.getMessage()}"
+                }
+
+                redirect(action: "show", id: params.id)
+            }
+        } else {
+            flash.message = "User does not have sufficient privileges to perform this. ${grailsApplication.config.gbifRegistrationRole} role required"
+            redirect(action: "show", id: params.id)
+        }
+    }
 
     /**
      * Get the instance for this entity based on either uid or DB id.

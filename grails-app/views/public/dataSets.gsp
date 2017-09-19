@@ -57,9 +57,11 @@
                       <div class="pull-left">
                           <span id="resultsReturned"><g:message code="public.datasets.resultsreturned.message01" /> <strong></strong>&nbsp;<g:message code="public.datasets.resultsreturned.message02" />.</span>
                           <div class="input-group">
-                              <input type="text" name="dr-search" id="dr-search"/>
-                              <a href="javascript:void(0);" title="Only show data sets which contain the search term" id="dr-search-link" class="btn btn-default"><g:message code="public.datasets.drsearch.search" /></a>
-                              <a href="javascript:void(0);" id="reset"><a href="javascript:reset()" title="Remove all filters and sorting options" class="btn btn-default"><g:message code="public.datasets.drsearch.resetlist" /></a></a>
+                              <input type="text" name="dr-search" id="dr-search" class="form-control"/>
+                              <div class="input-group-btn">
+                                <a href="javascript:void(0);" title="Only show data sets which contain the search term" id="dr-search-link" class="btn btn-default"><g:message code="public.datasets.drsearch.search" /></a>
+                                <a href="javascript:void(0);" id="reset"><a href="javascript:reset()" title="Remove all filters and sorting options" class="btn btn-default"><g:message code="public.datasets.drsearch.resetlist" /></a></a>
+                              </div>
                           </div>
                      </div>
                     <div class="pull-right">

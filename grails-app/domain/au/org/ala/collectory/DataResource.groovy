@@ -31,6 +31,7 @@ class DataResource extends ProviderGroup implements Serializable {
         notes type: "text"
         networkMembership type: "text"
         gbifDataset defaultValue: "false"
+        isShareableWithGBIF defaultValue: "true"
         makeContactPublic defaultValue: "true"
         methodStepDescription type: "text"
         qualityControlDescription type: "text"
@@ -62,7 +63,8 @@ class DataResource extends ProviderGroup implements Serializable {
     int downloadLimit = 0           // max number of records that can be included in a single download - 0 = no limit
     String contentTypes             // json array of type of content provided by the resource
     boolean publicArchiveAvailable = false  // true if a DwC archive is allowed to be downloaded
-    Boolean gbifDataset = false
+    Boolean gbifDataset = false     //indicates this dataset was downloaded from GBIF
+    Boolean isShareableWithGBIF     //indicates this dataset is shareable with GBIF
     DataProvider dataProvider
     Institution institution         // optional link to the institution whose records are served by this resource
     Boolean makeContactPublic = true
@@ -105,6 +107,7 @@ class DataResource extends ProviderGroup implements Serializable {
         imageMetadata(nullable:true)
         defaultDarwinCoreValues(nullable:true)
         gbifDataset(nullable:false)
+        isShareableWithGBIF(nullable:false)
         contentTypes(nullable:true, maxSize:2048)
         makeContactPublic(nullable:false)
         purpose(nullable:true)

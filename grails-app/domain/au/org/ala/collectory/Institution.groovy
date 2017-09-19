@@ -13,6 +13,8 @@ class Institution extends ProviderGroup {
 
     String childInstitutions    // space-separated list of UIDs of institutions that this institution administers
 
+    String gbifCountryToAttribute      // the 3 digit iso code of the country to attribute in GBIF
+
     // an institution may have many collections
     static hasMany = [collections: Collection]
 
@@ -26,6 +28,7 @@ class Institution extends ProviderGroup {
                         'school', 'scienceCenter', 'society', 'university', 'voluntaryObserver', 'zoo'])
         collections(nullable:true)
         childInstitutions(nullable:true)
+        gbifCountryToAttribute(nullable:true, maxSize: 3)
     }
 
     static transients = ['summary','mappable']
@@ -195,4 +198,8 @@ class Institution extends ProviderGroup {
         return list
     }
 
+
+    List<DataLink> getLinkedDataResources() {
+        return DataLink.findAllByConsumer(this.uid)
+    }
 }

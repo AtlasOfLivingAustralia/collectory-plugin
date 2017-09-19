@@ -34,32 +34,47 @@
         <div class="form-group">
             <label for="fileToUpload"><g:message code="dataresource.upload.label.file" /></label>
 
-            <div class="input-group fileupload fileupload-new" data-provides="fileupload">
-                <div class="uneditable-input input-group-addon">
-                    <i class="glyphicon glyphicon-file fileupload-exists"></i>
-                    <span class="fileupload-preview"></span>
-                </div>
-                <div class="input-group-addon">
+            %{--<div class="input-group fileupload fileupload-new" data-provides="fileupload">--}%
+                %{--<div class="uneditable-input input-group-addon">--}%
+                    %{--<i class="glyphicon glyphicon-file fileupload-exists"></i>--}%
+                    %{--<span class="fileupload-preview"></span>--}%
+                %{--</div>--}%
+                %{--<div class="input-group-addon">--}%
+                    %{--<span class="fileupload-new"><g:message code="dataresource.upload.label.selectfile" /></span>--}%
+                    %{--<span class="fileupload-exists"><g:message code="dataresource.upload.label.change" /></span>--}%
+                %{--</div>--}%
+                %{--<g:field type="file" name="myFile" />--}%
+                %{--<div class="input-group-addon">--}%
+                    %{--<a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>--}%
+                %{--</div>--}%
+            %{--</div>--}%
+
+            %{--<label for="input-b1">Select File</label>--}%
+            %{--<input id="input-b1" name="input-b1" type="file" class="file">--}%
+
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+                <span class="btn btn-primary btn-file">
                     <span class="fileupload-new"><g:message code="dataresource.upload.label.selectfile" /></span>
                     <span class="fileupload-exists"><g:message code="dataresource.upload.label.change" /></span>
-                </div>
-                <g:field type="file" name="myFile" />
-                <div class="input-group-addon">
-                    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-                </div>
+                    <g:field type="file" name="myFile" /></span>
+                <span class="fileupload-preview"></span>
+                <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
             </div>
+
+
         </div>
 
         <div id="connectionParams">
 
         </div>
 
-
         <div style="clear:both">
             <input type="submit" id="fileToUpload" class="btn fileupload-exists btn-primary" value="Upload"/>
-            <span class="btn btn-default cancel"><g:message code="dataresource.upload.label.cancel" /></span>
+            <g:link action="show" controller="dataResource" id="${instance.id}" class="btn btn-default">
+                <g:message code="dataresource.upload.label.cancel" />
+            </g:link>
         </div>
-    </g:uploadForm>
+        </g:uploadForm>
 
         <div id="connectionTemplates" class="hide">
             <g:each in="${connectionProfiles}" var="profile">

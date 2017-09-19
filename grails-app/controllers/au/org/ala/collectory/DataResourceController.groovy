@@ -7,7 +7,7 @@ import au.org.ala.collectory.resources.DarwinCoreFields
 
 class DataResourceController extends ProviderGroupController {
 
-    def metadataService, dataImportService
+    def metadataService, dataImportService, gbifRegistryService
 
     DataResourceController() {
         entityName = "DataResource"
@@ -178,6 +178,25 @@ class DataResourceController extends ProviderGroupController {
             params.licenseVersion = ""
         }
         genericUpdate pg, 'rights'
+    }
+
+    def updateGBIFDetails = {
+        def pg = get(params.id)
+        genericUpdate pg, 'gbif'
+    }
+
+    def registerGBIF = {
+        def pg = get(params.id)
+        Map result = gbifRegistryService.registerDataResource(pg)
+        flash.message = result.message
+        redirect(action: "show", id: params.uid ?: params.id)
+    }
+
+    def updateGBIF = {
+        def pg = get(params.id)
+        Map result = gbifRegistryService.registerDataResource(pg)
+        flash.message = result.message
+        redirect(action: "show", id: params.uid ?: params.id)
     }
 
     def updateConsumers = {

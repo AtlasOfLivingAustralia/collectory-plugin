@@ -255,6 +255,10 @@
                         <g:link class="mainLink" controller="dataResource" action="gbifUpload"><g:message code="manage.list.addtools.uploadgbif" /></g:link>
                         <p class="mainText"r><g:message code="manage.list.addtools.des16" /></p>
                     </div>
+                      <div class="homeCell">
+                          <g:link class="mainLink" controller="gbif" action="healthCheck"><g:message code="manage.list.addtools.gbif.healthcheck" /></g:link>
+                          <p class="mainText"r><g:message code="manage.list.addtools.gbif.healthcheck.desc" default="GBIF Healthcheck" /></p>
+                      </div>
                   </div>
                 </cl:ifGranted>
                 </div>

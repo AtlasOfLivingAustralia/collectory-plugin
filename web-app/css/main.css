@@ -1358,3 +1358,5 @@ div.manage ul.list {
     list-style: disc outside none;
     margin-left: 35px;
 }
+
+.config-warning { color: red; font-weight: bold; }

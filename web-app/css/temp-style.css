@@ -331,3 +331,5 @@ ul.facets {
     padding-left: 0.5ex;
     padding-right: 0.5ex;
 }
+
+.config-warning { color: red; font-weight: bold; }

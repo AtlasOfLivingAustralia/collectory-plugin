@@ -12,15 +12,12 @@
                 <li class="btn"><cl:homeLink/></li>
                 <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
                 <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
-                <g:if test="${grailsApplication.config.gbifRegistrationEnabled == 'true'}">
-                    <li class="btn"><g:link class="create" action="updateAllGBIFRegistrations"><g:message code="dataProvider.gbif.update.all" default="Update all existing GBIF registrations" /></g:link></li>
-                </g:if>
             </ul>
         </div>
         <div class="body">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
+                <div class="alert alert-warning">${flash.message}</div>
             </g:if>
 
             <div class="list">
@@ -53,7 +50,8 @@
 
                             <td class="text-nowrap">
                                 <g:if test="${fieldValue(bean: instance, field: "gbifRegistryKey")}">
-                                    <g:link controller="dataProvider" action="updateGBIF" id="${instance.uid}">
+                                    <g:link class="btn btn-default" controller="dataProvider" action="updateGBIF" id="${instance.uid}"
+                                            onclick="return confirm('${message(code: 'default.button.update.provider.confirm.message', default: 'Are you sure you want to update this provider?')}');">
                                         ${message(code: 'dataProvider.gbif.update', default: 'Update')}
                                     </g:link> |
                                     <a href="https://gbif.org/publisher/${instance.gbifRegistryKey}">
@@ -61,7 +59,8 @@
                                     </a>
                                 </g:if>
                                 <g:else>
-                                    <g:link controller="dataProvider" action="registerGBIF" id="${instance.uid}">
+                                    <g:link class="btn btn-default" controller="dataProvider" action="registerGBIF" id="${instance.uid}"
+                                            onclick="return confirm('${message(code: 'default.button.register.provider.confirm.message', default: 'Are you sure you want to register this provider?')}');">
                                         ${message(code: 'dataProvider.gbif.register', default: 'Register')}
                                     </g:link>
                                 </g:else>

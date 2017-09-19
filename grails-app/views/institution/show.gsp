@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <g:set var="entityName" value="${message(code: 'institution.label', default: 'Institution')}" />
-        <title><g:message code="default.show.label" args="[entityName]" /></title>
+        <title>${instance.name} | <g:message code="default.show.label" args="[entityName]" /></title>
         <script async defer
                 src="https://maps.googleapis.com/maps/api/js?key=${grailsApplication.config.google?.apikey}"
                 type="text/javascript"></script>
@@ -35,7 +35,7 @@
         </div>
         <div class="body">
             <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
+             <div class="alert alert-warning">${flash.message}</div>
             </g:if>
             <div class="dialog emulate-public">
               <!-- base attributes -->
@@ -132,6 +132,9 @@
 
               <!-- external identifiers -->
               <g:render template="/shared/externalIdentifiers" model="[instance: instance]"/>
+
+              <!-- GBIF integration -->
+              <g:render template="/shared/gbif" model="[instance: instance]"/>
 
               <!-- change history -->
               <g:render template="/shared/changes" model="[changes: changes, instance: instance]"/>

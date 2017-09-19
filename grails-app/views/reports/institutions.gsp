@@ -15,7 +15,7 @@
         <div class="body">
             <h1><g:message code="reports.institutions.title01" /></h1>
             <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
+                <div class="alert alert-warning">${flash.message}</div>
             </g:if>
 
             <div class="dialog">

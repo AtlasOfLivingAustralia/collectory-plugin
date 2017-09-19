@@ -1,11 +1,12 @@
 <%@ page import="grails.converters.JSON; au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.DataProvider" %>
+<%@ page import="au.org.ala.collectory.GbifRegistryService" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <g:set var="entityName" value="${instance.ENTITY_TYPE}" />
         <g:set var="entityNameLower" value="${cl.controller(type: instance.ENTITY_TYPE)}"/>
-        <title><g:message code="default.show.label" args="[entityName]" /></title>
+        <title>${instance.name} | <g:message code="default.show.label" args="[entityName]" /></title>
         <script async defer
                 src="https://maps.googleapis.com/maps/api/js?key=${grailsApplication.config.google?.apikey}"
                 type="text/javascript"></script>
@@ -35,7 +36,7 @@
         </div>
         <div class="body">
             <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
+                <div class="alert alert-warning">${flash.message}</div>
             </g:if>
 
             <div class="dialog emulate-public">
@@ -318,6 +319,47 @@
 
               <!-- external identifiers -->
               <g:render template="/shared/externalIdentifiers" model="[instance: instance]"/>
+
+              <!-- GBIF integration -->
+              <div class="well">
+                <h2><g:message code="dataresource.show.gbif.sync" default="GBIF synchronisation" /></h2>
+
+                <g:set var="gbif" bean="gbifRegistryService"/>
+                <g:if test="${instance.isShareableWithGBIF && gbif.getGBIFCompatibleLicence(instance.licenseType)}">
+                    <div class="pull-right">
+                        <g:if test="${!instance.gbifRegistryKey}">
+                            <g:link class="btn btn-default" controller="dataResource" action="registerGBIF" id="${instance.id}">
+                                Register with GBIF
+                            </g:link>
+                        </g:if>
+                        <g:else>
+                            <g:link class="btn btn-default" controller="dataResource" action="updateGBIF" id="${instance.id}">
+                                Update GBIF
+                            </g:link>
+                        </g:else>
+                    </div>
+                </g:if>
+
+                <p><span class="category">GBIF registry key:</span> ${instance.gbifRegistryKey ?: 'Not registered with GBIF'}</p>
+                <p><span class="category">GBIF supplied dataset (i.e. downloaded via GBIF services): </span> ${instance.gbifDataset ? 'yes' : 'no'}</p>
+                <p><span class="category">Should be shared with GBIF ? :</span>
+                    <span class="${instance.isShareableWithGBIF ? '' : 'config-warning'}">
+                        ${instance.isShareableWithGBIF ? 'yes' : 'no'}
+                    </span>
+                </p>
+
+
+                <g:set var="gbifCompatible" value="${gbif.getGBIFCompatibleLicence(instance.licenseType)}"/>
+
+                <p><span class="category">Has a GBIF compatible licence (current licence is ${instance.licenseType}) ? :</span>
+                    <span class="${gbifCompatible ? '' : 'config-warning'}">${gbif.getGBIFCompatibleLicence(instance.licenseType) ? 'yes' : 'no'} </span>
+                </p>
+
+                <cl:editButton uid="${instance.uid}" page="gbif"/>
+
+
+
+              </div>
 
               <!-- change history -->
               <g:render template="/shared/changes" model="[changes: changes, instance: instance]"/>
