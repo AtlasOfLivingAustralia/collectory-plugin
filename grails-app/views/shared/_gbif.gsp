@@ -12,5 +12,6 @@
     </g:else>
   </p>
   <p><span class="category">GBIF registry key:</span> ${instance.gbifRegistryKey ?: 'Not registered with GBIF'}</p>
+  <p><span class="category">GBIF country attribute (which country to associate the publisher data with in GBIF):</span> ${instance.gbifCountryToAttribute ?: 'Not supplied'}</p>
   <cl:editButton uid="${instance.uid}" page="/shared/gbif"/>
 </div>
