@@ -20,7 +20,7 @@
     </p>
     <p>
       <span class="category">GBIF webservices Link:</span>
-      <a href="https://api.gbif-uat.org/v1/organization/${instance.gbifRegistryKey}">View details on GBIF.org</a>
+      <a href="https://api.gbif.org/v1/organization/${instance.gbifRegistryKey}">View details on GBIF.org</a>
     </p>
   </g:if>
 

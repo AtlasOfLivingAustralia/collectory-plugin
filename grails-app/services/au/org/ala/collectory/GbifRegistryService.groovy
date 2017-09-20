@@ -145,9 +145,9 @@ class GbifRegistryService {
                     }
 
                     if (syncDataResources) {
-                        log.info("Attempting to sync ${dp.resources.size()} resources: ${dp.gbifRegistryKey}")
+                        log.info("Attempting to sync resources: ${dp.gbifRegistryKey}")
                         syncDataResourcesForProviderGroup(dp)
-                        log.info("Successfully created ${dp.resources.size()} resources: ${dp.gbifRegistryKey}")
+                        log.info("Successfully created resources: ${dp.gbifRegistryKey}")
                     }
                 }
             }
@@ -168,18 +168,21 @@ class GbifRegistryService {
 
         def publisher //data provider or institution
 
-        def institution
-        //get the data provider if available...
-        def dataLinks = DataLink.findAllByProvider(dataResource.uid)
-        def institutionDataLink
+        def institution = dataResource.institution
+        def dataProvider = dataResource.dataProvider
 
-        def dataProvider = dataResource.getDataProvider()
+        if(!institution) {
 
-        if(dataLinks){
-            //do we have institution link ????
-            institutionDataLink = dataLinks.find { it.consumer.startsWith("in")}
-            if(institutionDataLink){
-                institution = Institution.findByUid(institutionDataLink.consumer)
+            //get the data provider if available...
+            def dataLinks = DataLink.findAllByProvider(dataResource.uid)
+            def institutionDataLink
+
+            if (dataLinks) {
+                //do we have institution link ????
+                institutionDataLink = dataLinks.find { it.consumer.startsWith("in") }
+                if (institutionDataLink) {
+                    institution = Institution.findByUid(institutionDataLink.consumer)
+                }
             }
         }
 
