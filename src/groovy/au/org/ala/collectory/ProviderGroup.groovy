@@ -697,7 +697,7 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     def buildLogoUrl() {
-        return logoRef?.file ? Holders.config.grails.serverURL + "/data/" + urlForm() + "/" + logoRef.file :
+        return logoRef?.file ? Holders.config.grails.serverURL + "/data/" + urlForm() + "/" + URLEncoder.encode(logoRef.file, 'UTF-8') :
             ""
     }
 
