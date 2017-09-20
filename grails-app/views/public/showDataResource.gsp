@@ -45,20 +45,20 @@
             </g:if>
             <cl:valueOrOtherwise value="${instance.acronym}"><span
                     class="acronym"><g:message code="public.show.header.acronym"/>: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
-            <g:if test="${instance.guid}">
-                <span class="lsid"><a href="#lsidText" id="lsid" class="local"
-                                  title="Life Science Identifier (pop-up)"><g:message code="public.lsid" /></a></span>
-            </g:if>
-            <div style="display:none; text-align: left;">
-                <div id="lsidText" style="text-align: left;">
-                    <b><a class="external_icon" href="http://lsids.sourceforge.net/"
-                          target="_blank"><g:message code="public.lsidtext.link" />:</a></b>
+            %{--<g:if test="${instance.guid}">--}%
+                %{--<span class="lsid"><a href="#lsidText" id="lsid" class="local"--}%
+                                  %{--title="Life Science Identifier (pop-up)"><g:message code="public.lsid" /></a></span>--}%
+            %{--</g:if>--}%
+            %{--<div style="display:none; text-align: left;">--}%
+                %{--<div id="lsidText" style="text-align: left;">--}%
+                    %{--<b><a class="external_icon" href="http://lsids.sourceforge.net/"--}%
+                          %{--target="_blank"><g:message code="public.lsidtext.link" />:</a></b>--}%
 
-                    <p><cl:guid target="_blank" guid='${fieldValue(bean: instance, field: "guid")}'/></p>
+                    %{--<p><cl:guid target="_blank" guid='${fieldValue(bean: instance, field: "guid")}'/></p>--}%
 
-                    <p><g:message code="public.lsidtext.des" />.</p>
-                </div>
-            </div>
+                    %{--<p><g:message code="public.lsidtext.des" />.</p>--}%
+                %{--</div>--}%
+            %{--</div>--}%
         <g:if test="${instance.pubDescription || instance.techDescription || instance.focus}">
             <h2><g:message code="public.des" /></h2>
         </g:if>

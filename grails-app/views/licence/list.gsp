@@ -26,6 +26,7 @@
                     <thead>
                         <tr>
                             <g:sortableColumn property="name" title="${message(code: 'licence.name.label', default: 'Name')}" />
+                            <th><g:message code="licence.url.list.label" default="URL" /></th>
                             <th><g:message code="licence.acronym.list.label" default="Acronym" /></th>
                             <th><g:message code="licence.version.list.label" default="Version" /></th>
                             <th><g:message code="licence.image.list.label" default="Image" /></th>
@@ -35,7 +36,9 @@
                     <g:each in="${instanceList}" status="i" var="instance">
                       <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         <td><g:link controller="licence" action="show" id="${instance.id}">${fieldValue(bean: instance, field: "name")}</g:link></td>
-                        <td>${fieldValue(bean: instance, field: "acronym")}</td>
+                          <td>${fieldValue(bean: instance, field: "url")}</td>
+
+                          <td>${fieldValue(bean: instance, field: "acronym")}</td>
 
                         <td>${fieldValue(bean: instance, field: "licenceVersion")}</td>
 

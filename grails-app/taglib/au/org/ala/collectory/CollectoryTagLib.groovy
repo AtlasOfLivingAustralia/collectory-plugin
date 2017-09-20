@@ -1727,16 +1727,17 @@ class CollectoryTagLib {
 
     def displayLicenseType = { attrs ->
         def licenseStr = attrs.type
+        def licenceVersionStr = attrs.version
         if (licenseStr) {
-            Licence licence = Licence.find { acronym == licenseStr }
+            Licence licence = Licence.find { acronym == licenseStr && licenceVersion == licenceVersionStr  }
             if(licence){
-                def imageHtml = "<a rel='license' target='_blank' href='${licence.url}'><img class='ccimage no-radius' src='${licence.imageUrl}' alt='${licence.name}' style='border:none;' max-height='31' max-width='88'></a>"
+                def imageHtml = "<a rel='license' target='_blank' href='${licence.url}'><img class='ccimage no-radius' src='${licence.imageUrl}' alt='${licence.name} ${licence.licenceVersion}' style='border:none;' max-height='31' max-width='88'></a>"
                 if (attrs.imageOnly && licence.imageUrl) {
                     out << imageHtml
                 } else if (attrs.imageOnly) {
                     out << "${imageHtml}"
                 } else {
-                    out << "${licence.name} ${imageHtml}"
+                    out << "${licence.name} ${licence.licenceVersion?:''} ${imageHtml}"
                 }
             } else {
                 out << licenseStr
@@ -1745,6 +1746,12 @@ class CollectoryTagLib {
             out << 'No licence specified'
         }
     }
+
+    def findLicenceId = {
+        def licence = Licence.find { acronym == attr.licenseType && licenceVersion == attr.licenseVersion }
+        out << licence.id
+    }
+
 
     def showImageMetadata = { attrs ->
         // see if we have a protocol

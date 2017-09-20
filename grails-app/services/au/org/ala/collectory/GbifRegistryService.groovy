@@ -776,6 +776,7 @@ class GbifRegistryService {
         def notShareableNoOwner = [:]
         def linkedToDataProvider = [:]
         def linkedToInstitution = [:]
+        def recordsShareable = 0
 
         biocacheSearch.facetResults[0].fieldResult.each { result ->
             def uid = result.fq.replaceAll("\"","").replaceAll("data_resource_uid:","")
@@ -841,10 +842,13 @@ class GbifRegistryService {
 
                 if (isShareable) {
                     shareable[dataResource] = result.count
+                    recordsShareable += result.count
                 }
             }
         }
         [
+                indexedRecords : biocacheSearch.totalRecords,
+                recordsShareable: recordsShareable,
                 dataResourcesWithData:dataResourcesWithData,
                 shareable:shareable,
                 licenceIssues:licenceIssues,

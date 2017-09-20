@@ -20,6 +20,20 @@
     <p class="lead">Some statistics on data resources and our ability to provision these to GBIF</p>
     <table class="table">
         <tr>
+            <td>Records in ALA</td>
+            <td>Records indexed by ALA today</td>
+            <td>${indexedRecords}</td>
+        </tr>
+        <tr>
+            <td>Records shareable</td>
+            <td>Records shareable by ALA today (no licencing issues, has an associated organisation & marked as shareable)</td>
+            <td>${recordsShareable}
+                <g:if test="${indexedRecords}">
+                    (${Math.floor(recordsShareable/indexedRecords * 100)}%)
+                </g:if>
+            </td>
+        </tr>
+        <tr>
             <td>Data sets with data</td>
             <td>Data resources with data indexed by ALA today</td>
             <td>${dataResourcesWithData.size()}</td>

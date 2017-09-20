@@ -1,4 +1,5 @@
 <%@ page import="au.org.ala.collectory.DataResource" %>
+<%@ page import="au.org.ala.collectory.Licence" %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -38,7 +39,14 @@
                 <!-- license -->
                 <div class="form-group">
                     <label for="licenceID"><g:message code="dataResource.licenseType.label" default="License type" /><cl:helpText code="dataResource.licenseType"/></label>
-                    <g:select name="licenceID" class="form-control" from="${au.org.ala.collectory.Licence.findAll()}" optionKey="id" optionValue="" value="${command.licenseType}" class="form-control" noSelection="['':'--- Choose licence ---']"/>
+                    <g:select
+                            name="licenceID"
+                            from="${au.org.ala.collectory.Licence.findAll()}"
+                            optionKey="id"
+                            optionValue=""
+                            value="${Licence.findByAcronymAndLicenceVersion(command.licenseType, command.licenseVersion)?.id }"
+                            class="form-control"
+                            noSelection="['':'--- Choose licence ---']"/>
                 </div>
 
                 <!-- permissions document -->
