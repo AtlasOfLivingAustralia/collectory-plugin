@@ -51,7 +51,7 @@ class GbifRegistryService {
             log.info("Scheduling update of registration of ${dp.uid}: ${dp.name} ${pool}")
             pool.submit(new Runnable() {
                 public void run() {
-                    updateRegistration(dp)
+                    updateRegistration(dp, true, true)
                 }
             })
         }
@@ -270,11 +270,45 @@ class GbifRegistryService {
    */
     private def syncDataResourcesForProviderGroup(ProviderGroup dp) {
 
-        if(dp instanceof DataProvider){
-            def resources = dp.getResources()
-            resources.each { syncDataResource(it, dp.gbifRegistryKey) }
+        if(dp.gbifRegistryKey) {
+            if (dp instanceof DataProvider) {
+                def resources = dp.getResources()
+                resources.each { resource ->
+
+                    def skipSync = false
+                    // if theres an institution link
+                    if(resource.institution){
+                       //dont sync
+                        log.warn("${resource.uid} is sourced from an institution [${resource.institution.uid}]... not syncing  ")
+                        skipSync = true
+                    }
+
+                    def dataLinks = DataLink.findAllByProvider(dp.uid)
+                    dataLinks.each { dataLink ->
+                        if(dataLink.consumer.startsWith("in")){
+                            skipSync = true
+                            log.warn("${resource.uid} is linked to an institution [${dataLink.consumer}]... not syncing  ")
+                        }
+                    }
+
+                    if(!skipSync) {
+                        syncDataResource(resource, dp.gbifRegistryKey)
+                    }
+                }
+            } else {
+                log.warn("Need to add syncing of resources for institution....via datalinks...")
+                def dataLinks = DataLink.findAllByConsumer(dp.uid)
+                if (dataLinks) {
+                    dataLinks.each { dataLink ->
+                        DataResource dr = DataResource.findByUid(dataLink.provider)
+                        if (dr) {
+                            syncDataResource(dr, dp.gbifRegistryKey)
+                        }
+                    }
+                }
+            }
         } else {
-            log.warn("Need to add syncing of resources for institution....via datalinks...")
+            log.warn("Not syncing resources for ${dp}. Not registered with GBIF....")
         }
     }
 
@@ -330,19 +364,24 @@ class GbifRegistryService {
                     dataResource.gbifDoi = dataset.doi
                     dataResource.save(flush: true)
                 }
-                if (dataset.publishingOrganizationKey != organisationRegistryKey) {
-                    log.info("Updating the GBIF registry dataset[${dataResource.gbifRegistryKey}] to point to " +
-                            "organisation[${dp.gbifRegistryKey}]")
-                    dataset.publishingOrganizationKey = dp.gbifRegistryKey
+
+                log.info("Updating the GBIF registry dataset[${dataResource.gbifRegistryKey}] to point to " +
+                        "organisation[${organisationRegistryKey}]")
+                dataset.publishingOrganizationKey = organisationRegistryKey
+                dataset.deleted = null
+                dataset.license = getGBIFCompatibleLicence(dataResource.licenseType)
+                if(dataset.license) {
                     def http = newHttpInstance();
                     def datasetKey = dataResource.gbifRegistryKey
-                    http.request (Method.PUT, ContentType.JSON) {
+                    http.request(Method.PUT, ContentType.JSON) {
                         uri.path = MessageFormat.format(API_DATASET_DETAIL, datasetKey)
                         body = (dataset as JSON).toString()
                         response.success = { resp, reader ->
                             log.info("Successfully updated dataset in GBIF: ${datasetKey}")
                         }
                     }
+                } else {
+                    log.warn("Unable to update dataset - please check license: ${dataResource.uid} :  ${dataResource.name} :  ${dataResource.licenseType}")
                 }
             } else {
                 log.info("[DRYRUN] Updating data resource ${dataset}")
@@ -366,7 +405,7 @@ class GbifRegistryService {
 
                     http.parser.'application/json' = http.parser.'text/plain' // handle sloppy responses from GBIF
 
-                    def dwcaUrl = grailsApplication.config.gbifExportUrlBase + resource.getUid() + ".zip";
+                    def dwcaUrl = grailsApplication.config.resource.gbifExport.url.template.replaceAll("@UID@", resource.getUid());
 
                     if (dataset.endpoints && dataset.endpoints.size() == 1 && dwcaUrl.equals(dataset.endpoints.get(0).url)) {
                         log.info("Dataset[${resource.gbifRegistryKey}] has correct URL[${dwcaUrl}]")
@@ -492,8 +531,8 @@ class GbifRegistryService {
         organisation.email = [dp.email]
         organisation.phone = [dp.phone]
         organisation.homepage = [dp.websiteUrl]
-        organisation.latitude = dp.latitude
-        organisation.longitude = dp.longitude
+        organisation.latitude = Math.floor(dp.latitude as float) == -1.0 ? null : dp.latitude
+        organisation.longitude = Math.floor(dp.longitude as float) == -1.0 ? null : dp.longitude
         organisation.logoUrl = dp.buildLogoUrl()
 
         // convert the 3 digit ISO code to the 2 digit ISO code GBIF needs
@@ -532,12 +571,16 @@ class GbifRegistryService {
         String[] header = [
                 "UID",
                 "Data resource",
+                "Data resource GBIF ID",
                 "Record count",
 
                 "Data provider UID",
                 "Data provider name",
+                "Data provider GBIF ID",
+
                 "Institution UID",
                 "Institution name",
+                "Institution GBIF ID",
 
                 "Licence",
 
@@ -610,12 +653,17 @@ class GbifRegistryService {
                 String[] row = [
                         dataResource.uid,
                         dataResource.name,
+                        dataResource.gbifRegistryKey,
+
                         result.count,
 
                         dataProvider?.uid,
                         dataProvider?.name,
+                        dataProvider?.gbifRegistryKey,
+
                         institution?.uid,
                         institution?.name,
+                        institution?.gbifRegistryKey,
 
                         dataResource.licenseType,
 
@@ -737,23 +785,33 @@ class GbifRegistryService {
 
                 dataResourcesWithData[dataResource] = result.count
 
-                //get the data provider if available...
-                def dataLinks = DataLink.findAllByProvider(uid)
-                def institutionDataLink
+                //find links to institutions
+                def institution = null
 
-                if(dataLinks){
-                    //do we have institution link ????
-                    institutionDataLink = dataLinks.find { it.consumer.startsWith("in")}
-                    if(institutionDataLink){
+                if(dataResource.institution){
+                    institution = dataResource.institution
+                    linkedToInstitution[dataResource] = dataResource.institution
 
-                        def institution = Institution.findByUid(institutionDataLink.consumer)
+                } else {
 
-                        //we have an institution
-                        linkedToInstitution[dataResource] = institution
+                    //get the data provider if available...
+                    def dataLinks = DataLink.findAllByProvider(uid)
+                    def institutionDataLink
+
+                    if (dataLinks) {
+                        //do we have institution link ????
+                        institutionDataLink = dataLinks.find { it.consumer.startsWith("in") }
+                        if (institutionDataLink) {
+
+                            institution = Institution.findByUid(institutionDataLink.consumer)
+
+                            //we have an institution
+                            linkedToInstitution[dataResource] = institution
+                        }
                     }
                 }
 
-                if(!institutionDataLink) {
+                if(!institution) {
                     def dataProvider = dataResource.getDataProvider()
                     if(!dataProvider){
                         notShareableNoOwner[dataResource] = result.count

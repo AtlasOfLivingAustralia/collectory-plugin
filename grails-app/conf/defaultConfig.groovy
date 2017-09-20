@@ -18,4 +18,8 @@ collectionChartsJSON  = "['country','state','species_group','assertions','type_s
 institutionChartsJSON  = "['country','state','species_group','assertions','type_status','year','month']"
 
 // Location of locality keywords (null for default)
+
 gbifLicenceMappingUrl = this.class.getResource("/default-gbif-licence-mapping.json").toString()
+
+resource.publicArchive.url.template = "https://biocache.ala.org.au/archives/@UID@/@UID@_ror_dwca.zip"
+resource.gbifExport.url.template = "https://biocache.ala.org.au/archives/@UID@/@UID@_ror_dwca.zip"

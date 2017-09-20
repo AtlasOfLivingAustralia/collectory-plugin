@@ -331,6 +331,9 @@ class CrudService {
                 if (p.dataProvider) {
                     provider { name = p.dataProvider.name; uri = p.dataProvider.buildUri(); uid = p.dataProvider.uid }
                 }
+                if (p.institution) {
+                    institution { name = p.institution.name; uri = p.institution.buildUri(); uid = p.institution.uid }
+                }
                 rights = p.rights
                 licenseType = p.licenseType
                 licenseVersion = p.licenseVersion
@@ -365,9 +368,11 @@ class CrudService {
                 dataCurrency = p.dataCurrency
                 harvestingNotes = p.harvestingNotes
                 publicArchiveAvailable = p.publicArchiveAvailable
-                publicArchiveUrl = grailsApplication.config.resource.publicArchive.url.template.replaceAll('@UID@',p.uid)
+                publicArchiveUrl = grailsApplication.config.resource.publicArchive.url.template.replaceAll('@UID@', p.uid)
+                gbifArchiveUrk = grailsApplication.config.resource.gbifExport.url.template.replaceAll('@UID@', p.uid)
                 downloadLimit = p.downloadLimit
                 gbifDataset = p.gbifDataset
+                isShareableWithGBIF = p.isShareableWithGBIF
                 verified = p.isVerified()
                 gbifRegistryKey = p.gbifRegistryKey
                 if (p.externalIdentifiers) {

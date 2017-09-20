@@ -93,11 +93,11 @@
                     <span class="category"><g:message code="dataresource.show.verificationStatus" default="Verification status"/>: </span>
                     <g:if test="${instance.isVerified()}">
                         Currently this data resource is marked as verified <i class="fa fa-check-circle tooltips" style="color:green;"></i>
-                        <g:link class="btn btn-sm" controller="dataResource" action="markAsUnverified" id="${instance.id}">Mark as <strong>unverified</strong></g:link>
+                        <g:link class="btn btn-default btn-sm" controller="dataResource" action="markAsUnverified" id="${instance.id}">Mark as <strong>unverified</strong></g:link>
                     </g:if>
                     <g:else>
                         Currently this data resource is marked as unverified
-                            <g:link class="btn btn-sm" controller="dataResource" action="markAsVerified" id="${instance.id}">Mark as <strong>verified</strong></g:link>
+                            <g:link class="btn btn-default btn-sm" controller="dataResource" action="markAsVerified" id="${instance.id}">Mark as <strong>verified</strong></g:link>
                     </g:else>
                 </p>
 
@@ -355,9 +355,18 @@
                     <span class="${gbifCompatible ? '' : 'config-warning'}">${gbif.getGBIFCompatibleLicence(instance.licenseType) ? 'yes' : 'no'} </span>
                 </p>
 
+                <g:if test="${instance.gbifRegistryKey}">
+                    <p>
+                        <span class="category">GBIF Link:</span>
+                        <a href="https://www.gbif.org/dataset/${instance.gbifRegistryKey}">View details on GBIF.org</a>
+                    </p>
+                    <p>
+                        <span class="category">GBIF webservices Link:</span>
+                        <a href="https://api.gbif-uat.org/v1/dataset/${instance.gbifRegistryKey}">View details on GBIF.org</a>
+                    </p>
+                </g:if>
+
                 <cl:editButton uid="${instance.uid}" page="gbif"/>
-
-
 
               </div>
 
