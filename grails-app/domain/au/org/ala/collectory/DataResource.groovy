@@ -64,7 +64,7 @@ class DataResource extends ProviderGroup implements Serializable {
     String contentTypes             // json array of type of content provided by the resource
     boolean publicArchiveAvailable = false  // true if a DwC archive is allowed to be downloaded
     Boolean gbifDataset = false     //indicates this dataset was downloaded from GBIF
-    Boolean isShareableWithGBIF     //indicates this dataset is shareable with GBIF
+    Boolean isShareableWithGBIF = true     //indicates this dataset is shareable with GBIF
     DataProvider dataProvider
     Institution institution         // optional link to the institution whose records are served by this resource
     Boolean makeContactPublic = true
