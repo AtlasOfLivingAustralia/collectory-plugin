@@ -166,7 +166,7 @@ class GbifRegistryService {
 
         def result = [success:false, message:""]
 
-        def publisher //data provider or institution
+        def publisherGbifRegistryKey = "" //data provider or institution
 
         def institution = dataResource.institution
         def dataProvider = dataResource.dataProvider
@@ -188,20 +188,29 @@ class GbifRegistryService {
 
         if(institution) {
             // sync institution
-            publisher = institution
+
             if(institution.gbifRegistryKey){
                 updateRegistrationMetadata(institution)
             } else {
                 register(institution, true, false)
             }
+
+            publisherGbifRegistryKey = institution.gbifRegistryKey
+
         } else if(dataProvider) {
-            publisher = dataProvider
+
             // sync institution
             if(dataProvider.gbifRegistryKey){
                 updateRegistrationMetadata(dataProvider)
             } else {
                 register(dataProvider, true, false)
             }
+
+            publisherGbifRegistryKey = dataProvider.gbifRegistryKey
+
+        } else if(grailsApplication.config.gbifOrphansPublisherID){
+            log.info("Unable to sync resource: ${dataResource.uid} -  ${dataResource.name}. No publishing organisation associated.")
+            publisherGbifRegistryKey = grailsApplication.config.gbifOrphansPublisherID
         } else {
             log.info("Unable to sync resource: ${dataResource.uid} -  ${dataResource.name}. No publishing organisation associated.")
             result.success = false
@@ -209,10 +218,10 @@ class GbifRegistryService {
         }
 
         //if no institution, get the data provider and create in GBIF
-        if(publisher) {
+        if(publisherGbifRegistryKey) {
             //create the resource in GBIF
             log.info("Syncing data resource ${dataResource.uid} -  ${dataResource.name}")
-            syncDataResource(dataResource, publisher.gbifRegistryKey)
+            syncDataResource(dataResource, publisherGbifRegistryKey)
             log.info("Sync complete for data resource ${dataResource.uid} -  ${dataResource.name}")
             result.success = true
             result.message = "Data resource sync-ed with GBIF."
@@ -391,6 +400,27 @@ class GbifRegistryService {
             }
         }
         syncEndpoints(dataResource)
+    }
+
+    def deleteDataResource(DataResource resource){
+
+        def http = newHttpInstance()
+        if(!isDryRun()) {
+            http.request(Method.DELETE, ContentType.JSON) { req ->
+                uri.path = MessageFormat.format(API_DATASET_DETAIL, resource.gbifRegistryKey)
+                response.success = { resp, reader ->
+                    log.info("Deleted  Dataset[${resource.gbifRegistryKey}] from GBIF")
+                    resource.gbifRegistryKey = null
+                    resource.save(flush:true)
+                }
+                response.failure = { resp ->
+                    log.info("The delete of ${resource.uid} from GBIF was unsuccessful: ${resp.status}")
+                }
+            }
+        } else {
+            log.info("[DryRun] Deleting ${resource.uid}")
+        }
+        resource
     }
 
     /**
@@ -704,13 +734,12 @@ class GbifRegistryService {
 
         results.shareable.keySet().each { dataResource ->
 
-            def publisher //data provider or institution
+            def publisherGbifRegistryKey = "" //data provider or institution
 
             //get the institution, and check it has been created in GBIF
             Institution institution = results.linkedToInstitution.get(dataResource)
             DataProvider dataProvider = results.linkedToDataProvider.get(dataResource)
             if(institution) {
-                publisher = institution
                 // sync institution
                 if(institution.gbifRegistryKey){
                     updateRegistrationMetadata(institution)
@@ -719,8 +748,10 @@ class GbifRegistryService {
                     register(institution, true, false)
                     institutionsRegistered ++
                 }
+
+                publisherGbifRegistryKey = institution.gbifRegistryKey
+
             } else if(dataProvider) {
-                publisher = dataProvider
                 // sync institution
                 if(publisher.gbifRegistryKey){
                     updateRegistrationMetadata(dataProvider)
@@ -729,12 +760,16 @@ class GbifRegistryService {
                     register(dataProvider, true, false)
                     dataProviderRegistered ++
                 }
+                publisherGbifRegistryKey = dataProvider.gbifRegistryKey
+            } else if(grailsApplication.config.gbifOrphansPublisherID){
+                publisherGbifRegistryKey = grailsApplication.config.gbifOrphansPublisherID
+                log.info("Using orphans publisher ID  to sync resource: ${dataResource.uid}")
             } else {
                 log.info("Unable to sync resource: ${dataResource.uid} -  ${dataResource.name}. No publishing organisation associated.")
             }
 
             //if no institution, get the data provider and create in GBIF
-            if(publisher) {
+            if(publisherGbifRegistryKey) {
                 //create the resource in GBIF
                 log.info("Syncing data resource ${dataResource.uid} -  ${dataResource.name}")
                 if(dataResource.gbifRegistryKey){
@@ -743,7 +778,7 @@ class GbifRegistryService {
                     resourcesRegistered ++
                 }
 
-                syncDataResource(dataResource, publisher.gbifRegistryKey)
+                syncDataResource(dataResource, publisherGbifRegistryKey)
                 log.info("Sync complete for data resource ${dataResource.uid} -  ${dataResource.name}")
             }
         }
@@ -790,10 +825,9 @@ class GbifRegistryService {
                 dataResourcesWithData[dataResource] = result.count
 
                 //find links to institutions
-                def institution = null
+                def institution = dataResource.institution
 
-                if(dataResource.institution){
-                    institution = dataResource.institution
+                if(institution){
                     linkedToInstitution[dataResource] = dataResource.institution
 
                 } else {
@@ -817,11 +851,15 @@ class GbifRegistryService {
 
                 if(!institution) {
                     def dataProvider = dataResource.getDataProvider()
-                    if(!dataProvider){
-                        notShareableNoOwner[dataResource] = result.count
-                        isShareable = false //no institution and no data provider
-                    } else {
+                    if(dataProvider){
                         linkedToDataProvider[dataResource] = dataProvider
+                    } else {
+
+                        // if there is not a orphans publisher ID configured, theres no home
+                        if(!grailsApplication.config.gbifOrphansPublisherID) {
+                            notShareableNoOwner[dataResource] = result.count
+                            isShareable = false //no institution and no data provider
+                        }
                     }
                 }
 

@@ -325,20 +325,33 @@
                 <h2><g:message code="dataresource.show.gbif.sync" default="GBIF synchronisation" /></h2>
 
                 <g:set var="gbif" bean="gbifRegistryService"/>
-                <g:if test="${instance.isShareableWithGBIF && gbif.getGBIFCompatibleLicence(instance.licenseType)}">
-                    <div class="pull-right">
-                        <g:if test="${!instance.gbifRegistryKey}">
-                            <g:link class="btn btn-default" controller="dataResource" action="registerGBIF" id="${instance.id}">
-                                Register with GBIF
-                            </g:link>
-                        </g:if>
-                        <g:else>
-                            <g:link class="btn btn-default" controller="dataResource" action="updateGBIF" id="${instance.id}">
-                                Update GBIF
-                            </g:link>
-                        </g:else>
-                    </div>
-                </g:if>
+                <cl:ifGranted role="${grailsApplication.config.gbifRegistrationRole}">
+                    <g:if test="${instance.isShareableWithGBIF && gbif.getGBIFCompatibleLicence(instance.licenseType)}">
+                        <div class="pull-right">
+                            <g:if test="${!instance.gbifRegistryKey}">
+                                <g:link class="btn btn-default" controller="dataResource" action="registerGBIF" id="${instance.id}">
+                                    Register with GBIF
+                                </g:link>
+
+
+                            </g:if>
+                            <g:else>
+                                <g:link class="btn btn-default" controller="dataResource" action="updateGBIF" id="${instance.id}">
+                                    Update GBIF
+                                </g:link>
+                                <g:link
+                                        class="btn btn-default"
+                                        controller="dataResource"
+                                        action="deleteGBIF"
+                                        id="${instance.id}"
+                                        onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure you want to do this? This will remove the data and metadata from GBIFs public website.')}')"
+                                >
+                                    Delete from GBIF
+                                </g:link>
+                            </g:else>
+                        </div>
+                    </g:if>
+                </cl:ifGranted>
 
                 <p><span class="category">GBIF registry key:</span> ${instance.gbifRegistryKey ?: 'Not registered with GBIF'}</p>
                 <p><span class="category">GBIF supplied dataset (i.e. downloaded via GBIF services): </span> ${instance.gbifDataset ? 'yes' : 'no'}</p>
@@ -347,7 +360,6 @@
                         ${instance.isShareableWithGBIF ? 'yes' : 'no'}
                     </span>
                 </p>
-
 
                 <g:set var="gbifCompatible" value="${gbif.getGBIFCompatibleLicence(instance.licenseType)}"/>
 
@@ -358,11 +370,11 @@
                 <g:if test="${instance.gbifRegistryKey}">
                     <p>
                         <span class="category">GBIF Link:</span>
-                        <a href="https://www.gbif.org/dataset/${instance.gbifRegistryKey}">View details on GBIF.org</a>
+                        <a href="${grailsApplication.config.gbifWebsite}/dataset/${instance.gbifRegistryKey}">View details on GBIF.org</a>
                     </p>
                     <p>
                         <span class="category">GBIF webservices Link:</span>
-                        <a href="https://api.gbif.org/v1/dataset/${instance.gbifRegistryKey}">View details on GBIF.org</a>
+                        <a href="${grailsApplication.config.gbifApiUrl}/dataset/${instance.gbifRegistryKey}">View details on GBIF.org</a>
                     </p>
                 </g:if>
 

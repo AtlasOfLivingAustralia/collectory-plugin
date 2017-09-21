@@ -134,7 +134,7 @@ class DataProviderController extends ProviderGroupController {
         if (instance) {
             try {
                 if(authService.userInRole(grailsApplication.config.gbifRegistrationRole)) {
-
+                    log.info("[User ${authService.getUserId()}] has selected to update ${instance.uid} in GBIF...")
                     Boolean syncDataResources = params.syncDataResources?:"false".toBoolean()
                     Boolean syncContacts  = params.syncContacts?:"false".toBoolean()
                     gbifRegistryService.updateRegistration(instance, syncContacts, syncDataResources)
@@ -164,6 +164,7 @@ class DataProviderController extends ProviderGroupController {
                 try {
                     log.info("REGISTERING ${instance.uid}, triggered by user: ${collectoryAuthService.username()}")
                     if (collectoryAuthService.userInRole(grailsApplication.config.gbifRegistrationRole)) {
+                        log.info("[User ${authService.getUserId()}] has selected to register ${instance.uid} in GBIF...")
 
                         Boolean syncDataResources = params.syncDataResources?:"false".toBoolean()
                         Boolean syncContacts  = params.syncContacts?:"false".toBoolean()

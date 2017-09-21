@@ -7,7 +7,7 @@ import au.org.ala.collectory.resources.DarwinCoreFields
 
 class DataResourceController extends ProviderGroupController {
 
-    def metadataService, dataImportService, gbifRegistryService
+    def metadataService, dataImportService, gbifRegistryService, authService
 
     DataResourceController() {
         entityName = "DataResource"
@@ -187,16 +187,41 @@ class DataResourceController extends ProviderGroupController {
 
     def registerGBIF = {
         def pg = get(params.id)
-        Map result = gbifRegistryService.registerDataResource(pg)
-        flash.message = result.message
-        redirect(action: "show", id: params.uid ?: params.id)
+        if(authService.userInRole(grailsApplication.config.gbifRegistrationRole)) {
+            log.info("[User ${authService.getUserId()}] has selected to register ${pg.uid} in GBIF...")
+            Map result = gbifRegistryService.registerDataResource(pg)
+            flash.message = result.message
+            redirect(action: "show", id: params.uid ?: params.id)
+        } else {
+            flash.message = "User does not have sufficient privileges to perform this. ${grailsApplication.config.gbifRegistrationRole} role required"
+            redirect(action: "show", id: params.uid ?: params.id)
+        }
     }
 
     def updateGBIF = {
         def pg = get(params.id)
-        Map result = gbifRegistryService.registerDataResource(pg)
-        flash.message = result.message
-        redirect(action: "show", id: params.uid ?: params.id)
+        if(authService.userInRole(grailsApplication.config.gbifRegistrationRole)) {
+            log.info("[User ${authService.getUserId()}] has selected to update ${pg.uid} in GBIF...")
+            Map result = gbifRegistryService.registerDataResource(pg)
+            flash.message = result.message
+            redirect(action: "show", id: params.uid ?: params.id)
+        } else {
+            flash.message = "User does not have sufficient privileges to perform this. ${grailsApplication.config.gbifRegistrationRole} role required"
+            redirect(action: "show", id: params.uid ?: params.id)
+        }
+    }
+
+    def deleteGBIF = {
+        def pg = get(params.id)
+        if(authService.userInRole(grailsApplication.config.gbifRegistrationRole)) {
+            log.info("[User ${authService.getUserId()}] has selected to delete ${pg.uid} from GBIF...")
+            gbifRegistryService.deleteDataResource(pg)
+            flash.message = "Resource removed from GBIF"
+            redirect(action: "show", id: params.uid ?: params.id)
+        } else {
+            flash.message = "User does not have sufficient privileges to perform this. ${grailsApplication.config.gbifRegistrationRole} role required"
+            redirect(action: "show", id: params.uid ?: params.id)
+        }
     }
 
     def updateConsumers = {

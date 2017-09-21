@@ -11,10 +11,13 @@
     <h1>GBIF Syncing Healthcheck</h1>
     <div class="pull-right">
         <g:link class="btn btn-primary" action="downloadCSV"><i class="ui-icon-arrow-1-s"></i> Download CSV</g:link>
+
+        <cl:ifGranted role="${grailsApplication.config.gbifRegistrationRole}">
         <g:link class="btn btn-primary" action="syncAllResources"
                 onclick="return confirm('${message(code: 'default.button.updateall.confirm.message', default: 'Are you sure you want to sync all ? This will take some time to complete.')}');">
             <i class="ui-icon-arrow-1-s"></i> Sync resources
         </g:link>
+        </cl:ifGranted>
     </div>
 
     <p class="lead">Some statistics on data resources and our ability to provision these to GBIF</p>

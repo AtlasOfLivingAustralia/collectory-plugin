@@ -73,10 +73,10 @@ class CollectoryTagLib {
         def requestUri = grailsApplication.config.security.cas.serverName + request.forwardURI
         if (AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE)) {
             // currently logged in
-            out << "<li class='nav-logout nav-right'><a id='${AuthenticationCookieUtils.getUserName(request)}' href='https://auth.ala.org.au/cas/logout?url=${requestUri}'><span>Log out</span></a></li>"
+            out << "<li class='nav-logout nav-right'><a id='${AuthenticationCookieUtils.getUserName(request)}' href='${grailsApplication.config.security.cas.logoutUrl}?url=${requestUri}'><span>Log out</span></a></li>"
         } else {
             // currently logged out
-            out << "<li class='nav-login nav-right'><a href='https://auth.ala.org.au/cas/login?service=${requestUri}'><span>Log in</span></a></li>"
+            out << "<li class='nav-login nav-right'><a href='${grailsApplication.config.security.cas.loginUrl}?service=${requestUri}'><span>Log in</span></a></li>"
         }
     }
 
@@ -101,7 +101,7 @@ class CollectoryTagLib {
                              appUrl: attrs.fixedAppUrl ?: requestUri]) {'Logout'}
         } else {
             // currently logged out
-            out << "<a href='https://auth.ala.org.au/cas/login?service=${requestUri}'><span>Log in</span></a>"
+            out << "<a href='${grailsApplication.config.security.cas.loginUrl}?service=${requestUri}'><span>Log in</span></a>"
         }
     }
 
