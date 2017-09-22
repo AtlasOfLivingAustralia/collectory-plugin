@@ -269,7 +269,7 @@ class LookupController {
             citation = cit ? cit : citation
             def rit = ""
             if (pg.licenseType) {
-                def display = Licence.find { acronym == pg.licenseType }
+                def display = Licence.find { acronym == pg.licenseType && licenceVersion == pg.licenseVersion }
                 if(display){
                     rit = "${display.name} (${pg.licenseType})"
                 } else {

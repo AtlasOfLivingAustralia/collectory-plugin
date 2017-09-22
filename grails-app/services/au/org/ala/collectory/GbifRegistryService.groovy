@@ -753,7 +753,7 @@ class GbifRegistryService {
 
             } else if(dataProvider) {
                 // sync institution
-                if(publisher.gbifRegistryKey){
+                if(dataProvider.gbifRegistryKey){
                     updateRegistrationMetadata(dataProvider)
                     dataProviderUpdated ++
                 } else {
@@ -778,8 +778,12 @@ class GbifRegistryService {
                     resourcesRegistered ++
                 }
 
-                syncDataResource(dataResource, publisherGbifRegistryKey)
-                log.info("Sync complete for data resource ${dataResource.uid} -  ${dataResource.name}")
+                try {
+                    syncDataResource(dataResource, publisherGbifRegistryKey)
+                    log.info("Sync complete for data resource ${dataResource.uid} -  ${dataResource.name}")
+                } catch (Exception e){
+                    log.error("Sync error for data resource ${dataResource.uid} -  ${dataResource.name} - " + e.getMessage(), e)
+                }
             }
         }
         [
