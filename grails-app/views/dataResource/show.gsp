@@ -320,6 +320,25 @@
               <!-- external identifiers -->
               <g:render template="/shared/externalIdentifiers" model="[instance: instance]"/>
 
+              <g:if test="${grailsApplication.config.loggerURL}">
+              <div class="well">
+                <!-- Resources -->
+                <h2>User download reports</h2>
+                <ul class='fancy'>
+                    <li>
+                        <a href="${grailsApplication.config.loggerURL}/admin/userReport/download?fileName=user-report-${instance.uid}.csv&entityUids=${instance.uid}&eventId=1002">
+                            Download user report for this data resource
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${grailsApplication.config.loggerURL}/admin/userReport/downloadDetailed?fileName=user-report-detailed-${instance.uid}.csv&entityUids=${instance.uid}&eventId=1002">
+                            Download detailed user report for this data resource
+                        </a>
+                    </li>
+                </ul>
+              </div>
+              </g:if>
+
               <!-- GBIF integration -->
               <div class="well">
                 <h2><g:message code="dataresource.show.gbif.sync" default="GBIF synchronisation" /></h2>

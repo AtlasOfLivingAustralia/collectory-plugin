@@ -146,6 +146,9 @@
               <g:render template="/shared/externalIdentifiers" model="[instance: instance]"/>
 
               <!-- GBIF integration -->
+              <g:render template="/shared/userReports" model="[instance: instance, controller: 'dataProvider']"/>
+
+              <!-- GBIF integration -->
               <g:render template="/shared/gbif" model="[instance: instance, controller: 'dataProvider']"/>
 
                 <!-- change history -->
