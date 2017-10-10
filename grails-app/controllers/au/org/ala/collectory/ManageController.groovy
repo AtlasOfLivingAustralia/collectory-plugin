@@ -143,8 +143,7 @@ class ManageController {
      */
     def externalLoadStatus(){
         DataSourceLoad load = externalDataService.getStatusInfoFor(params.loadGuid)
-        DataSourceConfiguration configuration = load?.configuration
-        [configuration: configuration, load :load, refreshInterval: externalDataService.POLL_INTERVAL]
+        [load :load, refreshInterval: externalDataService.POLL_INTERVAL]
     }
 
     /**

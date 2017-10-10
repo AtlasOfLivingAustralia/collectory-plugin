@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="layout" content="${grailsApplication.config.skin.layout}" />
     %{--TODO At the moment this is performing a complete reload every 15 seconds while the load has not finished. Make this AJAXy--}%
-    <title><g:message code="manage.extloads.title" /> ${configuration.name}</title>
+    <title><g:message code="manage.extloads.title" /> ${load?.configuration?.name ?: '-'}</title>
 
     <g:if test="${load}">
     <script type="text/javascript">
@@ -28,7 +28,7 @@
 </head>
 <body>
 <g:if test="${load}">
-<h1>${load.isComplete() ? 'Finished' : 'Automatically'} loading ${load.resources.size()} resources for ${configuration.name}
+<h1>${load.isComplete() ? 'Finished' : 'Automatically'} loading ${load.resources.size()} resources for ${load?.configuration?.name ?: '-'}
 </h1>
 <h3><g:message code="manage.extloads.title.completed" /> <g:formatNumber number="${load.getPercentageComplete()}" format="#0.00"/> %</h3>
 <h4><g:message code="manage.extloads.title.started" />: ${load.startTime}
@@ -55,7 +55,7 @@
 </table>
 </g:if>
 <g:else>
-    <h1><g:message code="manage.extloads.title04" /> ${configuration.name}</h1>
+    <h1><g:message code="manage.extloads.title04" /> ${load?.configuration?.name ?: '-'}</h1>
     <p>
         <g:message code="manage.extloads.title05" /> <g:link controller="manage" action="gbifLoadCountry"> <g:message code="manage.extloads.link01" />.</g:link>
     </p>
