@@ -37,18 +37,19 @@ class DataSourceLoad {
      * @return True if all resources have completed
      */
     boolean isComplete() {
-        return resources.every { !it.phase || it.phase.terminal }
+        return resources.isEmpty() || resources.every { !it.phase || it.phase.terminal }
     }
 
     /**
      * Get the percentage of loads coompleted
      *
-     * @return
+     * @return The percentage of resources completed
      */
     def getPercentageComplete(){
         //get the number that are complete
-        List complete = resources.findAll { !it.phase || it.phase.terminal }
-        return (complete.size()/resources.size()) * 100
+        int cs = resources.count { !it.phase || it.phase.terminal }
+        int rs = resources.size()
+        return rs > 0 ? (cs / rs) * 100 : 100
     }
 
 
