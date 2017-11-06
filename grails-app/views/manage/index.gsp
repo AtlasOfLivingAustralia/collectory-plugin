@@ -21,7 +21,7 @@
         <div style="width:400px;">
             <h2 style="margin-top:30px;"><g:message code="manage.index.title02" /></h2>
             <span id="login-button">
-                <a href="http://auth.ala.org.au/cas/login?service=${grailsApplication.config.security.cas.serverName}${request.forwardURI}">&nbsp;<g:message code="manage.index.login" />&nbsp;</a>
+                <a href="https://auth.ala.org.au/cas/login?service=${grailsApplication.config.security.cas.serverName}${request.forwardURI}">&nbsp;<g:message code="manage.index.login" />&nbsp;</a>
             </span>
 
             <p><g:message code="manage.index.des02" /></p>
@@ -36,7 +36,7 @@
                 <li><g:message code="manage.index.li03" />.</li>
             </ol>
             <h4><g:message code="manage.index.title05" />!</h4>
-            <p><g:message code="manage.index.des04" /> <a href="http://auth.ala.org.au/emmet/selfRegister.html"><g:message code="manage.index.des05" /></a>.<p>
+            <p><g:message code="manage.index.des04" /> <a href="https://auth.ala.org.au/emmet/selfRegister.html"><g:message code="manage.index.des05" /></a>.<p>
             <p><g:message code="manage.index.des06" />.</p>
             <h4><g:message code="manage.index.title06" />?</h4>
             <p><g:message code="manage.index.des07" /> <span class="link" onclick="return sendEmail('support(SPAM_MAIL@ALA.ORG.AU)ala.org.au')"><g:message code="manage.index.des08" /></span>

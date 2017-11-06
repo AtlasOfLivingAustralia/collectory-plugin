@@ -6,7 +6,7 @@
         <g:set var="entityName" value="${instance.ENTITY_TYPE}" />
         <g:set var="entityNameLower" value="${cl.controller(type: instance.ENTITY_TYPE)}"/>
         <title><g:message code="default.show.label" args="[entityName]" /></title>
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
         <r:require modules="fileupload"/>
     </head>
     <body>

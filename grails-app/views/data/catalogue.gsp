@@ -51,27 +51,27 @@
             <colgroup><col width="55%"><col width="45%"></colgroup>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0101" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws">http://collections.ala.org.au/ws</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws">https://collections.ala.org.au/ws</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0201" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution.json">http://collections.ala.org.au/ws/institution</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution.json">https://collections.ala.org.au/ws/institution</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0301" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/in72.json">http://collections.ala.org.au/ws/institution/in72</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/in72.json">https://collections.ala.org.au/ws/institution/in72</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0401" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/count">http://collections.ala.org.au/ws/institution/count</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/count">https://collections.ala.org.au/ws/institution/count</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0501" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/count/state">http://collections.ala.org.au/ws/institution/count/state</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/count/state">https://collections.ala.org.au/ws/institution/count/state</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.table01.cell0601" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/in72/contacts.json">http://collections.ala.org.au/ws/institution/in72/contacts</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/institution/in72/contacts.json">https://collections.ala.org.au/ws/institution/in72/contacts</a></td>
             </tr>
           </table>
           <h3><g:message code="data.catalogue.title04" /></h3>
@@ -102,15 +102,15 @@
             <colgroup><col width="55%"><col width="45%"></colgroup>
             <tr>
               <td><g:message code="data.catalogue.ws0025.cell0101" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/contacts.json">http://collections.ala.org.au/ws/contacts</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/contacts.json">https://collections.ala.org.au/ws/contacts</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0025.cell0201" /></td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/contacts/31.json">http://collections.ala.org.au/ws/contacts/31</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/contacts/31.json">https://collections.ala.org.au/ws/contacts/31</a></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0025.cell0301" /></td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/contacts/email/dave.martin@csiro.au">http://collections.ala.org.au/ws/contacts/email/dave.martin@csiro.au</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/contacts/email/dave.martin@csiro.au">https://collections.ala.org.au/ws/contacts/email/dave.martin@csiro.au</a></td>
             </tr>
           </table>
           <p><g:message code="data.catalogue.ws0025.des0101" />. <span class='entity'>PUT</span> <g:message code="data.catalogue.ws0025.des0102" /> <span class='entity'>POST</span> <g:message code="data.catalogue.ws0025.des0103" />. <span class='entity'>DELETE</span> <g:message code="data.catalogue.ws0025.des0104" />.</p>
@@ -140,51 +140,51 @@
               <td colspan="2"><g:message code="data.catalogue.ws0025.table0101" /> <span class="code"><g:message code="data.catalogue.ws0025.table0102" /></span> <g:message code="data.catalogue.ws0025.table0103" />:</td>
             </tr>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/ws/{resource type}/{resource uid}/contacts</span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/ws/{resource type}/{resource uid}/contacts</span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0025.forexample" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/collection/co13/contacts.json">http://collections.ala.org.au/ws/collection/co13/contacts</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/collection/co13/contacts.json">https://collections.ala.org.au/ws/collection/co13/contacts</a></td>
             </tr>
             <tr>
               <td colspan="2"><g:message code="data.catalogue.ws0025.table0301" />:</td>
             </tr>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/ws/{resource type}/{resource uid}/contacts/{id}</span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/ws/{resource type}/{resource uid}/contacts/{id}</span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0025.forexample" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/collection/co13/contacts/20.json">http://collections.ala.org.au/ws/collection/co13/contacts/20</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/collection/co13/contacts/20.json">https://collections.ala.org.au/ws/collection/co13/contacts/20</a></td>
             </tr>
             <tr>
               <td colspan="2"><g:message code="data.catalogue.ws0025.table0501" />:</td>
             </tr>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/ws/{resource type}/contacts</span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/ws/{resource type}/contacts</span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0025.forexample" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/collection/contacts.json">http://collections.ala.org.au/ws/collection/contacts</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/collection/contacts.json">https://collections.ala.org.au/ws/collection/contacts</a></td>
             </tr>
             <tr>
               <td colspan="2"><g:message code="data.catalogue.ws0025.table0701" />:</td>
             </tr>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/ws/{resource type}/{resource uid}/contacts/notifiable</span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/ws/{resource type}/{resource uid}/contacts/notifiable</span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0025.forexample" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/collection/co13/contacts/notifiable.json">http://collections.ala.org.au/ws/collection/co13/contacts/notifiable</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/collection/co13/contacts/notifiable.json">https://collections.ala.org.au/ws/collection/co13/contacts/notifiable</a></td>
             </tr>
             <tr>
               <td colspan="2"><g:message code="data.catalogue.ws0025.table0901" />:</td>
             </tr>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/ws/contacts/{contact id}/authorised</span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/ws/contacts/{contact id}/authorised</span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0025.forexample" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/contacts/132/authorised.json">http://collections.ala.org.au/ws/contacts/132/authorised</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/contacts/132/authorised.json">https://collections.ala.org.au/ws/contacts/132/authorised</a></td>
             </tr>
           </table>
           <p><g:message code="data.catalogue.ws0025.des07" />.<br/>
@@ -204,7 +204,7 @@
                 <li><g:message code="data.catalogue.ws0025.li14" /></li>
                 <li><g:message code="data.catalogue.ws0025.li15" /></li>
             </ul>
-            <p><g:message code="data.catalogue.ws0025.des12" /> http://collections.ala.org.au/ws/{resource type}/{resource uid}/contacts/{contact id}</p>
+            <p><g:message code="data.catalogue.ws0025.des12" /> https://collections.ala.org.au/ws/{resource type}/{resource uid}/contacts/{contact id}</p>
             <p><span class='entity'>PUT</span> <g:message code="data.catalogue.ws0025.des13" />.</p>
             <p><span class='entity'>DELETE</span> <g:message code="data.catalogue.ws0025.des14" />.</p>
             <p><g:message code="data.catalogue.ws0025.des15" />:</p>
@@ -221,11 +221,11 @@
           <table class="table">
             <colgroup><col width="55%"><col width="45%"></colgroup>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/ws/eml/<strong>{uid}</strong></span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/ws/eml/<strong>{uid}</strong></span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0026.table0101" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/eml/dr368">http://collections.ala.org.au/ws/eml/dr368</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/eml/dr368">https://collections.ala.org.au/ws/eml/dr368</a></td>
             </tr>
           </table>
 
@@ -237,14 +237,14 @@
           <table class="table">
             <colgroup><col width="55%"><col width="45%"></colgroup>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/ws/citations/<strong>{listOfUIDs}</strong></span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/ws/citations/<strong>{listOfUIDs}</strong></span></td>
             </tr>
             <tr>
               <td colspan="2"><g:message code="data.catalogue.ws0032.td0101" /> <span class="code"><g:message code="data.catalogue.ws0032.td0102" /></span> <g:message code="data.catalogue.ws0032.td0103" />.</td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0032.td0201" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/ws/citations/dr368,dr105,dr357">http://collections.ala.org.au/ws/citations/dr368,dr105,dr357</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/ws/citations/dr368,dr105,dr357">https://collections.ala.org.au/ws/citations/dr368,dr105,dr357</a></td>
             </tr>
           </table>
 
@@ -259,11 +259,11 @@
           <table class="table">
             <colgroup><col width="55%"><col width="45%"></colgroup>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/lookup/inst/<strong>{institution-code}</strong>/coll/<strong>{collection-code}</strong></span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/lookup/inst/<strong>{institution-code}</strong>/coll/<strong>{collection-code}</strong></span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0027.table0101" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/lookup/inst/ANIC/coll/Insects.json">http://collections.ala.org.au/lookup/inst/ANIC/coll/Insects</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/lookup/inst/ANIC/coll/Insects.json">https://collections.ala.org.au/lookup/inst/ANIC/coll/Insects</a></td>
             </tr>
             <tr>
               <td colspan="2"><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_collection_from_institution_and_collection_codes" class="btn btn-default">More information.</a></td>
@@ -275,18 +275,18 @@
           <table class="table">
             <colgroup><col width="55%"><col width="45%"></colgroup>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/lookup/summary/<strong>{uid}</strong></span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/lookup/summary/<strong>{uid}</strong></span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0028.table0101" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/lookup/summary/dp28.json">http://collections.ala.org.au/lookup/summary/dp28</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/lookup/summary/dp28.json">https://collections.ala.org.au/lookup/summary/dp28</a></td>
             </tr>
           </table>
           <p><g:message code="data.catalogue.ws0028.des02" />. <a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_summary_from_UID"><g:message code="data.catalogue.ws0028.link01" />.</a></p>
 
           <h3 id="WS0029"><g:message code="data.catalogue.ws0029.title" /></h3>
           <p><g:message code="data.catalogue.ws0029.des01" />: </p>
-          <p><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/lookup/name/<strong>{uid}</strong></span></p>
+          <p><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/lookup/name/<strong>{uid}</strong></span></p>
           <p><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_name_from_UID" class="btn btn-default"><g:message code="data.catalogue.ws0029.link01" />.</a></p>
 
           <h3 id="WS0030"><g:message code="data.catalogue.ws0030.title" /></h3>
@@ -294,11 +294,11 @@
           <table class="clean no-left-pad">
             <colgroup><col width="55%"><col width="45%"></colgroup>
             <tr>
-              <td colspan="2"><span class="code"><span class='entity'>GET</span> http://collections.ala.org.au/lookup/taxonomicCoverageHints/<strong>{uid}</strong></span></td>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/lookup/taxonomicCoverageHints/<strong>{uid}</strong></span></td>
             </tr>
             <tr>
               <td><g:message code="data.catalogue.ws0030.table0101" />:</td>
-              <td><a href="${grailsApplication.config.grails.serverURL}/lookup/taxonomyCoverageHints/co12.json">http://collections.ala.org.au/lookup/taxonomyCoverageHints/co12</a></td>
+              <td><a href="${grailsApplication.config.grails.serverURL}/lookup/taxonomyCoverageHints/co12.json">https://collections.ala.org.au/lookup/taxonomyCoverageHints/co12</a></td>
             </tr>
             <tr>
               <td colspan="2"><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_taxonomic_coverage_hints_from_UID" class="btn btn-default">More information.</a></td>
@@ -308,11 +308,11 @@
           <h3><g:message code="data.catalogue.ws0030.title01" /></h3>
           <p><g:message code="data.catalogue.ws0030.des02" />.
           If <span class="code">[ ]</span> <g:message code="data.catalogue.ws0030.des03" />:</p>
-          <p><span class="code"><span class='entity'>GET</span> <a href="http://collections.ala.org.au/lookup/downloadLimits">http://collections.ala.org.au/lookup/downloadLimits</a></span></p>
+          <p><span class="code"><span class='entity'>GET</span> <a href="https://collections.ala.org.au/lookup/downloadLimits">https://collections.ala.org.au/lookup/downloadLimits</a></span></p>
 
           <h3><g:message code="data.catalogue.ws0030.title02" /></h3>
           <p><g:message code="data.catalogue.ws0030.des04" />:</p>
-          <p><span class="code">GET http://collections.ala.org.au/lookup/generateDataResourceUid</span></p>
+          <p><span class="code">GET https://collections.ala.org.au/lookup/generateDataResourceUid</span></p>
           <p><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Generate_UID_for_a_new_entity" class="btn btn-default"><g:message code="data.catalogue.ws0030.link01" />.</a></p>
 
         </div><!--close section-->
@@ -322,14 +322,14 @@
         <div class="section infoColumn">
           <h1><g:message code="data.catalogue.ct.title01" /></h1>
           <p>
-            <a href="http://collections.ala.org.au/ws/collection.json"><g:message code="data.catalogue.ct.lacs" /></a><br/>
-            <a href="http://collections.ala.org.au/ws/institution.json"><g:message code="data.catalogue.ct.lais" /></a><br/>
-            <a href="http://collections.ala.org.au/ws/dataProvider.json"><g:message code="data.catalogue.ct.ladps" /></a><br/>
-            <a href="http://collections.ala.org.au/ws/dataResource.json"><g:message code="data.catalogue.ct.ladrs" /></a><br/>
-            <a href="http://collections.ala.org.au/ws/dataHub.json"><g:message code="data.catalogue.ct.lahs" /></a><br/>
+            <a href="https://collections.ala.org.au/ws/collection.json"><g:message code="data.catalogue.ct.lacs" /></a><br/>
+            <a href="https://collections.ala.org.au/ws/institution.json"><g:message code="data.catalogue.ct.lais" /></a><br/>
+            <a href="https://collections.ala.org.au/ws/dataProvider.json"><g:message code="data.catalogue.ct.ladps" /></a><br/>
+            <a href="https://collections.ala.org.au/ws/dataResource.json"><g:message code="data.catalogue.ct.ladrs" /></a><br/>
+            <a href="https://collections.ala.org.au/ws/dataHub.json"><g:message code="data.catalogue.ct.lahs" /></a><br/>
           </p>
           <p>
-            <a href="http://collections.ala.org.au/ws/collection/contacts.json"><g:message code="data.catalogue.ct.lmcfec" /></a><br/>
+            <a href="https://collections.ala.org.au/ws/collection/contacts.json"><g:message code="data.catalogue.ct.lmcfec" /></a><br/>
           </p>
 
           <h1><g:message code="data.catalogue.ct.title02" /></h1>

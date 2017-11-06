@@ -7,7 +7,8 @@ uploadFilePath='/data/collectory-plugin/upload'
 google.apikey = "PLEASE_SPECIFY_IN_CONFIG_FILE"
 institution.codeLoaderURL='file:/data/collectory/bootstrap/institution_codes.xml'
 
-cartodb.pattern = 'http://{s}.api.cartocdn.com/light_all/{z}/{x}/{y}.png'
+//cartodb.pattern = 'http://{s}.api.cartocdn.com/light_all/{z}/{x}/{y}.png'
+cartodb.pattern = 'https://cartocdn_{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
 
 dataResourceChartsJSON = "['country','state','species_group','assertions','type_status','year','month']"
 dataProviderChartsJSON = "['country','state','species_group','assertions','type_status','year','month']"

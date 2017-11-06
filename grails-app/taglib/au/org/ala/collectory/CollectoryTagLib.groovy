@@ -460,7 +460,7 @@ class CollectoryTagLib {
         }
         if (lsid =~ 'lsid') {  // contains
             def authority = lsid[9..lsid.indexOf(':',10)-1]
-            out << "<a${target} rel='nofollow' class='external' href='http://${authority}/${lsid.encodeAsHTML()}'>${lsid.encodeAsHTML()}</a>"
+            out << "<a${target} rel='nofollow' class='external' href='https://${authority}/${lsid.encodeAsHTML()}'>${lsid.encodeAsHTML()}</a>"
         } else {
             out << attrs.guid
         }
@@ -1114,7 +1114,7 @@ class CollectoryTagLib {
             }
             values = "1,16,44,22,66,19,2"
             out << "</ul>"
-            out << "<img src='http://chart.apis.google.com/chart?chxl=1:|1870|1880|1890|1900|1910|1920|1930&chxt=y,x&chbh=a&chs=300x225&cht=bvg&chco=A2C180&chd=t:${values}&chtt=Vertical+bar+chart' width='300' height='225' alt='Vertical bar chart' />"
+            out << "<img src='https://chart.apis.google.com/chart?chxl=1:|1870|1880|1890|1900|1910|1920|1930&chxt=y,x&chbh=a&chs=300x225&cht=bvg&chco=A2C180&chd=t:${values}&chtt=Vertical+bar+chart' width='300' height='225' alt='Vertical bar chart' />"
         }
     }
 
@@ -1143,7 +1143,7 @@ class CollectoryTagLib {
                 '<div id="taxonChartCaption" style="visibility:hidden;">\n' +
                 '<span class="taxonChartCaption">Click a slice to drill into a group.<br/>Click a legend colour patch<br/>to view records for a group.</span><br/>\n' +
                 '<span id="resetTaxonChart" onclick="resetTaxonChart()"></span>&nbsp;\n' +
-                '<div class="taxonCaveat"><span class="asterisk-container"><a href="http://www.ala.org.au/about/progress/wrong-classification/">Learn more about classification errors</a>&nbsp;</span></div>\n' +
+                '<div class="taxonCaveat"><span class="asterisk-container"><a href="https://www.ala.org.au/about/progress/wrong-classification/">Learn more about classification errors</a>&nbsp;</span></div>\n' +
                 '</div>\n'*/
     }
 

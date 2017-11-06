@@ -23,10 +23,10 @@
                   </li>
                   <li class="nav-item">
                       <cl:isLoggedIn>
-                          <a href="http://auth.ala.org.au/cas/logout?url=${grailsApplication.config.grails.serverURL}/admin/home"><g:message code="admin.logout" /></a>
+                          <a href="https://auth.ala.org.au/cas/logout?url=${grailsApplication.config.grails.serverURL}/admin/home"><g:message code="admin.logout" /></a>
                       </cl:isLoggedIn>
                       <cl:isNotLoggedIn>
-                          <a href="http://auth.ala.org.au/cas/login?service=${grailsApplication.config.security.cas.serverName}/${grailsApplication.config.security.cas.context}/admin"><g:message code="admin.login" /></a>
+                          <a href="https://auth.ala.org.au/cas/login?service=${grailsApplication.config.security.cas.serverName}/${grailsApplication.config.security.cas.context}/admin"><g:message code="admin.login" /></a>
                       </cl:isNotLoggedIn>
                   </li>
             </ul>

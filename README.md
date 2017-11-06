@@ -1,4 +1,4 @@
-# collectory-plugin   [![Build Status](https://travis-ci.org/AtlasOfLivingAustralia/collectory-plugin.svg?branch=master)](http://travis-ci.org/AtlasOfLivingAustralia/collectory-plugin)
+# collectory-plugin   [![Build Status](https://travis-ci.org/AtlasOfLivingAustralia/collectory-plugin.svg?branch=master)](https://travis-ci.org/AtlasOfLivingAustralia/collectory-plugin)
 
 The collectory-plugin manages metadata that describe Australia's biodiversity collections and suppliers of biodiversity data.
 

@@ -59,7 +59,7 @@ function initMap(mapOptions) {
     centrePoint = new OpenLayers.LonLat(mapOptions.centreLon, mapOptions.centreLat);
     defaultZoom = mapOptions.defaultZoom;
 
-    // serverUrl is the base url for the site eg http://collections.ala.org.au in production
+    // serverUrl is the base url for the site eg https://collections.ala.org.au in production
     // cannot use relative url as the context path varies with environment
     baseUrl = mapOptions.serverUrl;
     featuresUrl = mapOptions.serverUrl + "/public/mapFeatures";

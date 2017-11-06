@@ -390,7 +390,7 @@ OpenLayers.Format.KML = OpenLayers.Class(OpenLayers.Format.XML, {
                             // Settings for Google specific icons that are 64x64
                             // We set the width and height to 64 and halve the
                             // scale to prevent icons from being too big
-                            var google = "http://maps.google.com/mapfiles/kml";
+                            var google = "https://maps.google.com/mapfiles/kml";
                             if (OpenLayers.String.startsWith(
                                                  href, google) && !w && !h) {
                                 w = 64;
@@ -431,7 +431,7 @@ OpenLayers.Format.KML = OpenLayers.Class(OpenLayers.Format.XML, {
                                 var posY = y ? (7 - y/32) : 7;
 
                                 var pos = posY * 8 + posX;
-                                href = "http://maps.google.com/mapfiles/kml/pal" 
+                                href = "https://maps.google.com/mapfiles/kml/pal" 
                                      + palette + "/icon" + pos + file_extension;
                             }
 

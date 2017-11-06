@@ -48,7 +48,7 @@
 
                     <div style="display:none; text-align: left;">
                         <div id="lsidText" style="text-align: left;">
-                            <b><a class="external_icon" href="http://lsids.sourceforge.net/"
+                            <b><a class="external_icon" href="https://wayback.archive.org/web/20100515104710/http://lsids.sourceforge.net:80/"
                                   target="_blank"><g:message code="public.lsidtext.link" />:</a></b>
                             <p><cl:guid target="_blank" guid='${fieldValue(bean: instance, field: "guid")}'/></p>
                             <p><g:message code="public.lsidtext.des" />.</p>

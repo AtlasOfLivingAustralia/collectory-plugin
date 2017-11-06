@@ -33,7 +33,7 @@ class DataFeedsController {
 
     /**
      * Produce a RSS feed for data resources.
-     * @see <a href="http://www.idigbio.org/wiki/index.php/CYWG_iDigBio_DwC-A_Pull_Ingestion">CYWG
+     * @see <a href="https://www.idigbio.org/wiki/index.php/CYWG_iDigBio_DwC-A_Pull_Ingestion">CYWG
      *   iDigBio DwC-A Pull Ingestion</a>
      * Note: I attempted to the use the Grails "feeds"plugin but it didn't support non-standard tags,
      * such as <umllink> and is no longer maintained.

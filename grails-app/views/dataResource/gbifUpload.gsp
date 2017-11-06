@@ -5,7 +5,7 @@
     <meta name="layout" content="${grailsApplication.config.skin.layout}" />
 
     <title><g:message code="upload.gbif.archive" /></title>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?v=3.3&sensor=false"></script>
     <r:require modules="fileupload"/>
 </head>
 <body>
@@ -17,7 +17,7 @@
     <div class="well pull-right col-md-6">
         <p>
             <g:message code="dataresource.gbifupload.des01" />
-            <a href="http://www.gbif.org/"><g:message code="dataresource.gbifupload.link.gbifportal" /></a>.
+            <a href="https://www.gbif.org/"><g:message code="dataresource.gbifupload.link.gbifportal" /></a>.
             <br/>
             <g:message code="dataresource.gbifupload.des02" />.
         </p>
@@ -27,7 +27,7 @@
         </p>
         <p>
             <g:message code="dataresource.gbifupload.info0"/> <br/>
-            <strong>http://api.gbif.org/v1/occurrence/download/request/0001008-150512124619364.zip</strong>
+            <strong>https://api.gbif.org/v1/occurrence/download/request/0001008-150512124619364.zip</strong>
             <br/>
             <g:message code="dataresource.gbifupload.info1"/> <br/>
         </p>

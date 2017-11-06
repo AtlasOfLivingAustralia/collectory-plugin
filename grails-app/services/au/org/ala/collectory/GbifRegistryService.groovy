@@ -488,16 +488,16 @@ class GbifRegistryService {
             // map to GBIF, recognising GBIF are particular about the correct name
             switch (licenseType) {
                 case 'CC0':
-                    return 'http://creativecommons.org/publicdomain/zero/1.0/legalcode'
+                    return 'https://creativecommons.org/publicdomain/zero/1.0/legalcode'
                 case 'CC-BY':
-                    return 'http://creativecommons.org/licenses/by/4.0/legalcode'
+                    return 'https://creativecommons.org/licenses/by/4.0/legalcode'
                 case 'CC-BY-NC':
-                    return 'http://creativecommons.org/licenses/by-nc/4.0/legalcode'
+                    return 'https://creativecommons.org/licenses/by-nc/4.0/legalcode'
                 case 'OGL':
                     // See https://en.wikipedia.org/wiki/Open_Government_Licence
                     // Note that publisher has explicitly confirmed a desire to register in GBIF, knowing that GBIF support
                     // CC0, CC-BY and CC-BY-NC only.  This seems the most appropriate license to map to.
-                    return 'http://creativecommons.org/licenses/by/4.0/legalcode'
+                    return 'https://creativecommons.org/licenses/by/4.0/legalcode'
                 default:
                     log.info("Unsupported license ${licenseType} for GBIF so cannot be registered")
                     return null

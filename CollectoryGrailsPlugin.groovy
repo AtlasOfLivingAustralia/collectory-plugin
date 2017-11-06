@@ -27,13 +27,13 @@ from the ALA collectory app (no local DB is required for this app).
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://github.com/AtlasOfLivingAustralia/collectory-plugin"
+    def documentation = "https://github.com/AtlasOfLivingAustralia/collectory-plugin"
 
     // License: one of 'APACHE', 'GPL2', 'GPL3'
     def license = "MPL2"
 
     // Details of company behind the plugin (if there is one)
-    def organization = [ name: "Atlas of Living Australia", url: "http://www.ala.org.au/" ]
+    def organization = [ name: "Atlas of Living Australia", url: "https://www.ala.org.au/" ]
 
     // Any additional developers beyond the author specified above.
     def developers = [

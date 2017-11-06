@@ -6,7 +6,7 @@
       <g:javascript library="jquery-1.5.1.min"/>
       <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
       <script type="text/javascript" src="http://jquery-jsonp.googlecode.com/files/jquery.jsonp-2.1.4.min.js"></script>
-      %{--<script type="text/javascript" src="http://collections.ala.org.au/js/charts.js"></script>--}%
+      %{--<script type="text/javascript" src="https://collections.ala.org.au/js/charts.js"></script>--}%
       <g:javascript library="charts2"/>
       <g:javascript library="datadumper"/>
       <style>

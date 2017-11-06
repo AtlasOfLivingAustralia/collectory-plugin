@@ -27,7 +27,7 @@ public class Geocoder {
     }
 
     public static Location getLocation(String address) throws IOException {
-        BufferedReader in = new BufferedReader(new InputStreamReader(new URL("http://maps.google.com/maps/geo?q=" + URLEncoder.encode(address, ENCODING) + "&output=csv&key=" + KEY).openStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(new URL("https://maps.google.com/maps/geo?q=" + URLEncoder.encode(address, ENCODING) + "&output=csv&key=" + KEY).openStream()));
         String line;
         Location location = null;
         int statusCode = -1;

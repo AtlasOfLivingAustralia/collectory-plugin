@@ -40,9 +40,9 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
     static final DateFormat TIMESTAMP_FORMAT= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 
     static LICENSE_MAP = [
-            "http://creativecommons.org/publicdomain/zero/1.0/legalcode": [licenseType: "CC0", licenseVersion: "1.0" ],
-            "http://creativecommons.org/licenses/by-nc/4.0/legalcode":    [licenseType: "CC BY-NC", licenseVersion: "4.0" ],
-            "http://creativecommons.org/licenses/by/4.0/legalcode":       [licenseType: "CC BY", licenseVersion: "4.0" ]
+            "https://creativecommons.org/publicdomain/zero/1.0/legalcode": [licenseType: "CC0", licenseVersion: "1.0" ],
+            "https://creativecommons.org/licenses/by-nc/4.0/legalcode":    [licenseType: "CC BY-NC", licenseVersion: "4.0" ],
+            "https://creativecommons.org/licenses/by/4.0/legalcode":       [licenseType: "CC BY", licenseVersion: "4.0" ]
     ]
     static TYPE_MAP = [
             "CHECKLIST"    : "species-list",
@@ -185,7 +185,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
         def license = LICENSE_MAP[dataset.license]
         def recordType = TYPE_MAP[dataset.type]
         def contentTypes = CONTENT_MAP[dataset.type] ?: []
-        def source = dataset.doi?.replace("doi:", "http://doi.org/")
+        def source = dataset.doi?.replace("doi:", "https://doi.org/")
         try {
             currency = dataset.pubDate ? TIMESTAMP_FORMAT.clone().parse(dataset.pubDate) : null
         } catch (ParseException ex) {

@@ -163,13 +163,13 @@ function initializeLocationMap(canBeMapped,lat,lng) {
 function contactCurator(email, firstName, uid, instUid, name) {
     var subject = jQuery.i18n.prop('collectory.js.contentline01') + " " + name + ".";
     var content = jQuery.i18n.prop('collectory.js.contentline02') + " " + firstName + ",\n\n";
-    content = content + jQuery.i18n.prop('collectory.js.contentline03') + " http://www.ala.org.au.\n\n";
+    content = content + jQuery.i18n.prop('collectory.js.contentline03') + " https://www.ala.org.au.\n\n";
     content = content + jQuery.i18n.prop('collectory.js.contentline04') + "\n\n";
-    content = content + jQuery.i18n.prop('collectory.js.contentline05') + " http://collections.ala.org.au/public/show/" + uid + ".\n\n";
+    content = content + jQuery.i18n.prop('collectory.js.contentline05') + " https://collections.ala.org.au/public/show/" + uid + ".\n\n";
     if (instUid != "") {
-        content = content + jQuery.i18n.prop('collectory.js.contentline06') + " http://collections.ala.org.au/public/showInstitution/" + instUid + ".\n\n";
+        content = content + jQuery.i18n.prop('collectory.js.contentline06') + " https://collections.ala.org.au/public/showInstitution/" + instUid + ".\n\n";
     }
-    content = content + jQuery.i18n.prop('collectory.js.contentline07') + " http://collections.ala.org.au/public/map.\n\n";
+    content = content + jQuery.i18n.prop('collectory.js.contentline07') + " https://collections.ala.org.au/public/map.\n\n";
     content = content + jQuery.i18n.prop('collectory.js.contentline08') + "\n\n";
     content = content + jQuery.i18n.prop('collectory.js.contentline09') + ",\n";
     content = content + jQuery.i18n.prop('collectory.js.contentline10') + "\n\n";
