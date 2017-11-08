@@ -233,13 +233,13 @@
                 <g:if test="${instance.resourceType == 'records'}">
                     <!-- darwin core defaults -->
                     <g:set var="dwc" value="${instance.defaultDarwinCoreValues ? JSON.parse(instance.defaultDarwinCoreValues) : [:]}"/>
-                    <h4>Default values for DwC fields</h4>
+                    <h3>Default values for DwC fields</h3>
                         <g:if test="${!dwc}">none</g:if>
-                            <dl class="dl-horizontal">
+                        <table class="table">
                             <g:each in="${dwc.entrySet()}" var="dwct">
-                                <dt>${dwct.key}:</dt><dd>${dwct.value?:'Not supplied'}</dd>
+                                <tr><td>${dwct.key}:</td><td>${dwct.value?:'Not supplied'}</td></tr>
                             </g:each>
-                        </dl>
+                        </table>
 
                 </g:if>
 

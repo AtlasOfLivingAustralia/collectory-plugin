@@ -61,6 +61,7 @@ class DarwinCoreFields {
             new DarwinCoreField(name: 'datasetID'),
             new DarwinCoreField(name: 'datasetName'),
             new DarwinCoreField(name: 'dateIdentified'),
+            new DarwinCoreField(name: 'datePrecision',values: ["","Day", "Year", "Month", "Day Range", "Month Range", "Year Range", "Before Year", "After Year"], important: true),
             new DarwinCoreField(name: 'day'),
             new DarwinCoreField(name: 'decimalLatitude'),
             new DarwinCoreField(name: 'decimalLongitude'),
