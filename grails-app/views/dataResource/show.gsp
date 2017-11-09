@@ -324,18 +324,16 @@
               <div class="well">
                 <!-- Resources -->
                 <h2>User download reports</h2>
-                <ul class='fancy'>
-                    <li>
-                        <a href="${grailsApplication.config.loggerURL}/admin/userReport/download?fileName=user-report-${instance.uid}.csv&entityUids=${instance.uid}&eventId=1002">
-                            Download user report for this data resource
+                <p>
+                        <a class="btn btn-default" href="${grailsApplication.config.loggerURL}/admin/userReport/download?fileName=user-report-${instance.uid}.csv&entityUids=${instance.uid}&eventId=1002">
+                            <i class="glyphicon glyphicon-cloud-download"></i>  Download user report for this data resource
                         </a>
-                    </li>
-                    <li>
-                        <a href="${grailsApplication.config.loggerURL}/admin/userReport/downloadDetailed?fileName=user-report-detailed-${instance.uid}.csv&entityUids=${instance.uid}&eventId=1002">
-                            Download detailed user report for this data resource
+                 </p>
+                 <p>
+                        <a class="btn  btn-default" href="${grailsApplication.config.loggerURL}/admin/userReport/downloadDetailed?fileName=user-report-detailed-${instance.uid}.csv&entityUids=${instance.uid}&eventId=1002">
+                            <i class="glyphicon glyphicon-cloud-download"></i> Download detailed user report for this data resource
                         </a>
-                    </li>
-                </ul>
+                 </p>
               </div>
               </g:if>
 

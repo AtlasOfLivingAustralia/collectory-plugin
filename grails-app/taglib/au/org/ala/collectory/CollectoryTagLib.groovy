@@ -1161,7 +1161,7 @@ class CollectoryTagLib {
     }
 
     def homeLink = {
-        out << '<span class="glyphicon glyphicon-home"></span> <a class="home" href="' + createLink(uri:"/manage") + '">Home</a>'
+        out << '<span class="glyphicon glyphicon-home"></span> <a class="home" href="' + createLink(uri:"/admin") + '">Admin menu</a>'
     }
 
     def returnLink = { attrs ->

@@ -3,6 +3,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
+    <meta name="breadcrumbParent"
+          content="${createLink(action: 'map', controller: 'public')},${message(code: 'breadcrumb.dataproviders')}"
+    />
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
     <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
     <r:require modules="jquery, fancybox"/>

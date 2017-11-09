@@ -543,9 +543,6 @@ class PublicController {
 
     def downloadDataSets = {
         def filters = params.filters ? JSON.parse(params.filters) : [];
-        println 'filters'
-        filters.each { println it }
-        println 'uids: ' + params.uids
         def uids = params.uids.tokenize(',')
         def drs = DataResource.list([sort:'name'])
         /*if (filters) {
@@ -578,11 +575,32 @@ class PublicController {
         }
         def out = new StringWriter()
         def csvWriter = new CSVWriter(out)
-        csvWriter.writeNext(["name","resourceType","licenseType","licenseVersion","rights","uri","status","contact"] as String[])
+        csvWriter.writeNext([
+                "name",
+                "resourceType",
+                "licenseType",
+                "licenseVersion",
+                "rights",
+                "uri",
+                "status",
+                "contact",
+                "verified"] as String[]
+        )
+
         drs.each {
-            csvWriter.writeNext([it.name,it.resourceType,it.licenseType,it.licenseVersion,it.rights,
-                    it.buildUri(),it.status,it.inheritPrimaryPublicContact()?.contact?.buildName()] as String[])
+            csvWriter.writeNext(
+                    [it.name,
+                     it.resourceType,
+                     it.licenseType,
+                     it.licenseVersion,
+                     it.rights,
+                     it.buildUri(),
+                     it.status,
+                     it.inheritPrimaryPublicContact()?.contact?.buildName(),
+                     it.isVerified() ? "yes" : "no"
+            ] as String[])
         }
+
         csvWriter.close()
         response.addHeader("Content-Disposition", "attachment;filename=datasets.csv");
         render(contentType: 'text/csv', text:out.toString())

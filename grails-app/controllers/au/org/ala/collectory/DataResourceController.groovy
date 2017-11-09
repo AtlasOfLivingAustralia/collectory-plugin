@@ -38,10 +38,17 @@ class DataResourceController extends ProviderGroupController {
     def list = {
         if (params.message)
             flash.message = params.message
-        params.max = Math.min(params.max ? params.int('max') : 50, 100)
+        params.max = Math.min(params.max ? params.int('max') : 100, 10000)
         params.sort = params.sort ?: "name"
+        params.order = params.order ?: "asc"
         ActivityLog.log username(), isAdmin(), Action.LIST
-        [instanceList: DataResource.list(params), entityType: 'DataResource', instanceTotal: DataResource.count()]
+
+        if(params.resourceType){
+            [instanceList: DataResource.findAllWhere(['resourceType' : params.resourceType], params), entityType: 'DataResource', instanceTotal: DataResource.count()]
+
+        } else {
+            [instanceList: DataResource.list(params), entityType: 'DataResource', instanceTotal: DataResource.count()]
+        }
     }
 
     def show = {

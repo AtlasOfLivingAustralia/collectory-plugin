@@ -3,7 +3,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
-    <meta name="breadcrumbParent" content="${createLink(controller:'public', action:'dataSets', absolute:true)},${message(code: 'breadcrumb.datasets')}"/>
+    <meta name="breadcrumbParent"
+          content="${createLink(action: 'datasets', controller: 'public')},${message(code: 'breadcrumb.datasets')}"
+    />
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
     <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper, jquery_i18n, collectory"/>
     <r:script>
@@ -27,7 +29,6 @@
             });
         });
     </r:script>
-
 </head>
 <body class="nav-datasets">
 <div id="content">
@@ -45,20 +46,6 @@
             </g:if>
             <cl:valueOrOtherwise value="${instance.acronym}"><span
                     class="acronym"><g:message code="public.show.header.acronym"/>: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
-            %{--<g:if test="${instance.guid}">--}%
-                %{--<span class="lsid"><a href="#lsidText" id="lsid" class="local"--}%
-                                  %{--title="Life Science Identifier (pop-up)"><g:message code="public.lsid" /></a></span>--}%
-            %{--</g:if>--}%
-            %{--<div style="display:none; text-align: left;">--}%
-                %{--<div id="lsidText" style="text-align: left;">--}%
-                    %{--<b><a class="external_icon" href="https://wayback.archive.org/web/20100515104710/http://lsids.sourceforge.net:80/"--}%
-                          %{--target="_blank"><g:message code="public.lsidtext.link" />:</a></b>--}%
-
-                    %{--<p><cl:guid target="_blank" guid='${fieldValue(bean: instance, field: "guid")}'/></p>--}%
-
-                    %{--<p><g:message code="public.lsidtext.des" />.</p>--}%
-                %{--</div>--}%
-            %{--</div>--}%
         <g:if test="${instance.pubDescription || instance.techDescription || instance.focus}">
             <h2><g:message code="public.des" /></h2>
         </g:if>
