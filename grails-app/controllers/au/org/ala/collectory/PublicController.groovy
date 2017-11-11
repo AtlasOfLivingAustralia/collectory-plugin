@@ -577,6 +577,8 @@ class PublicController {
         def csvWriter = new CSVWriter(out)
         csvWriter.writeNext([
                 "name",
+                "dataPartner",
+                "institution",
                 "resourceType",
                 "licenseType",
                 "licenseVersion",
@@ -590,6 +592,8 @@ class PublicController {
         drs.each {
             csvWriter.writeNext(
                     [it.name,
+                     it.dataProvider?.name,
+                     it.institution?.name,
                      it.resourceType,
                      it.licenseType,
                      it.licenseVersion,
