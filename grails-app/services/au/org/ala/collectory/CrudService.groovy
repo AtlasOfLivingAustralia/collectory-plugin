@@ -369,7 +369,7 @@ class CrudService {
                 harvestingNotes = p.harvestingNotes
                 publicArchiveAvailable = p.publicArchiveAvailable
                 publicArchiveUrl = grailsApplication.config.resource.publicArchive.url.template.replaceAll('@UID@', p.uid)
-                gbifArchiveUrk = grailsApplication.config.resource.gbifExport.url.template.replaceAll('@UID@', p.uid)
+                gbifArchiveUrl = grailsApplication.config.resource.gbifExport.url.template.replaceAll('@UID@', p.uid)
                 downloadLimit = p.downloadLimit
                 gbifDataset = p.gbifDataset
                 isShareableWithGBIF = p.isShareableWithGBIF
