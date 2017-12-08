@@ -197,9 +197,17 @@
 
         <g:if test="${instance.gbifDoi}">
             <section class="public-metadata">
+                <h4><g:message code="public.citations" default="Citations" /></h4>
+                <p>
                 <a href="https://${instance.gbifDoi.replaceAll('doi:', 'doi.org/')}">
-                    <span class="label label-info">${instance.gbifDoi}</span>
+                    <span class="badge">${instance.gbifDoi}</span>
                 </a>
+                </p>
+                <g:if test="${instance.gbifRegistryKey}">
+                <p>
+                    <citations:gbifLink gbifRegistryKey="${instance.gbifRegistryKey}"/>
+                 </p>
+                </g:if>
             </section>
         </g:if>
 

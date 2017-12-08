@@ -31,3 +31,8 @@ gbifInstallationKey = "" //get this from GBIF
 // Templates for exposed archives
 resource.publicArchive.url.template = "https://biocache.ala.org.au/archives/@UID@/@UID@_ror_dwca.zip"
 resource.gbifExport.url.template = "https://biocache.ala.org.au/archives/@UID@/@UID@_ror_dwca.zip"
+
+//gbif URLs
+gbif.citations.enabled=true
+gbif.citation.lookup="https://www.gbif.org/api/resource/search?contentType=literature&gbifDatasetKey="
+gbif.citation.search="https://www.gbif.org/resource/search?contentType=literature&gbifDatasetKey="

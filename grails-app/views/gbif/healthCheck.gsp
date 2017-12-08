@@ -7,6 +7,8 @@
     <title>GBIF Syncing Healthcheck</title>
 </head>
 <body>
+
+<g:set var="org" value="${grailsApplication.config.skin.orgNameLong}"/>
 <div class="body content">
     <h1>GBIF Syncing Healthcheck</h1>
     <div class="pull-right">
@@ -20,16 +22,16 @@
         </cl:ifGranted>
     </div>
 
-    <p class="lead">Some statistics on data resources and our ability to provision these to GBIF</p>
+    <p class="lead">Some statistics on data resources and ${org} ability to provision these to GBIF</p>
     <table class="table">
         <tr>
-            <td>Records in ALA</td>
-            <td>Records indexed by ALA today</td>
+            <td>Records in ${org}</td>
+            <td>Records indexed by ${org} today</td>
             <td>${indexedRecords}</td>
         </tr>
         <tr>
             <td>Records shareable</td>
-            <td>Records shareable by ALA today (no licencing issues, has an associated organisation & marked as shareable)</td>
+            <td>Records shareable by ${org} today (no licencing issues, has an associated organisation & marked as shareable)</td>
             <td>${recordsShareable}
                 <g:if test="${indexedRecords}">
                     (${Math.floor(recordsShareable/indexedRecords * 100)}%)
@@ -38,7 +40,7 @@
         </tr>
         <tr>
             <td>Data sets with data</td>
-            <td>Data resources with data indexed by ALA today</td>
+            <td>Data resources with data indexed by ${org} today</td>
             <td>${dataResourcesWithData.size()}</td>
         </tr>
         <tr>
@@ -67,11 +69,9 @@
             <td>${notShareableNoOwner.size()}</td>
         </tr>
         <tr>
-
-                <td><g:link controller="gbif" action="healthCheckLinked">Linked to institution / data provider </g:link></td>
-                <td>Data resources that are associated with institution/data partner</td>
-                <td>${linkedToInstitution.size() + linkedToDataProvider.size()}</td>
-
+            <td><g:link controller="gbif" action="healthCheckLinked">Linked to institution / data provider </g:link></td>
+            <td>Data resources that are associated with institution/data partner</td>
+            <td>${linkedToInstitution.size() + linkedToDataProvider.size()}</td>
         </tr>
         <tr>
             <td>Linked to institution</td>
