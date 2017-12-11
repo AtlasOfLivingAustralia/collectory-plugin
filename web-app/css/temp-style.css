@@ -333,3 +333,17 @@ ul.facets {
 }
 
 .config-warning { color: red; font-weight: bold; }
+
+#totalRecordCountLinkHdr { margin-bottom: 20px;}
+
+.institutionImage {
+    max-width:300px;
+    -moz-border-radius: 0 !important; /* FF1+ */
+    -webkit-border-radius: 0 !important; /* Saf3+, Chrome */
+    border-radius: 0 !important; /* Opera 10.5, IE 9 */
+    -icab-border-radius: 0;
+    -khtml-border-radius: 0;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    max-height:250px;
+}

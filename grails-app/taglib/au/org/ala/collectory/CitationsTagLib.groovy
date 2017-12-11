@@ -15,7 +15,7 @@ class CitationsTagLib {
                 def js = new JsonSlurper()
                 def data = js.parse(new URL(gbifUrl))
                 if (data.count) {
-                    out << """<a class="btn btn-default " href="${grailsApplication.config.gbif.citation.search}${attrs.gbifRegistryKey}"><span class="glyphicon glyphicon glyphicon-pencil"> </span> ${data.count} ${g.message(code:"citations.available", default:"citations for these data")}</a>"""
+                    out << """<a class="btn btn-default" href="${grailsApplication.config.gbif.citation.search}${attrs.gbifRegistryKey}"><span class="glyphicon glyphicon glyphicon-pencil"> </span> ${data.count} ${g.message(code:"citations.available", default:"citations for these data")}</a>"""
                 }
             }
         } catch (Exception e){

@@ -49,6 +49,7 @@ div.center {
     -icab-border-radius: 0;
     -khtml-border-radius: 0;
     padding-bottom: 5px;
+    margin-bottom: 15px;
     max-height:250px;
 }
 
@@ -593,3 +594,4 @@ table.textChanges {
 }
 
 table.usageByReasonBreakdown { border-bottom:none; }
+

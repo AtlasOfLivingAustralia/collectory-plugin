@@ -1,9 +1,11 @@
 <%@ page import="au.org.ala.collectory.CollectoryTagLib" %>
 <section class="public-metadata">
     <g:set var="facet" value="${new CollectoryTagLib().getFacetForEntity(instance)}"/>
+
+    <h3 id="totalRecordCountLinkHdr"><a id="totalRecordCountLink" href="${grailsApplication.config.biocacheUiURL}/occurrences/search?q=${facet}:${instance.uid}"></a></h3>
+
     <h4><g:message code="dataAccess.title"/></h4>
     <div class="dataAccess btn-group-vertical">
-        <h5><a id="totalRecordCountLink" href="${grailsApplication.config.biocacheUiURL}/occurrences/search?q=${facet}:${instance.uid}"></a></h5>
 
         <a href="${grailsApplication.config.biocacheUiURL}/occurrences/search?q=${facet}:${instance.uid}" class="btn btn-default"><i class="glyphicon glyphicon-list"></i> <g:message code="dataAccess.view.records"/></a>
         %{--<a href="${grailsApplication.config.biocacheServicesUrl}/occurrences/download?q=${facet}:${instance.uid}" class="btn btn-default"><i class="glyphicon glyphicon-download"></i> Download records</a>--}%
