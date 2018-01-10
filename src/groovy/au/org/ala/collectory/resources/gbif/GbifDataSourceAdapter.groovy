@@ -36,7 +36,6 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
     static final String OCCURRENCE_DOWNLOAD_REQUEST = "occurrence/download/request"
     static final MessageFormat DATASET_RECORD_COUNT = new MessageFormat("occurrence/count?datasetKey={0}")
     static final MessageFormat DOWNLOAD_STATUS = new MessageFormat("occurrence/download/{0}")
-    static final MessageFormat OCCURRENCE_DOWNLOAD = new MessageFormat("occurrence/download/request/{0}.zip")
     static final DateFormat TIMESTAMP_FORMAT= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 
     static LICENSE_MAP = [
@@ -70,7 +69,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
             "UNKNOWN"   : TaskPhase.ERROR
     ]
 
-    int pageSize = 20
+    int pageSize = 500
 
     GbifDataSourceAdapter(DataSourceConfiguration configuration) {
         super(configuration)
@@ -108,27 +107,37 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
         return DATASET_TYPES
     }
 
-
     @Override
     List<Map> datasets() throws ExternalResourceException {
         int offset = 0
         def keys = []
         def datasets = []
         boolean atEnd = false
-         while (!atEnd) {
-            JSONObject json = getJSONWS(DATASET_SEARCH.format([configuration.country, configuration.recordType, offset, pageSize].toArray()))
+        Integer pageSizeToUse = pageSize
+        if(configuration.maxNoOfDatasets < pageSize){
+            pageSizeToUse = configuration.maxNoOfDatasets
+        } else {
+            pageSizeToUse = pageSize
+        }
+
+        while (!atEnd) {
+            getLOGGER().info("Requesting dataset lists configuration.country: ${configuration.country} offset: ${offset}, pageSize: ${pageSizeToUse}")
+            JSONObject json = getJSONWS(DATASET_SEARCH.format([configuration.country, configuration.recordType, offset.toString(), pageSizeToUse.toString()].toArray()))
             if (json?.results) {
-                json.results.each { keys << it.key }
-                offset += json.results.size()
+                json.results.each {
+                    keys << it.key
+                    datasets << translate(it)
+                }
             }
-            atEnd = !json || !json.results || json.endOfRecords
-        }
-        keys.each {
-            def dr = getDataset(it)
-            if (dr) {
-                datasets << dr
+            offset += pageSize
+            getLOGGER().info("Results: " + json.results.size())
+            if(json.results.size() > 0){
+                getLOGGER().info("Results: " + json.results[0].title)
             }
+            atEnd = !json || !json.results || json.results.size() == 0 || json.endOfRecords.toBoolean() || offset > configuration.maxNoOfDatasets
         }
+
+        getLOGGER().info("Total datasets retrieved: " + datasets.size())
         return datasets
     }
 
@@ -374,7 +383,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
      * @return A JSON response
      */
     def getJSONWS(String path) throws ExternalResourceException {
-        def http = new HTTPBuilder(new URL(configuration.endpoint, path))
+        HTTPBuilder http = new HTTPBuilder(new URL(configuration.endpoint, path))
         if (configuration.username) {
             http.auth.basic(configuration.username, configuration.password)
         }

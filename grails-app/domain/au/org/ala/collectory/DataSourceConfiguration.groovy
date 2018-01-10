@@ -32,6 +32,7 @@ class DataSourceConfiguration {
     Map<String, String> defaultDatasetValues
     List<String> keyTerms
     List<ExternalResourceBean> resources
+    Integer maxNoOfDatasets
 
     /**
      * Create an adaptor source from this configutation

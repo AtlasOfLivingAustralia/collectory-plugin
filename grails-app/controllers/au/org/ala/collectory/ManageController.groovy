@@ -65,13 +65,16 @@ class ManageController {
         def dataResources = DataResource.all.findAll({ dr -> dr.resourceType == 'records' }).sort({ it.name })
         def resources = externalDataService.searchForDatasets(configuration)
         configuration.resources = resources
-        def dataProvider = DataProvider.findByUid(configuration.dataProviderUid)
+        def dataProvider = null
+        if (configuration.dataProviderUid){
+            dataProvider = DataProvider.findByUid(configuration.dataProviderUid)
+        }
         render(view: 'externalLoadReview',
                model: [
                        loadGuid: UUID.randomUUID().toString(),
                        dataResources: dataResources,
                        dataProvider: dataProvider,
-                       configuration: configuration,
+                       configuration: configuration
                ]
         )
     }

@@ -8,7 +8,15 @@
     <r:require module="datatables"/>
 </head>
 <body>
-<h1><g:message code="manage.extloadr.title01" args="${[ configuration.name, dataProvider?.name ?: 'none' ]}"/></h1>
+
+<h1>
+    <g:if test="${dataProvider?.name}">
+        <g:message code="manage.extloadr.title01" args="${[ configuration.name, dataProvider?.name ?: 'none' ]}"/>
+    </g:if>
+    <g:else>
+        <g:message code="manage.extloadr.title01.noprovider" />
+    </g:else>
+</h1>
 <div class="btn-toolbar">
     <ul class="btn-group">
         <li class="btn"><cl:homeLink/></li>
@@ -30,7 +38,7 @@
                     <thead>
                         <tr class="header">
                             <th><g:message code="manage.extloadr.label01"/></th>
-                            <th><g:message code="manage.extloadr.label02"/></th>
+                            %{--<th><g:message code="manage.extloadr.label02"/></th>--}%
                             <th><g:message code="manage.extloadr.label03"/></th>
                             <th><g:message code="manage.extloadr.label04"/></th>
                             <th><g:message code="manage.extloadr.label05"/></th>
@@ -47,9 +55,10 @@
                             <g:hiddenField id="resources-${rs}-uid" name="resources[${rs}].uid" value="${res.uid}"/>
                             <g:hiddenField name="resources[${rs}].guid" value="${res.guid}"/>
                             <g:hiddenField name="resources[${rs}].source" value="${res.source}"/>
-                            <g:textField class="resource-name" name="resources[${rs}].name" value="${res.name}"/>
+                            <g:textField class="resource-name col-xs-4" name="resources[${rs}].name" value="${res.name}" />
+                            <br/>
+                            <small><a href="${res.source}"><g:fieldValue field="guid" bean="${res}"/></a></small>
                         </td>
-                        <td><a href="${res.source}"><g:fieldValue field="guid" bean="${res}"/></a></td>
                         <td><span title="<g:message code="manage.extstatus.${res.status}.detail"/>"><g:message code="manage.extstatus.${res.status}"/></span></td>
                         <td class="resource-mapping"><span id="existing-${rs}"><g:if test="${res.uid}"><g:fieldValue field="uid" bean="${res}"/> - <g:fieldValue field="name" bean="${res}"/></g:if></span><span class="btn btn-default btn-xs" onclick="existingDialog('#existing-${rs}', '#resources-${rs}-uid'); return false"><g:message code="manage.extloadr.button01" default="..."/></span> </td>
                         <td><g:formatDate type="datetime" date="${res.sourceUpdated}"/><g:if test="${res.existingChecked}">&nbsp;(<g:formatDate type="datetime" date="${res.existingChecked}"/>)</g:if></td>

@@ -32,31 +32,12 @@ class ExternalDataService {
     ]
 
     def CONCURRENT_LOADS = 3
-    def DOWNLOAD_LIMIT = 50
 
     def pool = Executors.newFixedThreadPool(CONCURRENT_LOADS)
     def loadMap = [:]
 
-    def getPublishingCountriesMap(){
-        def js = new JsonSlurper()
-        def jsonText = new URL(grailsApplication.config.gbifApiUrl + "/node/country").text
-        def isoCodeList = js.parseText(jsonText)
-        //intersect with iso names
-        def isoMap = [:]
-        this.class.classLoader.getResourceAsStream("isoCodes.csv").readLines().each{
-            def codeAndName = it.split("\t")
-            isoMap.put(codeAndName[0], codeAndName[1])
-        }
-        def pubMap = [:]
-        isoCodeList.each {
-            def name = isoMap.get(it)
-            pubMap.put(it, name)
-        }
-        pubMap
-    }
-
     /**
-     * Returns the status information for a specific losd
+     * Returns the status information for a specific load
      *
      * @param guid The load guid
      *
@@ -167,7 +148,7 @@ class ExternalDataService {
                     throw new ExternalResourceException("Can't create resource", "manage.note.note01", resource.name, resource.guid)
                 }
                 if (dr.hasErrors()) {
-                    throw new ExternalResourceException("Created resoruce has errors", "manage.note.note02", resource.name, dr.errors)
+                    throw new ExternalResourceException("Created resource has errors", "manage.note.note02", resource.name, dr.errors)
                 }
                 dr.addExternalIdentifier(resource.guid, adaptor.source, resource.source)
                 resource.uid = dr.uid

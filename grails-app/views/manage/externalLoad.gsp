@@ -16,20 +16,7 @@
     <div id="baseForm" class="col-md-8">
         <g:form action="searchForResources" controller="manage">
             <g:hiddenField name="configuration.guid" value="${configuration.guid}"/>
-            <div class="form-group">
-                <label for="name"><g:message code="manage.extload.label01" /><cl:helpText code="manage.extload.label01.help"/></label>
-                <g:field name="name" class="form-control" type="text" value="${configuration.name}"/>
-            </div>
-            <div class="form-group">
-                <label for="description"><g:message code="manage.extload.label02" /><cl:helpText code="manage.extload.label02.help"/></label>
-                <g:field name="description" class="form-control" type="text" size="64" value="${configuration.description}"/>
-            </div>
-            <div class="form-group">
-                <label for="dataProviderUid"><g:message code="manage.extload.label03" /><cl:helpText code="manage.extload.label03.help"/></label>
-                <g:select name="dataProviderUid" class="form-control" from="${dataProviders}" optionKey="uid" optionValue="name" value="${configuration.dataProviderUid}"/>
 
-
-            </div>
             <div class="form-group">
                 <label for="adaptorString"><g:message code="manage.extload.label04" /><cl:helpText code="manage.extload.label04.help"/></label>
                 <g:select name="adaptorString" class="form-control" from="${adaptors}" optionKey="adaptorString" optionValue="name" value="${configuration.adaptorString}"/>
@@ -47,12 +34,35 @@
                 <g:select name="recordType" class="form-control" from="${datasetTypeMap.entrySet()}" optionKey="key" optionValue="value" values="${configuration.recordType}"/>
             </div>
             <div class="form-group">
+                <label for="name"><g:message code="manage.extload.label01" /><cl:helpText code="manage.extload.label01.help"/></label>
+                <g:field name="name" class="form-control" type="text" value="${configuration.name}"/>
+            </div>
+            <div class="form-group">
+                <label for="description"><g:message code="manage.extload.label02" /><cl:helpText code="manage.extload.label02.help"/></label>
+                <g:field name="description" class="form-control" type="text" size="64" value="${configuration.description}"/>
+            </div>
+            <div class="form-group">
+                <label for="dataProviderUid"><g:message code="manage.extload.label03" /><cl:helpText code="manage.extload.label03.help"/></label>
+                <g:select name="dataProviderUid"
+                          class="form-control"
+                          from="${dataProviders}"
+                          optionKey="uid"
+                          optionValue="name"
+                          value="${configuration.dataProviderUid}"
+                          noSelection="${['':'Optionally select a provider...']}"
+                />
+            </div>
+            <div class="form-group">
+                <label for="maxNoOfDatasets"><g:message code="manage.extload.label10" /><cl:helpText code="manage.extload.label10.help"/></label>
+                <g:field type="text" name="maxNoOfDatasets" class="form-control" value="10" />
+            </div>
+            <div class="form-group">
                 <label for="username"><g:message code="manage.extload.label08" /><cl:helpText code="manage.extload.label08.help"/></label>
                 <g:field type="text" name="username" class="form-control" value="${configuration.username}" />
             </div>
             <div class="form-group">
                 <label for="password"><g:message code="manage.extload.label09" /><cl:helpText code="manage.extload.label09.help"/></label>
-                <g:field type="text" name="password" class="form-control" value="${configuration.password}" />
+                <g:field type="password" name="password" class="form-control" value="${configuration.password}" />
             </div>
             <div>
                 <span class="button"><input type="submit" name="performReview" value="Review" class="save btn btn-default"></span>
