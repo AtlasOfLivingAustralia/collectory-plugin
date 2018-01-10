@@ -29,6 +29,8 @@
             });
         });
     </r:script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">google.load('visualization', '1.0', {'packages':['corechart']});</script>
 </head>
 <body class="nav-datasets">
 <div id="content">
@@ -331,9 +333,9 @@
     </div>
 </div>
 </div>
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript">google.load('visualization', '1.0', {'packages':['corechart']});</script>
-<script type="text/javascript">
+
+
+<r:script type="text/javascript">
      var CHARTS_CONFIG = {
          biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
          biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
@@ -463,6 +465,6 @@
     google.load("visualization", "1.0", { packages:["corechart"] });
     google.setOnLoadCallback(onLoadCallback);
 
-</script>
+</r:script>
 </body>
 </html>

@@ -106,7 +106,7 @@
             </div><!--close column-one-->
             <div class="col-md-4">
 
-        <!-- logo -->
+                <!-- logo -->
 
                 <g:if test="${fieldValue(bean: instance, field: 'logoRef') && fieldValue(bean: instance, field: 'logoRef.file')}">
                     <section class="public-metadata">
@@ -115,7 +115,12 @@
                     </section>
                 </g:if>
 
-                <g:if test="${fieldValue(bean: instance, field: 'imageRef') && fieldValue(bean: instance, field: 'imageRef.file')}">
+                <div id="dataAccessWrapper" style="display:none;">
+                    <g:render template="dataAccess" model="[instance:instance]"/>
+                </div>
+
+
+            <g:if test="${fieldValue(bean: instance, field: 'imageRef') && fieldValue(bean: instance, field: 'imageRef.file')}">
                     <section class="public-metadata">
                         <img class="entityLogo" alt="${fieldValue(bean: instance, field: "imageRef.file")}"
                              src="${resource(absolute: "true", dir: "data/" + instance.urlForm() + "/", file: instance.imageRef.file)}"/>
@@ -127,6 +132,11 @@
                                 class="caption">${fieldValue(bean: instance, field: "imageRef.copyright")}</p></cl:valueOrOtherwise>
                     </section>
                 </g:if>
+
+
+            <div id="dataAccessWrapper" style="display:none;">
+                <g:render template="dataAccess" model="[instance:instance]"/>
+            </div>
 
             <section class="public-metadata">
                 <h4><g:message code="public.location" /></h4>
@@ -200,6 +210,45 @@
      *
      \************************************************************/
     function onLoadCallback() {
+
+        var CHARTS_CONFIG = {
+            biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
+            biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
+            collectionsUrl: "${grailsApplication.config.grails.serverURL}"
+        };
+
+        // records
+
+        var queryUrl = CHARTS_CONFIG.biocacheServicesUrl + "/occurrences/search.json?pageSize=0&q=data_provider_uid:${instance.uid}";
+
+        $.ajax({
+            url: queryUrl,
+            dataType: 'jsonp',
+            timeout: 30000,
+            complete: function (jqXHR, textStatus) {
+                if (textStatus == 'timeout') {
+                    noData();
+                    alert('Sorry - the request was taking too long so it has been cancelled.');
+                }
+                if (textStatus == 'error') {
+                    noData();
+                    alert('Sorry - the records breakdowns are not available due to an error.');
+                }
+            },
+            success: function (data) {
+                // check for errors
+                if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
+                    noData();
+                } else {
+                    setNumbers(data.totalRecords);
+                    if (data.totalRecords > 0) {
+                        $('#dataAccessWrapper').css({display: 'block'});
+                        $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + " ${g.message(code: 'public.show.rt.des03')}");
+                    }
+                }
+            }
+        });
+
         // stats
         if(loadLoggerStats) {
             loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}", "${instance.name}", "1002");
