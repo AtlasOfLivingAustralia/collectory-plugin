@@ -257,7 +257,7 @@ class DataController {
 
         if (file) {
             log.debug("$root/$path, sending file: $file.absolutePath")
-            response.outputStream << file.bytes
+            file.withInputStream { response.outputStream << it }
         } else {
             log.debug("$root/$path, file not found - dir: $basePath, file: $path")
             response.status = 404
@@ -274,7 +274,7 @@ class DataController {
             if(fullFileName.endsWith(".json")){
                 response.setContentType("application/json")
             }
-            response.outputStream << file.bytes
+            file.withInputStream { response.outputStream << it }
         } else {
             response.status = 404
         }
@@ -292,7 +292,7 @@ class DataController {
             //set the content type
             response.setContentType("application/octet-stream")
             response.setHeader("Content-disposition", "attachment;filename=" + file.getName())
-            response.outputStream << file.bytes
+            file.withInputStream { response.outputStream << it }
         } else {
             response.status = 404
         }
