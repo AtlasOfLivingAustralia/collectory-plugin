@@ -7,6 +7,7 @@
    <meta name="app.version" content="${g.meta(name:'app.version')}"/>
    <meta name="app.build" content="${g.meta(name:'app.build')}"/>
    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+   <g:set var="fluidLayout" value="${pageProperty(name:'meta.fluidLayout')?:grailsApplication.config.skin?.fluidLayout}"/>
    <g:if test="${instance}">
         <meta name="description" content="${orgNameLong} description of the ${instance?.name}. ${instance?.makeAbstract(200)}"/>
    </g:if>
@@ -42,8 +43,8 @@
 <body class="${pageProperty(name:'body.class')?:'nav-collections'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">
 
     <div class="navbar navbar-inverse navbar-static-top">
-        <div class="navbar-inner ">
-            <div class="container">
+        <div class="navbar-inner">
+            <div class="${fluidLayout ? 'container-fluid' : 'container'}">
                 <button type="button" class="btn navbar-btn" data-toggle="collapse" data-target=".nav-collapse">
                     <span class="glyphicon-bar"></span>
                     <span class="glyphicon-bar"></span>
@@ -64,7 +65,7 @@
         </div><!--/.navbar-inner -->
     </div><!--/.navbar -->
 
-    <div class="container" id="main-content">
+    <div class="${fluidLayout ? 'container-fluid' : 'container'} testing,,,,," id="main-content">
         <g:layoutBody />
     </div><!--/.container-->
 
