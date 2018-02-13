@@ -257,15 +257,6 @@ class CollectoryTagLib {
      */
     def h1 = { attrs ->
         def style = ""
-        if (attrs.value?.size() > 70) {
-            style = ' style="font-size:1.6em;"'
-        } else
-        if (attrs.value?.size() > 58) {
-            style = ' style="font-size:1.7em;"'
-        } else
-        if (attrs.value?.size() > 50) {
-            style = ' style="font-size:1.8em;"'
-        }
         def editLink = ""
         if (attrs.edit) {
             editLink = change(id: attrs.edit)

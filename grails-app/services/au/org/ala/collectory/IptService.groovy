@@ -137,9 +137,13 @@ class IptService {
                 if (create) {
                     update.uid = idGeneratorService.getNextDataResourceId()
                     update.userLastModified = username
-                    update.save(flush: true)
-                    //update.errors.each { println it.toString() }
-                    ActivityLog.log username, admin, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
+                    try {
+                        update.save(flush: true)
+                        //update.errors.each { println it.toString() }
+                        ActivityLog.log username, admin, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
+                    } catch (Exception e){
+                        log.error("Unable to persist resource " + update)
+                    }
                 }
                 merged << update
             }
@@ -174,6 +178,8 @@ class IptService {
         return items.collect { item -> this.createDataResource(provider, item, keyName) }
     }
 
+
+
     /**
      * Construct from an RSS item
      *
@@ -190,6 +196,7 @@ class IptService {
 
         resource.dataProvider = provider
         rssFields.each { name, accessor -> resource.setProperty(name, accessor(rssItem))}
+
         resource.connectionParameters =  dwca == null || dwca.isEmpty() ? null : "{ \"protocol\": \"DwCA\", \"url\": \"${dwca}\", \"automation\": true, \"termsForUniqueKey\": [ \"${keyName}\" ] }";
         if (eml != null)
             retrieveEml(resource, eml)
@@ -212,6 +219,28 @@ class IptService {
             def val = accessor(eml)
             if (val != null)
                 resource.setProperty(name, val)
+        }
+
+        eml.dataset.alternateIdentifier?.each {
+            def id = it.text()
+            if(id  && id.startsWith("doi")){
+                resource.gbifDoi = id
+            }
+        }
+
+        //attempt to match the licence
+        def licenceUrl = eml.dataset.intellectualRights?.para?.ulink?.@url.text()
+        def licence = Licence.findByUrl(licenceUrl)
+        if(licence == null){
+            if(licenceUrl.contains("http://")){
+                licence = Licence.findByUrl(licenceUrl.replaceAll("http://", "https://"))
+            } else {
+                licence = Licence.findByUrl(licenceUrl.replaceAll("https://", "http://"))
+            }
+        }
+        if(licence){
+            resource.licenseType = licence.acronym
+            resource.licenseVersion = licence.licenceVersion
         }
     }
 }
