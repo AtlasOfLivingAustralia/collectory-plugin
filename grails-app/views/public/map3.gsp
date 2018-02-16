@@ -14,7 +14,7 @@
             <div class="message">${flash.message}</div>
           </g:if>
           <div class="hrgroup">
-            <h1>${raw(grailsApplication.config.regionName)} <g:message code="public.map3.header.title" args="[raw(grailsApplication.config.regionName)]"/></h1>
+            <h1><g:message code="public.map3.header.title" args="[raw(grailsApplication.config.regionName)]"/></h1>
             <p><g:message code="public.map3.header.des01" /> ${grailsApplication.config.projectNameShort} <g:message code="public.map3.header.des02" args="[raw(grailsApplication.config.regionName)]"/>.</p>
           </div><!--close hrgroup-->
         </div><!--close section-->
