@@ -5,7 +5,7 @@
     <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
     <title><cl:pageTitle><g:fieldValue bean="${instance}" field="name"/></cl:pageTitle></title>
     <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-    <r:require modules="jquery, fancybox, jquery_jsonp, charts"/>
+    <r:require modules="jquery, fancybox, jquery_jsonp, charts_plugin"/>
     <r:script type="text/javascript">
       biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
       biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
@@ -31,9 +31,7 @@
 
 <body>
 <div id="content">
-    <div id="header" class="collectory">
-        <cl:pageOptionsPopup instance="${instance}"/>
-        <div class="row">
+    <div class="row">
             <div class="col-md-8">
                 <cl:h1 value="${instance.name}"/>
                 <g:set var="parents" value="${instance.listParents()}"/>
@@ -55,20 +53,7 @@
                         </div>
                     </div>
                 </g:if>
-            </div>
 
-            <div class="col-md-4">
-                <g:if test="${fieldValue(bean: instance, field: 'logoRef') && fieldValue(bean: instance, field: 'logoRef.file')}">
-                    <section class="public-metadata">
-                    <img class="institutionImage"
-                         src='${resource(absolute: "true", dir: "data/institution/", file: fieldValue(bean: instance, field: 'logoRef.file'))}'/>
-                    </section>
-                </g:if>
-            </div>
-        </div>
-    </div><!--close header-->
-    <div class="row">
-            <div class="col-md-8">
                 <g:if test="${instance.pubDescription}">
                     <h2><g:message code="public.des" /></h2>
                     <cl:formattedText>${fieldValue(bean: instance, field: "pubDescription")}</cl:formattedText>
@@ -109,6 +94,14 @@
 
             </div><!--close section-->
             <section class="col-md-4">
+
+                <g:if test="${fieldValue(bean: instance, field: 'logoRef') && fieldValue(bean: instance, field: 'logoRef.file')}">
+                    <section class="public-metadata">
+                    <img class="institutionImage"
+                         src='${resource(absolute: "true", dir: "data/institution/", file: fieldValue(bean: instance, field: 'logoRef.file'))}'/>
+                    </section>
+                </g:if>
+
                 <g:if test="${fieldValue(bean: instance, field: 'imageRef') && fieldValue(bean: instance, field: 'imageRef.file')}">
                     <section class="public-metadata">
                         <img alt="${fieldValue(bean: instance, field: "imageRef.file")}"
@@ -193,94 +186,6 @@
     </div>
         </div><!--close content-->
 </div>
-<r:script type="text/javascript">
-      // configure the charts
-      var facetChartOptions = {
-          /* base url of the collectory */
-          collectionsUrl: "${grailsApplication.config.grails.serverURL}",
-          /* base url of the biocache ws*/
-          biocacheServicesUrl: biocacheServicesUrl,
-          /* base url of the biocache webapp*/
-          biocacheWebappUrl: biocacheWebappUrl,
-          /* a uid or list of uids to chart - either this or query must be present
-            (unless the facet data is passed in directly AND clickThru is set to false) */
-          instanceUid: "${instance.descendantUids().join(',')}",
-          /* the list of charts to be drawn (these are specified in the one call because a single request can get the data for all of them) */
-          charts: ${raw(grailsApplication.config.institutionChartsJSON)}
-      }
-      var taxonomyChartOptions = {
-          /* base url of the collectory */
-          collectionsUrl: "${grailsApplication.config.grails.serverURL}",
-          /* base url of the biocache ws*/
-          biocacheServicesUrl: biocacheServicesUrl,
-          /* base url of the biocache webapp*/
-          biocacheWebappUrl: biocacheWebappUrl,
-          /* a uid or list of uids to chart - either this or query must be present */
-          instanceUid: "${instance.descendantUids().join(',')}",
-          /* threshold value to use for automagic rank selection - defaults to 55 */
-          threshold: 55,
-          rank: "${instance.startingRankHint()}"
-      }
-
-    /************************************************************\
-    * Actions when page is loaded
-    \************************************************************/
-    function onLoadCallback() {
-
-      // stats
-      if(loadLoggerStats){
-        loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "1002");
-      }
-
-      var facetsParam = "";
-
-      $.each(facetChartOptions.charts, function( index, value ) {
-          facetsParam += "&facets=" + value;
-      });
-
-      var queryUrl = urlConcat(biocacheServicesUrl, "/occurrences/search.json?pageSize=0&q=") + buildQueryString("${instance.descendantUids().join(',')}") + facetsParam;
-
-      // records
-      $.ajax({
-        url: queryUrl,
-        dataType: 'jsonp',
-        timeout: 20000,
-        complete: function(jqXHR, textStatus) {
-            if (textStatus == 'timeout') {
-                noData();
-                alert('Sorry - the request was taking too long so it has been cancelled.');
-            }
-            if (textStatus == 'error') {
-                noData();
-                alert('Sorry - the records breakdowns are not available due to an error.');
-            }
-        },
-        success: function(data) {
-            // check for errors
-            if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
-                noData();
-            } else {
-                setNumbers(data.totalRecords);
-                // draw the charts
-                drawFacetCharts(data, facetChartOptions);
-                if(data.totalRecords > 0){
-                    $('#dataAccessWrapper').css({display:'block'});
-                    $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + " ${g.message(code: 'public.show.rt.des03')}");
-                }
-            }
-        }
-      });
-
-      // taxon chart
-      loadTaxonomyChart(taxonomyChartOptions);
-    }
-    /************************************************************\
-    *
-    \************************************************************/
-
-    google.load("visualization", "1", {packages:["corechart"]});
-    google.setOnLoadCallback(onLoadCallback);
-
-</r:script>
+<g:render template="charts" model="[facet:'institution_uid', instance: instance]" />
 </body>
 </html>

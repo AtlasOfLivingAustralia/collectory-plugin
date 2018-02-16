@@ -8,7 +8,8 @@
     />
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
     <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-    <r:require modules="jquery, fancybox"/>
+    <r:require modules="jquery, fancybox, jquery_jsonp, jquery_ui_custom, jstree, taxonTree, datadumper, jquery_i18n, collectory, charts_plugin"/>
+
     <script type="text/javascript">
         // define biocache server
         biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
@@ -93,13 +94,19 @@
                 <g:if test="${hasRecords == 'true'}">
                     <div id='usage-stats'>
                         <h2><g:message code="public.sdp.usagestats.label" /></h2>
-
                         <div id='usage'>
                             <p><g:message code="public.usage.des" />...</p>
                         </div>
+
+
+
+
+
                     </div>
                 </g:if>
 
+
+                <div id="charts"> </div>
                 <cl:lastUpdated date="${instance.lastUpdated}"/>
 
             </div><!--close section-->
@@ -205,63 +212,17 @@
     </div>
 </div><!--close content-->
 
-<script type="text/javascript">
-    /************************************************************\
-     *
-     \************************************************************/
-    function onLoadCallback() {
 
-        var CHARTS_CONFIG = {
-            biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
-            biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
-            collectionsUrl: "${grailsApplication.config.grails.serverURL}"
-        };
 
-        // records
+<r:script type="text/javascript">
+  // stats
+  if(loadLoggerStats){
+      loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "1002");
+  }
+</r:script>
 
-        var queryUrl = CHARTS_CONFIG.biocacheServicesUrl + "/occurrences/search.json?pageSize=0&q=data_provider_uid:${instance.uid}";
-
-        $.ajax({
-            url: queryUrl,
-            dataType: 'jsonp',
-            timeout: 30000,
-            complete: function (jqXHR, textStatus) {
-                if (textStatus == 'timeout') {
-                    noData();
-                    alert('Sorry - the request was taking too long so it has been cancelled.');
-                }
-                if (textStatus == 'error') {
-                    noData();
-                    alert('Sorry - the records breakdowns are not available due to an error.');
-                }
-            },
-            success: function (data) {
-                // check for errors
-                if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
-                    noData();
-                } else {
-                    setNumbers(data.totalRecords);
-                    if (data.totalRecords > 0) {
-                        $('#dataAccessWrapper').css({display: 'block'});
-                        $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + " ${g.message(code: 'public.show.rt.des03')}");
-                    }
-                }
-            }
-        });
-
-        // stats
-        if(loadLoggerStats) {
-            loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}", "${instance.name}", "1002");
-        }
-    }
-
-    /************************************************************\
-     *
-     \************************************************************/
-
-    google.load("visualization", "1", {packages: ["corechart"]});
-    google.setOnLoadCallback(onLoadCallback);
-</script>
+<g:render template="taxonTree" model="[facet:'data_provider_uid', instance: instance]" />
+<g:render template="charts" model="[facet:'data_provider_uid', instance: instance]" />
 
 </body>
 </html>

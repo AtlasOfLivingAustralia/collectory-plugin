@@ -7,7 +7,7 @@
           content="${createLink(action: 'datasets', controller: 'public')},${message(code: 'breadcrumb.datasets')}"
     />
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
-    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper, jquery_i18n, collectory"/>
+    <r:require modules="jquery, fancybox, jquery_jsonp, jquery_ui_custom, jstree, taxonTree, datadumper, jquery_i18n, collectory, charts_plugin"/>
     <r:script>
         // define biocache server
         bieUrl = "${grailsApplication.config.bie.baseURL}";
@@ -334,137 +334,17 @@
 </div>
 </div>
 
-
 <r:script type="text/javascript">
-     var CHARTS_CONFIG = {
-         biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
-         biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
-         collectionsUrl: "${grailsApplication.config.grails.serverURL}"
-     };
-
-    // configure the charts
-      var facetChartOptions = {
-          /* base url of the collectory */
-          collectionsUrl: CHARTS_CONFIG.collectionsUrl,
-          /* base url of the biocache ws*/
-          biocacheServicesUrl: CHARTS_CONFIG.biocacheServicesUrl,
-          /* base url of the biocache webapp*/
-          biocacheWebappUrl: CHARTS_CONFIG.biocacheWebappUrl,
-          /* a uid or list of uids to chart - either this or query must be present */
-          instanceUid: "${instance.uid}",
-          /* the list of charts to be drawn (these are specified in the one call because a single request can get the data for all of them) */
-          charts: ${raw(grailsApplication.config.dataResourceChartsJSON)}
+  // stats
+  if(loadLoggerStats){
+      if (${instance.resourceType == 'website'}) {
+          loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "2000");
+      } else if (${instance.resourceType == 'records'}) {
+          loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "1002");
       }
-      var taxonomyChartOptions = {
-          /* base url of the collectory */
-          collectionsUrl: CHARTS_CONFIG.collectionsUrl,
-          /* base url of the biocache ws*/
-          biocacheServicesUrl: CHARTS_CONFIG.biocacheServicesUrl,
-          /* base url of the biocache webapp*/
-          biocacheWebappUrl: CHARTS_CONFIG.biocacheWebappUrl,
-          /* support drill down into chart - default is false */
-          drillDown: true,
-          /* a uid or list of uids to chart - either this or query must be present */
-          instanceUid: "${instance.uid}",
-          //query: "notomys",
-          //rank: "kingdom",
-          /* threshold value to use for automagic rank selection - defaults to 55 */
-          threshold: 25
-      }
-      var taxonomyTreeOptions = {
-          /* base url of the collectory */
-          collectionsUrl: CHARTS_CONFIG.collectionsUrl,
-          /* base url of the biocache ws*/
-          biocacheServicesUrl: CHARTS_CONFIG.biocacheServicesUrl,
-          /* base url of the biocache webapp*/
-          biocacheWebappUrl: CHARTS_CONFIG.biocacheWebappUrl,
-          /* the id of the div to create the charts in - defaults is 'charts' */
-          targetDivId: "tree",
-          /* a uid or list of uids to chart - either this or query must be present */
-          instanceUid: "${instance.uid}"
-      }
-
-      /************************************************************\
-    *
-    \************************************************************/
-    var queryString = '';
-    var decadeUrl = '';
-
-    $('img#mapLegend').each(function(i, n) {
-      // if legend doesn't load, then it must be a point map
-      $(this).error(function() {
-        $(this).attr('src',"${resource(dir: 'images/map', file: 'single-occurrences.png')}");
-      });
-    });
-    /************************************************************\
-    *
-    \************************************************************/
-    function onLoadCallback() {
-      // stats
-      if(loadLoggerStats){
-          if (${instance.resourceType == 'website'}) {
-              loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "2000");
-          } else if (${instance.resourceType == 'records'}) {
-              loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "1002");
-          }
-      }
-
-      // records
-      if (${instance.resourceType == 'records'}) {
-          // summary biocache data
-
-          var facetsParam = "";
-
-          $.each(facetChartOptions.charts, function( index, value ) {
-              facetsParam += "&facets=" + value;
-          });
-
-          var queryUrl = CHARTS_CONFIG.biocacheServicesUrl + "/occurrences/search.json?pageSize=0&q=data_resource_uid:${instance.uid}" + facetsParam;
-
-          $.ajax({
-            url: queryUrl,
-            dataType: 'jsonp',
-            timeout: 30000,
-            complete: function(jqXHR, textStatus) {
-                if (textStatus == 'timeout') {
-                    noData();
-                    alert('Sorry - the request was taking too long so it has been cancelled.');
-                }
-                if (textStatus == 'error') {
-                    noData();
-                    alert('Sorry - the records breakdowns are not available due to an error.');
-                }
-            },
-            success: function(data) {
-                // check for errors
-                if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
-                    noData();
-                } else {
-                    setNumbers(data.totalRecords);
-                    facetChartOptions.response = data;
-                    // draw the charts
-                    drawFacetCharts(data, facetChartOptions);
-                    if(data.totalRecords > 0){
-                        $('#dataAccessWrapper').css({display:'block'});
-                        $('#totalRecordCountLink').html(data.totalRecords.toLocaleString() + " ${g.message(code: 'public.show.rt.des03')}");
-                    }
-                }
-            }
-          });
-
-          // taxon chart
-          loadTaxonomyChart(taxonomyChartOptions);
-
-          // tree
-          initTaxonTree(taxonomyTreeOptions);
-      }
-    }
-    /************************************************************\
-    *
-    \************************************************************/
-    google.load("visualization", "1.0", { packages:["corechart"] });
-    google.setOnLoadCallback(onLoadCallback);
-
+  }
 </r:script>
+<g:render template="taxonTree" model="[facet:'data_resource_uid', instance: instance]" />
+<g:render template="charts" model="[facet:'data_resource_uid', instance: instance]" />
 </body>
 </html>

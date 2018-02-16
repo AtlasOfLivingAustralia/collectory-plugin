@@ -16,27 +16,7 @@
    </g:else>
    <title><g:layoutTitle /> | ${orgNameLong}</title>
    <g:render template="/layouts/global"/>
-   <r:require modules="jquery, jquery_migration, bootstrap, application, collectory" />
-   <style type="text/css">
-        body {
-            background-color: #ffffff !important;
-        }
-        #breadcrumb {
-            margin-top: 10px;
-        }
-        #footer {
-            margin: 20px;
-            padding-top: 10px;
-            border-top: 1px solid #CCC;
-            font-size: 12px;
-        }
-        #content .nav-tabs > li.active > a {
-            background-color: #ffffff;
-        }
-        .nav {
-            margin-top: 20px;
-        }
-   </style>
+   <r:require modules="jquery, jquery_migration, jquery_i18n, bootstrap, application, collectory" />
     <r:layoutResources/>
     <g:layoutHead />
 </head>

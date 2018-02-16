@@ -28,7 +28,7 @@ modules = {
         resource url:[dir:'js/jquery.fancybox/fancybox', file:'jquery.fancybox-1.3.1.css', plugin:'collectory-plugin']
         resource url:[dir:'js/jquery.fancybox/fancybox', file:'jquery.fancybox-1.3.1.pack.js', plugin:'collectory-plugin']
     }
-    jstree {
+        jstree {
         resource url:[dir:'js', file:'jquery.jstree.js', plugin:'collectory-plugin']
         resource url:[dir:'js/themes/classic', file:'style.css', plugin:'collectory-plugin'], attrs:[media:'screen, projection, print']
     }
@@ -51,6 +51,7 @@ modules = {
         resource url:[dir:'js', file:'map.js', plugin:'collectory-plugin']
     }
     datasets {
+        dependsOn 'jquery_i18n'
         resource url:[dir:'js', file:'datasets.js', plugin:'collectory-plugin']
     }
     rotate {
@@ -73,10 +74,10 @@ modules = {
         resource url:[dir:'js', file:'bootstrap-fileupload.min.js', plugin:'collectory-plugin']
         resource url:[dir:'css', file:'bootstrap-fileupload.min.css', plugin:'collectory-plugin']
     }
-    charts {
+    taxonTree {
         dependsOn 'jquery_i18n'
-        resource url:[dir:'js', file:'charts2.js', plugin:'collectory-plugin']
-        resource url:[dir:'js', file:'charts.js', plugin:'collectory-plugin']
+        resource url:[dir:'js', file:'taxonTree.js', plugin:'collectory-plugin']
+        resource url:[dir:'js/themes/classic', file:'style.css', plugin:'collectory-plugin'], attrs:[media:'screen, projection, print']
     }
     collectory {
         dependsOn 'jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
@@ -93,5 +94,18 @@ modules = {
         dependsOn 'jquery'
         resource url:[ dir: 'css', file:'datatables.css', plugin:'collectory-plugin']
         resource url:[ dir: 'js', file:'datatables.min.js', plugin:'collectory-plugin']
+    }
+    charts_plugin {
+        resource url:[ dir: 'js', file:'Chart.min.js', plugin:'ala-charts-plugin']
+        resource url:[ dir: 'js', file:'bootstrap2-toggle.min.js', plugin:'ala-charts-plugin']
+        resource url:[ dir: 'js', file:'bootstrap-slider.js', plugin:'ala-charts-plugin']
+        resource url:[ dir: 'js', file:'bootstrap-multiselect.js', plugin:'ala-charts-plugin']
+        resource url:[ dir: 'js', file:'moment.min.js', plugin:'ala-charts-plugin']
+        resource url:[ dir: 'js', file:'slider.js', plugin:'ala-charts-plugin']
+        resource url:[ dir: 'js', file:'ALAChart.js', plugin:'ala-charts-plugin']
+
+        resource url:[ dir: 'css', file:'bootstrap2-toggle.min.css', plugin:'ala-charts-plugin']
+        resource url:[ dir: 'css', file:'ALAChart.css', plugin:'ala-charts-plugin']
+
     }
 }

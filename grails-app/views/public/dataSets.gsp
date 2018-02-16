@@ -4,17 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
     <title><g:message code="public.datasets.title" /> | ${grailsApplication.config.projectName} </title>
-    <r:require modules="collectory, datasets, jquery_json, jquery_i18n, bbq, rotate, jquery_tools"/>
-    <r:script type="text/javascript">
-      var altMap = true;
-      $(document).ready(function() {
-        $('#nav-tabs > ul').tabs();
-        loadResources("${grailsApplication.config.grails.serverURL}","${grailsApplication.config.biocacheUiURL}");
-        $('select#per-page').change(onPageSizeChange);
-        $('select#sort').change(onSortChange);
-        $('select#dir').change(onDirChange);
-      });
-    </r:script>
+    <r:require modules="jquery, fancybox, jquery_jsonp, jquery_ui_custom, jquery_i18n, bbq, collectory, charts_plugin,datasets"/>
   </head>
 
   <body id="page-datasets" class="nav-datasets">
@@ -26,7 +16,7 @@
           </g:if>
           <div>
             <h1>${grailsApplication.config.projectName}  <g:message code="public.datasets.header.title" /></h1>
-            <p style="padding-bottom:6px !important;"><g:message code="public.datasets.header.message01" /> ${grailsApplication.config.projectName}, <g:message code="public.datasets.header.message02" />.</p>
+            <p><g:message code="public.datasets.header.message01" /> ${grailsApplication.config.projectName}, <g:message code="public.datasets.header.message02" />.</p>
             <p><g:message code="public.datasets.header.message03" /> <img style="vertical-align:middle;" src="${resource(dir:'/images/skin',file:'ExpandArrow.png')}"/><g:message code="public.datasets.header.message04" />.</p>
           </div><!--close hrgroup-->
         </div><!--close section-->
@@ -104,4 +94,14 @@
     </div><!--close content-->
 
   </body>
+<r:script type="text/javascript">
+      var altMap = true;
+      $(document).ready(function() {
+        $('#nav-tabs > ul').tabs();
+        loadResources("${grailsApplication.config.grails.serverURL}","${grailsApplication.config.biocacheUiURL}");
+        $('select#per-page').change(onPageSizeChange);
+        $('select#sort').change(onSortChange);
+        $('select#dir').change(onDirChange);
+      });
+</r:script>
 </html>
