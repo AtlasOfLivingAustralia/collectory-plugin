@@ -55,7 +55,7 @@ class CollectoryBootStrap {
                         licenceVersion: "${version}"
                 ).save(flush:true)
                 new Licence(
-                        acronym: 'CC -BY-NC-SA',
+                        acronym: 'CC-BY-NC-SA',
                         name:"Creative Commons Attribution-Noncommercial-Share Alike",
                         url:"https://creativecommons.org/licenses/by-nc-sa/${version}/legalcode",
                         imageUrl: "https://licensebuttons.net/l/by-nc-sa/${version}/88x31.png",
