@@ -9,14 +9,12 @@ import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
 /**
- * Collect datasets from an IPT service and update the
+ * Collect datasets from an IPT service and update the metadata.
  * <p>
  * The IPT service is associated with a {@link DataProvider} that identifies the sources of the service.
  * When invoked, the service scans the RSS feed supplied by the service and uses it to identify new and
  * updated {@link DataResource}s. New datasets are collected and then supplied to the collectory for
  * loading.
- *
- * @see <a href="http://code.google.com/p/gbif-providertoolkit/">GBIF Provider Toolkit</a>
  */
 class IptService {
 
@@ -35,13 +33,8 @@ class IptService {
     ]
     /** Source of the RSS feed */
     static final RSS_PATH = "rss.do"
-    /** The form that an IPT resource reference takes */
-    //static final IPT_RESOURCE_PATTERN = /^.+\/resource.do\?r=([A-Za-z0-9_]+)$/
     /** Parse RFC 822 date/times */
     static final RFC822_PARSER = new SimpleDateFormat('EEE, d MMM yyyy HH:mm:ss Z')
-    /** Parse ISO 8601 date/times */
-    //static final ISO8601_PARSER = new SimpleDateFormat('yyyy-MM-dd\'T\'HH:mm:ssXXX')
-
 
     /** Fields that we can derive from the RSS feed */
     protected rssFields = [
@@ -128,7 +121,9 @@ class IptService {
                     old.userLastModified = username
                     if (create) {
                         old.save(flush: true)
-                        //old.errors.each { println it.toString() }
+                        old.errors.each {
+                            log.error it
+                        }
                         ActivityLog.log username, admin, Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
                     }
                     merged << old
@@ -139,10 +134,12 @@ class IptService {
                     update.userLastModified = username
                     try {
                         update.save(flush: true)
-                        //update.errors.each { println it.toString() }
+                        update.errors.each {
+                            log.error it
+                        }
                         ActivityLog.log username, admin, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
                     } catch (Exception e){
-                        log.error("Unable to persist resource " + update)
+                        log.error("Unable to persist resource " + update, e)
                     }
                 }
                 merged << update

@@ -1,4 +1,5 @@
 <%@ page import="au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.Collection" %>
+<g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

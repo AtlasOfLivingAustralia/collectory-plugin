@@ -1,4 +1,5 @@
 <%@ page import="au.org.ala.collectory.CollectoryTagLib; java.text.DecimalFormat; java.text.SimpleDateFormat" %>
+<g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -137,7 +138,9 @@
 
             <div>
                 <p><span
-                        id="numBiocacheRecords"><g:message code="public.sdr.content.des04" /></span> <g:message code="public.sdr.content.des05" />.
+                        id="numBiocacheRecords"><g:message code="public.sdr.content.des04" /></span>
+                    <g:message code="public.sdr.content.des05" args="[orgNameLong]" />.
+
                 <cl:lastChecked date="${instance.lastChecked}"/>
                 <cl:dataCurrency date="${instance.dataCurrency}"/>
                 </p>

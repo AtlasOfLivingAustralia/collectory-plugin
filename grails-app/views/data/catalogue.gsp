@@ -1,10 +1,11 @@
 <%@ page import="au.org.ala.collectory.CollectionLocation" %>
+<g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <!--meta name="viewport" content="initial-scale=1.0, user-scalable=no" /-->
-        <title><g:message code="data.catalogue.title" /></title>
+        <title><g:message code="data.catalogue.title" args="[orgNameLong]" /></title>
         <style type="text/css">
             .entity { font-weight: bold; }
             .code { font-family: 'courier new'}
@@ -34,7 +35,7 @@
           </div>--}%
 
           <h2 id="WS0024"><g:message code="data.catalogue.title02" /></h2>
-          <p><g:message code="data.catalogue.des05" />:</p>
+          <p><g:message code="data.catalogue.des05" args="[orgNameLong]"/>:</p>
           <ul>
             <li><span class='entity'><g:message code="data.catalogue.ws0024.collections" /></span> - <g:message code="data.catalogue.ws0024.collections01" />;</li>
             <li><span class='entity'><g:message code="data.catalogue.ws0024.institutions" /></span> - <g:message code="data.catalogue.ws0024.institutions01" />;</li>

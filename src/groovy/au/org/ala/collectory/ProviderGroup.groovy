@@ -116,7 +116,7 @@ abstract class ProviderGroup implements Serializable {
         logoRef(nullable:true)
         imageRef(nullable:true)
         email(nullable:true, maxSize:256)
-        phone(nullable:true, maxSize:45)
+        phone(nullable:true, maxSize:200)
         isALAPartner()
         notes(nullable:true)
         networkMembership(nullable:true, maxSize:256)

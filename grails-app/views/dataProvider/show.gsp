@@ -70,13 +70,13 @@
 
 
               <div class="show-section well">
-                  <h2>IPT integration (Beta)</h2>
+                  <h2>IPT integration</h2>
                   <p>
                       If your data provider is an IPT instance, set the website URL to be the URL of the IPT endpoint.
                       <br/> e.g. http://data.canadensys.net/ipt
                       <br/>
                   </p>
-                  <p class="iptStatus alert alert-info hide">
+                  <p class="iptStatus alert alert-info hide" style="word-break: break-all;">
 
                   </p>
                   <p>
@@ -193,7 +193,18 @@
             $('.iptBtn').attr('disabled','disabled');
             var updateUrl = "${createLink(controller: "ipt", action: "scan", params:[format:"json", uid: instance?.uid, create:true])}";
             var jqxhr = $.get(updateUrl, function(data) {
-              $('.iptStatus').html("Success! + " + data.length + " resources has been added from this IPT instance." );
+              console.log(data)
+              var updateText = "Success! <br/><br/> " + data.length + " resources have been added from this IPT instance."
+              var added = [];
+              $.each( data, function( key, value ) {
+                added.push(value.uid);
+              });
+
+              if(added.length > 0){
+                  updateText = updateText + "<br/><br/> Resources added: " + added.join(',')
+              }
+
+              $('.iptStatus').html(updateText);
               $('.iptStatus').removeClass('hide')
             })
               .fail(function() {

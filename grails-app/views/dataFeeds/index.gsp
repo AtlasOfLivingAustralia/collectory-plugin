@@ -1,9 +1,10 @@
 <%@ expressionCodec="xml" %><%@ page contentType="text/html;charset=UTF-8" %><?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <registryObjects xmlns="http://ands.org.au/standards/rif-cs/registryObjects"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://ands.org.au/standards/rif-cs/registryObjects http://services.ands.org.au/documentation/rifcs/schema/registryObjects.xsd">
     <g:each var='provider' in="${providers}">
-        <registryObject group="Atlas of Living Australia">
+        <registryObject group="${orgNameLong}">
             <key>ala.org.au/${provider.uid}</key>
             <originatingSource>${provider.name}</originatingSource>
             <party type="group">
@@ -32,7 +33,7 @@
             <originatingSource>${resource.dataProvider.name}</originatingSource>
             </g:if>
             <g:else>
-            <originatingSource><g:message code="rifcs.index.title" /></originatingSource>
+            <originatingSource><g:message code="rifcs.index.title" args="[orgNameLong]" /></originatingSource>
             </g:else>
             <collection type="dataset">
                 <identifier type="local">ala.org.au/${resource.uid}</identifier>

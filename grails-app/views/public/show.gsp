@@ -1,4 +1,5 @@
 <%@ page import="java.text.DecimalFormat; au.org.ala.collectory.Collection; au.org.ala.collectory.Institution" %>
+<g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -263,13 +264,14 @@
                     </g:if>
                     <g:if test="${biocacheRecordsAvailable}">
                       <p>
-                          <span id="numBiocacheRecords"><g:message code="public.show.rt.des04" /></span> <g:message code="public.show.rt.des05" />.
+                          <span id="numBiocacheRecords"><g:message code="public.show.rt.des04" /></span>
+                          <g:message code="public.show.rt.des05" args="[orgNameLong]"/>
                           <cl:warnIfInexactMapping collection="${instance}"/>
                           <cl:recordsLink entity="${instance}"><g:message code="public.show.rt.des06" /> <cl:collectionName name="${instance.name}"/></cl:recordsLink>
                       </p>
                     </g:if>
                     <g:else>
-                      <p><g:message code="public.show.rt.des07" />.</p>
+                      <p><g:message code="public.show.rt.des07" args="[orgNameLong]" />.</p>
                     </g:else>
                     <g:if test="${biocacheRecordsAvailable}">
                         <div style="clear:both;"></div>
