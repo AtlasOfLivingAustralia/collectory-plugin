@@ -316,5 +316,6 @@
         </div>
       </div>
     <g:render template="charts" model="[facet:'collection_uid', instance: instance]" />
+    <g:render template="progress" model="[facet:'collection_uid', instance: instance]" />
     </body>
 </html>
