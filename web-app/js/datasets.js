@@ -153,26 +153,26 @@ function appendResource(value) {
 
 /** bind click handler to twisty **/
 function activateClicks() {
-    $('.rowA img').rotate({
-        bind:
-            {
-                click: function() {
-                    // hide tooltip
-                    hideTooltip(this);
-
-                    var $target = $(this).parent().parent().find('.rowC');
-                    if ($target.css('display') == 'none') {
-                        $(this).rotate({animateTo:90,duration:350});
-                    }
-                    else {
-                        $(this).rotate({animateTo:0,duration:350});
-                    }
-                    $target.slideToggle(350, function() {
-                    });
-                    return false;
-                }
-            }
-    });
+    // $('.rowA img').rotate({
+    //     bind:
+    //         {
+    //             click: function() {
+    //                 // hide tooltip
+    //                 hideTooltip(this);
+    //
+    //                 var $target = $(this).parent().parent().find('.rowC');
+    //                 if ($target.css('display') == 'none') {
+    //                     $(this).rotate({animateTo:90,duration:350});
+    //                 }
+    //                 else {
+    //                     $(this).rotate({animateTo:0,duration:350});
+    //                 }
+    //                 $target.slideToggle(350, function() {
+    //                 });
+    //                 return false;
+    //             }
+    //         }
+    // });
 }
 /** clear the list and reset values **/
 function clearList() {
