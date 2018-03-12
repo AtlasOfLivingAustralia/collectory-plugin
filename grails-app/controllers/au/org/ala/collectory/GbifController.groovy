@@ -14,7 +14,7 @@ class GbifController {
 
     def healthCheckLinked() {
 
-        println("Starting report.....")
+        log.info("Starting report.....")
         def url = grailsApplication.config.biocacheServicesUrl + "/occurrences/search?q=*:*&facets=data_resource_uid&pageSize=0&facet=on&flimit=-1"
         def js = new JsonSlurper()
         def biocacheSearch = js.parse(new URL(url), "UTF-8")

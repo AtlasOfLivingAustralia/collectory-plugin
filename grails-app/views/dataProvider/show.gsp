@@ -81,7 +81,10 @@
                   </p>
                   <p>
                     <button class="iptCheck iptBtn btn btn-default"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img> Check endpoint</button>
-                    <button class="iptUpdate iptBtn btn btn-warning"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img>  Update data resources</button>
+                    <button class="iptUpdate iptBtn btn btn-warning"><r:img class="spinner hide" uri="/images/spinner.gif"></r:img> Update data resources</button>
+                    <g:link controller="ipt" action="syncReport" params="${['uid':instance.uid]}" class="downloadSync iptBtn btn btn-info">
+                        <i class="glyphicon glyphicon-download"> </i>
+                        Download sync report</g:link>
                   </p>
               </div>
 

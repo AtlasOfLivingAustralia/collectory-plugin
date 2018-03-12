@@ -1,7 +1,9 @@
 package au.org.ala.collectory
 
+import au.com.bytecode.opencsv.CSVWriter
 import grails.converters.JSON
 import grails.converters.XML
+import groovy.json.JsonSlurper
 import org.codehaus.groovy.grails.web.servlet.HttpHeaders
 
 /**
@@ -69,6 +71,64 @@ class IptController {
             }
         } catch (Exception e){
             log.error("Problem scanning IPT endpoint: " + e.getMessage(), e)
+        }
+    }
+
+    def syncReport(){
+
+        response.setContentType("text/csv")
+        response.setCharacterEncoding("UTF-8")
+        response.setHeader("Content-disposition", "attachment;filename=ipt-sync.csv")
+
+        def csvWriter = new CSVWriter(new OutputStreamWriter(response.outputStream))
+        def provider = ProviderGroup._get(params.uid)
+        if(provider.websiteUrl) {
+            def newMap = [:]
+            DataResource.findAll().each { dr ->
+                def idx = dr.name.toLowerCase().indexOf("- version")
+                if (idx) {
+                    def searchedWith = dr.name.substring(0, idx).trim()
+                    newMap.put(searchedWith, dr.uid)
+                } else {
+                    newMap.put(dr.name.toLowerCase(), dr.uid)
+                }
+            }
+
+            def iptInventory = new JsonSlurper().parse(new URL( provider.websiteUrl + "/inventory/dataset"))
+            def count = 0
+            def iptMap = [:]
+
+            String[] header = [
+                    "EML URL",
+                    "GUID",
+                    "Title",
+                    "Number of records in IPT",
+                    "Number of records in Atlas",
+                    "Atlas ID"
+            ]
+            csvWriter.writeNext(header)
+
+            iptInventory.registeredResources.each { item ->
+                iptMap.put(item.title, item.records)
+                //retrieve UID, and do a count from the services
+                def uid = newMap.get(item.title)
+                if(uid){
+                    def jsonCount = new JsonSlurper().parse(new URL(grailsApplication.config.biocacheServicesUrl + "/occurrences/search?pageSize=0&fq=data_resource_uid:" + uid))
+                    String[] row = [
+                            item.eml,
+                            item.gbifKey,
+                            item.title,
+                            item.records,
+                            jsonCount.totalRecords,
+                            uid
+                    ]
+                    csvWriter.writeNext(row)
+                } else {String[] row = [item.eml, item.gbifKey, item.title, item.records, "0", "Not registered"]
+                    csvWriter.writeNext(row)
+                }
+                count += 1
+            }
+            csvWriter.flush()
         }
     }
 }

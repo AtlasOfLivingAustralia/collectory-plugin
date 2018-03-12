@@ -44,21 +44,27 @@
           <div id="data-set-list" class="col-md-9">
             <div class="well">
                 <div class="row">
-                      <div class="pull-left">
+                      <div>
                           <span id="resultsReturned"><g:message code="public.datasets.resultsreturned.message01" /> <strong></strong>&nbsp;<g:message code="public.datasets.resultsreturned.message02" />.</span>
-                          <div class="input-group">
-                              <input type="text" name="dr-search" id="dr-search" class="form-control"/>
-                              <div class="input-group-btn">
-                                <a href="javascript:void(0);" title="Only show data sets which contain the search term" id="dr-search-link" class="btn btn-default"><g:message code="public.datasets.drsearch.search" /></a>
-                                <a href="javascript:void(0);" id="reset"><a href="javascript:reset()" title="Remove all filters and sorting options" class="btn btn-default"><g:message code="public.datasets.drsearch.resetlist" /></a></a>
-                              </div>
-                          </div>
-                     </div>
-                    <div class="pull-right">
-                      <a href="#" id="downloadLink" class="btn btn-default"
-                           title="Download metadata for datasets as a CSV file">
+                      </div>
+                    <form class="form-inline">
+                        <div class="form-group ">
+                            <input type="text" name="dr-search" id="dr-search" class="form-control" style="width:500px;"/>
+                        </div>
+                        <button href="javascript:void(0);" title="Only show data sets which contain the search term"
+                                id="dr-search-link" class="form-control btn btn-default"><g:message code="public.datasets.drsearch.search" /></button>
+                        <button href="javascript:reset()" title="Remove all filters and sorting options" class=" form-control btn btn-default">
+                            <g:message code="public.datasets.drsearch.resetlist" />
+                        </button>
+                        <button href="#" id="downloadLink" class="btn btn-default"
+                                title="Download metadata for datasets as a CSV file">
                             <span class="glyphicon glyphicon-download"></span>
-                            <g:message code="public.datasets.downloadlink.label" /></a>
+                            <g:message code="public.datasets.downloadlink.label" />
+                        </button>
+                    </form>
+
+                    <div class="pull-right">
+
                     </div>
                 </div>
                 <hr/>

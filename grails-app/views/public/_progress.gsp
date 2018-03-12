@@ -44,20 +44,17 @@ function setPercentAgeNumbers(totalBiocacheRecords, totalRecords) {
 
 function setProgress(percentage){
     var captionText = "";
-    var orgName = 'ALA';
     var noun = jQuery.i18n.prop('public.show.setprogress.specimens');
     if (noun == null)
         noun = 'specimens';
-    if (false) {
-        captionText = jQuery.i18n.prop('public.show.setprogress.01', noun, orgName);
-    } else if (percentage == 0) {
-        captionText = jQuery.i18n.prop('public.show.setprogress.02', orgName);
+    if (percentage == 0) {
+        captionText = jQuery.i18n.prop('public.show.setprogress.02', orgNameLong);
     } else {
         var displayPercent = percentage.toFixed(1);
         if (percentage < 0.1) {displayPercent = percentage.toFixed(2)}
         if (percentage > 20) {displayPercent = percentage.toFixed(0)}
         if (percentage > 100) {displayPercent = "over 100"}
-        captionText = jQuery.i18n.prop('public.show.percentrecords.01', displayPercent, noun, orgName);
+        captionText = jQuery.i18n.prop('public.show.percentrecords.01', displayPercent, noun, orgNameLong);
     }
     $('#speedoCaption').html(captionText);
     if (percentage > 100) {

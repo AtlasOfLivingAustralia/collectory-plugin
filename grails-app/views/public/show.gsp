@@ -8,6 +8,7 @@
         <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
         <r:require modules="jquery, fancybox, jquery_tools, jquery_jsonp, charts, jquery_i18n"/>
         <r:script type="text/javascript">
+          orgNameLong = "${orgNameLong}";
           biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
           biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
           loadLoggerStats = ${!grailsApplication.config.disableLoggerLinks.toBoolean()};
