@@ -42,10 +42,10 @@
             <cl:h1 value="${instance.name}"/>
             <g:set var="dp" value="${instance.dataProvider}"/>
             <g:if test="${dp}">
-                <h2><g:link action="show" id="${dp.uid}">${dp.name}</g:link></h2>
+                <h2 class="dataResourceProviderLink"><g:link action="show" id="${dp.uid}">${dp.name}</g:link></h2>
             </g:if>
             <g:if test="${instance.institution}">
-                <h2><g:link action="show" id="${instance.institution.uid}">${instance.institution.name}</g:link></h2>
+                <h2 class="dataResourceInstitutionLink"><g:link action="show" id="${instance.institution.uid}">${instance.institution.name}</g:link></h2>
             </g:if>
             <cl:valueOrOtherwise value="${instance.acronym}"><span
                     class="acronym"><g:message code="public.show.header.acronym"/>: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
