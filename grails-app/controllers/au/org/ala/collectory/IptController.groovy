@@ -86,7 +86,7 @@ class IptController {
             def newMap = [:]
             DataResource.findAll().each { dr ->
                 def idx = dr.name.toLowerCase().indexOf("- version")
-                if (idx) {
+                if (idx > 0) {
                     def searchedWith = dr.name.substring(0, idx).trim()
                     newMap.put(searchedWith, dr.uid)
                 } else {
