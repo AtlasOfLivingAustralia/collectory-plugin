@@ -5,7 +5,7 @@ grails.project.test.reports.dir	= "target/test-reports"
 grails.project.target.level = 1.8
 grails.project.source.level = 1.8
 
-//grails.plugin.location."ala-charts-plugin" = "../ala-charts-plugin"
+grails.plugin.location."ala-charts-plugin" = "../ala-charts-plugin"
 
 grails.project.fork = [
         test: false,
@@ -50,6 +50,6 @@ grails.project.dependency.resolution = {
         //runtime ":richui:0.8"
         runtime ":tiny-mce:3.4.9"
         runtime ":cors:1.1.8"
-        runtime ":ala-charts-plugin:1.3.2"
+//        runtime ":ala-charts-plugin:1.3.2"
     }
 }

@@ -83,6 +83,9 @@ class IptController {
         def csvWriter = new CSVWriter(new OutputStreamWriter(response.outputStream))
         def provider = ProviderGroup._get(params.uid)
         if(provider.websiteUrl) {
+
+            def iptInventory = new JsonSlurper().parse(new URL( provider.websiteUrl + "/inventory/dataset"))
+
             def newMap = [:]
             DataResource.findAll().each { dr ->
                 def idx = dr.name.toLowerCase().indexOf("- version")
@@ -94,7 +97,7 @@ class IptController {
                 }
             }
 
-            def iptInventory = new JsonSlurper().parse(new URL( provider.websiteUrl + "/inventory/dataset"))
+
             def count = 0
             def iptMap = [:]
 

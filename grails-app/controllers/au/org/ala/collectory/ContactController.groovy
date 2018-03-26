@@ -1,18 +1,19 @@
 package au.org.ala.collectory
 
 import au.org.ala.audit.AuditLogEvent
+import grails.converters.JSON
+import groovy.json.JsonSlurper
 
 class ContactController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-/*
- * Access control
- *
- * All methods require EDITOR role.
- * Delete requires ADMIN role.
- */
-
+    /**
+     * Access control
+     *
+     * All methods require EDITOR role.
+     * Delete requires ADMIN role.
+     */
     def collectoryAuthService
     def beforeInterceptor = [action:this.&auth]
 
@@ -24,16 +25,16 @@ class ContactController {
         return true
     }
 
-/*
- End access control
- */
+    /*
+     End access control
+     */
 
     def index() {
         redirect(action: "list", params: params)
     }
 
     def list() {
-        params.max = Math.min(params.max ? params.int('max') : 20, 100)
+        params.max = Math.min(params.max ? params.int('max') : 20, 10000)
         params.sort = 'lastName'
         [contactInstanceList: Contact.list(params), contactInstanceTotal: Contact.count()]
     }
@@ -183,7 +184,6 @@ class ContactController {
     }
 
     def updateProfile() {
-        params.each {println it}
         def contactInstance = Contact.get(params.id)
         // only the user or admin can update
         if (contactInstance.email == collectoryAuthService?.username() || collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN)) {
@@ -193,13 +193,10 @@ class ContactController {
                 ActivityLog.log collectoryAuthService?.username(), collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN), Action.EDIT_SAVE, "contact ${params.id}"
                 flash.message = "Your profile was updated."
                 redirect(uri: "/admin")
-            }
-            else {
+            } else {
                 render(view: "showProfile")
             }
-
-        }
-        else {
+        } else {
             // not allowed
             flash.message = "You are not allowed to update this profile"
             redirect(uri: "/admin")
@@ -209,5 +206,27 @@ class ContactController {
     def cancelProfile() {
         flash.message = "Your profile was not changed."
         redirect(uri: "/admin")
+    }
+
+    def syncWithAuth(){
+        def count = 0
+        Contact.findAll().each {
+//            if(!it.userId){
+                if(it.email) {
+                    def url = "https://dev.nbnatlas.org/userdetails/userDetails/findUser?q=" + it.email
+                    log.info("Querying ${url}")
+                    def js = new JsonSlurper().parse(new URL(url))
+                    if(js.results){
+                        it.userId = js.results[0].userId
+                        it.firstName = js.results[0].firstName
+                        it.lastName = js.results[0].lastName
+                        it.save(flush:true)
+                        count += 1
+                    }
+                }
+//            }
+        }
+        def result = [updated: count]
+        render result as JSON
     }
 }

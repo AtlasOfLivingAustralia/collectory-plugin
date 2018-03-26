@@ -50,6 +50,13 @@
                     <h2 style="display:inline"><g:link controller="dataProvider" action="show" id="${instance.dataProvider?.id}">${instance.dataProvider?.name}</g:link></h2>
                 </g:if>
 
+                <div class="whycanisee pull-right">
+                    <cl:loggedInUsername/>
+                    <p>
+                        <cl:whyCanISeeThis entity="${instance}"/>
+                    </p>
+                </div>
+
                 <cl:partner test="${instance.dataProvider?.isALAPartner}"/><br/>
 
                 <!-- Institution -->

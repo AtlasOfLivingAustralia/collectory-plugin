@@ -11,11 +11,11 @@ class AdminController {
     def grailsApplication
     //static defaultAction = "home"
     
-/*
- * Access control
- *
- * All methods require ADMIN role.
- */
+    /**
+     * Access control
+     *
+     * All methods require ADMIN role.
+     */
     def beforeInterceptor = [action:this.&auth]
 
     def auth() {
@@ -25,9 +25,6 @@ class AdminController {
         }
         return true
     }
-/*
- End access control
- */
 
     def index = {
         redirect(controller: 'manage')

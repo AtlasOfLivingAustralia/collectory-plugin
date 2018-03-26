@@ -21,7 +21,7 @@
         <div class="show-section well">
           <!-- Name -->
           <div><span class="contactName">${cf.contact.buildName()}</span></div>
-          <table class="shy">
+          <table class="table">
             <colgroup><col width="68%"><col width="32%"></colgroup>
             <!-- details -->
             <tr><td>
@@ -47,7 +47,6 @@
                 <ul class="detailList">
                   <li><cl:valueOrOtherwise value="${cf.role}" otherwise="No role defined"><g:message code="shared.scontact.li01" /> ${cf.role}</cl:valueOrOtherwise></li>
                   <li><cl:valueOrOtherwise value="${cf.administrator}" otherwise="Not allowed to edit"><img src="${resource(dir:'images/ala', file:'olive-tick.png')}"/><g:message code="shared.scontact.li02" /></cl:valueOrOtherwise></li>
-                  <li><cl:valueOrOtherwise value="${cf.notify}" otherwise="Dont notify"><img src="${resource(dir:'images/ala', file:'olive-tick.png')}"/><g:message code="shared.scontact.li03" /></cl:valueOrOtherwise></li>
                   <cl:valueOrOtherwise value="${cf.primaryContact}"><li><img src="${resource(dir:'images/ala', file:'olive-tick.png')}"/><g:message code="shared.scontact.li04" /></li></cl:valueOrOtherwise>
                 </ul>
             </td>

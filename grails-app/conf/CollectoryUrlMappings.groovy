@@ -183,6 +183,9 @@ class CollectoryUrlMappings {
 
         "/ws/$entity?(.$format)?" (controller:'data', action:[GET:'getEntity', POST: 'saveEntity',  PUT:'saveEntity', DELETE: 'delete'])
 
+
+        "/ws/sensitiveAccess/$userId"(controller:'sensitiveAccess',action:'lookup')
+
         "/public/resources(.$format)"(controller:'public', action:'resources')
 
         "/"(controller:'public', action:'map')

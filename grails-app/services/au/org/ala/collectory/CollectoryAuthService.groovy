@@ -92,6 +92,57 @@ class CollectoryAuthService{
     }
 
     /**
+     * If a logged in user is an administrator for a data resource then they can edit.
+     * Likewise, if they are the administrator of a provider or institution they can edit
+     * an institution/provider metadata and any resources underneath that institution/provider.
+     *
+     * @param userId
+     * @param instance A dataresource, collection, provider or institution
+     * @return
+     */
+    def isUserAuthorisedEditorForEntity(userId, instance){
+        def authorised = false
+        def reason = ""
+        if(instance) {
+            def contacts = instance.getContacts()
+            contacts.each {
+                if (it.contact.userId == userId && it.administrator) {
+                    //CAS contact
+                    authorised = true
+                    reason = "User is an administrator for ${instance.entityType()} : ${instance.id} : ${instance.name}"
+                }
+            }
+        }
+
+        if(instance instanceof DataResource){
+            if(instance.getInstitution()){
+                //check institution contacts
+                def contacts = instance.getInstitution().getContacts()
+                contacts.each {
+                    if (it.contact.userId == userId && it.administrator) {
+                        //CAS contact
+                        authorised = true
+                        reason = "User is an administrator for parent entity ${instance.entityType()} : ${instance.id} : ${instance.name}"
+                    }
+                }
+            }
+            if(instance.getDataProvider()){
+                //check data provider contacts
+                //check institution contacts
+                def contacts = instance.getDataProvider().getContacts()
+                contacts.each {
+                    if (it.contact.userId == userId && it.administrator) {
+                        //CAS contact
+                        authorised = true
+                        reason = "User is an administrator for parent entity ${instance.entityType()} : ${instance.id} : ${instance.name}"
+                    }
+                }
+            }
+        }
+        [authorised:authorised, reason:reason]
+    }
+
+    /**
      * Returns a list of entities that the specified contact is authorised to edit.
      *
      * @param contact
@@ -105,7 +156,7 @@ class CollectoryAuthService{
             if (it.administrator) {
                 def pg = ProviderGroup._get(it.entityUid)
                 if (pg) {
-                    entities.put it.entityUid, [uid: pg.uid, name: pg.name]
+                    entities.put it.entityUid, [uid: pg.uid, name: pg.name, entityType: pg.entityType()]
                     if (it.dateLastModified > latestMod) { latestMod = it.dateLastModified }
                 }
                 // add children
@@ -115,13 +166,13 @@ class CollectoryAuthService{
                     if (child instanceof ProviderGroup) {
                         def ch = ProviderGroup._get(child.uid)
                         if (ch) {
-                            entities.put ch.uid, [uid: ch.uid, name: ch.name]
+                            entities.put ch.uid, [uid: ch.uid, name: ch.name, entityType: ch.entityType()]
                         }
                     }
                 }
             }
         }
-        return [sorted: entities.values().sort { it.name }, keys:entities.keySet().sort(), latestMod: latestMod]
+        [sorted: entities.values().sort { it.name }, keys:entities.keySet().sort(), latestMod: latestMod]
     }
 
     def checkApiKey(key) {

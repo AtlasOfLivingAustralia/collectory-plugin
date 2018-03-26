@@ -206,6 +206,39 @@ class CollectoryTagLib {
         }
     }
 
+    def whyCanISeeThis = { attrs ->
+        def authReason = ""
+        if(collectoryAuthService?.userInRole(ProviderGroup.ROLE_EDITOR)){
+            authReason += "User has ${ProviderGroup.ROLE_EDITOR};"
+        }
+        if(grailsApplication.config.security.cas.bypass.toBoolean()){
+            authReason += "CAS is currently bypassed for all users;"
+        }
+
+        def result = collectoryAuthService.isUserAuthorisedEditorForEntity(collectoryAuthService.authService.getUserId(), attrs.entity)
+        if(result.authorised){
+            authReason += result.reason
+        }
+
+        log.info("Auth reason: " + authReason)
+        //add some info - why can i see this page ?
+        out << authReason
+    }
+
+    def isAuthorisedEditorForEntity(userId, instance){
+        def authorised = false
+        if(params.id){
+            def contacts = instance.getContacts()
+            contacts.each {
+                if(it.contact.userId == userId && it.administrator){
+                    //CAS contact
+                    authorised = true
+                }
+            }
+        }
+        authorised
+    }
+
     private boolean isAdmin() {
         return grailsApplication.config.security.cas.bypass.toBoolean() || request?.isUserInRole(ProviderGroup.ROLE_ADMIN)
     }

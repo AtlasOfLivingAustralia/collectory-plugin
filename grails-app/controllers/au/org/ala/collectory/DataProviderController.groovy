@@ -1,5 +1,10 @@
 package au.org.ala.collectory
 
+import au.com.bytecode.opencsv.CSVWriter
+import grails.converters.JSON
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 class DataProviderController extends ProviderGroupController {
 
     def gbifRegistryService
@@ -37,6 +42,138 @@ class DataProviderController extends ProviderGroupController {
 
             [instance: instance, contacts: instance.getContacts(), changes: getChanges(instance.uid)]
         }
+    }
+
+    def manageAccess = {
+        def instance = get(params.id)
+        //retrieve a list of users with access...
+        [instance: instance]
+    }
+
+    def addUserToApprovedList = {
+        def dataProvider = get(params.id)
+
+        log.info("userId " + params.userId)
+
+        //find a user in the collectory - search by CAS ID
+        def contact = Contact.findByUserId(params.userId)
+        if(!contact){
+
+            contact = Contact.findByEmailIlike(params.email)
+            if(contact){
+                //update the CAS ID
+                contact.setUserId(params.userId)
+                contact.userLastModified = "Modified by ${collectoryAuthService.username()})"
+                contact.save(flush:true)
+            }
+        }
+        if(!contact){
+            //create a new contact in the collectory for this user, we havent seen them before...
+            contact = new Contact(
+                [
+                    userId:params.userId,
+                    email:params.email,
+                    firstName:params.firstName,
+                    lastName: params.lastName,
+                    userLastModified: "Modified by ${collectoryAuthService.username()})"
+                ]
+            )
+            contact.save(flush:true)
+        }
+
+        def access = new ApprovedAccess()
+        access.contact = contact
+        access.dataProvider = dataProvider
+        access.save(flush:true)
+
+        def result = [success: true]
+
+        //retrieve a list of users with access...
+        render result as JSON
+    }
+
+    def removeUserToApprovedList = {
+        def instance = get(params.id)
+
+        log.info("userId " + params.userId)
+
+        def contact = Contact.findByUserId(params.userId)
+        def dataProvider = get(params.id)
+
+        def aa = ApprovedAccess.findByContactAndDataProvider(contact, dataProvider)
+        def result = [:]
+
+        if(aa){
+            aa.delete(flush:true)
+            result.success = true
+        } else {
+            result.success = false
+        }
+
+        //retrieve a list of users with access...
+        render result as JSON
+    }
+
+    def findUser = {
+
+        //proxy request to user details
+        response.setContentType("application/json")
+        def url = "https://dev.nbnatlas.org/userdetails/userDetails/findUser?q=" + params.q
+        log.info("Querying ${url}")
+        def js = new JsonSlurper().parse(new URL(url))
+
+        //retrieve a list of IDs of users with access for this provider
+        def list = ApprovedAccess.executeQuery("select distinct aa.contact.userId from ApprovedAccess aa where aa.dataProvider.id = ?",
+                [Long.valueOf(params.id)])
+
+        js.results.each {
+            if(list.contains(it.userId)){
+                it.hasAccess = true
+            } else {
+                it.hasAccess = false
+            }
+        }
+
+        render JsonOutput.toJson(js)
+    }
+
+    def findApprovedUsers = {
+        def instance = get(params.id)
+        def approvedAccess = ApprovedAccess.findAllByDataProvider(instance)
+        def contacts = []
+        approvedAccess.each {
+            contacts << it.contact
+        }
+        render contacts as JSON
+    }
+
+    def downloadApprovedList = {
+        def instance = get(params.id)
+        def approvedAccess = ApprovedAccess.findAllByDataProvider(instance)
+        response.setContentType("text/csv")
+        response.setCharacterEncoding("UTF-8")
+        response.setHeader("Content-disposition", "attachment;filename=download-approved-users-${instance.uid}.csv")
+
+        def csvWriter = new CSVWriter(new OutputStreamWriter(response.outputStream))
+        String[] header = [
+                "userID",
+                "email",
+                "first name",
+                "last name"
+        ]
+        csvWriter.writeNext(header)
+
+        approvedAccess.each {
+            def contact =  it.contact
+            String[] row = [
+                    contact.userId,
+                    contact.email,
+                    contact.firstName,
+                    contact.lastName
+            ]
+            csvWriter.writeNext(row)
+        }
+        csvWriter.flush()
     }
 
     def editConsumers = {

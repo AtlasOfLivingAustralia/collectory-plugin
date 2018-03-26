@@ -349,3 +349,8 @@ ul.facets {
 }
 
 .chart { width:100%; }
+
+
+.btn-toolbar ul.btn-group { padding-left:0px; }
+
+.btn-toolbar { margin-bottom: 20px; }

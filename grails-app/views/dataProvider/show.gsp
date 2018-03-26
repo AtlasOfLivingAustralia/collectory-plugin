@@ -1,4 +1,6 @@
-<%@ page import="au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.DataProvider" %>
+<%@ page import="au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.DataProvider;" %>
+<%@ page import="au.org.ala.collectory.CollectoryAuthService" %>
+
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -12,24 +14,20 @@
     </head>
     <body onload="initializeLocationMap('${instance.canBeMapped()}',${instance.latitude},${instance.longitude});">
     <style>
-    #mapCanvas {
-      width: 500px;
-      height: 400px;
-      float: right;
-    }
+        #mapCanvas { width: 500px;  height: 400px;  float: right; }
     </style>
         <div class="btn-toolbar">
             <ul class="btn-group">
-                <li class="btn"><cl:homeLink/></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><cl:homeLink/></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
             </ul>
             <ul class="btn-group pull-right">
-                <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
-                <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
-                <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
-                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
+                <li class="btn  btn-default"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                <li class="btn  btn-default"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                <li class="btn  btn-default"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn btn-default"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
             </ul>
         </div>
     <div class="body">
@@ -38,10 +36,17 @@
             </g:if>
             <div class="dialog emulate-public">
               <!-- base attributes -->
-              <div class="show-section well  titleBlock">
+              <div class="show-section well titleBlock">
                 <!-- Name --><!-- Acronym -->
                 <h1 style="display:inline">${fieldValue(bean: instance, field: "name")}<cl:valueOrOtherwise value="${instance.acronym}"> (${fieldValue(bean: instance, field: "acronym")})</cl:valueOrOtherwise></h1>
                 <cl:partner test="${instance.isALAPartner}"/><br/>
+
+                <div class="whycanisee pull-right">
+                   <cl:loggedInUsername/>
+                   <p>
+                    <cl:whyCanISeeThis entity="${instance}"/>
+                    </p>
+                </div>
 
                 <!-- GUID    -->
                 <p><span class="category"><g:message code="collection.show.span.lsid" />:</span> <cl:guid target="_blank" guid='${fieldValue(bean: instance, field: "guid")}'/></p>
@@ -68,6 +73,19 @@
                 <cl:editButton uid="${instance.uid}" page="/shared/base"/>
               </div>
 
+            <div class="show-section well">
+                <h2>Sensitive data access</h2>
+                <p>Manage who has access to the sensitive data for the datasets for this provider.</p>
+                <p>
+                    Currently, there are ${instance.approvals.size()} users with approved accessed.
+                </p>
+                <g:link controller="dataProvider" action="manageAccess" class="btn btn-default" id="${instance.id}">
+                    Manage access
+                </g:link>
+                <g:link controller="dataProvider" action="downloadApprovedList" class="btn btn-default" id="${instance.id}">
+                    Download user list as CSV
+                </g:link>
+            </div>
 
               <div class="show-section well">
                   <h2>IPT integration</h2>

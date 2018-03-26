@@ -45,7 +45,7 @@
         </div><!--/.navbar-inner -->
     </div><!--/.navbar -->
 
-    <div class="${fluidLayout ? 'container-fluid' : 'container'} testing,,,,," id="main-content">
+    <div class="${fluidLayout ? 'container-fluid' : 'container'}" id="main-content">
         <g:layoutBody />
     </div><!--/.container-->
 

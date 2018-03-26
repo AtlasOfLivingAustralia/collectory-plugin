@@ -13,7 +13,7 @@
             <g:link class="mainLink btn btn-default" controller="public" action="map"><g:message code="manage.list.link01" /></g:link>
         </div>
 
-        <h1><g:message code="manage.list.title03" /></h1>
+        <h1><g:message code="manage.list.title01" /></h1>
 
         <g:if test="${flash.message}">
             <div class="message">${flash.message}</div>
@@ -22,155 +22,6 @@
         <div class="row">
 
             <div class="col-md-12">
-
-                <div id="yourMetadata" class="infoSection">
-
-                    <div class="hide">
-                        <h2><g:message code="manage.list.title02" /></h2>
-                        <p><g:message code="manage.list.des02" /> ${grailsApplication.config.security.cas.bypass.toBoolean() ? 'bypassed' : 'active'}.</p>
-                        <g:set var="username" value="${request.userPrincipal?.name}"/>
-                        <g:if test="${username}">
-                            <p><g:message code="manage.list.username.des01" /> ${username}.</p>
-                            <p>User ${request.isUserInRole('ROLE_COLLECTION_ADMIN') ? 'has' : 'does not have'} ROLE_COLLECTION_ADMIN.</p>
-                            <p>User ${request.isUserInRole('ROLE_COLLECTION_EDITOR') ? 'has' : 'does not have'} ROLE_COLLECTION_EDITOR.</p>
-                        </g:if>
-                        <g:else>
-                            <p><g:message code="manage.list.des03" />.</p>
-                        </g:else>
-                        <p>
-                            <g:set var="cookiename" value="${cookie(name: 'ALA-Auth')}"/>
-                            <g:if test="${cookiename}"><g:message code="manage.list.cookiename01" /> ${cookiename}.</g:if>
-                            <g:else><g:message code="manage.list.cookiename02" />.</g:else>
-                        </p>
-                    </div>
-
-                    <p><g:message code="manage.list.des04" />.</p>
-
-                    <g:if test="${entities}">
-                        <table class="table" >
-                            <thead>
-                            </thead>
-                            <tbody>
-                            <g:each in="${entities}" var="ent">
-                                <tr>
-                                    <g:set var="name" value="${ent.uid[0..1] == 'in' ? ent.name + ' (Institution)' : ent.name}"/>
-                                    <td>
-                                        ${name}<br/>
-                                        <small>(${ent.entityType})</small>
-                                    </td>
-                                    <td>
-                                        <g:link class="btn btn-default" controller="public" action="show" id="${ent.uid}" alt=" View public page">
-                                            <i class="glyphicon glyphicon-eye-open"> </i> View public page
-                                        </g:link>
-                                    </td>
-                                    <td>
-                                        <g:link class="btn btn-default" controller="${ent.entityType}" action="show" id="${ent.uid}" alt="Edit metadata">
-                                            <i class="glyphicon glyphicon-edit"> </i> View editor page
-                                        </g:link>
-                                    </td>
-
-                                </tr>
-                            </g:each>
-                            </tbody>
-                        </table>
-                    </g:if>
-                    <g:else>
-                        <cl:ifGranted role="ROLE_COLLECTION_ADMIN">
-                            <p><strong><em><g:message code="manage.list.des05" />.</em></strong></p>
-                        </cl:ifGranted>
-                        <cl:ifNotGranted role="ROLE_COLLECTION_ADMIN">
-                            <p style="font-style: italic;margin: 10px;color: black;"><g:message code="manage.list.des06" />.</p>
-                        </cl:ifNotGranted>
-
-                        <cl:ifGranted role="ROLE_COLLECTION_EDITOR">
-                            <p><g:message code="manage.list.des07" />.</p>
-                        </cl:ifGranted>
-                        <cl:ifNotGranted role="ROLE_COLLECTION_EDITOR">
-                            <p><g:message code="manage.list.des08" />
-                            <span class="link" onclick="return sendEmail('support(SPAM_MAIL@ALA.ORG.AU)ala.org.au')"><g:message code="manage.list.des09" /></span>
-                            <g:message code="manage.list.des10" />.</p>
-                        </cl:ifNotGranted>
-                    </g:else>
-
-
-
-                    <p class="hide">
-                        <g:message code="manage.list.des11" />
-                        <span id="instructions-link"><g:message code="manage.list.des12" /></span>
-                    .</p>
-                    <div id="instructions" class="hide">
-                        <div id="requirementsForEditing">
-                            <h3><g:message code="manage.list.title04" /></h3>
-                            <h4><g:message code="manage.list.title05" />?</h4>
-                            <p><g:message code="manage.list.des13" />:</p>
-                            <ol>
-                                <li><g:message code="manage.list.li04" /></li>
-                                <li><g:message code="manage.list.li05" /></li>
-                                <li><g:message code="manage.list.li06" />.</li>
-                            </ol>
-
-                            <h4 class="ok"><g:message code="manage.list.title06" /></h4>
-                            <p><g:message code="manage.list.des14" /> <em><cl:loggedInUsername/></em>.</p>
-
-                            <cl:ifGranted role="ROLE_COLLECTION_EDITOR">
-                                <h4 class="ok"><g:message code="manage.list.title07" /></h4>
-                            </cl:ifGranted>
-                            <cl:ifNotGranted role="ROLE_COLLECTION_EDITOR">
-                                <h4 class="missing"><g:message code="manage.list.title08" />!</h4>
-                                <p><g:message code="manage.list.des15" /> <span class="link" onclick="return sendEmail('support(SPAM_MAIL@ALA.ORG.AU)ala.org.au')"><g:message code="manage.list.des16" /></span>
-                                <g:message code="manage.list.des17" /> ROLE_COLLECTION_EDITOR.</p>
-                            </cl:ifNotGranted>
-
-                            <cl:ifGranted role="ROLE_COLLECTION_EDITOR">
-                                <g:if test="${!entities}">
-                                    <h4 class="missing"><g:message code="manage.list.title09" />!</h4>
-                                </g:if>
-                                <g:else>
-                                    <h4 class="ok"><g:message code="manage.list.title10" args="[entities.size()]" />.</h4>
-                                </g:else>
-                            </cl:ifGranted>
-                            <cl:ifNotGranted role="ROLE_COLLECTION_EDITOR">
-                                <h4><g:message code="manage.list.title11" />.</h4>
-                            </cl:ifNotGranted>
-                            <p><g:message code="manage.list.des18" />.</p>
-                            <p><g:message code="manage.list.des19" />
-                            <span class="link" onclick="return sendEmail('support(SPAM_MAIL@ALA.ORG.AU)ala.org.au')"><g:message code="manage.list.des16" /></span>
-                            <g:message code="manage.list.des20" />.</p>
-
-                            <h4><g:message code="manage.list.title12" />.</h4>
-                            <p><g:message code="manage.list.des21" />
-                            <span class="link" onclick="return sendEmail('support(SPAM_MAIL@ALA.ORG.AU)ala.org.au')"><g:message code="manage.list.des22" /></span>
-                            <g:message code="manage.list.des23" />.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="addCollection" class="infoSection">
-                    <cl:ifGranted role="ROLE_COLLECTION_EDITOR">
-
-                        <h2><g:message code="manage.list.addcollection.title01" /></h2>
-                        <p><g:message code="manage.list.addcollection.des01" />:</p>
-                        <ul class="list">
-                            <li><g:message code="manage.list.addcollection.li01" />.</li>
-                            <li><g:message code="manage.list.addcollection.li02" />.</li>
-                        </ul>
-
-                        <g:link controller="dataResource" action="create" class="btn btn-default"><g:message code="manage.list.addcollection.link01" /></g:link>
-
-                        <h2><g:message code="manage.list.addcollection.title02" /></h2>
-                        <p><g:message code="manage.list.addcollection.des02" />:</p>
-                        <ul class="list">
-                            <li><g:message code="manage.list.addcollection.li03" />.</li>
-                            <li><g:message code="manage.list.addcollection.li04" />.</li>
-                            <li><g:message code="manage.list.addcollection.li05" />.</li>
-                            <li><g:message code="manage.list.addcollection.li06" />.</li>
-                            <li><g:message code="manage.list.addcollection.li07" />.</li>
-                            <li><g:message code="manage.list.addcollection.li08" />.</li>
-                        </ul>
-
-                        <g:link controller="collection" action="create" class="btn btn-default"><g:message code="manage.list.addcollection.link02" /></g:link>
-                    </cl:ifGranted>
-                </div>
 
                 <div id="adminTools" class="infoSection">
                 <cl:ifGranted role="ROLE_COLLECTION_ADMIN">
@@ -182,7 +33,7 @@
                         <p class="mainText"><g:message code="manage.list.addtools.des02" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell well">
                         <span class="mainLink"><g:message code="manage.list.addtools.span01" /></span>
 
                         <p class="mainText"><g:message code="manage.list.addtools.des03" /></p>

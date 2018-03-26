@@ -1,10 +1,13 @@
 package au.org.ala.collectory
-/*  represents a person who acts as a contact for an ALA entity such as
+/**
+ * Represents a person who acts as a contact for an ALA entity such as
  *  an institution, collection or dataset.
  *
  *  - based on collectory data model version 5
  */
 class Contact implements Serializable {
+
+    String userId           // CAS user ID - this will be null for a lot contacts....
 
     String title            // the person's honorific eg Dr
     String firstName
@@ -16,6 +19,8 @@ class Contact implements Serializable {
     String notes
     boolean publish = true    // controls whether the contact is listed on web site
 
+    static hasMany = [approvedAccess: ApprovedAccess]
+
     Date dateCreated
     Date lastUpdated
     String userLastModified
@@ -23,6 +28,8 @@ class Contact implements Serializable {
     static auditable = [ignore: ['version','dateCreated','lastUpdated','userLastModified']]
 
     static constraints = {
+        userId(nullable: true, maxSize:45)
+
         title(nullable:true, maxSize: 20, inList: ["Dr", "Prof", "Mr", "Ms", "Mrs", "Assoc Prof", "Assist Prof"])
         firstName(nullable: true, maxSize: 255)
         lastName(nullable: true, maxSize: 255)
