@@ -100,6 +100,7 @@ class DataProviderController extends ProviderGroupController {
             approvedAccess.dataResourceUids = JsonOutput.toJson(list)
         }
         //if the access is for all resources....
+        approvedAccess.userLastModified = username()
         approvedAccess.save(flush:true)
 
         redirect(action:"manageAccess", id:params.id)
@@ -139,6 +140,7 @@ class DataProviderController extends ProviderGroupController {
         def access = new ApprovedAccess()
         access.contact = contact
         access.dataProvider = dataProvider
+        access.userLastModified = username()
         access.save(flush:true)
 
         def result = [success: true]
