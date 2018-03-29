@@ -22,9 +22,11 @@
         <div class="btn-toolbar">
             <ul class="btn-group">
                 <li class="btn"><cl:homeLink/></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <cl:isEditor>
+
+                    <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                    <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                </cl:isEditor>
             </ul>
             <ul class="btn-group pull-right">
                 <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>

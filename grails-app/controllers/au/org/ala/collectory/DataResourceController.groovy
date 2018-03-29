@@ -43,11 +43,16 @@ class DataResourceController extends ProviderGroupController {
         params.order = params.order ?: "asc"
         ActivityLog.log username(), isAdmin(), Action.LIST
 
-        if(params.resourceType){
-            [instanceList: DataResource.findAllWhere(['resourceType' : params.resourceType], params), entityType: 'DataResource', instanceTotal: DataResource.count()]
-
+        if(params.q){
+            def search = DataResource.findAllByNameIlike('%' + params.q +'%')
+            [instanceList: search, entityType: 'DataResource', instanceTotal: search.size()]
         } else {
-            [instanceList: DataResource.list(params), entityType: 'DataResource', instanceTotal: DataResource.count()]
+            if(params.resourceType){
+                [instanceList: DataResource.findAllWhere(['resourceType' : params.resourceType], params), entityType: 'DataResource', instanceTotal: DataResource.count()]
+
+            } else {
+                [instanceList: DataResource.list(params), entityType: 'DataResource', instanceTotal: DataResource.count()]
+            }
         }
     }
 

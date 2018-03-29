@@ -5,7 +5,7 @@ grails.project.test.reports.dir	= "target/test-reports"
 grails.project.target.level = 1.8
 grails.project.source.level = 1.8
 
-grails.plugin.location."ala-charts-plugin" = "../ala-charts-plugin"
+//grails.plugin.location."ala-charts-plugin" = "../ala-charts-plugin"
 
 grails.project.fork = [
         test: false,
@@ -44,12 +44,11 @@ grails.project.dependency.resolution = {
         runtime ":hibernate:3.6.10.19"
         runtime ":jquery:1.11.1"
         runtime ":resources:1.2.14"
-        runtime ":audit-logging:1.1.1"
+        runtime ":audit-logging:1.1.3"
         runtime ":cache-headers:1.1.7"
         runtime ":rest:0.8"
-        //runtime ":richui:0.8"
         runtime ":tiny-mce:3.4.9"
         runtime ":cors:1.1.8"
-//        runtime ":ala-charts-plugin:1.3.2"
+        runtime ":ala-charts-plugin:1.3.2"
     }
 }

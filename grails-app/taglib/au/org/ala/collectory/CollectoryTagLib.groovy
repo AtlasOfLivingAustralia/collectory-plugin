@@ -145,6 +145,41 @@ class CollectoryTagLib {
         }
     }
 
+    def ifAnyGranted = { attrs, body ->
+        def granted = false
+        if (grailsApplication.config.security.cas.bypass.toBoolean()) {
+            granted = true
+        } else {
+            def roles = []
+            if(attrs.role){
+                roles = attrs.role.toString().tokenize(',')
+            } else {
+                roles = attrs.roles
+            }
+
+            roles.each {
+                if (request.isUserInRole(it)) {
+                    granted = true
+                }
+            }
+        }
+        if (granted) {
+            out << body()
+        }
+    }
+
+    def isAdmin = { attrs, body ->
+        if (collectoryAuthService.isAdmin()) {
+            out << body()
+        }
+    }
+
+    def isEditor = { attrs, body ->
+        if (collectoryAuthService.isEditor()) {
+            out << body()
+        }
+    }
+
     /**
      * <cl:ifGranted role="ROLE_COLLECTION_ADMIN">
      *  The specified role must be granted for the tag to output its body.
@@ -167,19 +202,6 @@ class CollectoryTagLib {
         if (!grailsApplication.config.security.cas.bypass.toBoolean() && !request.isUserInRole(attrs.role)) {
             out << body()
         }
-    }
-
-    /**
-     * List interesting roles.
-     */
-    def roles = {
-        def roles = []
-        ['ROLE_ADMIN','ROLE_COLLECTION_EDITOR','ROLE_COLLECTION_ADMIN'].each {
-            if (collectoryAuthService.userInRole(it)) {
-                roles << it
-            }
-        }
-        out << roles.join(', ')
     }
 
     def isLoggedIn = { attrs, body ->
@@ -208,39 +230,27 @@ class CollectoryTagLib {
 
     def whyCanISeeThis = { attrs ->
         def authReason = ""
-        if(collectoryAuthService?.userInRole(ProviderGroup.ROLE_EDITOR)){
-            authReason += "User has ${ProviderGroup.ROLE_EDITOR};"
-        }
         if(grailsApplication.config.security.cas.bypass.toBoolean()){
             authReason += "CAS is currently bypassed for all users;"
-        }
-
-        def result = collectoryAuthService.isUserAuthorisedEditorForEntity(collectoryAuthService.authService.getUserId(), attrs.entity)
-        if(result.authorised){
-            authReason += result.reason
+        } else {
+            if(collectoryAuthService.userInRole(ProviderGroup.ROLE_ADMIN)){
+                authReason += "Logged in user has ${ProviderGroup.ROLE_ADMIN};"
+            }
+            if(collectoryAuthService.userInRole(ProviderGroup.ROLE_COLLECTION_ADMIN)){
+                authReason += "Logged in user has ${ProviderGroup.ROLE_COLLECTION_ADMIN};"
+            }
+            if(collectoryAuthService.userInRole(ProviderGroup.ROLE_COLLECTION_EDITOR)){
+                authReason += "Logged in user has ${ProviderGroup.ROLE_COLLECTION_EDITOR};"
+            }
+            def result = collectoryAuthService.isUserAuthorisedEditorForEntity(collectoryAuthService.authService.getUserId(), attrs.entity)
+            if(result.authorised){
+                authReason += result.reason
+            }
         }
 
         log.info("Auth reason: " + authReason)
         //add some info - why can i see this page ?
         out << authReason
-    }
-
-    def isAuthorisedEditorForEntity(userId, instance){
-        def authorised = false
-        if(params.id){
-            def contacts = instance.getContacts()
-            contacts.each {
-                if(it.contact.userId == userId && it.administrator){
-                    //CAS contact
-                    authorised = true
-                }
-            }
-        }
-        authorised
-    }
-
-    private boolean isAdmin() {
-        return grailsApplication.config.security.cas.bypass.toBoolean() || request?.isUserInRole(ProviderGroup.ROLE_ADMIN)
     }
 
     /**
@@ -255,7 +265,7 @@ class CollectoryTagLib {
      * @return true if has rights to edit
      */
     private boolean isAuthorisedToEdit(uid, email) {
-        if (isAdmin()) {
+        if (collectoryAuthService.isEditor()) {
             return true
         }
         else if (email) {
@@ -265,19 +275,6 @@ class CollectoryTagLib {
             }
         }
         return false
-    }
-
-    /**
-     * Authorisation for editing is determined by roles and rights
-     *
-     * @attrs uid - the uid of the entity
-     */
-    def isAuth = { attrs, body ->
-        if (isAuthorisedToEdit(attrs.uid, request.getUserPrincipal()?.attributes?.email)) {
-            out << body()
-        } else {
-            out << ' You are not authorised to change this record '// + debugString
-        }
     }
 
     /**

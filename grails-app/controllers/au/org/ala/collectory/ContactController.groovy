@@ -18,7 +18,7 @@ class ContactController {
     def beforeInterceptor = [action:this.&auth]
 
     def auth() {
-        if (!collectoryAuthService?.userInRole(ProviderGroup.ROLE_EDITOR) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
+        if (!collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN) && !grailsApplication.config.security.cas.bypass.toBoolean()) {
             render "You are not authorised to access this page."
             return false
         }
@@ -36,7 +36,13 @@ class ContactController {
     def list() {
         params.max = Math.min(params.max ? params.int('max') : 20, 10000)
         params.sort = 'lastName'
-        [contactInstanceList: Contact.list(params), contactInstanceTotal: Contact.count()]
+
+        if(params.q){
+            def results = Contact.findAllByEmailLikeOrLastNameLikeOrFirstNameLike('%' + params.q + '%', params.q, params.q)
+            [contactInstanceList: results, contactInstanceTotal: results.size()]
+        } else {
+            [contactInstanceList: Contact.list(params), contactInstanceTotal: Contact.count()]
+        }
     }
 
     // dfp 2017-07-06 If you have a closure here, the test framework fails,

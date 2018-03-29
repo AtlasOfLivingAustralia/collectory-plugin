@@ -15,8 +15,10 @@
     </g:each>
   </ul>
   <div style="clear:both;"></div>
+  <cl:isAdmin>
   <div>
       <span class="buttons long"><g:link class="edit btn btn-default" action='editConsumers' params="[source:'co']" id="${instance.uid}"><g:message code="shared.consumers.link01" />&nbsp;</g:link></span>
       <span class="buttons long"><g:link class="edit btn btn-default" action='editConsumers' params="[source:'in']" id="${instance.uid}"><g:message code="shared.consumers.link02" /></g:link></span>
   </div>
+  </cl:isAdmin>
 </div>

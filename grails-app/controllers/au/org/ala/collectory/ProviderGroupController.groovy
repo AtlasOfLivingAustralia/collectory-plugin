@@ -2,9 +2,7 @@ package au.org.ala.collectory
 
 import au.org.ala.audit.AuditLogEvent
 import grails.converters.JSON
-import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogListener
 
-//import au.org.ala.audit.AuditLogEvent
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.multipart.MultipartFile
 
@@ -39,18 +37,18 @@ abstract class ProviderGroupController {
     def auth() {
         if (
             !collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN)
-            && !collectoryAuthService?.userInRole(ProviderGroup.ROLE_EDITOR)
+            && !collectoryAuthService?.userInRole(ProviderGroup.ROLE_COLLECTION_EDITOR)
             && !grailsApplication.config.security.cas.bypass.toBoolean()
             && !isUserAuthorisedEditorForEntity(collectoryAuthService.authService.getUserId(), params.id)
         ) {
             response.setHeader("Content-type", "text/plain; charset=UTF-8")
-            render message(code: "provider.group.controller.01", default: "You are not authorised to access this page. You do not have '${ProviderGroup.ROLE_EDITOR}' rights.")
+            render message(code: "provider.group.controller.01", default: "You are not authorised to access this page. You do not have '${ProviderGroup.ROLE_ADMIN}' rights.")
             return false
         } else {
 
             def authReason = ""
-            if(collectoryAuthService?.userInRole(ProviderGroup.ROLE_EDITOR)){
-                authReason += "User has ${ProviderGroup.ROLE_EDITOR};"
+            if(collectoryAuthService?.userInRole(ProviderGroup.ROLE_ADMIN)){
+                authReason += "User has ${ProviderGroup.ROLE_ADMIN};"
             }
             if(grailsApplication.config.security.cas.bypass.toBoolean()){
                 authReason += "CAS is currently bypassed for all users;"

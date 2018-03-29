@@ -59,8 +59,6 @@
     var findApprovedUsers = "${g.createLink(controller: 'dataProvider', action: 'findApprovedUsers', id: instance.id)}";
     var addUserUrl = "${g.createLink(controller: 'dataProvider', action: 'addUserToApprovedList', id: instance.id)}";
     var removeUserUrl = "${g.createLink(controller: 'dataProvider', action: 'removeUserToApprovedList', id: instance.id)}";
-    var providerId = "${instance.id}";
-
 
     $('#searchForUser').click(function() {
         var queryUrl = queryBaseUrl + $('#q').val();
@@ -70,10 +68,14 @@
     });
 
     $('#viewApproved').click(function() {
+        listApproved();
+    });
+
+    function listApproved(){
         $.getJSON(findApprovedUsers, function(data){
             renderResults(data, true);
         });
-    });
+    }
 
     function renderResults(results, allApproved){
 
@@ -141,11 +143,9 @@
                     alert( "There was a problem changing access." );
                 });
         });
-
-
-
     }
 
+    listApproved();
 
 </script>
 </body>

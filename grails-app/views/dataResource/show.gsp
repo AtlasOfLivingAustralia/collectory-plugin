@@ -21,17 +21,19 @@
     </style>
         <div class="btn-toolbar">
             <ul class="btn-group">
-                <li class="btn"><cl:homeLink/></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><cl:homeLink/></li>
+                <cl:isEditor>
+                    <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                    <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
+                   <li class="btn btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                </cl:isEditor>
             </ul>
             <ul class="btn-group pull-right">
-                <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
-                <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
-                <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
-                <li class="btn"><cl:emlDataLink uid="${instance.uid}"/></li>
-                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
+                <li class="btn btn-default"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                <li class="btn btn-default"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                <li class="btn btn-default"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                <li class="btn btn-default"><cl:emlDataLink uid="${instance.uid}"/></li>
+                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn btn-default"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span> <g:message code="default.query.label"/></a></li></g:if>
             </ul>
         </div>
         <div class="body">
@@ -50,11 +52,14 @@
                     <h2 style="display:inline"><g:link controller="dataProvider" action="show" id="${instance.dataProvider?.id}">${instance.dataProvider?.name}</g:link></h2>
                 </g:if>
 
-                <div class="whycanisee pull-right">
-                    <cl:loggedInUsername/>
-                    <p>
-                        <cl:whyCanISeeThis entity="${instance}"/>
-                    </p>
+                <div class="whycanisee pull-right  panel panel-default" style="max-width:200px;">
+                    <div class="panel-heading">My permissions</div>
+                    <div class="panel-body">
+                        <cl:loggedInUsername/>
+                        <p>
+                            <cl:whyCanISeeThis entity="${instance}"/>
+                        </p>
+                    </div>
                 </div>
 
                 <cl:partner test="${instance.dataProvider?.isALAPartner}"/><br/>
@@ -189,8 +194,10 @@
                 <cl:editButton uid="${instance.uid}" page="/shared/taxonomicRange"/>
               </div>
 
-              <!-- mobilisation -->
-              <div class="show-section well">
+
+              <cl:isAdmin>
+                  <!-- mobilisation -->
+                  <div class="show-section well">
                 <g:if test="${instance.gbifDataset}">
                     <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
                         <div class="pull-right"><span class="buttons"><g:link class="edit btn btn-default" controller="manage" action="gbifDatasetDownload" id="${instance.uid}">
@@ -250,17 +257,22 @@
 
                 </g:if>
 
-                <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
+                <cl:ifAnyGranted roles="${[ProviderGroup.ROLE_ADMIN,ProviderGroup.ROLE_COLLECTION_ADMIN]}">
                   <div><span class="buttons"><g:link class="edit btn btn-default" action='edit' params="[page:'contribution']" id="${instance.uid}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
-                </cl:ifGranted>
-
+                </cl:ifAnyGranted>
 
               </div>
+              </cl:isAdmin>
 
+              <cl:isAdmin>
               <div class="well">
                   <h3><g:message code="dataresource.show.title03" /></h3>
+                  <p>
+                      Upload a darwin core archive or CSV of data for this resource.
+                  </p>
                   <g:link controller="dataResource" action="upload" class="btn btn-default" id="${instance.uid}"><i class="glyphicon glyphicon-upload"></i> <g:message code="dataresource.show.link.upload" /></g:link>
               </div>
+              </cl:isAdmin>
 
               <!-- rights -->
               <div class="show-section well">
@@ -311,9 +323,11 @@
               <g:render template="/shared/location" model="[instance: instance]"/>
 
               <!-- Record consumers -->
-              <g:if test="${instance.resourceType == 'records'}">
-                  <g:render template="/shared/consumers" model="[instance: instance]"/>
-              </g:if>
+              <cl:isAdmin>
+                  <g:if test="${instance.resourceType == 'records'}">
+                      <g:render template="/shared/consumers" model="[instance: instance]"/>
+                  </g:if>
+              </cl:isAdmin>
 
               <!-- Contacts -->
               <g:render template="/shared/contacts" model="[contacts: contacts, instance: instance]"/>
@@ -328,23 +342,11 @@
               <g:render template="/shared/externalIdentifiers" model="[instance: instance]"/>
 
               <g:if test="${grailsApplication.config.loggerURL}">
-              <div class="well">
-                <!-- Resources -->
-                <h2>User download reports</h2>
-                <p>
-                        <a class="btn btn-default" href="${grailsApplication.config.loggerURL}/admin/userReport/download?fileName=user-report-${instance.uid}.csv&entityUids=${instance.uid}&eventId=1002">
-                            <i class="glyphicon glyphicon-cloud-download"></i>  Download user report for this data resource
-                        </a>
-                 </p>
-                 <p>
-                        <a class="btn  btn-default" href="${grailsApplication.config.loggerURL}/admin/userReport/downloadDetailed?fileName=user-report-detailed-${instance.uid}.csv&entityUids=${instance.uid}&eventId=1002">
-                            <i class="glyphicon glyphicon-cloud-download"></i> Download detailed user report for this data resource
-                        </a>
-                 </p>
-              </div>
+                  <g:render template="/shared/userReports" model="[instance: instance]"/>
               </g:if>
 
               <!-- GBIF integration -->
+              <cl:isAdmin>
               <div class="well">
                 <h2><g:message code="dataresource.show.gbif.sync" default="GBIF synchronisation" /></h2>
 
@@ -364,7 +366,7 @@
                                     Update GBIF
                                 </g:link>
                                 <g:link
-                                        class="btn btn-default"
+                                        class="btn btn-danger"
                                         controller="dataResource"
                                         action="deleteGBIF"
                                         id="${instance.id}"
@@ -405,6 +407,7 @@
                 <cl:editButton uid="${instance.uid}" page="gbif"/>
 
               </div>
+              </cl:isAdmin>
 
               <!-- change history -->
               <g:render template="/shared/changes" model="[changes: changes, instance: instance]"/>
@@ -418,10 +421,10 @@
                     </cl:ifGranted>
                 </g:form>
                 <ul class="btn-group pull-right">
-                    <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
-                    <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
-                    <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
-                    <li class="btn"><cl:emlDataLink uid="${instance.uid}"/></li>
+                    <li class="btn btn-default"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                    <li class="btn btn-default"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                    <li class="btn btn-default"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                    <li class="btn btn-default"><cl:emlDataLink uid="${instance.uid}"/></li>
                 </ul>
             </div>
         </div>

@@ -20,8 +20,15 @@ class InstitutionController extends ProviderGroupController {
             flash.message = params.message
         params.max = Math.min(params.max ? params.int('max') : 1000, 5000)
         params.sort = params.sort ?: "name"
-        [institutionInstanceList: Institution.list(params),
-                institutionInstanceTotal: Institution.count()]
+
+        if(params.q){
+            def results = Institution.findAllByNameLikeOrAcronymLike('%' + params.q + '%', '%' + params.q + '%')
+            [institutionInstanceList: results,
+             institutionInstanceTotal: results.size()]
+        } else {
+            [institutionInstanceList: Institution.list(params),
+             institutionInstanceTotal: Institution.count()]
+        }
     }
 
     def show = {

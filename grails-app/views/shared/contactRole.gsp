@@ -27,8 +27,10 @@
                 <g:hiddenField name="returnTo" value="${returnTo}" />
                 <div class="dialog">
                     <div class="form-group">
-                        <label for="role" class="col-sm-2 control-label"><g:message code="shared.cr.table0201" /></label>
-                        <div class="col-sm-10">
+                        <label for="role" class="col-sm-2 control-label">
+                            <g:message code="shared.cr.table0201" />
+                        </label>
+                        <div class="col-sm-6">
                             <g:textField name="role" value="${cf?.role}" class="form-control" />
                         </div>
                     </div>

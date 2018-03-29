@@ -21,16 +21,50 @@ class CollectoryAuthService{
         return (username) ? username : 'not available'
     }
 
+    /**
+     * A user is an ADMIN if they have either the ROLE_ADMIN or ROLE_COLLECTION_ADMIN roles.
+     *
+     * @return
+     */
     def isAdmin() {
         def adminFlag = false
         if(grailsApplication.config.security.cas.bypass.toBoolean())
             adminFlag = true
         else {
             if(authService) {
-                adminFlag = authService.userInRole(ProviderGroup.ROLE_ADMIN)
+                adminFlag = authService.userInRole(ProviderGroup.ROLE_ADMIN) || authService.userInRole(ProviderGroup.ROLE_COLLECTION_ADMIN)
             }
         }
         return adminFlag
+    }
+
+    /**
+     * A user is an EDITOR if they have either the ROLE_ADMIN or ROLE_COLLECTION_ADMIN roles.
+     *
+     * @return
+     */
+    def isEditor() {
+        def adminFlag = false
+        if(grailsApplication.config.security.cas.bypass.toBoolean()) {
+            adminFlag = true
+        } else {
+            if(authService) {
+                adminFlag = authService.userInRole(ProviderGroup.ROLE_COLLECTION_EDITOR) ||
+                        authService.userInRole(ProviderGroup.ROLE_ADMIN) ||
+                        authService.userInRole(ProviderGroup.ROLE_COLLECTION_ADMIN)
+            }
+        }
+        return adminFlag
+    }
+
+    def getRoles(){
+        def roles = []
+        ProviderGroup.COLLECTORY_ROLES.each {
+            if(authService.userInRole(it)){
+                roles << it
+            }
+        }
+        roles
     }
 
     protected boolean userInRole(role) {
@@ -44,25 +78,6 @@ class CollectoryAuthService{
         }
 
         return roleFlag || isAdmin()
-    }
-
-    protected boolean isAuthorisedToEdit(uid) {
-        if (grailsApplication.config.security.cas.bypass.toBoolean() || isAdmin()) {
-            return true
-        } else {
-            def email = RequestContextHolder.currentRequestAttributes()?.getUserPrincipal()?.attributes?.email
-            if(email) {
-                return ProviderGroup._get(uid)?.isAuthorised(email)
-            } else {
-                if(authService) {
-                    email = authService.email
-                    if(email)
-                        return ProviderGroup._get(uid)?.isAuthorised(email)
-                }
-            }
-        }
-
-        return false
     }
 
     /**
@@ -109,7 +124,7 @@ class CollectoryAuthService{
                 if (it.contact.userId == userId && it.administrator) {
                     //CAS contact
                     authorised = true
-                    reason = "User is an administrator for ${instance.entityType()} : ${instance.id} : ${instance.name}"
+                    reason = "User is an administrator for ${instance.entityType()} : ${instance.uid} : ${instance.name}"
                 }
             }
         }

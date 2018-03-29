@@ -23,7 +23,7 @@
                         
                    	        <g:sortableColumn property="id" title="Id" />
                         
-                   	        <g:sortableColumn property="actor" title="Actor" />
+                   	        <g:sortableColumn property="actor" title="User" />
                         
                    	        <g:sortableColumn property="uri" title="Uri" />
                         

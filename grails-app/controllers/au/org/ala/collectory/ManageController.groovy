@@ -156,12 +156,9 @@ class ManageController {
     def list = {
 
         def view = "list"
-        if(collectoryAuthService.isAdmin()){
+        if(collectoryAuthService.isEditor()){
             view = "adminList"
         }
-
-
-
 
         // find the entities the user is allowed to edit
         def entities = collectoryAuthService.authorisedForUser(collectoryAuthService.username()).sorted
@@ -171,8 +168,9 @@ class ManageController {
         // get their contact details in case needed
         def contact = Contact.findByEmail(collectoryAuthService.username())
 
+        def roles = collectoryAuthService.getRoles()
 
-        render(view: view, model: [entities: entities, user: contact])
+        render(view: view, model: [entities: entities, user: contact, userRoles: roles])
     }
 
     def show = {

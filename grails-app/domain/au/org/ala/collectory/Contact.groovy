@@ -131,7 +131,11 @@ class Contact implements Serializable {
     List<ProviderGroup> getContactsFor() {
         List<ProviderGroup> result = []
         ContactFor.findAllByContact(this).each {
-            result << ProviderGroup._get(it.entityUid)
+            result << [
+                    entity: ProviderGroup._get(it.entityUid),
+                    isAdmin: it.administrator,
+                    role: it.role
+            ]
         }
         return result
     }

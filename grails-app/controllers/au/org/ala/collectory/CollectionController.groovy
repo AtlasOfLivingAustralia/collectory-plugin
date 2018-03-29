@@ -24,7 +24,15 @@ class CollectionController extends ProviderGroupController {
         if (params.message)
             flash.message = params.message
         params.sort = params.sort ?: "name"
-        def colls = Collection.list(params)
+
+        def colls = []
+
+        if(params.q){
+            colls = Collection.findAllByNameLikeOrAcronymLike('%' + params.q + '%', '%' + params.q + '%')
+        } else {
+            colls = Collection.list(params)
+        }
+
         def sortOrder = (params.order == 'desc') ? -1 : 1
         if (params.sort == 'institution') {
             // need to sort by institution name

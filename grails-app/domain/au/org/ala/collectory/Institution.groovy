@@ -28,6 +28,7 @@ class Institution extends ProviderGroup {
                         'school', 'scienceCenter', 'society', 'university', 'voluntaryObserver', 'zoo'])
         collections(nullable:true)
         childInstitutions(nullable:true)
+        keywords(nullable:true)
         gbifCountryToAttribute(nullable:true, maxSize: 3)
     }
 

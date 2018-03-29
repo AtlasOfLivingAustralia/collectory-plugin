@@ -22,14 +22,24 @@
             </g:if>
 
             <div class=" pull-right">
+
+                <g:if test="${contactInstance?.getContactsFor()}">
                 <div class="well">
                     <h3>Contact for</h3>
                     <ul>
-                        <g:each in="${contactInstance?.getContactsFor()}" var="entity">
-                            <li><g:link controller="${cl.controller(type: entity?.entityType())}" action="show" id="${entity?.uid}">${entity?.name}</g:link></li>
+                        <g:each in="${contactInstance?.getContactsFor()}" var="contactFor">
+                        <li>
+                            <g:link controller="${cl.controller(type: contactFor.entity.entityType())}" action="show" id="${contactFor.entity.uid}">
+                                ${contactFor.entity.name}
+                                <g:if test="${contactFor.isAdmin}">
+                                    (Administrator)
+                                </g:if>
+                            </g:link>
+                        </li>
                         </g:each>
                     </ul>
                 </div>
+                </g:if>
 
                 <g:if test="${contactInstance.approvedAccess}">
                 <div>
@@ -114,20 +124,9 @@
                             <td valign="top" class="name"><g:message code="contact.publish.label" default="Publish" /></td>
                             <td valign="top" class="value"><g:formatBoolean boolean="${contactInstance?.publish}" /></td>
                         </tr>
-<!-- contact for -->    <tr class="prop">
-                            <td valign="top" class="name"><g:message code="contact.for.label" default="Contact for:" /></td>
-
-                            <td valign="top" style="text-align: left;" class="value">
-
-                            </td>
-
-                        </tr>
-
                     </tbody>
                 </table>
             </div>
-
-
 
             <div class="buttons">
                 <g:form>

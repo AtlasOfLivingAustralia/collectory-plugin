@@ -19,6 +19,21 @@ class DataProviderController extends ProviderGroupController {
         redirect(action:"list")
     }
 
+    def myList = {
+        def currentUserId = authService.getUserId()
+        def contact = Contact.findByUserId(currentUserId)
+        def results = []
+        if(contact){
+            def contactsFor = contact.getContactsFor()
+            contactsFor.each {
+                if(it.entity.entityType() == DataProvider.getENTITY_TYPE()){
+                    results << it.entity
+                }
+            }
+        }
+        render (view: 'list', model: [instanceList: results, entityType: 'DataProvider', instanceTotal: results.size()])
+    }
+
     // list all entities
     def list = {
         if (params.message) {
@@ -27,7 +42,13 @@ class DataProviderController extends ProviderGroupController {
         params.max = Math.min(params.max ? params.int('max') : 10000, 10000)
         params.sort = params.sort ?: "name"
         ActivityLog.log username(), isAdmin(), Action.LIST
-        [instanceList: DataProvider.list(params), entityType: 'DataProvider', instanceTotal: DataProvider.count()]
+        if(params.q){
+            def results = DataProvider.findAllByNameLikeOrAcronymLike('%' + params.q +'%', '%' + params.q +'%');
+
+            [instanceList: results, entityType: 'DataProvider', instanceTotal: results.size()]
+        } else {
+            [instanceList: DataProvider.list(params), entityType: 'DataProvider', instanceTotal: DataProvider.count()]
+        }
     }
 
     def show = {

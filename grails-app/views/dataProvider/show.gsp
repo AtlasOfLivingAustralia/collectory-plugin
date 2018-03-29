@@ -19,9 +19,11 @@
         <div class="btn-toolbar">
             <ul class="btn-group">
                 <li class="btn btn-default"><cl:homeLink/></li>
-                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
-                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
-                <li class="btn btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <cl:isEditor>
+                    <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                    %{--<li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>--}%
+                    <li class="btn btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                </cl:isEditor>
             </ul>
             <ul class="btn-group pull-right">
                 <li class="btn  btn-default"><cl:viewPublicLink uid="${instance?.uid}"/></li>
@@ -41,11 +43,19 @@
                 <h1 style="display:inline">${fieldValue(bean: instance, field: "name")}<cl:valueOrOtherwise value="${instance.acronym}"> (${fieldValue(bean: instance, field: "acronym")})</cl:valueOrOtherwise></h1>
                 <cl:partner test="${instance.isALAPartner}"/><br/>
 
-                <div class="whycanisee pull-right">
-                   <cl:loggedInUsername/>
-                   <p>
-                    <cl:whyCanISeeThis entity="${instance}"/>
-                    </p>
+
+                <div class="whycanisee pull-right  col-md-4">
+                    <div class=" panel panel-default">
+                        <div class="panel-heading">My permissions</div>
+                        <div class="panel-body">
+                            <div class="whycanisee">
+                               <cl:loggedInUsername/>
+                               <p>
+                                <cl:whyCanISeeThis entity="${instance}"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- GUID    -->
@@ -83,10 +93,11 @@
                     Manage access
                 </g:link>
                 <g:link controller="dataProvider" action="downloadApprovedList" class="btn btn-default" id="${instance.id}">
-                    Download user list as CSV
+                    <i class="glyphicon glyphicon-cloud-download"></i> Download user list as CSV
                 </g:link>
             </div>
 
+             <cl:isAdmin>
               <div class="show-section well">
                   <h2>IPT integration</h2>
                   <p>
@@ -105,6 +116,7 @@
                         Download sync report</g:link>
                   </p>
               </div>
+             </cl:isAdmin>
 
               <!-- description -->
               <div class="show-section well">
@@ -142,9 +154,12 @@
                       <li><g:link controller="dataResource" action="show" id="${c.uid}">${c?.name}</g:link></li>
                   </g:each>
                 </ul>
+
+                <cl:isAdmin>
                 <p>
                     <g:link controller="dataResource"  class="btn btn-default" action="create" params='[dataProviderUid: "${instance.uid}"]'><g:message code="dataprovider.show.link01" /></g:link>
                 </p>
+                </cl:isAdmin>
               </div>
 
               <!-- images -->
@@ -155,7 +170,9 @@
               <g:render template="/shared/location" model="[instance: instance]"/>
 
               <!-- Record consumers -->
-              <g:render template="/shared/consumers" model="[instance: instance]"/>
+              <cl:isAdmin>
+                <g:render template="/shared/consumers" model="[instance: instance]"/>
+              </cl:isAdmin>
 
               <!-- Contacts -->
               <g:render template="/shared/contacts" model="[contacts: contacts, instance: instance]"/>
@@ -166,13 +183,17 @@
               <!-- external identifiers -->
               <g:render template="/shared/externalIdentifiers" model="[instance: instance]"/>
 
-              <!-- GBIF integration -->
-              <g:render template="/shared/userReports" model="[instance: instance, controller: 'dataProvider']"/>
+              <!-- Download usage reports -->
+              <g:if test="${grailsApplication.config.loggerURL}">
+                <g:render template="/shared/userReports" model="[instance: instance]"/>
+              </g:if>
 
               <!-- GBIF integration -->
-              <g:render template="/shared/gbif" model="[instance: instance, controller: 'dataProvider']"/>
+              <cl:isAdmin>
+                <g:render template="/shared/gbif" model="[instance: instance, controller: 'dataProvider']"/>
+              </cl:isAdmin>
 
-                <!-- change history -->
+              <!-- change history -->
               <g:render template="/shared/changes" model="[changes: changes, instance: instance]"/>
 
             </div>

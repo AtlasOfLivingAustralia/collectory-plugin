@@ -17,6 +17,9 @@
                     <li class="btn btn-default"><span class="glyphicon glyphicon-refresh"></span><g:link class="create" action="syncWithAuth"> <g:message code="contact.sync.auth" default="Sync with Auth system"/></g:link></li>
                 </g:if>
             </ul>
+            <div class="pull-right">
+                <g:render template="../shared/quickSearch" model="[placeholder: 'search contacts']"/>
+            </div>
         </div>
         <div class="body content">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
@@ -40,8 +43,8 @@
                     <g:each in="${contactInstanceList}" status="i" var="contactInstance">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                             <td><g:link action="show" id="${contactInstance.id}">${fieldValue(bean: contactInstance, field: "id")}</g:link></td>
-                            <td>${fieldValue(bean: contactInstance, field: "userId")}</td>
-                            <td>${fieldValue(bean: contactInstance, field: "email")}</td>
+                            <td><g:link action="show" id="${contactInstance.id}">${fieldValue(bean: contactInstance, field: "userId")}</g:link></td>
+                            <td><g:link action="show" id="${contactInstance.id}">${fieldValue(bean: contactInstance, field: "email")}</g:link></td>
                             <td>${fieldValue(bean: contactInstance, field: "title")}</td>
                             <td>${fieldValue(bean: contactInstance, field: "firstName")}</td>
                             <td>${fieldValue(bean: contactInstance, field: "lastName")}</td>

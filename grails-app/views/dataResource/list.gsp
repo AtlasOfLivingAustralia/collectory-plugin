@@ -10,12 +10,17 @@
         <div class="btn-toolbar">
             <ul class="btn-group">
                 <li class="btn btn-default"><cl:homeLink/></li>
-                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list" params="[max:10000]"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
-                <li class="btn  btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
-                <li class="btn  btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="gb" action="list" controller="dataResource" params="[sort:'name',max:10000, resourceType:'records', order:'asc']"> <g:message code="records.datasets.only" default="Record datasets only"/></g:link></li>
-                <li class="btn  btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="gb" action="downloadCSV" controller="gbif"> <g:message code="download.datasets.list" default="Download CSV"/></g:link></li>
-
+                <cl:isEditor>
+                    <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list" params="[max:10000]"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                    <li class="btn  btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                    <li class="btn  btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="gb" action="list" controller="dataResource" params="[sort:'name',max:10000, resourceType:'records', order:'asc']"> <g:message code="records.datasets.only" default="Record datasets only"/></g:link></li>
+                    <li class="btn  btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="gb" action="downloadCSV" controller="gbif"> <g:message code="download.datasets.list" default="Download CSV"/></g:link></li>
+                </cl:isEditor>
             </ul>
+
+            <div class="pull-right">
+                <g:render template="../shared/quickSearch" model="[placeholder: 'search data resources']"/>
+            </div>
         </div>
         <div class="body content">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
@@ -52,7 +57,8 @@
                         <td>
                               ${instance.isVerified() ? "yes" : "no"}
                         </td>
-                        <td>${fieldValue(bean: instance.dataProvider, field: "name")}
+                        <td>
+                            ${fieldValue(bean: instance.dataProvider, field: "name")}
                             ${fieldValue(bean: instance.institution, field: "name")}
                         </td>
 
