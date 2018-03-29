@@ -9,6 +9,15 @@
     </head>
 <body>
 
+
+<div class="btn-toolbar">
+    <ul class="btn-group">
+        <li class="btn btn-default"><cl:homeLink/></li>
+        <li class="btn btn-default">
+            <g:link class="returnAction" controller="dataProvider" action='show' id="${instance.id}">Return to ${instance.name}</g:link>
+        </li>
+    </ul>
+</div>
 <h1>Manage approved list for <g:link controller="dataProvider" action="show" id="${instance.id}"> ${instance.name}</g:link></h1>
 
 <div class=" well">
@@ -48,6 +57,7 @@
             <td class="actions">
                 <button class="addUser btn btn-primary hide">Grant access</button>
                 <button class="removeUser btn btn-danger hide">Revoke access</button>
+                <button class="specifyResources btn btn-primary hide">Specify resources</button>
             </td>
         </tr>
     </table>
@@ -59,6 +69,7 @@
     var findApprovedUsers = "${g.createLink(controller: 'dataProvider', action: 'findApprovedUsers', id: instance.id)}";
     var addUserUrl = "${g.createLink(controller: 'dataProvider', action: 'addUserToApprovedList', id: instance.id)}";
     var removeUserUrl = "${g.createLink(controller: 'dataProvider', action: 'removeUserToApprovedList', id: instance.id)}";
+    var specifyResourcesUrl = "${g.createLink(controller: 'dataProvider', action: 'specifyAccess', id: instance.id)}";
 
     $('#searchForUser').click(function() {
         var queryUrl = queryBaseUrl + $('#q').val();
@@ -92,9 +103,11 @@
             template.find('.lastName').html(returnedResult.lastName);
             template.find('.addUser').attr('id', 'add-' + returnedResult.userId);
             template.find('.removeUser').attr('id', 'def-' + returnedResult.userId);
+            template.find('.specifyResources').attr('id', 'spc-' + returnedResult.userId);
 
             if(allApproved || returnedResult.hasAccess){
                 template.find('.removeUser').removeClass('hide');
+                template.find('.specifyResources').removeClass('hide');
             } else {
                 template.find('.addUser').removeClass('hide');
             }
@@ -117,6 +130,7 @@
             $.post( addUserUrl, data)
                 .done(function() {
                     $('#' + userId).find('.removeUser').removeClass('hide');
+                    $('#' + userId).find('.specifyResources').removeClass('hide');
                     $('#' + userId).find('.addUser').addClass('hide');
                 })
                 .fail(function() {
@@ -137,11 +151,17 @@
             $.post( removeUserUrl, data)
                 .done(function() {
                     $('#' + userId).find('.removeUser').addClass('hide');
+                    $('#' + userId).find('.specifyResources').addClass('hide');
                     $('#' + userId).find('.addUser').removeClass('hide');
                 })
                 .fail(function() {
                     alert( "There was a problem changing access." );
                 });
+        });
+
+        $('.specifyResources').click(function(event) {
+            var userId = event.target.id.substring(4);
+            window.location.href = specifyResourcesUrl + "?userId=" + userId;
         });
     }
 

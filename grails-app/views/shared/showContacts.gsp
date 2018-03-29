@@ -13,7 +13,7 @@
         <ul class="btn-group">
             <li class="btn btn-default"><cl:homeLink/></li>
             <li class="btn btn-default">
-                    <g:link class="returnAction" controller="${command.urlForm()}" action='show' id="${command.id}">Return to ${command.name}</g:link>
+                <g:link class="returnAction" controller="${command.urlForm()}" action='show' id="${command.id}">Return to ${command.name}</g:link>
             </li>
         </ul>
     </div>

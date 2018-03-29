@@ -67,8 +67,42 @@ class DataProviderController extends ProviderGroupController {
 
     def manageAccess = {
         def instance = get(params.id)
-        //retrieve a list of users with access...
         [instance: instance]
+    }
+
+    def specifyAccess = {
+        def instance = get(params.id)
+        def contact = Contact.findByUserId(params.userId)
+        def approvedAccess = ApprovedAccess.findByContactAndDataProvider(contact, instance)
+        def approvedAccessUids = new JsonSlurper().parseText(approvedAccess.dataResourceUids?:"[]")
+        if(approvedAccessUids == "[]"){
+            approvedAccessUids = []
+        }
+        [instance:instance, contact: contact, approvedAccessUids: approvedAccessUids, allApproved: approvedAccessUids.size() == 0]
+    }
+
+    boolean isCollectionOrArray(object) {
+        [Collection, Object[]].any { it.isAssignableFrom(object.getClass()) }
+    }
+
+    def updateSpecifiedAccess = {
+        def instance = get(params.id)
+        def contact = Contact.findByUserId(params.userId)
+        def approvedAccess = ApprovedAccess.findByContactAndDataProvider(contact, instance)
+
+        if(params.allResources){
+            approvedAccess.dataResourceUids = JsonOutput.toJson("[]")
+        } else {
+            def list = params.approvedUIDs
+            if(!isCollectionOrArray(list) ){
+                list = [params.approvedUIDs]
+            }
+            approvedAccess.dataResourceUids = JsonOutput.toJson(list)
+        }
+        //if the access is for all resources....
+        approvedAccess.save(flush:true)
+
+        redirect(action:"manageAccess", id:params.id)
     }
 
     def addUserToApprovedList = {
