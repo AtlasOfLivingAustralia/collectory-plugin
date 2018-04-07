@@ -5,6 +5,7 @@ import groovyx.net.http.HTTPBuilder
 import groovy.util.slurpersupport.GPathResult
 
 import javax.activation.DataSource
+import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
@@ -20,8 +21,7 @@ class IptService {
 
     static transactional = true
     def grailsApplication
-    def idGeneratorService
-    def dataLoaderService
+    def idGeneratorService, emlImportService, collectoryAuthService
 
     /** The standard IPT service namespace for XML documents */
     static final NAMESPACES = [
@@ -49,29 +49,24 @@ class IptService {
             },
             lastChecked: { item -> new Timestamp(System.currentTimeMillis()) },
             provenance: { item -> "Published dataset" },
-            contentTypes: { item -> "[ \"point occurrence data\" ]" }
+            contentTypes: { item -> "[ \"point occurrence data\" ]" },
+            gbifRegistryKey: { item ->
+                def guid = item.guid?.text()
+                if(guid && !guid.startsWith("http")) {
+                    def versionMarker = guid.indexOf("/")
+                    if (versionMarker > 0) {
+                        guid = guid.substring(0, versionMarker)
+                    }
+                    guid
+                } else {
+                    null
+                }
+            }
     ]
-    /** Fields that we can derive from the EML document */
-    protected emlFields = [
-            pubDescription: { eml -> this.collectParas(eml.dataset.abstract?.para) },
-            rights: { eml ->  this.collectParas(eml.dataset.intellectualRights?.para) },
-            citation: { eml ->  eml.additionalMetadata?.metadata?.gbif?.citation?.text() },
-            state: { eml ->
-                def state = eml.dataset.contact?.address?.administrativeArea?.text()
 
-                if (state)
-                    state = this.dataLoaderService.massageState(state)
-                ProviderGroup.statesList.contains(state) ? state : null
-            },
-            email: { eml ->  eml.dataset.contact?.electronicMailAddress?.text() },
-            phone: { eml ->  eml.dataset.contact?.phone?.text() }
-    ]
     /** All field names */
-    protected allFields = rssFields.keySet() + emlFields.keySet()
-
-    /** Collect individual XML para elements together into a single block of text */
-    protected def collectParas(GPathResult paras) {
-        paras?.list().inject(null, { acc, para -> acc == null ? (para.text()?.trim() ?: "") : acc + " " + (para.text()?.trim() ?: "") })
+    def allFields() {
+        rssFields.keySet() + emlImportService.emlFields.keySet()
     }
 
     /**
@@ -103,46 +98,58 @@ class IptService {
      * @return A list of merged data resources
      */
     @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED)
-    def merge(DataProvider provider, List<DataResource> updates, boolean create, boolean check, String username, boolean admin) {
+    def merge(DataProvider provider, List updates, boolean create, boolean check, String username, boolean admin) {
         def current = provider.resources.inject([:], { map, item -> map[item.websiteUrl] = item; map })
         def merged = []
 
         for (update in updates) {
-            DataResource old = current[update.websiteUrl]
+
+            DataResource old = current[update.resource.websiteUrl]
 
             if (old)  {
-                if (!check || old.dataCurrency == null || update.dataCurrency == null || update.dataCurrency.after(old.dataCurrency)) {
-                    for (name in allFields) {
-                        def val = update.getProperty(name)
-
-                        if (val != null)
+                if (!check || old.dataCurrency == null || update.resource.dataCurrency == null || update.resource.dataCurrency.after(old.dataCurrency)) {
+                    for (name in allFields()) {
+                        def val = update.resource.getProperty(name)
+                        if (val != null) {
                             old.setProperty(name, val)
+                        }
                     }
                     old.userLastModified = username
                     if (create) {
                         old.save(flush: true)
                         old.errors.each {
-                            log.error it
+                            log.debug it
                         }
+
+                        def emails = old.getContacts().collect { it.contact.email }
+
+                        //sync contacts
+                        update.contacts.each { contact ->
+                            if(!emails.contains(contact.email)){
+                                old.addToContacts(contact, null, false, true, collectoryAuthService.username())
+                            }
+                        }
+
                         ActivityLog.log username, admin, Action.EDIT_SAVE, "Updated IPT data resource " + old.uid + " from scan"
                     }
+
                     merged << old
                 }
             } else {
                 if (create) {
-                    update.uid = idGeneratorService.getNextDataResourceId()
-                    update.userLastModified = username
+                    update.resource.uid = idGeneratorService.getNextDataResourceId()
+                    update.resource.userLastModified = username
                     try {
-                        update.save(flush: true)
-                        update.errors.each {
-                            log.error it
+                        update.resource.save(flush: true)
+                        update.contacts.each { contact ->
+                            update.resource.addToContacts(contact, null, false, true, collectoryAuthService.username())
                         }
-                        ActivityLog.log username, admin, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.uid + " for dataset " + update.websiteUrl
+                        ActivityLog.log username, admin, Action.CREATE, "Created new IPT data resource for provider " + provider.uid  + " with uid " + update.resource.uid + " for dataset " + update.resource.websiteUrl
                     } catch (Exception e){
-                        log.error("Unable to persist resource " + update, e)
+                        log.error("Unable to persist resource " + update.resource, e)
                     }
                 }
-                merged << update
+                merged << update.resource
             }
         }
         return merged
@@ -175,8 +182,6 @@ class IptService {
         return items.collect { item -> this.createDataResource(provider, item, keyName) }
     }
 
-
-
     /**
      * Construct from an RSS item
      *
@@ -195,13 +200,17 @@ class IptService {
         rssFields.each { name, accessor -> resource.setProperty(name, accessor(rssItem))}
 
         resource.connectionParameters =  dwca == null || dwca.isEmpty() ? null : "{ \"protocol\": \"DwCA\", \"url\": \"${dwca}\", \"automation\": true, \"termsForUniqueKey\": [ \"${keyName}\" ] }";
-        if (eml != null)
-            retrieveEml(resource, eml)
-        return resource
+
+        def contacts = []
+        if (eml != null) {
+            contacts = retrieveEml(resource, eml)
+        }
+
+        [resource: resource, contacts: contacts]
     }
 
     /**
-     * Retreieve Eco-informatics metadata for the dataset and put it into the resource description.
+     * Retrieve Eco-informatics metadata for the dataset and put it into the resource description.
      *
      * @param resource The resource
      * @param url The URL of the metadata
@@ -210,34 +219,8 @@ class IptService {
     def retrieveEml(DataResource resource, String url) {
         log.debug("Retrieving EML from " + url)
         def http = new HTTPBuilder(url)
+        http.encoders.charset = StandardCharsets.UTF_8.name()
         def eml = http.get([:]).declareNamespace(NAMESPACES)
-
-        emlFields.each { name, accessor ->
-            def val = accessor(eml)
-            if (val != null)
-                resource.setProperty(name, val)
-        }
-
-        eml.dataset.alternateIdentifier?.each {
-            def id = it.text()
-            if(id  && id.startsWith("doi")){
-                resource.gbifDoi = id
-            }
-        }
-
-        //attempt to match the licence
-        def licenceUrl = eml.dataset.intellectualRights?.para?.ulink?.@url.text()
-        def licence = Licence.findByUrl(licenceUrl)
-        if(licence == null){
-            if(licenceUrl.contains("http://")){
-                licence = Licence.findByUrl(licenceUrl.replaceAll("http://", "https://"))
-            } else {
-                licence = Licence.findByUrl(licenceUrl.replaceAll("https://", "http://"))
-            }
-        }
-        if(licence){
-            resource.licenseType = licence.acronym
-            resource.licenseVersion = licence.licenceVersion
-        }
+        emlImportService.extractFromEml(eml, resource)
     }
 }
