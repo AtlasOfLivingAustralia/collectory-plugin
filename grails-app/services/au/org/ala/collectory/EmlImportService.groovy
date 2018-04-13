@@ -29,7 +29,6 @@ class EmlImportService {
 
             if (state)
                 state = this.dataLoaderService.massageState(state)
-            ProviderGroup.statesList.contains(state) ? state : null
         },
 
         phone: { eml ->  eml.dataset.contact?.phone?.text() },

@@ -5,7 +5,8 @@
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><g:message code="collection.base.label" default="Edit collection metadata" /></title>
     </head>
-    <body id="body-wrapper">
+    <body>
+
         <div class="nav">
           <g:if test="${mode == 'create'}">
             <h1><g:message code="collection.des.title" /></h1>
@@ -14,15 +15,15 @@
             <h1><g:message code="collection.title.editing" />: ${command.name}</h1>
           </g:else>
         </div>
-        <tr id="baseForm" >
             <g:if test="${message}">
-            <div class="message">${message}</div>
+                <div class="message alert alert-warning">${message}</div>
             </g:if>
             <g:hasErrors bean="${command}">
             <div class="errors">
                 <g:renderErrors bean="${command}" as="list" />
             </div>
             </g:hasErrors>
+
             <g:form method="post" name="baseForm" action="base">
                 <g:hiddenField name="id" value="${command?.id}"/>
                 <g:hiddenField name="version" value="${command.version}"/>
@@ -72,7 +73,7 @@
 
                 <!-- start date -->
                 <div class="form-group">
-                    <label for="startDate"><g:message code="collection.des.startdate"/><cl:helpText
+                    <label for="startDate"><g:message code="manage.show.temp.startdate"/><cl:helpText
                             code="collection.startDate"/></label>
                     <g:textField name="startDate" maxlength="45" value="${command?.startDate}"/>
 
@@ -81,7 +82,7 @@
                 <!-- end date -->
                 <div class="form-group">
 
-                    <label for="endDate"><g:message code="collection.des.enddate"/><cl:helpText
+                    <label for="endDate"><g:message code="manage.show.temp.enddate"/><cl:helpText
                             code="collection.endDate"/></label>
                     <g:textField name="endDate" maxlength="45" value="${command?.endDate}"/>
                 </div>
@@ -94,38 +95,80 @@
                 </div>
 
                 <!-- sub-collections -->
-                <div class="form-group">
-                    <label for="subCollections"><g:message code="scope.subCollections.label"
-                                                           default="Sub-collections"/><cl:helpText
-                            code="scope.subCollections"/></label>
-                    <p><g:message code="collection.des.des01"/>.</p>
-                    <table><colgroup><col width="50%"/><col width="50%"/></colgroup>
-                        <tr><g:message code="collection.des.de02"/><g:message code="collection.des.des03"/></tr>
+                <div id="subcollections-editor" class="well">
+                    <h2>
+                        <g:message code="scope.subCollections.label" default="Sub-collections"/>
+                        <cl:helpText code="scope.subCollections"/>
+                    </h2>
+
+                    <ul id="subcollections" style="list-style-type: none; padding-left:0px;" >
                         <g:set var="subcollections" value="${command.listSubCollections()}"/>
                         <g:each var="sub" in="${subcollections}" status="i">
-                            <tr>
-                                <g:textField name="name_${i}" value="${sub.name.encodeAsHTML()}"/>
-                                <g:textField name="description_${i}" value="${sub.description.encodeAsHTML()}"/>
-                            </tr>
+                            <li id="subcollection_${i}">
+                                <label for="name_${i}">Name</label>
+                                <g:textField name="name_${i}" class="subcollection_name form-control" value="${sub.name.encodeAsHTML()}"/>
+
+                                <label for="description_${i}">Description</label>
+                                <g:textArea name="description_${i}" class="subcollection_description form-control" value="${sub.description.encodeAsHTML()}"/>
+                                <br/>
+                                <button class="btn btn-default deleteSubcollection">Delete</button>
+                                <hr/>
+                            </li>
                         </g:each>
-                        <g:set var="j" value="${subcollections.size()}"/>
-                        <g:each var="i" in="${[j, j + 1, j + 2]}">
-                            <tr>
-                                <g:textField name="name_${i}" value=""/>
-                                <g:textField name="description_${i}" value=""/>
-                            </tr>
-                        </g:each>
-                    </table>
+                    </ul>
+
+                    <button id="addSubcollection" class="btn btn-default">Add new subcollection</button>
+
+                    <!-- template -->
+                    <li id="subcollection_template" class="hide">
+                        <label for="name_">Name</label>
+                        <g:textField  name="name_" class="subcollection_name form-control" value=""/>
+                        <label for="description_">Description</label>
+                        <g:textArea name="description_" class="subcollection_description form-control" value=""/>
+                        <br/>
+                        <button class="btn btn-default deleteSubcollection">Delete</button>
+                        <hr/>
+                    </li>
+
                 </div>
 
                 <div class="buttons">
-                    <span class="button"><input type="submit" class="save btn btn-success"
+                    <input type="submit" class="save btn btn-success"
                                                 name="_action_updateDescription"
-                                                value="${message(code: "collection.button.update")}"></span>
-                    <span class="button"><input type="submit" class="cancel btn btn-default" name="_action_cancel"
-                                                value="${message(code: "collection.button.cancel")}"></span>
+                                                value="${message(code: "collection.button.update")}">
+                    <input type="submit" class="cancel btn btn-default" name="_action_cancel"
+                                                value="${message(code: "collection.button.cancel")}">
                 </div>
             </g:form>
         </div>
+
+    <script>
+
+        $('.deleteSubcollection').click(function(event){
+            event.preventDefault();
+            $(event.target).parent().remove();
+        });
+
+        $('#addSubcollection').click(function(){
+
+            event.preventDefault();
+            var $subcollection = $('#subcollection_template').clone();
+            $subcollection.removeClass('hide');
+            var currentSubcollectionSize = $('#subcollections li').length;
+
+            $subcollection.attr('id','subcollection_'+ currentSubcollectionSize);
+            $subcollection.find('.subcollection_name').attr('name', 'name_'+ currentSubcollectionSize);
+            $subcollection.find('.subcollection_description').attr('name', 'description_' + currentSubcollectionSize);
+            $subcollection.find('.deleteSubcollection').click(function(event){
+                event.preventDefault();
+                $(event.target).parent().remove();
+            });
+
+            $subcollection.appendTo('#subcollections');
+        });
+
+    </script>
+
+
     </body>
 </html>
