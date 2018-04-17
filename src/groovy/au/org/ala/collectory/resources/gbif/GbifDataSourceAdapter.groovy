@@ -207,7 +207,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
                 phone: phone,
                 email: email,
                 pubDescription: dataset.description,
-                state: address?.state && ProviderGroup.statesList.contains(address.state) ? address.state : null,
+                state: address?.state,
                 websiteUrl: dataset.homepage,
                 rights: dataset.rights,
                 licenseType: license?.licenseType,

@@ -113,7 +113,7 @@ abstract class ProviderGroup implements Serializable {
         latitude(max:360.0, min:-360.0, scale:10)
         longitude(max:360.0, min:-360.0, scale:10)
         altitude(nullable:true)
-        state(nullable:true, maxSize:45, inList: statesList)
+        state(nullable:true, maxSize:45)
         websiteUrl(nullable:true, maxSize:256)
         logoRef(nullable:true)
         imageRef(nullable:true)
