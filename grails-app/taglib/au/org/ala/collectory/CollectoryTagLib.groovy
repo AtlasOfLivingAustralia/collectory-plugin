@@ -28,7 +28,7 @@ class CollectoryTagLib {
     }
 
     def getFacetForEntity(entity){
-        if(entity.ENTITY_TYPE == 'DataResource')
+        if(entity.ENTITY_TYPE == 'DataResource' || entity.ENTITY_TYPE == 'TempDataResource')
             'data_resource_uid'
         else if (entity.ENTITY_TYPE == 'DataProvider')
             'data_provider_uid'

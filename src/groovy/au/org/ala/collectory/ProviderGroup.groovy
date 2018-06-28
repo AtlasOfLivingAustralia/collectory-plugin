@@ -79,7 +79,7 @@ abstract class ProviderGroup implements Serializable {
     static embedded = ['address', 'logoRef', 'imageRef']
 
     static transients = ['primaryInstitution', 'primaryContact', 'memberOf', 'networkTypes', 'mappable','ALAPartner',
-        'primaryPublicContact','publicContactsPrimaryFirst','contactsPrimaryFirst', 'authorised']
+        'primaryPublicContact','publicContactsPrimaryFirst','contactsPrimaryFirst', 'authorised', 'occurrenceRecordsUrl']
 
     //to be externalised or managed in a DB table or file
     static networkTypes = ["CHAH", "CHAFC", "CHAEC", "CHACM", "CAMD"]
@@ -749,6 +749,16 @@ abstract class ProviderGroup implements Serializable {
      */
     def boolean equals(Object obj) {
         return obj instanceof ProviderGroup && uid == obj?.uid
+    }
+
+    /**
+     * Generate URL to occurrence records
+     *
+     * @return the occurrence records
+     */
+    String getOccurrenceRecordsUrl() {
+        String facet = new CollectoryTagLib().getFacetForEntity(this)
+        Holders.grailsApplication.config.biocacheUiURL + "/occurrences/search?q=" + facet + ":" + uid
     }
 }
 

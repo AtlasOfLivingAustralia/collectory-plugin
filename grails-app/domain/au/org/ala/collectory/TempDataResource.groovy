@@ -13,10 +13,16 @@
  * rights and limitations under the License.
  */
 package au.org.ala.collectory
+
+import grails.util.Holders
+
 /**
  * Represents a temporary data set that has been uploaded to the transient biocache.
  */
 class TempDataResource {
+
+    static final String ENTITY_TYPE = 'TempDataResource'
+    static final String ENTITY_PREFIX = 'drt'
 
     String uid              // with the form drtnnnnn (data resource temporary)
     String name             // the label supplied by the user
@@ -72,7 +78,7 @@ class TempDataResource {
 
     static auditable = [ignore: ['version','dateCreated','lastUpdated']]
 
-    static transients = ['primaryContact','primaryPublicContact','publicContactsPrimaryFirst','contactsPrimaryFirst','type']
+    static transients = ['primaryContact','primaryPublicContact','publicContactsPrimaryFirst','contactsPrimaryFirst','type','occurrenceRecordsUrl']
 
     static mapping = {
         uid index:'uid_idx'
@@ -263,4 +269,13 @@ class TempDataResource {
         return 'Draft'
     }
 
+    /**
+     * Generate URL to occurrence records
+     *
+     * @return the occurrence records
+     */
+    String getOccurrenceRecordsUrl() {
+        String facet = new CollectoryTagLib().getFacetForEntity(this)
+        return Holders.grailsApplication.config.biocacheUiURL + "/occurrences/search?q=" + facet + ":" + uid
+    }
 }

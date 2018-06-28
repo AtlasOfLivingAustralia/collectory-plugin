@@ -139,6 +139,7 @@ class CrudService {
                     hiddenJSON = p.hiddenJSON.formatJSON()
                 }
                 gbifRegistryKey = p.gbifRegistryKey
+                occurrenceRecordsUrl = p.getOccurrenceRecordsUrl()
             }
         }
         return result
@@ -379,6 +380,7 @@ class CrudService {
                     externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }
                 doi = p.gbifDoi
+                occurrenceRecordsUrl = p.getOccurrenceRecordsUrl()
             }
         }
         return result
@@ -569,6 +571,7 @@ class CrudService {
                 if (p.externalIdentifiers) {
                     externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }
+                occurrenceRecordsUrl = p.getOccurrenceRecordsUrl()
             }
         }
         return result
@@ -708,6 +711,7 @@ class CrudService {
                 if (p.externalIdentifiers) {
                     externalIdentifiers = p.externalIdentifiers.formatExternalIdentifiers()
                 }
+                occurrenceRecordsUrl = p.getOccurrenceRecordsUrl()
             }
         }
         return result
