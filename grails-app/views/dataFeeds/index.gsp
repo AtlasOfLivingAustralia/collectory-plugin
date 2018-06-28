@@ -12,16 +12,20 @@
                     <namePart type="full">${provider.name}</namePart>
                 </name>
                 <location>
+                    <g:if test="${provider.websiteUrl}">
                     <address>
-                        <electronic type="url">
+                        <electronic type="uri">
                             <value>${provider.websiteUrl}</value>
                         </electronic>
                     </address>
+                    </g:if>
+                    <g:if test="${provider.resolveAddress()}">
                     <address>
                         <physical type="streetAddress">
-                            <addressPart type="locationDescriptor">${provider.name}</addressPart>
+                            <addressPart type="locationDescriptor">${provider.resolveAddress()}</addressPart>
                         </physical>
                     </address>
+                    </g:if>
                 </location>
             </party>
         </registryObject>
@@ -42,7 +46,7 @@
                 </name>
                 <location>
                     <address>
-                        <electronic>
+                        <electronic type="uri">
                             <value>${resource.buildPublicUrl()}</value>
                         </electronic>
                     </address>

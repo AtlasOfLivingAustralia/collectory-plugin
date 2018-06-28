@@ -40,11 +40,11 @@ class Address {
     }
 
     String buildAddress() {
-        return nonEmptyAddressElements(false).join(" ")
+        return nonEmptyAddressElements(false).join(", ")
     }
 
     def String toString() {
-        return nonEmptyAddressElements(true).join(" ")
+        return nonEmptyAddressElements(true).join(", ")
     }
 
     def boolean equals(Object obj) {
