@@ -12,7 +12,7 @@
         <div id="column-one">
 
           <h1>${fieldValue(bean: instance, field: "name")}</h1>
-
+          <g:render template="editButton"/>
           <div class="section">
             <p><g:message code="public.stdr.co.des01" args="[name, instance.dateCreated]" />.</p>
             <p><g:message code="public.stdr.co.des02" args="[instance.numberOfRecords]" />.</p>

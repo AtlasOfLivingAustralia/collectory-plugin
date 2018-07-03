@@ -39,6 +39,7 @@
           <div class="row">
             <div class="col-md-8">
               <cl:h1 value="${instance.name}"/>
+              <g:render template="editButton"/>
               <g:set var="inst" value="${instance.getInstitution()}"/>
               <g:if test="${inst}">
                 <h3><g:link action="show" id="${inst.uid}">${inst.name}</g:link></h3>

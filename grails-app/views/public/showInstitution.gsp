@@ -34,6 +34,7 @@
     <div class="row">
             <div class="col-md-8">
                 <cl:h1 value="${instance.name}"/>
+                <g:render template="editButton"/>
                 <g:set var="parents" value="${instance.listParents()}"/>
                 <g:each var="p" in="${parents}">
                     <h2><g:link action="show" id="${p.uid}">${p.name}</g:link></h2>

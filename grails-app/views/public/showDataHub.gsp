@@ -37,6 +37,7 @@
         <div class="row">
           <div class="col-md-8">
             <cl:h1 value="${instance.name}"/>
+            <g:render template="editButton"/>
             <cl:valueOrOtherwise value="${instance.acronym}"><span class="acronym"><g:message code="public.sdh.header.span01" />: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
             <g:if test="${instance.guid?.startsWith('urn:lsid:')}">
               <span class="lsid"><a href="#lsidText" id="lsid" class="local" title="Life Science Identifier (pop-up)"><g:message code="public.lsid" /></a></span>

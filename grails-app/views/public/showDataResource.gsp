@@ -40,6 +40,7 @@
     <section class="row">
         <div class="col-md-8">
             <cl:h1 value="${instance.name}"/>
+            <g:render template="editButton"/>
             <g:set var="dp" value="${instance.dataProvider}"/>
             <g:if test="${dp}">
                 <h2 class="dataResourceProviderLink"><g:link action="show" id="${dp.uid}">${dp.name}</g:link></h2>

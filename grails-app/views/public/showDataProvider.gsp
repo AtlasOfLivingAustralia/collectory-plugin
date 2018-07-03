@@ -45,6 +45,7 @@
         <div class="row">
             <div class="col-md-8">
                 <cl:h1 value="${instance.name}"/>
+                <g:render template="editButton"/>
                 <cl:valueOrOtherwise value="${instance.acronym}"><span
                         class="acronym">Acronym: ${fieldValue(bean: instance, field: "acronym")}</span></cl:valueOrOtherwise>
                 <g:if test="${instance.guid?.startsWith('urn:lsid:')}">
