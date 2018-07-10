@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><g:message code="public.map.title01" /> | <g:message code="public.map.title02" /></title>
-        <script src="https://maps.google.com/maps/api/js?v=3&sensor=true"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=${grailsApplication.config.google?.apikey}"></script>
         <script type="text/javascript" src="${resource(dir:'js', file:'map.js')}"></script>
         <script type="text/javascript">
           $(document).ready(function() {
