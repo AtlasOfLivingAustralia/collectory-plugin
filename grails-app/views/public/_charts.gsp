@@ -51,6 +51,15 @@
         }
       });
   }
+
+  /************************************************************\
+   * load download stats
+  \************************************************************/
+  $(document).ready(function() {
+      if (loadLoggerStats) {
+        loadDownloadStats("${grailsApplication.config.loggerURL}", "${instance.uid}","${instance.name}", "1002");
+      }
+  });
 </r:script>
 <r:script type="text/javascript">
     <charts:biocache
