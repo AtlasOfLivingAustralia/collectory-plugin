@@ -27,6 +27,8 @@ gbifOrphansPublisherID = "" //the ID of data publisher in GBIF to use if there i
 gbifEndorsingNodeKey = "" //get this from GBIF
 gbifInstallationKey = "" //get this from GBIF
 
+// RIF-CS
+rifcs.excludeBounds = false
 
 // Templates for exposed archives
 resource.publicArchive.url.template = "https://biocache.ala.org.au/archives/@UID@/@UID@_ror_dwca.zip"

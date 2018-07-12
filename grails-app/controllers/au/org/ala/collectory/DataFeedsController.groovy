@@ -16,7 +16,10 @@ class DataFeedsController {
         try {
             resData = rifCsService.getResData(dataResources) // TODO use a Bean instead of a Map to transport data
             resContentTypes = resData.get("resContentTypes")
-            resBoundingBoxCoords = resData.get("resBoundingBoxCoords")
+
+            if (!grailsApplication.config.rifcs?.excludeBounds) {
+                resBoundingBoxCoords = resData.get("resBoundingBoxCoords")
+            }
         } catch (Exception e) {
             render(status: 503, text: e.message)
             return
