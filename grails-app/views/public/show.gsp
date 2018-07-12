@@ -6,7 +6,7 @@
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
         <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-        <r:require modules="jquery, fancybox, jquery_tools, jquery_jsonp, charts, jquery_i18n"/>
+        <r:require modules="jquery, fancybox, jquery_jsonp, charts, jquery_i18n"/>
         <r:script type="text/javascript">
           orgNameLong = "${orgNameLong}";
           biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
@@ -61,7 +61,7 @@
               <g:if test="${inst?.logoRef?.file}">
                   <section class="public-metadata">
                       <g:link action="showInstitution" id="${inst.id}">
-                          <img class="institutionImage" src='${resource(absolute:"true", dir:"data/institution/",file:fieldValue(bean: inst, field: 'logoRef.file'))}' />
+                          <img class="institutionImage" src='${resource(absolute:"true", dir:"data/institution/",file:inst.logoRef.file)}' />
                       </g:link>
                   </section>
               </g:if>

@@ -42,10 +42,12 @@ from the ALA collectory app (no local DB is required for this app).
     ]
 
     // Location of the plugin's issue tracker.
-    def issueManagement = [ system: "Google Code", url: "https://github.com/AtlasOfLivingAustralia/collectory-plugin/issues" ]
+    def issueManagement = [ system: "Github Issues", url: "https://github.com/AtlasOfLivingAustralia/collectory-plugin/issues" ]
 
     // Online location of the plugin's browseable source code.
     def scm = [ url: "https://github.com/AtlasOfLivingAustralia/collectory-plugin" ]
+
+    def loadAfter = ['alaBootstrap3']
 
     def doWithWebDescriptor = { xml -> }
 

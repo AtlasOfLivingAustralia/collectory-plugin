@@ -28,7 +28,7 @@ modules = {
         resource url:[dir:'js/jquery.fancybox/fancybox', file:'jquery.fancybox-1.3.1.css', plugin:'collectory-plugin']
         resource url:[dir:'js/jquery.fancybox/fancybox', file:'jquery.fancybox-1.3.1.pack.js', plugin:'collectory-plugin']
     }
-        jstree {
+    jstree {
         resource url:[dir:'js', file:'jquery.jstree.js', plugin:'collectory-plugin']
         resource url:[dir:'js/themes/classic', file:'style.css', plugin:'collectory-plugin'], attrs:[media:'screen, projection, print']
     }
@@ -80,7 +80,7 @@ modules = {
         resource url:[dir:'js/themes/classic', file:'style.css', plugin:'collectory-plugin'], attrs:[media:'screen, projection, print']
     }
     collectory {
-        dependsOn 'jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_tools,jquery_jsonp,fancybox,openlayers,map'
+        dependsOn 'jquery_ui_custom,smoothness,jquery_i18n,jquery_json,jquery_jsonp,fancybox,openlayers,map'
         resource url:[dir:'js', file:'collectory.js', plugin:'collectory-plugin']
         resource url:[dir:'css', file:'temp-style.css', plugin:'collectory-plugin']
     }
