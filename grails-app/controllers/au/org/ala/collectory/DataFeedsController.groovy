@@ -21,6 +21,7 @@ class DataFeedsController {
                 resBoundingBoxCoords = resData.get("resBoundingBoxCoords")
             }
         } catch (Exception e) {
+            log.error "Failed to retrieve RIF-CS data: ${e.message}", e
             render(status: 503, text: e.message)
             return
         }
