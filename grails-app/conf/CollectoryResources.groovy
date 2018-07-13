@@ -108,4 +108,7 @@ modules = {
         resource url:[ dir: 'css', file:'ALAChart.css', plugin:'ala-charts-plugin']
 
     }
+    public_show {
+        resource url:[ dir: 'js', file:'public.show.js', plugin:'collectory-plugin']
+    }
 }

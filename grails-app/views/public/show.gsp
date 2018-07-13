@@ -6,29 +6,25 @@
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
         <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-        <r:require modules="jquery, fancybox, jquery_jsonp, charts, jquery_i18n, taxonTree"/>
+        <r:require modules="jquery, fancybox, jquery_jsonp, charts, jquery_i18n, taxonTree, public_show"/>
         <r:script type="text/javascript">
+          // Global var SHOW_REC to pass GSP data to external JS file
+          var SHOW_REC = {
+              orgNameLong: "${orgNameLong}",
+              biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
+              biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
+              loggerServiceUrl: "${grailsApplication.config.loggerURL}",
+              loadLoggerStats: ${!grailsApplication.config.disableLoggerLinks.toBoolean()},
+              instanceUuid: "${instance.uid}",
+              instanceName:"${instance.name}"
+          }
+
+          // Legacy global vars - keep for now
           orgNameLong = "${orgNameLong}";
           biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
           biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
           loadLoggerStats = ${!grailsApplication.config.disableLoggerLinks.toBoolean()};
-          $(document).ready(function() {
-            $("a#lsid").fancybox({
-                    'hideOnContentClick' : false,
-                    'titleShow' : false,
-                    'autoDimensions' : false,
-                    'width' : 600,
-                    'height' : 180
-            });
-            $("a.current").fancybox({
-                    'hideOnContentClick' : false,
-                    'titleShow' : false,
-                        'titlePosition' : 'inside',
-                    'autoDimensions' : true,
-                    'width' : 300
-            });
-            $('#overviewTabs a:first').tab('show');
-          });
+
         </r:script>
     </head>
     <body class="two-column-right">
@@ -314,58 +310,6 @@
                <h2><g:message code="public.show.it.title"/></h2>
                <div id="imagesSpiel"></div>
                <div id="imagesList"></div>
-               <r:script type="text/javascript">
-                   /************************************************************\
-                    * load images
-                    \************************************************************/
-                   $(document).ready(function() {
-                        var wsBase = "/occurrences/search.json";
-                        var uiBase = "/occurrences/search";
-                        var imagesQueryUrl = "?facets=type_status&fq=multimedia%3AImage&pageSize=100&q=" + buildQueryString("${instance.uid}");
-                        $.ajax({
-                            url: urlConcat(biocacheServicesUrl, wsBase + imagesQueryUrl),
-                            dataType: 'jsonp',
-                            timeout: 20000,
-                            complete: function(jqXHR, textStatus) {
-                                if (textStatus == 'timeout') {
-                                    noBiocacheData();
-                                }
-                                if (textStatus == 'error') {
-                                    noBiocacheData();
-                                }
-                            },
-                            success: function(data) {
-                                // check for errors
-                                if (data.length == 0 || data.totalRecords == undefined || data.totalRecords == 0) {
-                                    //noBiocacheData();
-                                } else {
-                                    if(data.totalRecords > 0){
-                                        $('#imagesTabEl').css({display:'block'});
-                                        var description = ""
-                                        if(data.facetResults.length>0 && data.facetResults[0].fieldResult !== undefined){
-                                            description = "Of these images there: ";
-                                            $.each(data.facetResults[0].fieldResult, function(idx, facet){
-                                                if(idx>0){
-                                                    description += ', '
-                                                }
-                                                var queryUrl = biocacheWebappUrl + uiBase + imagesQueryUrl + '&fq=' + data.facetResults[0].fieldName + ':' + facet.label;
-                                                description += '<a href="' + queryUrl + '">' + (facet.count + ' ' + facet.label) + '</a>';
-                                            })
-                                        }
-                                        $('#imagesSpiel').html('<p><a href="'+biocacheWebappUrl + uiBase + imagesQueryUrl +'">' + data.totalRecords + ' images</a> have been made available from the ${instance.name}. <br/> ' + description + '</p>');
-                                        $.each(data.occurrences, function(idx, item){
-                                            var imageText = item.scientificName;
-                                            if(item.typeStatus !== undefined){
-                                               imageText = item.typeStatus + " - " + imageText;
-                                            }
-                                            $('#imagesList').append('<div class="imgCon"><a href="'+biocacheWebappUrl + '/occurrences/' + item.uuid + '"><img src="' + item.smallImageUrl+'"/><br/>'+ imageText + '</a></div>');
-                                        })
-                                    }
-                                }
-                            }
-                        });
-                   });
-               </r:script>
             </div>
         </div>
       </div>
