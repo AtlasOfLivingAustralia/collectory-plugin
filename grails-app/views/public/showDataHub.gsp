@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" import="au.org.ala.collectory.DataHub"%>
+<g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -7,8 +8,19 @@
     <g:javascript src="jquery.fancybox/fancybox/jquery.fancybox-1.3.1.pack.js" />
     <link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery.fancybox/fancybox',file:'jquery.fancybox-1.3.1.css')}" media="screen" />
     <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper"/>
+    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper, taxonTree, public_show"/>
     <script type="text/javascript">
+      // Global var SHOW_REC to pass GSP data to external JS file
+      var SHOW_REC = {
+          orgNameLong: "${orgNameLong}",
+          biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
+          biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
+          loggerServiceUrl: "${grailsApplication.config.loggerURL}",
+          loadLoggerStats: ${!grailsApplication.config.disableLoggerLinks.toBoolean()},
+          instanceUuid: "${instance.uid}",
+          instanceName:"${instance.name}"
+      }
+
       biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
       biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
 
@@ -76,7 +88,9 @@
         </g:if>
 
         <h2><g:message code="public.sdh.co.label03" /></h2>
-        <p><g:message code="public.sdh.co.des01" /> <span id="totalRecords"><g:message code="public.usage.des" />...</span> <g:message code="public.sdh.co.des03" />.
+        <p>
+          <span id="numBiocacheRecords"><g:message code="public.numbrs.des01" /></span> <g:message code="public.numbrs.des02" args="[orgNameLong]"/>.
+          %{--<g:message code="public.sdh.co.des01" /> <span id="totalRecords"><g:message code="public.usage.des" />...</span> <g:message code="public.sdh.co.des03" />.--}%
             <a href="${grailsApplication.config.biocacheUiURL}/occurrences/search?q=data_hub_uid:${instance.uid}" class="btn btn-default"><g:message code="public.sdh.co.allrecords" /></a>
             %{--&nbsp;&nbsp;&nbsp;<button type=button id="showTimings">Show timings</button>--}%
         </p>
@@ -156,70 +170,7 @@
       </div>
   </div><!--close content-->
 
-<script type="text/javascript">
-/************************************************************\
-* Charts
-\************************************************************/
-$.ajaxSetup({cache: true});
-// configure the charts
-var facetChartOptions = {
-    backgroundColor: "${grailsApplication.config.chartsBgColour}",
-    /* base url of the collectory */
-    collectionsUrl: "${grailsApplication.config.grails.serverURL}",
-    /* base url of the biocache ws*/
-    biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
-    /* base url of the biocache webapp*/
-    biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
-    /* support click-thru to records subset - default is true */
-    clickThru: true,
-    /* a uid or list of uids to chart - either this or query must be present */
-    instanceUid: "${instance.uid}",
-    /* a query to set the scope of the records */
-    //query: 'state:"Tasmania"',
-    /* the id of the div to create the charts in - defaults is 'charts' */
-    targetDivId: "charts",
-    /* the jQuery selector for the element to write the total number of records */
-    totalRecordsSelector: "span#totalRecords",
-    /* the list of charts to be drawn (these are specified in the one call because a single request can get the data for all of them) */
-    charts: ['institution_uid','country','state','species_group','assertions','type_status',
-        'biogeographic_region','state_conservation','occurrence_year'],
-    /* override default options for individual charts */
-    assertions: {width:500, height: 400}
-}
-var taxonomyChartOptions = {
-    backgroundColor: "${grailsApplication.config.chartsBgColour}",
-    /* base url of the collectory */
-    collectionsUrl: "${grailsApplication.config.grails.serverURL}",
-    /* base url of the biocache ws*/
-    biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
-    biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
-    /* support click-thru to records subset - default is true */
-    clickThru: true,
-    /* support drill down into chart - default is false */
-    drillDown: true,
-    /* a uid or list of uids to chart - either this or query must be present */
-    instanceUid: "${instance.uid}",
-    /* a query to set the scope of the records */
-    //query: 'state:"Tasmania"',
-    /* the id of the div to create the charts in - defaults is 'charts' */
-    targetDivId: "charts",
-    /* threshold value to use for automagic rank selection - defaults to 55 */
-    threshold: 55,
-    /* taxonomic rank to use for initial breakdown - overrides threshold */
-    rank: 'phylum'
-    /* taxonomic name to use for initial breakdown - requires rank to be specified */
-    //name: 'Aves'
-    /* override default options */
-}
-// load the packages
-google.load("visualization", "1", {packages:["corechart"]});
-// make it so
-google.setOnLoadCallback(function() {
-    loadTaxonomyChart(taxonomyChartOptions);
-    loadFacetCharts(facetChartOptions);
-});
-
-</script>
+  <g:render template="charts" model="[facet:'data_hub_uid', instance: instance]" />
 
   </body>
 </html>
