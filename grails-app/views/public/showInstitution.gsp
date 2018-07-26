@@ -47,7 +47,7 @@
 <div id="content">
     <div class="row">
             <div class="col-md-8">
-                FOO BAR <cl:h1 value="${instance.name}"/>
+                <cl:h1 value="${instance.name}"/>
                 <g:render template="editButton"/>
                 <g:set var="parents" value="${instance.listParents()}"/>
                 <g:each var="p" in="${parents}">
