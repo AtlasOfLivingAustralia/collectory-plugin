@@ -1,31 +1,45 @@
 <%@ page contentType="text/html;charset=UTF-8" import="au.org.ala.collectory.DataResource; au.org.ala.collectory.Institution" %>
+<g:set var="orgNameLong" value="${grailsApplication.config.skin.orgNameLong}"/>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
     <title><cl:pageTitle><g:fieldValue bean="${instance}" field="name"/></cl:pageTitle></title>
     <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-    <r:require modules="jquery, fancybox, jquery_jsonp, charts_plugin"/>
+    <r:require modules="jquery, fancybox, jquery_jsonp, charts_plugin, taxonTree, public_show"/>
     <r:script type="text/javascript">
-      biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
-      biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
-      loadLoggerStats = ${!grailsApplication.config.disableLoggerLinks.toBoolean()};
-      $(document).ready(function () {
-        $("a#lsid").fancybox({
-            'hideOnContentClick': false,
-            'titleShow': false,
-            'autoDimensions': false,
-            'width': 600,
-            'height': 180
+        // Global var SHOW_REC to pass GSP data to external JS file
+        var SHOW_REC = {
+          orgNameLong: "${orgNameLong}",
+          biocacheServicesUrl: "${grailsApplication.config.biocacheServicesUrl}",
+          biocacheWebappUrl: "${grailsApplication.config.biocacheUiURL}",
+          loggerServiceUrl: "${grailsApplication.config.loggerURL}",
+          loadLoggerStats: ${!grailsApplication.config.disableLoggerLinks.toBoolean()},
+          instanceUuid: "${instance.uid}",
+          instanceName:"${instance.name}"
+        }
+
+        orgNameLong = "${orgNameLong}";
+        biocacheServicesUrl = "${grailsApplication.config.biocacheServicesUrl}";
+        biocacheWebappUrl = "${grailsApplication.config.biocacheUiURL}";
+        loadLoggerStats = ${!grailsApplication.config.disableLoggerLinks.toBoolean()};
+
+        $(document).ready(function () {
+            $("a#lsid").fancybox({
+                'hideOnContentClick': false,
+                'titleShow': false,
+                'autoDimensions': false,
+                'width': 600,
+                'height': 180
+            });
+            $("a.current").fancybox({
+                'hideOnContentClick': false,
+                'titleShow': false,
+                'titlePosition': 'inside',
+                'autoDimensions': true,
+                'width': 300
+            });
         });
-        $("a.current").fancybox({
-            'hideOnContentClick': false,
-            'titleShow': false,
-            'titlePosition': 'inside',
-            'autoDimensions': true,
-            'width': 300
-        });
-      });
     </r:script>
 </head>
 
@@ -33,7 +47,7 @@
 <div id="content">
     <div class="row">
             <div class="col-md-8">
-                <cl:h1 value="${instance.name}"/>
+                FOO BAR <cl:h1 value="${instance.name}"/>
                 <g:render template="editButton"/>
                 <g:set var="parents" value="${instance.listParents()}"/>
                 <g:each var="p" in="${parents}">
@@ -83,7 +97,7 @@
                 <h2><g:message code="public.si.content.label04" /></h2>
 
                 <div>
-                    <p style="padding-bottom:8px;"><span id="numBiocacheRecords"><g:message code="public.numbrs.des01" /></span> <g:message code="public.numbrs.des02" />.</p>
+                    <p style="padding-bottom:8px;"><span id="numBiocacheRecords"><g:message code="public.numbrs.des01" /></span> <g:message code="public.numbrs.des02" args="[orgNameLong]"/>.</p>
                     <p><cl:recordsLink entity="${instance}"><g:message code="public.numbrs.link" /> ${instance.name}.</cl:recordsLink></p>
                 </div>
 
