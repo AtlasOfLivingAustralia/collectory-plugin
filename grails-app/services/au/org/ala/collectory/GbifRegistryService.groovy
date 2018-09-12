@@ -717,6 +717,7 @@ class GbifRegistryService {
                 csvWriter.writeNext(row)
             }
         }
+        csvWriter.close()
     }
 
     /**
