@@ -164,8 +164,15 @@ class DataImportService {
 
         //add contacts
         if(contacts){
+            def existingContacts = dataResource.getContacts()
             contacts.each { contact ->
+                def isNew = true
+                existingContacts.each {
+                    if (it.contact.email == contact.email) isNew = false
+                }
+                if (isNew) {
                     dataResource.addToContacts(contact, null, false, true, collectoryAuthService.username())
+                }
             }
         }
     }
