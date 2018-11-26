@@ -82,6 +82,8 @@ class EmlImportService {
                 } else {
                     matchedLicence = Licence.findByUrl(licenceUrl.replaceAll("https://", "http://"))
                 }
+            } else {
+                matchedLicence = licence
             }
         }
 
