@@ -30,7 +30,7 @@
 
             <div class="col-md-9">
 
-                <div id="yourMetadata" class="infoSection hide">
+                <div id="yourMetadata" class="infoSection hidden">
                     <g:if test="${show == 'user'}">
                         <div>
                             <h2><g:message code="manage.list.title02" /></h2>
@@ -139,7 +139,7 @@
                     </div>
                 </div>
 
-                <div id="addCollection" class="hide infoSection">
+                <div id="addCollection" class="hidden infoSection">
                     <cl:ifGranted role="ROLE_COLLECTION_EDITOR">
 
                         <h2><g:message code="manage.list.addcollection.title01" /></h2>
@@ -269,8 +269,8 @@
         <script type="text/javascript">
 
             function showSection(sectionToShow){
-                $('.infoSection').hide();
-                $('#'+sectionToShow).show();
+                $('.infoSection').addClass('hidden');
+                $('#'+sectionToShow).removeClass('hidden');
             }
 
             function edit(uid) {
