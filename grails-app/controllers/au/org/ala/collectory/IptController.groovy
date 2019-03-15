@@ -111,7 +111,7 @@ class IptController {
             iptInventory.registeredResources.each { item ->
                 iptMap.put(item.title, item.records)
                 //retrieve UID, and do a count from the services
-                def uid = newMap.get(item.title)
+                def uid = newMap.get(item.title.toLowerCase())
                 if(uid){
                     def jsonCount = new JsonSlurper().parse(new URL(grailsApplication.config.biocacheServicesUrl + "/occurrences/search?pageSize=0&fq=data_resource_uid:" + uid))
                     String[] row = [
