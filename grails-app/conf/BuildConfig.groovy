@@ -32,6 +32,9 @@ grails.project.dependency.resolution = {
         runtime 'commons-httpclient:commons-httpclient:3.1'
         runtime 'org.aspectj:aspectjweaver:1.6.6'
         compile "com.fasterxml.jackson.core:jackson-databind:2.7.0"
+	compile( "commons-validator:commons-validator:1.4.1" ) {
+            excludes 'xml-apis','commons-digester','commons-logging','commons-beanutils', 'commons-collections'
+        }
     }
 
     plugins {
