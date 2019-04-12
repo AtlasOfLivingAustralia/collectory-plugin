@@ -740,7 +740,7 @@ class DataController {
                 def out = new StringWriter()
                 out << "name, role, primary contact, editor, notify, email, phone\n"
                 contactList.each {
-                    out << "\"${it.name}\",\"${it.role}\",${it.primaryContact},${it.editor},${it.notify},${it.email?:""},${it.phone?:""}\n"
+                    out << "\"${(it.contact.firstName + ' ' + it.contact.lastName).trim()}\",\"${it.role}\",${it.primaryContact},${it.editor},${it.notify},${it.contact.email?:""},${it.contact.phone?:""}\n"
                 }
                 response.addHeader "Content-Type", "text/csv"
                 render out.toString()
