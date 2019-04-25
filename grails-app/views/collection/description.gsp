@@ -149,7 +149,7 @@
             $(event.target).parent().remove();
         });
 
-        $('#addSubcollection').click(function(){
+        $('#addSubcollection').click(function(event){
 
             event.preventDefault();
             var $subcollection = $('#subcollection_template').clone();
