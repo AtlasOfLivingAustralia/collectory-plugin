@@ -207,7 +207,7 @@
                 <div class="btn-group-vertical dataAccess">
                 <a class="btn btn-default" href="${citations.doiLink(gbifDoi: instance.gbifDoi)}">
 %{--                    <i class="glyphicon glyphicon-info-sign"> </i>--}%
-                    <span class="badge">DOI</span> ${citations.doiLink(gbifDoi: instance.gbifDoi)}
+                    <span class="badge">DOI</span> <citations:doiLink gbifDoi="${instance.gbifDoi}"/>
                 </a>
                 <g:if test="${instance.gbifRegistryKey}">
                     <citations:gbifLink gbifRegistryKey="${instance.gbifRegistryKey}"/>
