@@ -29,14 +29,17 @@ class CitationsTagLib {
      * @attr gbifDoi REQUIRED the gbifDoi value
      */
     def doiLink = { attrs, body ->
-        String gbifDoi = attrs.gbifDoi as String
+        String gbifDoi = (attrs.gbifDoi as String).toLowerCase()
         String doiUrl
 
-        if (gbifDoi.startsWith("doi")) {
-            // Old GBIF DOI API used a "doi:" prefix
+        if (gbifDoi.startsWith("https://doi")) {
+            // properly formatted DOI
+            doiUrl = gbifDoi
+        } else if (gbifDoi.startsWith("doi")) {
+            // Old GBIF DOI API which used a "doi:" prefix
             doiUrl = "https://${gbifDoi.replaceAll('doi:', 'doi.org/')}"
         } else {
-            // New GBIF DOI API provides the DOI path only
+            // New GBIF DOI API provides the DOI "path" only
             doiUrl = "https://doi.org/${gbifDoi}"
         }
 
