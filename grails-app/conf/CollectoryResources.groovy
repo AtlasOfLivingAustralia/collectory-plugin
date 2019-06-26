@@ -6,41 +6,41 @@ modules = {
         resource url:[dir:'js', file:'application.js', plugin:'collectory-plugin']
     }
     smoothness {
-        resource url:[dir:'css/smoothness', file:'jquery-ui-1.8.16.custom.css', plugin:'collectory-plugin']
+        resource url:[dir:'css/smoothness', file:'jquery-ui-1.12.1.min.css', plugin:'collectory-plugin']
     }
     jquery_jsonp {
-        dependsOn 'jquery_migration'
         resource url:[dir:'js', file:'jquery.jsonp-2.1.4.min.js', plugin:'collectory-plugin']
     }
     jquery_tools {
-        dependsOn 'jquery_migration'
         resource url:[dir:'js', file:'jquery.tools.min.js', plugin:'collectory-plugin']
     }
     jquery_json {
-        dependsOn 'jquery_migration'
         resource url:[dir:'js', file:'jquery.json-2.2.min.js', plugin:'collectory-plugin']
     }
     jquery_i18n {
         dependsOn 'jquery_migration'
         resource url:[dir:'js', file:'jquery.i18n.properties-1.0.9.min.js', plugin:'collectory-plugin']
     }
+    chart2 {
+        dependsOn 'jquery_i18n'
+        resource url: [dir:'js',file:'charts2.js']
+    }
+
     fancybox {
-        resource url:[dir:'js/jquery.fancybox/fancybox', file:'jquery.fancybox-1.3.1.css', plugin:'collectory-plugin']
-        resource url:[dir:'js/jquery.fancybox/fancybox', file:'jquery.fancybox-1.3.1.pack.js', plugin:'collectory-plugin']
+        resource url:[dir:'js/jquery.fancybox/fancybox-3.5.7', file:'jquery.fancybox.css', plugin:'collectory-plugin']
+        resource url:[dir:'js/jquery.fancybox/fancybox-3.5.7', file:'jquery.fancybox.js', plugin:'collectory-plugin']
     }
     jstree {
         resource url:[dir:'js', file:'jquery.jstree.js', plugin:'collectory-plugin']
         resource url:[dir:'js/themes/classic', file:'style.css', plugin:'collectory-plugin'], attrs:[media:'screen, projection, print']
     }
     jquery_ui_custom {
-        dependsOn 'jquery_migration'
-        resource url:[dir:'js', file:'jquery-ui-1.8.16.custom.min.js', plugin:'collectory-plugin']
+        resource url:[dir:'js', file:'jquery-ui-1.12.1.min.js', plugin:'collectory-plugin']
     }
     datadumper {
         resource url:[dir:'js', file:'datadumper.js', plugin:'collectory-plugin']
     }
     bbq {
-        dependsOn 'jquery_migration'
         resource url:[dir:'js', file:'jquery.ba-bbq.min.js', plugin:'collectory-plugin']
     }
     openlayers {
@@ -51,7 +51,7 @@ modules = {
         resource url:[dir:'js', file:'map.js', plugin:'collectory-plugin']
     }
     datasets {
-        dependsOn 'jquery_i18n'
+        dependsOn 'jquery_i18n', 'bbq'
         resource url:[dir:'js', file:'datasets.js', plugin:'collectory-plugin']
     }
     rotate {
@@ -86,12 +86,10 @@ modules = {
     }
     jquery_migration{
         // Needed to support legacy js components that do not work with latest versions of jQuery
-        dependsOn 'jquery'
         resource url:[ dir: 'js',file:'jquery-migrate-1.2.1.min.js', plugin:'collectory-plugin']
     }
     datatables {
         // Datatables configured via https://datatables.net/download/ with bootstrap css framework and select plugin
-        dependsOn 'jquery'
         resource url:[ dir: 'css', file:'datatables.css', plugin:'collectory-plugin']
         resource url:[ dir: 'js', file:'datatables.min.js', plugin:'collectory-plugin']
     }
