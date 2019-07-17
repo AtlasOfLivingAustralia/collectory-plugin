@@ -2,13 +2,9 @@
 <html>
   <head>
       <title><g:message code="public.chart.title" default="Chart generator"/></title>
-      <link rel="stylesheet" href="${resource(dir:'css',file:'charts.css')}" />
-      <g:javascript library="jquery-1.5.1.min"/>
+      <meta name="layout" content="${grailsApplication.config.skin.layout}" />
       <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-      <script type="text/javascript" src="http://jquery-jsonp.googlecode.com/files/jquery.jsonp-2.1.4.min.js"></script>
-      %{--<script type="text/javascript" src="https://collections.ala.org.au/js/charts.js"></script>--}%
-      <g:javascript library="charts2"/>
-      <g:javascript library="datadumper"/>
+      <r:require modules="jquery_i18n, jquery_jsonp, chart2, datadumper"/>
       <style>
           input[type=radio] {margin-left: 15px;}
           h1 {color: #718804 }

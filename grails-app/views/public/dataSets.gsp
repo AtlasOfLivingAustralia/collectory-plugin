@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="layout" content="${grailsApplication.config.skin.layout}"/>
     <title><g:message code="public.datasets.title" /> | ${grailsApplication.config.projectName} </title>
-    <r:require modules="jquery, fancybox, jquery_jsonp, jquery_ui_custom, jquery_i18n, bbq, collectory, charts_plugin,datasets"/>
+    <r:require modules="fancybox, jquery_jsonp, jquery_ui_custom, jquery_i18n, bbq, collectory, charts_plugin,datasets"/>
   </head>
 
   <body id="page-datasets" class="nav-datasets">

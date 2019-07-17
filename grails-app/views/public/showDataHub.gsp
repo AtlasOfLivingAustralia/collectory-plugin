@@ -5,10 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="layout" content="${grailsApplication.config.skin.layout}" />
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
-    <g:javascript src="jquery.fancybox/fancybox/jquery.fancybox-1.3.1.pack.js" />
-    <link rel="stylesheet" type="text/css" href="${resource(dir:'js/jquery.fancybox/fancybox',file:'jquery.fancybox-1.3.1.css')}" media="screen" />
     <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-    <r:require modules="jquery, fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper, taxonTree, public_show"/>
+    <r:require modules="fancybox, jquery_jsonp, jstree, jquery_ui_custom, charts, datadumper, taxonTree, public_show"/>
     <script type="text/javascript">
       // Global var SHOW_REC to pass GSP data to external JS file
       var SHOW_REC = {
