@@ -5,10 +5,11 @@
 #
 # To use it this, you need to configure two vars:
 #
-#   export CROWDIN_BASE_PATH=$PWD/
+#   export CROWDIN_BASE_PATH=$(dirname $PWD)
 #   export CROWDIN_API_KEY=XXXXXX
 #
 # You can get the API from https://crowdin.com/project/ala-i18n/settings#api
+# CROWDIN_BASE_PATH is the parent directory of this directory.
 #
 # After installing crowdin in your computer, to download translations from crowdin run:
 #   crowdin download
