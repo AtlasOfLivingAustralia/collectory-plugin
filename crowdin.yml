@@ -61,13 +61,13 @@ files: [
   # Source files filter
   # e.g. "/resources/en/*.json"
   #
-  "source" : "/grails-app/i18n/messages.properties",
+  "source" : "/collectory-plugin/grails-app/i18n/messages.properties",
 
   #
   # where translations live
   # e.g. "/resources/%two_letters_code%/%original_file_name%"
   #
-  "translation" : "/grails-app/i18n/messages_%locale_with_underscore%.properties",
+  "translation" : "/collectory-plugin/grails-app/i18n/messages_%locale_with_underscore%.properties",
 
   "translation_replace" : {
     "af_ZA": "af",
