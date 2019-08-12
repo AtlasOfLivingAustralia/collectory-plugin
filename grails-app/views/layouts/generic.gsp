@@ -16,8 +16,8 @@
    </g:else>
    <title><g:layoutTitle /> | ${orgNameLong}</title>
    <g:render template="/layouts/global"/>
-   <r:require modules="jquery, jquery_migration, jquery_i18n, bootstrap, application, collectory" />
-    <r:layoutResources/>
+   <r:require modules="jquery_migration, jquery_i18n, bootstrap, application, collectory" />
+    <r:layoutResources disposition="head"/>
     <g:layoutHead />
 </head>
 <body class="${pageProperty(name:'body.class')?:'nav-collections'}" id="${pageProperty(name:'body.id')}" onload="${pageProperty(name:'body.onload')}">
@@ -60,6 +60,6 @@
     </div><!--/#footer -->
 
 <!-- JS resources-->
-<r:layoutResources/>
+<r:layoutResources disposition="defer"/>
 </body>
 </html>

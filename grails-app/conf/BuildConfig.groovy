@@ -53,6 +53,6 @@ grails.project.dependency.resolution = {
         //runtime ":richui:0.8"
         runtime ":tiny-mce:3.4.9"
         runtime ":cors:1.1.8"
-        runtime ":ala-charts-plugin:1.3.2"
+        runtime ":ala-charts-plugin:1.3.3"
     }
 }

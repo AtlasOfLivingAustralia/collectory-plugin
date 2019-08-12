@@ -48,7 +48,7 @@ var baseUrl;
 var biocacheUrl;
 
 /* options for all tooltips */
-var tooltipOptions = {position:'center right',offset:[-10,5],predelay:130, effect:'fade', fadeOutSpeed: 200}
+var tooltipOptions = {position:{my: 'left bottom', at: 'center top-10'}, show: {duration: 130, effect:'fade'}, hide: {duration: 200, effect:'fade'}, collision: "fit"};
 
 /** load resources and show first page **/
 function loadResources(serverUrl, biocacheRecordsUrl) {
@@ -111,7 +111,7 @@ function appendResource(value) {
     $rowA.append('<img title="'+ jQuery.i18n.prop('datasets.js.appendresource01') + '" src="' + baseUrl + '/images/skin/ExpandArrow.png"/>');  // twisty
     $rowA.append('<span class="result-name"><a title="' + jQuery.i18n.prop('datasets.js.appendresource02') + '" href="' + baseUrl + '/public/showDataResource/' + value.uid + '">' + value.name + '</a></span>'); // name
     $rowA.find('a').tooltip(tooltipOptions);
-    $rowA.find('img').tooltip($.extend({},tooltipOptions,{position:'center left'}));
+    $rowA.find('img').tooltip($.extend({},tooltipOptions,{position:{my: 'center bottom', at: 'center top-10'}}));
 
     // row B
     $rowB.append('<span><strong class="resultsLabelFirst">'+ jQuery.i18n.prop('datasets.js.appendresource06') +': </strong>' + value.resourceType + '</span>');  // resource type

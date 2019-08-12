@@ -192,8 +192,10 @@ class ReportsController {
                         connectionParameters: it.connectionParameters ? JSON.parse(it.connectionParameters) : null]}
                 render list as JSON
             }
+            html {
+                [resources: DataResource.list(sort:'name')]
+            }
         }
-        [resources: DataResource.list(sort:'name')]
     }
 
     def rights = {
@@ -206,8 +208,10 @@ class ReportsController {
                         riskAssessment: it.riskAssessment]}
                 render list as JSON
             }
+            html {
+                [resources: DataResource.list(sort:'name')]
+            }
         }
-        [resources: DataResource.list(sort:'name')]
     }
 
     def attributions = {

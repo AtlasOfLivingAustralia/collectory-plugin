@@ -8,7 +8,7 @@
           content="${createLink(action: 'datasets', controller: 'public')},${message(code: 'breadcrumb.datasets')}"
     />
     <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
-    <r:require modules="jquery, fancybox, jquery_jsonp, jquery_ui_custom, jstree, taxonTree, datadumper, jquery_i18n, collectory, charts_plugin"/>
+    <r:require modules="fancybox, jquery_jsonp, jquery_ui_custom, jstree, taxonTree, datadumper, jquery_i18n, collectory, charts_plugin"/>
     <r:script>
         // define biocache server
         bieUrl = "${grailsApplication.config.bie.baseURL}";

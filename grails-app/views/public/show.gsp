@@ -6,7 +6,7 @@
         <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <title><cl:pageTitle>${fieldValue(bean: instance, field: "name")}</cl:pageTitle></title>
         <script type="text/javascript" language="javascript" src="https://www.google.com/jsapi"></script>
-        <r:require modules="jquery, fancybox, jquery_jsonp, charts, jquery_i18n, taxonTree, public_show"/>
+        <r:require modules="fancybox, jquery_jsonp, charts, jquery_i18n, taxonTree, public_show"/>
         <r:script type="text/javascript">
           // Global var SHOW_REC to pass GSP data to external JS file
           var SHOW_REC = {
