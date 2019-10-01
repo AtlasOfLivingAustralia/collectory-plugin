@@ -7,7 +7,8 @@ import groovy.util.slurpersupport.GPathResult
 import javax.activation.DataSource
 import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Collect datasets from an IPT service and update the metadata.
@@ -34,7 +35,7 @@ class IptService {
     /** Source of the RSS feed */
     static final RSS_PATH = "rss.do"
     /** Parse RFC 822 date/times */
-    static final RFC822_PARSER = new SimpleDateFormat('EEE, d MMM yyyy HH:mm:ss Z')
+    static final RFC822_FORMATTER = DateTimeFormatter.RFC_1123_DATE_TIME
 
     /** Fields that we can derive from the RSS feed */
     protected rssFields = [
@@ -45,7 +46,7 @@ class IptService {
             dataCurrency: { item ->
                 def pd = item.pubDate?.text()
 
-                pd == null || pd.isEmpty() ? null : new Timestamp(RFC822_PARSER.parse(pd).getTime())
+                pd == null || pd.isEmpty() ? null : Timestamp.valueOf(LocalDateTime.parse(pd, RFC822_FORMATTER))
             },
             lastChecked: { item -> new Timestamp(System.currentTimeMillis()) },
             provenance: { item -> "Published dataset" },
