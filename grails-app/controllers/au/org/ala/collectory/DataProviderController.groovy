@@ -39,6 +39,76 @@ class DataProviderController extends ProviderGroupController {
         }
     }
 
+    def searchForOrganizations = {
+        def countryCode = (params.country) ? params.country : grailsApplication.config.countryCode
+        def countryMap = gbifService.getCountryMap()
+        def countryName = countryMap.get(countryCode)
+        def lastCreatedUID = params.lastCreatedUID
+        def organizations = gbifRegistryService.loadOrganizationsByCountry(countryCode)
+
+        organizations.each { organization ->
+            def dp = DataProvider.findByGbifRegistryKey(organization.key)
+            if (dp) {
+                organization.uid = dp.uid
+                if (organization.uid == lastCreatedUID) {
+                    organization.lastCreated = true
+                }
+            }
+            else {
+                organization.statusAvailable = true
+            }
+        }
+
+        render(view: 'gbif/list',
+                model: [
+                    countryMap: countryMap,
+                    country: countryCode,
+                    countryName: countryName,
+                    organizations: organizations,
+                    entityType: 'DataProvider'
+                ]
+        )
+    }
+
+    def importFromOrganization = {
+        def organizationKey = params.organizationKey
+        DataProvider dp = new DataProvider(uid: idGeneratorService.getNextDataProviderId(), userLastModified: collectoryAuthService?.username())
+        gbifRegistryService.populateDataProviderFromOrganization(dp, organizationKey)
+
+        if (!dp.hasErrors() && dp.save(flush: true)) {
+            flash.message = "${message(code: 'default.created.message', args: [message(code: "${dp.urlForm()}", default: dp.urlForm()), dp.uid])}"
+            redirect(action: "searchForOrganizations", params: [country: params.country, lastCreatedUID: dp.uid])
+        } else {
+            flash.message = message(code: "provider.group.controller.06", default: "Failed to create new") + " ${entityName}"
+            redirect(controller: 'admin', action: 'index')
+        }
+    }
+
+    def importAllFromOrganizations = {
+        def countryCode = params.country
+        def organizations = gbifRegistryService.loadOrganizationsByCountry(countryCode)
+
+        def successCount = 0
+        def errorCount = 0
+
+        organizations.each { organization ->
+            def dp = DataProvider.findByGbifRegistryKey(organization.key)
+            if (!dp) {
+                dp = new DataProvider(uid: idGeneratorService.getNextDataProviderId(), userLastModified: collectoryAuthService?.username())
+                gbifRegistryService.populateDataProviderFromOrganization(dp, organization.key)
+
+                if (!dp.hasErrors() && dp.save(flush: true)) {
+                    successCount++
+                } else {
+                    errorCount++
+                }
+            }
+        }
+
+        flash.message = "Success: "+successCount+" / Error: "+errorCount
+        redirect(action: "searchForOrganizations", params: [country: params.country])
+    }
+
     def editConsumers = {
         def pg = get(params.id)
         if (!pg) {

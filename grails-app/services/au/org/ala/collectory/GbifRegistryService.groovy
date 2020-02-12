@@ -528,6 +528,21 @@ class GbifRegistryService {
     }
 
     /**
+     * Loads all organizations for a specific country from the GBIF API.
+     */
+    def loadOrganizationsByCountry(String countryCode, int limit = 1000) {
+        def http = newHttpInstance()
+        def organisations
+        http.get(path: API_ORGANIZATION,
+                 query:[
+                        'country': countryCode,
+                        'limit': limit]) { resp, reader ->
+            organisations = reader.results
+        }
+        return organisations
+    }
+
+    /**
      * Loads an organization from the GBIF API.
      */
     private def loadOrganization(gbifRegistryKey) {
@@ -589,6 +604,29 @@ class GbifRegistryService {
             organisation.city = address.city
             organisation.postalCode = address.postcode
         }
+    }
+
+    def populateDataProviderFromOrganization(DataProvider dp, String organisationKey) {
+        def organisation = loadOrganization(organisationKey)
+        dp.gbifRegistryKey = organisation.key
+        dp.name = organisation.title
+        dp.acronym = organisation.abbreviation
+        dp.pubDescription = organisation.description
+        dp.email = organisation.email[0]
+        dp.phone = organisation.phone[0]
+        dp.websiteUrl = organisation.homepage[0]
+        if (organisation.latitude) {
+            dp.latitude = organisation.latitude
+        }
+        if (organisation.longitude) {
+            dp.longitude = organisation.longitude
+        }
+        dp.gbifCountryToAttribute = isoCodeService.iso2CountryCodeToIso3CountryCode(organisation.country)
+        dp.address = new Address()
+        dp.address.state = organisation.province
+        dp.address.street = organisation.address[0]
+        dp.address.city = organisation.city
+        dp.address.postcode = organisation.postalCode
     }
 
     def writeCSVReportForGBIF(outputStream) {

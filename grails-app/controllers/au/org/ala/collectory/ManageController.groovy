@@ -48,7 +48,7 @@ class ManageController {
         render(view: "externalLoad",
                model: [
                     configuration: configuration,
-                    countryMap: adaptor.countryMap,
+                    countryMap: gbifService.getCountryMap(),
                     datasetTypeMap: adaptor.datasetTypeMap,
                     adaptors: externalDataService.ADAPTORMAP,
                     dataProviders: DataProvider.all.sort { it.name }

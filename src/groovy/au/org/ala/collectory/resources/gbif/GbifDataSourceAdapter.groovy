@@ -30,7 +30,6 @@ import java.text.SimpleDateFormat
 class GbifDataSourceAdapter extends DataSourceAdapter {
     static final LOGGER = LoggerFactory.getLogger(GbifDataSourceAdapter.class)
     static final SOURCE = "GBIF"
-    static final String COUNTRIES = "node/country"
     static final MessageFormat DATASET_SEARCH = new MessageFormat("dataset/search?publishingCountry={0}&type={1}&offset={2}&limit={3}")
     static final MessageFormat DATASET_GET = new MessageFormat("dataset/{0}")
     static final String OCCURRENCE_DOWNLOAD_REQUEST = "occurrence/download/request"
@@ -71,6 +70,8 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
 
     int pageSize = 500
 
+    GbifService gbifService
+
     GbifDataSourceAdapter(DataSourceConfiguration configuration) {
         super(configuration)
      }
@@ -87,19 +88,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
 
     @Override
     Map getCountryMap(){
-        def isoCodeList = getJSONWS(COUNTRIES)
-        //intersect with iso names
-        def isoMap = [:]
-        this.class.classLoader.getResourceAsStream("isoCodes.csv").readLines().each{
-            def codeAndName = it.split("\t")
-            isoMap.put(codeAndName[0], codeAndName[1])
-        }
-        def pubMap = [:]
-        isoCodeList.each {
-            def name = isoMap.get(it)
-            pubMap.put(it, name)
-        }
-        return pubMap
+        return gbifService.getCountryMap()
     }
 
     @Override
