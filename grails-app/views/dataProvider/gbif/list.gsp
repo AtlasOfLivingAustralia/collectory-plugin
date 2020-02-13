@@ -18,12 +18,12 @@
                 <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
             </ul>
         </div>
-        <div class="body content">
+        <div class="body">
             <h1>${message(code: 'dataProvider.gbif.import.longLabel')}</h1>
             <g:if test="${flash.message}">
                 <div class="alert alert-warning">${flash.message}</div>
             </g:if>
-            <div class="nav">
+            <div class="list">
                 <div class="row">
                     <div class="well pull-left col-md-6">
                         <p>

@@ -15,13 +15,13 @@
                 <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="searchForOrganizations"> ${message(code: 'dataProvider.gbif.import.label')}</g:link></li>
             </ul>
         </div>
-        <div class="body content">
+        <div class="body">
             <h1><g:message code="default.list.label" args="[entityName]" /></h1>
             <g:if test="${flash.message}">
                 <div class="alert alert-warning">${flash.message}</div>
             </g:if>
 
-            <div class="nav">
+            <div class="list">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
