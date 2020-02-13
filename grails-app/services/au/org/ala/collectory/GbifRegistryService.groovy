@@ -531,7 +531,7 @@ class GbifRegistryService {
      * Loads all organizations for a specific country from the GBIF API.
      */
     def loadOrganizationsByCountry(String countryCode, int limit = 1000) {
-        def http = newHttpInstance()
+        def http = newHttpInstance(false)
         def organisations
         http.get(path: API_ORGANIZATION,
                  query:[
@@ -546,7 +546,7 @@ class GbifRegistryService {
      * Loads an organization from the GBIF API.
      */
     private def loadOrganization(gbifRegistryKey) {
-        def http = newHttpInstance()
+        def http = newHttpInstance(false)
         def organisation
         http.get(path: MessageFormat.format(API_ORGANIZATION_DETAIL, gbifRegistryKey)) { resp, reader ->
             organisation = reader
@@ -947,16 +947,18 @@ class GbifRegistryService {
     }
 
     /**
-     * Creates a new instance of an HTTP builder configured with the basic authentication account and standard
-     * error handling.
+     * Creates a new instance of an HTTP builder configured with the standard error handling.
+     * By default, use the basic authentication account
      */
-    private def newHttpInstance() {
+    private def newHttpInstance(useAuthentication = true) {
         def http = new HTTPBuilder(grailsApplication.config.gbifApiUrl)
 
-        // GBIF does not return the expected 401 challenge so this needs to be set preemptively
-        // Note: Using Grails built in encoding which is a Java7-safe version
-        def token = grailsApplication.config.gbifApiUser + ':' + grailsApplication.config.gbifApiPassword
-        http.setHeaders([Authorization: "Basic ${token.bytes.encodeBase64().toString()}"])
+        if (useAuthentication) {
+            // GBIF does not return the expected 401 challenge so this needs to be set preemptively
+            // Note: Using Grails built in encoding which is a Java7-safe version
+            def token = grailsApplication.config.gbifApiUser + ':' + grailsApplication.config.gbifApiPassword
+            http.setHeaders([Authorization: "Basic ${token.bytes.encodeBase64().toString()}"])
+        }
 
         http.handler.'400' = { resp, reader -> throw new Exception("Bad request to GBIF: ${resp.status} ${reader}")}
         http.handler.'401' = { resp, reader -> throw new Exception("GBIF Authorisation required: ${resp.status}")}

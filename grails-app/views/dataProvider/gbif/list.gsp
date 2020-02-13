@@ -40,11 +40,13 @@
                         <g:form action="searchForOrganizations" controller="dataProvider">
                             <div class="form-group">
                                 <label for="country">${message(code: 'dataProvider.gbif.import.country')}</label>
-                                <g:select name="country" class="form-control" from="${countryMap.entrySet()}" optionKey="key" optionValue="value" value="${country}" onchange="submit()"/>
+                                <g:select name="country" class="form-control" from="${countryMap.entrySet()}" optionKey="key" optionValue="value" value="${country}"
+                                          onchange="submit()"
+                                          noSelection="${['NO_VALUE':message(code:'dataProvider.gbif.import.country.noselection')]}"/>
                             </div>
                         </g:form>
                     </div>
-                    <g:if test="${country}">
+                    <g:if test="${organizations}">
                         <div class="col-md-6">
                             <g:form action="importAllFromOrganizations" controller="dataProvider">
                                 <g:hiddenField name="country" value="${country}"/>

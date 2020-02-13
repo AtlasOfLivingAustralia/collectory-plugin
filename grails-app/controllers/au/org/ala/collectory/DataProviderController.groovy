@@ -43,29 +43,35 @@ class DataProviderController extends ProviderGroupController {
      * Populate the GBIF Organizations / DataProvider list, by country, for the Import Data Provider from GBIF screen
      */
     def searchForOrganizations = {
-        def countryCode = (params.country) ? params.country : grailsApplication.config.countryCode
-        log.debug "Search for organizations for country = " + countryCode
-
         def countryMap = gbifService.getCountryMap()
-        def countryName = countryMap.get(countryCode)
-        def lastCreatedUID = params.lastCreatedUID
+        def countryName = null
+        def lastCreatedUID = null
+        def organizations = null
 
-        def organizations = gbifRegistryService.loadOrganizationsByCountry(countryCode)
+        def countryCode = (params.country) ? params.country : grailsApplication.config.countryCode
+        if ((countryCode) && (countryCode != "NO_VALUE")) {
+            log.debug "Search for organizations for country = " + countryCode
 
-        log.debug "Search for organizations returned "+organizations.size()+" organizations for country = " + countryCode
+            countryName = countryMap.get(countryCode)
+            lastCreatedUID = params.lastCreatedUID
 
-        organizations.each { organization ->
-            def dp = DataProvider.findByGbifRegistryKey(organization.key)
-            if (dp) {
-                log.debug "Organization "+organization.key+" is already imported as data provider = " + dp.uid
-                organization.uid = dp.uid
-                if (organization.uid == lastCreatedUID) {
-                    organization.lastCreated = true
+            organizations = gbifRegistryService.loadOrganizationsByCountry(countryCode)
+
+            log.debug "Search for organizations returned "+organizations.size()+" organizations for country = " + countryCode
+
+            organizations.each { organization ->
+                def dp = DataProvider.findByGbifRegistryKey(organization.key)
+                if (dp) {
+                    log.debug "Organization "+organization.key+" is already imported as data provider = " + dp.uid
+                    organization.uid = dp.uid
+                    if (organization.uid == lastCreatedUID) {
+                        organization.lastCreated = true
+                    }
                 }
-            }
-            else {
-                log.debug "Organization "+organization.key+" is not yet imported as data provider"
-                organization.statusAvailable = true
+                else {
+                    log.debug "Organization "+organization.key+" is not yet imported as data provider"
+                    organization.statusAvailable = true
+                }
             }
         }
 
