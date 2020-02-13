@@ -3,10 +3,10 @@ package au.org.ala.collectory.resources.gbif
 import au.org.ala.collectory.DataResource
 import au.org.ala.collectory.DataSourceConfiguration
 import au.org.ala.collectory.ExternalResourceBean
-import au.org.ala.collectory.ProviderGroup
 import au.org.ala.collectory.exception.ExternalResourceException
 import au.org.ala.collectory.resources.DataSourceAdapter
 import au.org.ala.collectory.resources.TaskPhase
+import au.org.ala.collectory.GbifService
 import groovy.json.JsonOutput
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
@@ -70,7 +70,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
 
     int pageSize = 500
 
-    GbifService gbifService
+    def GbifService gbifService
 
     GbifDataSourceAdapter(DataSourceConfiguration configuration) {
         super(configuration)

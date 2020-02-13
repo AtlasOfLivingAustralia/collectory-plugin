@@ -238,12 +238,10 @@ class GbifService {
      */
     def getJSONWSWithAuth(String url, String userName, String password){
 
-        DefaultHttpClient http = createAuthClient(userName, password)
+        DefaultHttpClient http = (userName) ? createAuthClient(userName, password) : new DefaultHttpClient()
 
-        if (userName) {
-            HttpGet get = new HttpGet(url)
-            get.addHeader("Content-Type", "application/json; charset=UTF-8")
-        }
+        HttpGet get = new HttpGet(url)
+        get.addHeader("Content-Type", "application/json; charset=UTF-8")
 
         HttpResponse response = http.execute(get)
         log.debug("Response code " + response.getStatusLine().getStatusCode())

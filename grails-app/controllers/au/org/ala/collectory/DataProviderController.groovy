@@ -39,22 +39,32 @@ class DataProviderController extends ProviderGroupController {
         }
     }
 
+    /**
+     * Populate the GBIF Organizations / DataProvider list, by country, for the Import Data Provider from GBIF screen
+     */
     def searchForOrganizations = {
         def countryCode = (params.country) ? params.country : grailsApplication.config.countryCode
+        log.debug "Search for organizations for country = " + countryCode
+
         def countryMap = gbifService.getCountryMap()
         def countryName = countryMap.get(countryCode)
         def lastCreatedUID = params.lastCreatedUID
+
         def organizations = gbifRegistryService.loadOrganizationsByCountry(countryCode)
+
+        log.debug "Search for organizations returned "+organizations.size()+" organizations for country = " + countryCode
 
         organizations.each { organization ->
             def dp = DataProvider.findByGbifRegistryKey(organization.key)
             if (dp) {
+                log.debug "Organization "+organization.key+" is already imported as data provider = " + dp.uid
                 organization.uid = dp.uid
                 if (organization.uid == lastCreatedUID) {
                     organization.lastCreated = true
                 }
             }
             else {
+                log.debug "Organization "+organization.key+" is not yet imported as data provider"
                 organization.statusAvailable = true
             }
         }
@@ -70,23 +80,37 @@ class DataProviderController extends ProviderGroupController {
         )
     }
 
+    /**
+     * Create a single data provider for a selected GBIF organization
+     */
     def importFromOrganization = {
         def organizationKey = params.organizationKey
+        log.debug "Importing organization "+organizationKey+" as data provider"
+
         DataProvider dp = new DataProvider(uid: idGeneratorService.getNextDataProviderId(), userLastModified: collectoryAuthService?.username())
         gbifRegistryService.populateDataProviderFromOrganization(dp, organizationKey)
 
         if (!dp.hasErrors() && dp.save(flush: true)) {
+            log.debug "Data Provider "+dp.uid+" successfully created from organization = " + organizationKey
             flash.message = "${message(code: 'default.created.message', args: [message(code: "${dp.urlForm()}", default: dp.urlForm()), dp.uid])}"
             redirect(action: "searchForOrganizations", params: [country: params.country, lastCreatedUID: dp.uid])
         } else {
+            log.error "Unable to create Data Provider from organization = " + organizationKey
             flash.message = message(code: "provider.group.controller.06", default: "Failed to create new") + " ${entityName}"
             redirect(controller: 'admin', action: 'index')
         }
     }
 
+    /**
+     * Create data providers for each GBIF organization of a selected country
+     * Ignore organizations whose GBIF key is already associated to a data provider
+     */
     def importAllFromOrganizations = {
         def countryCode = params.country
+        log.debug "Importing all organizations from country "+countryCode+" as data provider"
+
         def organizations = gbifRegistryService.loadOrganizationsByCountry(countryCode)
+        log.debug organizations.size()+" organizations found for country = " + countryCode
 
         def successCount = 0
         def errorCount = 0
@@ -98,10 +122,15 @@ class DataProviderController extends ProviderGroupController {
                 gbifRegistryService.populateDataProviderFromOrganization(dp, organization.key)
 
                 if (!dp.hasErrors() && dp.save(flush: true)) {
+                    log.debug "Data Provider "+dp.uid+" successfully created from organization = " + organization.key
                     successCount++
                 } else {
+                    log.error "Unable to create Data Provider from organization = " + organization.key
                     errorCount++
                 }
+            }
+            else {
+                log.debug "Ignoring organization "+organization.key+" because already imported as data provider = " + dp.uid
             }
         }
 
