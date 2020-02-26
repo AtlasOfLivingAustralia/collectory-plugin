@@ -230,13 +230,15 @@ class GbifService {
     }
 
     /**
-     * Uses a HTTP "GET" to return the JSON output of the supplied url
+     * Uses a HTTP "GET" to return the JSON output of the supplied url with authentication
      * @param url
+     * @param userName
+     * @param password
      * @return
      */
     def getJSONWSWithAuth(String url, String userName, String password){
 
-        DefaultHttpClient http = createAuthClient(userName, password)
+        DefaultHttpClient http = (userName) ? createAuthClient(userName, password) : new DefaultHttpClient()
 
         HttpGet get = new HttpGet(url)
         get.addHeader("Content-Type", "application/json; charset=UTF-8")
@@ -252,6 +254,15 @@ class GbifService {
         } else {
             return null
         }
+    }
+
+    /**
+     * Uses a HTTP "GET" to return the JSON output of the supplied url without authentication
+     * @param url
+     * @return
+     */
+    def getJSONWS(String url){
+        return getJSONWSWithAuth(url, null, null)
     }
 
     /**
@@ -491,5 +502,21 @@ class GbifService {
      */
     def getDatasetKeyStatusInfoFor(String datasetKey){
         return loadMap[datasetKey]
+    }
+
+    def getCountryMap(){
+        def isoCodeList = getJSONWS(grailsApplication.config.gbifApiUrl + "/node/country")
+        //intersect with iso names
+        def isoMap = [:]
+        this.class.classLoader.getResourceAsStream("isoCodes.csv").readLines().each{
+            def codeAndName = it.split("\t")
+            isoMap.put(codeAndName[0], codeAndName[1])
+        }
+        def pubMap = [:]
+        isoCodeList.each {
+            def name = isoMap.get(it)
+            pubMap.put(it, name)
+        }
+        return pubMap
     }
 }

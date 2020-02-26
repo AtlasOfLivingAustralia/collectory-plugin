@@ -12,6 +12,7 @@
                 <li class="btn"><cl:homeLink/></li>
                 <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
                 <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="searchForOrganizations"> ${message(code: 'dataProvider.gbif.import.label')}</g:link></li>
             </ul>
         </div>
         <div class="body">

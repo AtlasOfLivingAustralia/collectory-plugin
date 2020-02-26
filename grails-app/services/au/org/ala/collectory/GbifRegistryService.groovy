@@ -528,10 +528,25 @@ class GbifRegistryService {
     }
 
     /**
+     * Loads all organizations for a specific country from the GBIF API.
+     */
+    def loadOrganizationsByCountry(String countryCode, int limit = 1000) {
+        def http = newHttpInstance(false)
+        def organisations
+        http.get(path: API_ORGANIZATION,
+                 query:[
+                        'country': countryCode,
+                        'limit': limit]) { resp, reader ->
+            organisations = reader.results
+        }
+        return organisations
+    }
+
+    /**
      * Loads an organization from the GBIF API.
      */
     private def loadOrganization(gbifRegistryKey) {
-        def http = newHttpInstance()
+        def http = newHttpInstance(false)
         def organisation
         http.get(path: MessageFormat.format(API_ORGANIZATION_DETAIL, gbifRegistryKey)) { resp, reader ->
             organisation = reader
@@ -589,6 +604,29 @@ class GbifRegistryService {
             organisation.city = address.city
             organisation.postalCode = address.postcode
         }
+    }
+
+    def populateDataProviderFromOrganization(DataProvider dp, String organisationKey) {
+        def organisation = loadOrganization(organisationKey)
+        dp.gbifRegistryKey = organisation.key
+        dp.name = organisation.title
+        dp.acronym = organisation.abbreviation
+        dp.pubDescription = organisation.description
+        dp.email = organisation.email[0]
+        dp.phone = organisation.phone[0]
+        dp.websiteUrl = organisation.homepage[0]
+        if (organisation.latitude) {
+            dp.latitude = organisation.latitude
+        }
+        if (organisation.longitude) {
+            dp.longitude = organisation.longitude
+        }
+        dp.gbifCountryToAttribute = isoCodeService.iso2CountryCodeToIso3CountryCode(organisation.country)
+        dp.address = new Address()
+        dp.address.state = organisation.province
+        dp.address.street = organisation.address[0]
+        dp.address.city = organisation.city
+        dp.address.postcode = organisation.postalCode
     }
 
     def writeCSVReportForGBIF(outputStream) {
@@ -909,16 +947,18 @@ class GbifRegistryService {
     }
 
     /**
-     * Creates a new instance of an HTTP builder configured with the basic authentication account and standard
-     * error handling.
+     * Creates a new instance of an HTTP builder configured with the standard error handling.
+     * By default, use the basic authentication account
      */
-    private def newHttpInstance() {
+    private def newHttpInstance(useAuthentication = true) {
         def http = new HTTPBuilder(grailsApplication.config.gbifApiUrl)
 
-        // GBIF does not return the expected 401 challenge so this needs to be set preemptively
-        // Note: Using Grails built in encoding which is a Java7-safe version
-        def token = grailsApplication.config.gbifApiUser + ':' + grailsApplication.config.gbifApiPassword
-        http.setHeaders([Authorization: "Basic ${token.bytes.encodeBase64().toString()}"])
+        if (useAuthentication) {
+            // GBIF does not return the expected 401 challenge so this needs to be set preemptively
+            // Note: Using Grails built in encoding which is a Java7-safe version
+            def token = grailsApplication.config.gbifApiUser + ':' + grailsApplication.config.gbifApiPassword
+            http.setHeaders([Authorization: "Basic ${token.bytes.encodeBase64().toString()}"])
+        }
 
         http.handler.'400' = { resp, reader -> throw new Exception("Bad request to GBIF: ${resp.status} ${reader}")}
         http.handler.'401' = { resp, reader -> throw new Exception("GBIF Authorisation required: ${resp.status}")}
