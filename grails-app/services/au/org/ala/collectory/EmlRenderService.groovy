@@ -705,7 +705,7 @@ class EmlRenderService {
      */
     def handleLinks(str) {
         if (str) {
-            def urlMatch = /\[(http:\S*)\b ([^\]]*)\]/   // [http: + text to next word boundary + space + all text until next ]
+            def urlMatch = /\[(https?:\S*)\b ([^\]]*)\]/   // [(http + s(optional) + : + text to next word boundary + space + all text until next ]
             str = str.replaceAll(urlMatch) {s1, s2, s3 ->
                 "${s2} (${s3})"
             }
