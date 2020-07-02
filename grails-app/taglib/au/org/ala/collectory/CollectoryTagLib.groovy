@@ -859,7 +859,7 @@ class CollectoryTagLib {
 
                 // wiki-like links
                 if (!attrs.noLink) {
-                    def urlMatch = /\[(http(s)?:\S*)\b ([^\]]*)\]/   // [http + s(optional) + : + text to next word boundary + space + all text ubtil next ]
+                    def urlMatch = /\[(https?:\S*)\b ([^\]]*)\]/   // [http + s(optional) + : + text to next word boundary + space + all text ubtil next ]
                     text = text.replaceAll(urlMatch) {s1, s2, s3 ->
                         if (s2.indexOf('ala.org.au') > 0)
                             "<a href='${s2}'>${s3}</a>"
