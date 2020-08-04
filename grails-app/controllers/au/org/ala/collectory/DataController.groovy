@@ -191,8 +191,7 @@ class DataController {
         if (!keyCheck?.valid) {
             return false
         }
-        keyCheck.validApiKey = apiKey
-        return keyCheck
+        return true
     }
 
     /**
@@ -333,12 +332,17 @@ class DataController {
         } else {
             def urlForm = params.entity
             def clazz = capitalise(urlForm)
-            def keyCheck = checkApiKey()
             if (params.pg) {
                 // return specified entity
                 addContentLocation "/ws/${urlForm}/${params.pg.uid}"
                 def eTag = (params.pg.uid + ":" + params.pg.lastUpdated).encodeAsMD5()
-                def entityInJson = crudService."read${clazz}"(params.pg, keyCheck && keyCheck.validApiKey?:null)
+                def entityInJson
+                if (clazz == 'DataResource') {
+                    def keyCheck = checkApiKey()
+                    entityInJson = crudService."read${clazz}"(params.pg, keyCheck)
+                } else {
+                    entityInJson = crudService."read${clazz}"(params.pg)
+                }
                 entityInJson = metadataService.convertAnyLocalPaths(entityInJson)
                 response.setContentType("application/json")
                 response.setCharacterEncoding("UTF-8")
