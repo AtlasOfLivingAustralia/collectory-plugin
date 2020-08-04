@@ -269,7 +269,7 @@ class CrudService {
 
     /* data resource */
 
-    def readDataResource(DataResource p) {
+    def readDataResource(DataResource p, apiKey = null) {
         def builder = new JSONBuilder()
 
         def result = builder.build {
@@ -351,7 +351,7 @@ class CrudService {
                 if (p.listConsumers()) {
                     linkedRecordConsumers = p.listConsumers().formatEntitiesFromUids()
                 }
-                if (p.connectionParameters) {
+                if (p.connectionParameters && apiKey) {
                     connectionParameters = p.connectionParameters.formatJSON()
                 }
                 if (p.imageMetadata) {

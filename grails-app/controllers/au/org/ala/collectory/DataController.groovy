@@ -176,6 +176,25 @@ class DataController {
         render(status:403, text: 'You are not authorised to use this service')
     }
 
+    def checkApiKey = {
+        def apiKey = {
+            if(params.api_key){
+                params.api_key
+            } else {
+                request.getHeader("Authorization")
+            }
+        }.call()
+        def keyCheck
+        if (apiKey) {
+            keyCheck = collectoryAuthService?.checkApiKey(apiKey)
+        }
+        if (!keyCheck?.valid) {
+            return false
+        }
+        keyCheck.validApiKey = apiKey
+        return keyCheck
+    }
+
     /**
      * Should be added for any uri that returns multiple formats based on content negotiation.
      * (So the content can be correctly cached by proxies.)
@@ -306,6 +325,7 @@ class DataController {
      * @param uid - optional uid of an instance of entity
      * @param pg - optional instance specified by uid (added in beforeInterceptor)
      * @param summary - any non-null value will cause a richer summary to be returned for entity lists
+     * @param api_key - optional param for displaying any sensitive data
      */
     def getEntity = {
         if (params.entity == 'tempDataResource') {
@@ -313,11 +333,12 @@ class DataController {
         } else {
             def urlForm = params.entity
             def clazz = capitalise(urlForm)
+            def keyCheck = checkApiKey()
             if (params.pg) {
                 // return specified entity
                 addContentLocation "/ws/${urlForm}/${params.pg.uid}"
                 def eTag = (params.pg.uid + ":" + params.pg.lastUpdated).encodeAsMD5()
-                def entityInJson = crudService."read${clazz}"(params.pg)
+                def entityInJson = crudService."read${clazz}"(params.pg, keyCheck && keyCheck.validApiKey?:null)
                 entityInJson = metadataService.convertAnyLocalPaths(entityInJson)
                 response.setContentType("application/json")
                 response.setCharacterEncoding("UTF-8")
@@ -602,10 +623,16 @@ class DataController {
 
     /**
      * Returns a single contact (independent of any entity).
+     * A valid api key is needed to display contact information
      * URI form: /contacts/{id}
      * @param id the database id of the contact
      */
     def contacts = {
+
+        if (!checkApiKey()) {
+            unauthorised()
+            return
+        }
         if (params.id) {
             def c = Contact.get(params.id)
             if (c) {
