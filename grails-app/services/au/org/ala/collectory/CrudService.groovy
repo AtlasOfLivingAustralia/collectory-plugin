@@ -36,7 +36,7 @@ class CrudService {
                 'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata',
                 'geographicDescription','northBoundingCoordinate','southBoundingCoordinate','eastBoundingCoordinate',
                 'westBoundingCoordinate','beginDate','endDate','qualityControlDescription','methodStepDescription',
-                'gbifDoi'
+                'gbifDoi', 'isShareableWithGBIF'
     ]
     static dataResourceNumberProperties = ['harvestFrequency','downloadLimit']
     static dataResourceTimestampProperties = ['lastChecked','dataCurrency']
@@ -414,7 +414,12 @@ class CrudService {
 
         dataResourceStringProperties.each {
             if (obj.has(it)) {
-                dr."${it}" = obj."${it}".toString()
+                if (dr."${it}" instanceof Boolean && obj."${it}" instanceof Boolean) {
+                    dr."${it}" = obj."${it}"
+                } else {
+                    dr."${it}" = obj."${it}".toString()
+                }
+
             }
         }
 
