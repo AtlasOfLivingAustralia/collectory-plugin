@@ -7,7 +7,6 @@ branches:
   - master
   - develop
   - hotfix
-  - feature/167
 before_install:
 - wget -q https://raw.githubusercontent.com/AtlasOfLivingAustralia/travis-build-configuration/master/ala_common.sh
 - chmod +x ala_common.sh
