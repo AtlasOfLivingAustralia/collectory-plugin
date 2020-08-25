@@ -39,6 +39,7 @@ class IptController {
         def create = params.create != null && params.create.equalsIgnoreCase("true")
         def check = params.check == null || !params.check.equalsIgnoreCase("false")
         def keyName = params.key ?: 'catalogNumber'
+        def isShareableWithGBIF = params.isShareableWithGBIF ? params.isShareableWithGBIF.toBoolean(): true
         def provider = ProviderGroup._get(params.uid)
         def apiKey = request.cookies.find { cookie -> cookie.name == API_KEY_COOKIE }
         def keyCheck = apiKey ? collectoryAuthService.checkApiKey(apiKey.value) : null
@@ -55,7 +56,7 @@ class IptController {
             return
         }
         try {
-            def updates = provider == null ? null : iptService.scan(provider, create, check, keyName, username, admin)
+            def updates = provider == null ? null : iptService.scan(provider, create, check, keyName, username, admin, isShareableWithGBIF)
             log.info "${updates.size()} data resources to update for ${params.uid}"
             response.addHeader HttpHeaders.VARY, HttpHeaders.ACCEPT
             withFormat {

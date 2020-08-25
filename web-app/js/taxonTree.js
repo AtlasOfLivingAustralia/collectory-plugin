@@ -158,6 +158,5 @@ function showBie(node) {
     if (rank == 'kingdoms') return;
     var name = node.attr('id');
     var sppUrl = CHARTS_CONFIG.bieWebappUrl + "/species/" + name;
-    if (rank != 'species') { sppUrl += "_(" + rank + ")"; }
     document.location.href = sppUrl;
 }
