@@ -7,7 +7,8 @@ import groovy.util.slurpersupport.GPathResult
 import javax.activation.DataSource
 import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
-import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Collect datasets from an IPT service and update the metadata.
@@ -34,7 +35,7 @@ class IptService {
     /** Source of the RSS feed */
     static final RSS_PATH = "rss.do"
     /** Parse RFC 822 date/times */
-    static final RFC822_PARSER = new SimpleDateFormat('EEE, d MMM yyyy HH:mm:ss Z')
+    static final RFC822_FORMATTER = DateTimeFormatter.RFC_1123_DATE_TIME
 
     /** Fields that we can derive from the RSS feed */
     protected rssFields = [
@@ -45,7 +46,7 @@ class IptService {
             dataCurrency: { item ->
                 def pd = item.pubDate?.text()
 
-                pd == null || pd.isEmpty() ? null : new Timestamp(RFC822_PARSER.parse(pd).getTime())
+                pd == null || pd.isEmpty() ? null : Timestamp.valueOf(LocalDateTime.parse(pd, RFC822_FORMATTER))
             },
             lastChecked: { item -> new Timestamp(System.currentTimeMillis()) },
             provenance: { item -> "Published dataset" },
@@ -80,9 +81,9 @@ class IptService {
      * @return A list of data resources that need re-loading
      */
     @org.springframework.transaction.annotation.Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED)
-    def scan(DataProvider provider, boolean create, boolean check, String keyName, String username, boolean admin) {
+    def scan(DataProvider provider, boolean create, boolean check, String keyName, String username, boolean admin, boolean shareWithGbif) {
         ActivityLog.log username, admin, provider.uid, Action.SCAN
-        def updates = this.rss(provider, keyName)
+        def updates = this.rss(provider, keyName, shareWithGbif)
 
         return merge(provider, updates, create, check, username, admin)
     }
@@ -165,7 +166,7 @@ class IptService {
      *
      * @return A list of (possibly new providers)
      */
-    def rss(DataProvider provider, String keyName) {
+    def rss(DataProvider provider, String keyName, Boolean isShareableWithGBIF) {
 
         def url = provider.websiteUrl
         if(!url.endsWith("/")){
@@ -179,7 +180,7 @@ class IptService {
         rss.declareNamespace(NAMESPACES)
         def items = rss.channel.item
 
-        return items.collect { item -> this.createDataResource(provider, item, keyName) }
+        return items.collect { item -> this.createDataResource(provider, item, keyName, isShareableWithGBIF) }
     }
 
     /**
@@ -191,7 +192,7 @@ class IptService {
      *
      * @return A created resource matching the information provided
      */
-    def createDataResource(DataProvider provider, GPathResult rssItem, String keyName) {
+    def createDataResource(DataProvider provider, GPathResult rssItem, String keyName, Boolean isShareableWithGBIF) {
         def resource = new DataResource()
         def eml = rssItem."ipt:eml"?.text()
         def dwca = rssItem."ipt:dwca"?.text()
@@ -200,6 +201,7 @@ class IptService {
         rssFields.each { name, accessor -> resource.setProperty(name, accessor(rssItem))}
 
         resource.connectionParameters =  dwca == null || dwca.isEmpty() ? null : "{ \"protocol\": \"DwCA\", \"url\": \"${dwca}\", \"automation\": true, \"termsForUniqueKey\": [ \"${keyName}\" ] }";
+        resource.isShareableWithGBIF = isShareableWithGBIF
 
         def contacts = []
         if (eml != null) {

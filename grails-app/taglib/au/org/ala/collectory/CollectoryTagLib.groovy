@@ -848,7 +848,7 @@ class CollectoryTagLib {
 
                 // in-line links
                 if (!attrs.noLink) {
-                    def urlMatch = /[^\[](http:\S*)\b/   // word boundary + http: + non-whitespace + word boundary
+                    def urlMatch = /[^\[](https?:\S*)\b/   // [http + s(optional) + : + word boundary + http: + non-whitespace + word boundary
                     text = text.replaceAll(urlMatch) {s1, s2 ->
                         if (s2.indexOf('ala.org.au') > 0)
                             " <a href='${s2}'>${s2}</a>"
@@ -859,7 +859,7 @@ class CollectoryTagLib {
 
                 // wiki-like links
                 if (!attrs.noLink) {
-                    def urlMatch = /\[(http:\S*)\b ([^\]]*)\]/   // [http: + text to next word boundary + space + all text ubtil next ]
+                    def urlMatch = /\[(https?:\S*)\b ([^\]]*)\]/   // [http + s(optional) + : + text to next word boundary + space + all text ubtil next ]
                     text = text.replaceAll(urlMatch) {s1, s2, s3 ->
                         if (s2.indexOf('ala.org.au') > 0)
                             "<a href='${s2}'>${s3}</a>"
@@ -2056,10 +2056,29 @@ class CollectoryTagLib {
         }
     }
 
+    /***
+     * A quick test to check if the url is valid.
+     * @param targetUrl  - the url to check
+     * @return true if the url is valid
+     *          false if the url is invalid
+     */
+    private boolean isUrlValid(String targetUrl) {
+        try {
+            def u = new java.net.URL(targetUrl).openStream()
+            u.close()
+            return true
+        } catch(Exception e){
+            return false
+        }
+        return false
+    }
+
     def externalLink = { attrs ->
         def href = attrs.href
-        if (!attrs.href?.startsWith("http://")) {
-            href = "http://" + href
+        if (!attrs.href?.startsWith("http")) {
+            String httpHref = "http://" + href
+            // A quick test to check if http url is valid and default it to https otherwise.
+            href = isUrlValid(httpHref)? httpHref: "https://" + href
         }
         out << """<a class="external_icon" target="_blank" href="${href}">${attrs.href}</a>"""
     }
