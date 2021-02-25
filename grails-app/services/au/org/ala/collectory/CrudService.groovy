@@ -30,7 +30,7 @@ class CrudService {
     static dataHubStringProperties = ['memberDataResources']
     static dataHubNumberProperties = []
 
-    static dataResourceStringProperties = ['rights','citation','dataGeneralizations','informationWithheld',
+    static dataResourceStringProperties = ['uid', 'rights','citation','dataGeneralizations','informationWithheld',
                 'permissionsDocument','licenseType','licenseVersion','status','mobilisationNotes','provenance',
                 'harvestingNotes','connectionParameters','resourceType','permissionsDocumentType','riskAssessment',
                 'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata',
@@ -436,6 +436,15 @@ class CrudService {
                 dr.institution = ins
             }
         }
+        if (obj.has('dataLinks')) {
+            def dataLinks = (obj.dataLinks instanceof String) ? [obj.dataLinks] : obj.dataLinks.collect{it}
+            dataLinks.each {
+                DataLink dl = new DataLink()
+                dl.consumer = it
+                dl.provider = dr.uid
+                dl.save(flush: true)
+            }
+        }
         updateExternalIdentifiers(dr, obj)
     }
 
@@ -769,6 +778,9 @@ class CrudService {
             } else {
                 pm = new ProviderMap()
                 pm.collection = co
+                if (co.institution) {
+                    pm.institution = co.institution
+                }
             }
             // get codes
             if (map.has('institutionCodes')) {
