@@ -204,7 +204,7 @@ class IptService {
         resource.isShareableWithGBIF = isShareableWithGBIF
 
         def contacts = []
-        if (eml != null) {
+        if (eml != null && eml != "") {
             contacts = retrieveEml(resource, eml)
         }
 
