@@ -28,7 +28,3 @@ remove this line */
 // Added by the Audit-Logging plugin:
 auditLog.auditDomainClassName = 'au.org.ala.audit.AuditLogEvent'
 
-//cors.allow.origin.regex = '^https?:\\/\\/.+\\.ala\\.org\\.au\\/?'
-
-cors.allow.origin.regex = '.*\\.ala\\.org\\.au'
-
