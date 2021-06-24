@@ -25,8 +25,7 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-        //runtime 'mysql:mysql-connector-java:5.1.5' // Needed if you have older versions of mysql installed (5.6)
-        runtime 'mysql:mysql-connector-java:5.1.42'
+        runtime 'mysql:mysql-connector-java:8.0.25'
         runtime 'net.sf.opencsv:opencsv:2.3'
 	    runtime 'org.apache.ant:ant:1.10.1'
         runtime 'commons-httpclient:commons-httpclient:3.1'
