@@ -130,7 +130,7 @@ class Collection extends ProviderGroup implements Serializable {
                 return ok
             })
         scientificNames(nullable:true, maxSize:2048)
-        subCollections(nullable:true, maxSize:4096)
+        subCollections(nullable:true, maxSize:8192)
         providerMap(nullable:true)
         institution(nullable:true)
     }
