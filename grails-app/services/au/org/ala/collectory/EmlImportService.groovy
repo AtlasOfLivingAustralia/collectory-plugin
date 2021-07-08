@@ -20,18 +20,18 @@ class EmlImportService {
         guid:  { eml -> eml.@packageId.toString() },
         pubDescription: { eml -> this.collectParas(eml.dataset.abstract?.para) },
         name: { eml -> eml.dataset.title.toString() },
-        email: { eml ->  eml.dataset.contact?.electronicMailAddress?.text() },
+        email: { eml ->  eml.dataset.contact[0]?.electronicMailAddress?.text() },
         rights: { eml ->  this.collectParas(eml.dataset.intellectualRights?.para) },
         citation: { eml ->  eml.additionalMetadata?.metadata?.gbif?.citation?.text() },
 
         state: { eml ->
-            def state = eml.dataset.contact?.address?.administrativeArea?.text()
+            def state = eml.dataset.contact[0]?.address?.administrativeArea?.text()
 
             if (state)
                 state = this.dataLoaderService.massageState(state)
         },
 
-        phone: { eml ->  eml.dataset.contact?.phone?.text() },
+        phone: { eml ->  eml.dataset.contact[0]?.phone?.text() },
 
         //geographic coverage
         geographicDescription: { eml -> eml.dataset.coverage?.geographicCoverage?.geographicDescription?:'' },
