@@ -576,13 +576,17 @@ abstract class ProviderGroup implements Serializable {
      * @return
      */
     static ProviderGroup _get(String id, String entityType) {
-        switch (entityType.toLowerCase()) {
-            case Institution.ENTITY_TYPE.toLowerCase(): return Institution.findById(id)
-            case Collection.ENTITY_TYPE.toLowerCase(): return Collection.findById(id)
-            case DataProvider.ENTITY_TYPE.toLowerCase(): return DataProvider.findById(id)
-            case DataResource.ENTITY_TYPE.toLowerCase(): return DataResource.findById(id)
-            case DataHub.ENTITY_TYPE.toLowerCase(): return DataHub.findById(id)
-            default: return null
+        try {
+            switch (entityType.toLowerCase()) {
+                case Institution.ENTITY_TYPE.toLowerCase(): return Institution.findById(id)
+                case Collection.ENTITY_TYPE.toLowerCase(): return Collection.findById(id)
+                case DataProvider.ENTITY_TYPE.toLowerCase(): return DataProvider.findById(id)
+                case DataResource.ENTITY_TYPE.toLowerCase(): return DataResource.findById(id)
+                case DataHub.ENTITY_TYPE.toLowerCase(): return DataHub.findById(id)
+                default: return null
+            }
+        } catch (Exception e){
+            return null
         }
     }
 

@@ -21,16 +21,16 @@
     </style>
         <div class="btn-toolbar">
             <ul class="btn-group">
-                <li class="btn"><cl:homeLink/></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><cl:homeLink/></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
             </ul>
             <ul class="btn-group pull-right">
-                <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
-                <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
-                <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
-                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
+                <li class="btn btn-default"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                <li class="btn btn-default"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                <li class="btn btn-default"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn btn-default"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
             </ul>
         </div>
         <div class="body">
@@ -148,9 +148,9 @@
                     </cl:ifGranted>
                 </g:form>
                 <ul class="btn-group pull-right">
-                    <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
-                    <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
-                    <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                    <li class="btn btn-default"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                    <li class="btn btn-default"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                    <li class="btn btn-default"><cl:jsonDataLink uid="${instance.uid}"/></li>
                 </ul>
             </div>
         </div>

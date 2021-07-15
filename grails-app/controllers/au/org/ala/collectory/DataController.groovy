@@ -35,7 +35,7 @@ class DataController {
                 }
             } else {
 
-                if(params.entity){
+                if (params.entity){
                     params.pg = ProviderGroup._get(params.uid, params.entity)
                 }
 

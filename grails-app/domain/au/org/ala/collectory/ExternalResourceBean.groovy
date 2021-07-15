@@ -42,6 +42,10 @@ class ExternalResourceBean implements Comparable<ExternalResourceBean> {
     List notes = []
     /** The occcurrence data id, used to track data generation tasks */
     String occurrenceId
+    /** The number of records in this resource */
+    Integer recordCount
+    /** The number of records in this resource */
+    String country
 
     /**
      * Add a note to the resource bean load

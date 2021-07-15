@@ -4,8 +4,10 @@
         <title><g:message code="manage.show.title" /></title>
 	    <meta name="layout" content="${grailsApplication.config.skin.layout}" />
         <r:require modules="smoothness, collectory, jquery_ui_custom" />
+        <style type="text/css">
+            .homeCell { margin-bottom: 10px; margin-right:25px;}
+        </style>
     </head>
-    
     <body>
       <div class="content">
 
@@ -20,7 +22,7 @@
         </g:if>
 
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <ul id="adminNavMenu" class="nav nav-list nav-stacked nav-tabs">
                     <li><a href="javascript:showSection('adminTools');"><i class="glyphicon glyphicon-chevron-right">&nbsp;</i> <g:message code="manage.list.li01" /></a></li>
                     <li><a href="javascript:showSection('yourMetadata');"><i class="glyphicon glyphicon-chevron-right">&nbsp;</i> <g:message code="manage.list.li02" /></a></li>
@@ -28,7 +30,7 @@
                 </ul>
             </div>
 
-            <div class="col-md-9">
+            <div class="col-md-10">
 
                 <div id="yourMetadata" class="infoSection hidden">
                     <g:if test="${show == 'user'}">
@@ -168,96 +170,90 @@
 
                 <div id="adminTools" class="infoSection">
                 <cl:ifGranted role="ROLE_COLLECTION_ADMIN">
+                  <h2><g:message code="manage.list.addtools.title01" /></h2>
+                  <p><g:message code="manage.list.addtools.des01" args="[ProviderGroup.ROLE_ADMIN]" />.</p>
                   <div>
-                    <h2><g:message code="manage.list.addtools.title01" /></h2>
-                    <p><g:message code="manage.list.addtools.des01" args="[ProviderGroup.ROLE_ADMIN]" />.</p>
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="collection" action="list"><g:message code="manage.list.addtools.vac" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des02" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des02" />.</p>
                     </div>
 
-                    <div class="homeCell">
-                        <span class="mainLink"><g:message code="manage.list.addtools.span01" /></span>
-
-                        <p class="mainText"><g:message code="manage.list.addtools.des03" /></p>
-                        <g:form controller="collection" action="searchList" method="get">
-                            <div class="input-group">
-                                <g:textField class="mainText" name="term" placeholder="Search for collection"/>
-                                <g:submitButton class="btn btn-default" name="search" value="Search"/>
-                            </div>
-                        </g:form>
-                    </div>
-
-                    <div class="homeCell">
-                        <g:link class="mainLink" controller="collection" action="create"><g:message code="manage.list.addtools.aac" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des04" />.</p>
-                    </div>
-
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="institution" action="list"><g:message code="manage.list.addtools.vai" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des05" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des05" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="dataProvider" action="list"><g:message code="manage.list.addtools.vadp" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des06" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des06" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="dataResource" action="list"><g:message code="manage.list.addtools.vadr" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des07" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des07" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="dataHub" action="list"><g:message code="manage.list.addtools.vadh" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des08" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des08" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                  </div>
+                  <div>
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="licence" action="list"><g:message code="admin.index.licence"  default="View all licences" /></g:link>
-                        <p class="mainText"><g:message code="admin.index.licence.desc" default="View all licences, and add new licences" />.</p>
+                        <p class="mainText hide"><g:message code="admin.index.licence.desc" default="View all licences, and add new licences" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="reports" action="list"><g:message code="manage.list.addtools.vr" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des09" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des09" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="contact" action="list"><g:message code="manage.list.addtools.mc" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des10" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des10" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="providerCode" action="list"><g:message code="manage.list.addtools.mpc" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des11" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des11" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="providerMap" action="list"><g:message code="manage.list.addtools.mpm" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des12" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des12" />.</p>
                     </div>
-
-                    <div class="homeCell">
+                  </div>
+                  <div>
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="admin" action="export"><g:message code="manage.list.addtools.eadaj" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des13" />.</p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des13" />.</p>
                     </div>
 
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="auditLogEvent" action="list" params="[max:1000]"><g:message code="manage.list.addtools.vae" /></g:link>
-                        <p class="mainText"><g:message code="manage.list.addtools.des14" /></p>
+                        <p class="mainText hide"><g:message code="manage.list.addtools.des14" /></p>
                     </div>
-                    <div class="homeCell">
+
+                  </div>
+                  <div>
+                      <h4>Data sync with GBIF</h4>
+                      <div class="homeCell btn btn-default">
+                          <g:link class="mainLink" controller="manage" action="repatriate"><g:message code="manage.list.addtools.repatriate" /></g:link>
+                          <p class="mainText hide"r><g:message code="manage.list.addtools.des17" /></p>
+                      </div>
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="manage" action="loadExternalResources"><g:message code="manage.list.addtools.addexternal" /></g:link>
-                        <p class="mainText"r><g:message code="manage.list.addtools.des15" /></p>
+                        <p class="mainText hide"r><g:message code="manage.list.addtools.des15" /></p>
                     </div>
-                    <div class="homeCell">
+                    <div class="homeCell btn btn-default">
                         <g:link class="mainLink" controller="dataResource" action="gbifUpload"><g:message code="manage.list.addtools.uploadgbif" /></g:link>
-                        <p class="mainText"r><g:message code="manage.list.addtools.des16" /></p>
+                        <p class="mainText hide"r><g:message code="manage.list.addtools.des16" /></p>
                     </div>
-                      <div class="homeCell">
+                      <div class="homeCell btn btn-default">
                           <g:link class="mainLink" controller="gbif" action="healthCheck"><g:message code="manage.list.addtools.gbif.healthcheck" /></g:link>
-                          <p class="mainText"r><g:message code="manage.list.addtools.gbif.healthcheck.desc" default="GBIF Healthcheck" /></p>
+                          <p class="mainText hide"r><g:message code="manage.list.addtools.gbif.healthcheck.desc" default="GBIF Healthcheck" /></p>
                       </div>
                   </div>
                 </cl:ifGranted>

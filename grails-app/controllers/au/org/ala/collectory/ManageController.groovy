@@ -3,6 +3,7 @@ package au.org.ala.collectory
 import au.org.ala.audit.AuditLogEvent
 import au.org.ala.collectory.resources.DataSourceLoad
 import au.org.ala.collectory.resources.gbif.GbifDataSourceAdapter
+import au.org.ala.collectory.resources.gbif.GbifRepatDataSourceAdapter
 
 class ManageController {
 
@@ -24,6 +25,38 @@ class ManageController {
         if ((AuthenticationCookieUtils.cookieExists(request, AuthenticationCookieUtils.ALA_AUTH_COOKIE) || grailsApplication.config.security.cas.bypass.toBoolean()) && !params.noRedirect) {
             redirect(action: 'list')
         }
+    }
+
+    /**
+     * Renders the view that allows a user to load all the gbif resources for a country
+     */
+    def repatriate = {
+        DataSourceConfiguration configuration = new DataSourceConfiguration(
+                guid: UUID.randomUUID().toString(),
+                name: '',
+                description: '',
+                adaptorClass: GbifRepatDataSourceAdapter.class,
+                endpoint: new URL(grailsApplication.config.gbifApiUrl + '/'),
+                username: '',
+                password: '',
+                country: Locale.default.getCountry(),
+                recordType: 'OCCURRENCE',
+                defaultDatasetValues: [:],
+                keyTerms: [],
+                resources: [],
+                countries: gbifService.getCountryMap().keySet()
+        )
+        def adaptor = configuration.createAdaptor()
+        render(view: "repatriate",
+                model: [
+                        repatriate: true,
+                        configuration: configuration,
+                        countryMap: gbifService.getCountryMap(),
+                        datasetTypeMap: adaptor.datasetTypeMap,
+                        adaptors: externalDataService.REPAT_ADAPTORMAP,
+                        dataProviders: DataProvider.all.sort { it.name }
+                ]
+        )
     }
 
     /**
@@ -80,7 +113,31 @@ class ManageController {
     }
 
     /**
-     * Update from an externbal source
+     * Search for resources that may be loaded from an external source
+     */
+    def searchForRepatResources() {
+        log.debug "Searching for resources from external source: ${params}"
+        DataSourceConfiguration configuration = new DataSourceConfiguration(params)
+        def dataResources = DataResource.all.findAll({ dr -> dr.resourceType == 'records' }).sort({ it.name })
+        def resources = externalDataService.searchForDatasets(configuration)
+        configuration.resources = resources
+        def dataProvider = null
+        if (configuration.dataProviderUid){
+            dataProvider = DataProvider.findByUid(configuration.dataProviderUid)
+        }
+        render(view: 'repatriateReview',
+                model: [
+                        loadGuid: UUID.randomUUID().toString(),
+                        dataResources: dataResources,
+                        dataProvider: dataProvider,
+                        configuration: configuration
+                ]
+        )
+    }
+
+
+    /**
+     * Update from an external source
      * <p>
      * The web pade
      */

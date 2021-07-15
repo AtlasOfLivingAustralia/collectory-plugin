@@ -3,23 +3,29 @@ package au.org.ala.collectory.resources.gbif
 import au.org.ala.collectory.DataResource
 import au.org.ala.collectory.DataSourceConfiguration
 import au.org.ala.collectory.ExternalResourceBean
-import au.org.ala.collectory.exception.ExternalResourceException
-import au.org.ala.collectory.resources.DataSourceAdapter
-import au.org.ala.collectory.resources.TaskPhase
 import au.org.ala.collectory.GbifService
+import au.org.ala.collectory.Licence
+import au.org.ala.collectory.exception.ExternalResourceException
+import au.org.ala.collectory.resources.TaskPhase
 import groovy.json.JsonOutput
 import groovyx.net.http.ContentType
 import groovyx.net.http.HTTPBuilder
 import groovyx.net.http.Method
 import net.sf.json.JSONObject
+import org.apache.http.HttpEntity
+import org.apache.http.HttpHeaders
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
+import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.client.methods.HttpPost
+import org.apache.http.entity.StringEntity
+import org.apache.http.impl.client.HttpClientBuilder
 import org.slf4j.LoggerFactory
 
-import java.text.DateFormat
 import java.text.MessageFormat
 import java.text.ParseException
-import java.text.SimpleDateFormat
+
 /**
  * Data source adapters for the GBIF API
  *
@@ -27,109 +33,43 @@ import java.text.SimpleDateFormat
  *
  * @copyright Copyright (c) 2017 CSIRO
  */
-class GbifDataSourceAdapter extends DataSourceAdapter {
-    static final LOGGER = LoggerFactory.getLogger(GbifDataSourceAdapter.class)
-    static final SOURCE = "GBIF"
-    static final MessageFormat DATASET_SEARCH = new MessageFormat("dataset/search?publishingCountry={0}&type={1}&offset={2}&limit={3}")
-    static final MessageFormat DATASET_GET = new MessageFormat("dataset/{0}")
-    static final String OCCURRENCE_DOWNLOAD_REQUEST = "occurrence/download/request"
-    static final MessageFormat DATASET_RECORD_COUNT = new MessageFormat("occurrence/count?datasetKey={0}")
-    static final MessageFormat DOWNLOAD_STATUS = new MessageFormat("occurrence/download/{0}")
-    static final DateFormat TIMESTAMP_FORMAT= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+class GbifRepatDataSourceAdapter extends GbifDataSourceAdapter {
 
-    static LICENSE_MAP = [
-            "https://creativecommons.org/publicdomain/zero/1.0/legalcode": [licenseType: "CC0", licenseVersion: "1.0" ],
-            "https://creativecommons.org/licenses/by-nc/4.0/legalcode":    [licenseType: "CC BY-NC", licenseVersion: "4.0" ],
-            "https://creativecommons.org/licenses/by/4.0/legalcode":       [licenseType: "CC BY", licenseVersion: "4.0" ],
-            "http://creativecommons.org/publicdomain/zero/1.0/legalcode":  [licenseType: "CC0", licenseVersion: "1.0" ],
-            "http://creativecommons.org/licenses/by-nc/4.0/legalcode":     [licenseType: "CC BY-NC", licenseVersion: "4.0" ],
-            "http://creativecommons.org/licenses/by/4.0/legalcode":        [licenseType: "CC BY", licenseVersion: "4.0" ]
-    ]
-    static TYPE_MAP = [
-            "CHECKLIST"    : "species-list",
-            "METADATA"     : "document",
-            "OCCURRENCE"   : "records",
-            "SAPLING_EVENT": "records"
-    ]
-    static DATASET_TYPES = [
-            "OCCURRENCE"   : "Occurrence Records"  // We only allow occurrence records at the moment
-    ]
-    static CONTENT_MAP = [
-            "CHECKLIST"    : ["species list", "taxonomy", "gbif import"],
-            "METADATA"     : ["gbif import"],
-            "OCCURRENCE"   : ["point occurrence data", "gbif import"],
-            "SAPLING_EVENT": ["point occurrence data", "gbif import"]
-    ]
-    static DOWNLOAD_STATUS_MAP = [
-            "CANCELLED" : TaskPhase.CANCELLED,
-            "FAILED"    : TaskPhase.ERROR,
-            "KILLED"    : TaskPhase.CANCELLED,
-            "PREPARING" : TaskPhase.GENERATING,
-            "RUNNING"   : TaskPhase.GENERATING,
-            "SUCCEEDED" : TaskPhase.COMPLETED,
-            "SUSPENDED" : TaskPhase.GENERATING,
-            "UNKNOWN"   : TaskPhase.ERROR
-    ]
+    static final LOGGER = LoggerFactory.getLogger(GbifRepatDataSourceAdapter.class)
+    static final SOURCE = "GBIF_REPATRIATION"
+    GbifService gbifService
 
-    int pageSize = 500
+    static final String OCCURRENCE_REPAT_SEARCH = "occurrence/search?repatriated=true&country={0}&type={1}&offset=0&limit=0&facet=datasetKey&facetLimit={2}"
 
-    def GbifService gbifService
-
-    GbifDataSourceAdapter(DataSourceConfiguration configuration) {
+    GbifRepatDataSourceAdapter(DataSourceConfiguration configuration) {
         super(configuration)
      }
 
-    /**
-     * Get the source label for external identifiers
-     *
-     * @return {@link #SOURCE}
-     */
-    @Override
-    String getSource() {
-        return SOURCE
-    }
-
-    @Override
-    Map getCountryMap(){
-        return gbifService.getCountryMap()
-    }
-
-    @Override
-    Map getDatasetTypeMap() {
-        return DATASET_TYPES
-    }
-
     @Override
     List<Map> datasets() throws ExternalResourceException {
-        int offset = 0
         def keys = []
         def datasets = []
-        boolean atEnd = false
-        Integer pageSizeToUse = pageSize
-        if (configuration.maxNoOfDatasets < pageSize){
-            pageSizeToUse = configuration.maxNoOfDatasets
-        } else {
-            pageSizeToUse = pageSize
-        }
 
-        while (!atEnd) {
-            getLOGGER().info("Requesting dataset lists configuration.country: ${configuration.country} offset: ${offset}, pageSize: ${pageSizeToUse}")
-            JSONObject json = getJSONWS(DATASET_SEARCH.format([configuration.country, configuration.recordType, offset.toString(), pageSizeToUse.toString()].toArray()))
-            if (json?.results) {
-                json.results.each {
-                    keys << it.key
-                    datasets << translate(it)
+        LOGGER.info("Requesting dataset lists configuration.country: ${configuration.country}")
+        String url = MessageFormat.format(OCCURRENCE_REPAT_SEARCH, configuration.country,configuration.recordType, configuration.maxNoOfDatasets)
+        JSONObject json = getJSONWS(url)
+        if (json?.facets) {
+            json.facets[0].counts.each {
+                keys << it.name
+
+                if (it.count >= configuration.minRecordCount && it.count <= configuration.maxRecordCount) {
+                    LOGGER.info("Getting metadata for ${it.name}  = ${it.count}")
+                    def dataset = getDataset(it.name, it.count)
+                    if (dataset.name) {
+                        datasets << dataset
+                    }
+                } else {
+                    LOGGER.info("Skipping dataset ${it.name}  = ${it.count}")
                 }
             }
-            offset += pageSize
-            getLOGGER().info("Results: " + json.results.size())
-            if(json.results.size() > 0){
-                getLOGGER().info("Results: " + json.results[0].title)
-            }
-            atEnd = !json || !json.results || json.results.size() == 0 || json.endOfRecords.toBoolean() || offset > configuration.maxNoOfDatasets
         }
 
-        getLOGGER().info("Total datasets retrieved: " + datasets.size())
+        LOGGER.info("Total datasets retrieved: " + datasets.size())
         return datasets
     }
 
@@ -162,16 +102,12 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
                 ext.updateConnection = false
             }
         }
+        ext.recordCount = external.recordCount
         return ext
      }
 
-    @Override
-    Map getDataset(String id) throws ExternalResourceException {
-        JSONObject json = getJSONWS(DATASET_GET.format([ id ].toArray()))
-        return json ? translate(json) : null
-    }
-
-    Map translate(JSONObject dataset) {
+    Map getDataset(String id, Integer recordCount) throws ExternalResourceException {
+        Map dataset= getJSONWS(MessageFormat.format("dataset/{0}", id))
         def currency = null
         def originator = dataset.contacts?.find { it.type == "ORIGINATOR" }
         def address = originator == null ? null : [
@@ -191,7 +127,8 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
             currency = dataset.pubDate ? TIMESTAMP_FORMAT.clone().parse(dataset.pubDate) : null
         } catch (ParseException ex) {
         }
-        def resource = [
+
+        [
                 name: dataset.title,
                 acronym: dataset.abbreviation,
                 guid: dataset.key,
@@ -204,7 +141,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
                 rights: dataset.rights,
                 licenseType: license?.licenseType,
                 licenseVersion: license?.licenseVersion,
-                citation: dataset.citation?.identifier ? dataset.citation.identifier : dataset.citation?.text,
+                citation: dataset.citation,
                 resourceType: recordType,
                 contentTypes: JsonOutput.toJson(contentTypes),
                 dataCurrency: currency,
@@ -213,10 +150,9 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
                 gbifDoi: dataset.doi,
                 gbifRegistryKey: dataset.key,
                 gbifDataset: true,
-                isShareableWithGBIF: false
+                isShareableWithGBIF: false,
+                recordCount: recordCount
         ]
-        addDefaultDatasetValues(resource)
-        return resource
     }
 
     /**
@@ -256,32 +192,43 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
     @Override
     String generateData(String guid) throws ExternalResourceException {
         def request = [
-                creator             : configuration.username,
+                creator: configuration.username,
                 notification_address: [],
-                predicate           : [
-                        type : "equals",
-                        key  : "DATASET_KEY",
-                        value: guid
+                format: "DWCA",
+                predicate: [
+                    type: "and",
+                    predicates: [
+                        [
+                            type : "equals",
+                            key  : "DATASET_KEY",
+                            value: guid
+                        ],
+                        [
+                            type : "equals",
+                            key: "COUNTRY",
+                            value: configuration.country
+                        ]
+                    ]
                 ]
         ]
-        LOGGER.debug("Sending download request for ${guid}")
-        def http = new HTTPBuilder(new URL(configuration.endpoint, OCCURRENCE_DOWNLOAD_REQUEST))
-        def downloadId = null
-        if (configuration.username) {
-            http.auth.basic(configuration.username, configuration.password)
-        }
-        http.request(Method.POST) { req ->
-            requestContentType = ContentType.JSON
-            headers.Accept = ContentType.JSON.acceptHeader
-            body = request
-            response.failure = { resp ->
-                throw new ExternalResourceException("Unable to generate download", "manage.note.note06", resp.statusLine)
-            }
-            response.success = { resp, responseBody ->
-                downloadId = responseBody.text
-            }
-        }
-        return downloadId
+
+        StringEntity requestEntity = new StringEntity(
+                JsonOutput.toJson(request),
+                "application/json",
+                "UTF-8")
+
+        String encoding = Base64.getEncoder()
+                .encodeToString((configuration.username + ":" + configuration.password).getBytes())
+        HttpClient httpClient = HttpClientBuilder.create()
+                .build();
+
+        HttpPost httpPost = new HttpPost(new URL(configuration.endpoint, "occurrence/download/request").toURI())
+        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+        httpPost.setEntity(requestEntity);
+
+        CloseableHttpResponse response = httpClient.execute(httpPost);
+        HttpEntity entity = response.getEntity();
+        return IOUtils.readLines(entity.getContent()).get(0)
     }
 
     /**

@@ -1,4 +1,4 @@
-<%@ page import="au.org.ala.collectory.ExternalResourceBean; grails.converters.JSON; au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.DataProvider" %>
+    <%@ page import="au.org.ala.collectory.ExternalResourceBean; grails.converters.JSON; au.org.ala.collectory.ProviderGroup; au.org.ala.collectory.DataProvider" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -33,18 +33,22 @@
         <g:hiddenField name="dataProviderUid" value="${configuration.dataProviderUid}"/>
         <g:hiddenField name="username" value="${configuration.username}"/>
         <g:hiddenField name="password" value="${configuration.password}"/>
+        <g:hiddenField name="country" value="${configuration.country}"/>
+        <g:hiddenField name="minRecordCount" value="${configuration.minRecordCount}"/>
+        <g:hiddenField name="maxRecordCount" value="${configuration.maxRecordCount}"/>
             <div class="col-md-12">
-                <table id="resource-table" class="resource-table table table-hover">
+                <table id="resource-table" class="resource-table table table-hover table-sm">
                     <thead>
                         <tr class="header">
+                            <th>ID</th>
                             <th><g:message code="manage.extloadr.label01"/></th>
-                            %{--<th><g:message code="manage.extloadr.label02"/></th>--}%
                             <th><g:message code="manage.extloadr.label03"/></th>
                             <th><g:message code="manage.extloadr.label04"/></th>
                             <th><g:message code="manage.extloadr.label05"/></th>
-                            <th><g:message code="manage.extloadr.label06"/> <button type="button" onclick="invertColumn('.addResource'); return false"><span class="glyphicon glyphicon-check"></span></button></th>
-                            <th><g:message code="manage.extloadr.label07"/> <button type="button" onclick="invertColumn('.updateMetadata'); return false"><span class="glyphicon glyphicon-check"></span></button></th>
-                            <th><g:message code="manage.extloadr.label08"/> <button type="button" onclick="invertColumn('.updateConnection'); return false"><span class="glyphicon glyphicon-check"></span></button></th>
+                            <th><g:message code="manage.extloadr.label06"/> <button type="btn btn-sm" onclick="invertColumn('.addResource'); return false"><span class="glyphicon glyphicon-check"></span></button></th>
+                            <th><g:message code="manage.extloadr.label07"/> <button type="btn btn-sm" onclick="invertColumn('.updateMetadata'); return false"><span class="glyphicon glyphicon-check"></span></button></th>
+                            <th><g:message code="manage.extloadr.label08"/> <button type="btn btn-sm" onclick="invertColumn('.updateConnection'); return false"><span class="glyphicon glyphicon-check"></span></button></th>
+                            <th><g:message code="manage.extloadr.label09"/></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,12 +56,14 @@
                     <g:each in="${configuration.resources}" var="res" status="rs">
                     <tr class="resource-scan-${res.status}">
                         <td>
+                            <small><a href="https://dx.doi.org/${res.source}"><g:fieldValue field="guid" bean="${res}"/></a></small>
+                        </td>
+                        <td>
                             <g:hiddenField id="resources-${rs}-uid" name="resources[${rs}].uid" value="${res.uid}"/>
                             <g:hiddenField name="resources[${rs}].guid" value="${res.guid}"/>
                             <g:hiddenField name="resources[${rs}].source" value="${res.source}"/>
+                            <g:hiddenField name="resources[${rs}].country" value="${configuration.country}"/>
                             <g:textField class="resource-name col-xs-4" name="resources[${rs}].name" value="${res.name}" />
-                            <br/>
-                            <small><a href="${res.source}"><g:fieldValue field="guid" bean="${res}"/></a></small>
                         </td>
                         <td><span title="<g:message code="manage.extstatus.${res.status}.detail"/>"><g:message code="manage.extstatus.${res.status}"/></span></td>
                         <td class="resource-mapping"><span id="existing-${rs}"><g:if test="${res.uid}"><g:fieldValue field="uid" bean="${res}"/> - <g:fieldValue field="name" bean="${res}"/></g:if></span><span class="btn btn-default btn-xs" onclick="existingDialog('#existing-${rs}', '#resources-${rs}-uid'); return false"><g:message code="manage.extloadr.button01" default="..."/></span> </td>
@@ -65,6 +71,7 @@
                         <td><g:checkBox name="resources[${rs}].addResource" value="${res.addResource}"/></td>
                         <td><g:checkBox name="resources[${rs}].updateMetadata" value="${res.updateMetadata}"/></td>
                         <td><g:checkBox name="resources[${rs}].updateConnection" value="${res.updateConnection}"/></td>
+                        <td>${res.recordCount}</td>
                     </tr>
                     </g:each>
                     </g:if>
@@ -74,7 +81,9 @@
                     </tbody>
                 </table>
                 <div>
-                <span class="button"><g:actionSubmit class="save btn btn-warning" controller="manage" action="updateFromExternalSources" value="${message(code: 'default.button.load.label', default: 'Load')}" onclick="return confirm('${message(code: 'default.button.load.confirm.message', default: 'Are you sure?')}');" /></span>
+                    <g:if test="${configuration.resources}">
+                        <span class="button"><g:actionSubmit class="save btn btn-warning" controller="manage" action="updateFromExternalSources" value="${message(code: 'default.button.load.label', default: 'Load')}" onclick="return confirm('${message(code: 'default.button.load.confirm.message', default: 'Are you sure?')}');" /></span>
+                    </g:if>
                 </div>
          </div>
     </g:form>

@@ -10,9 +10,9 @@
 	<body>
 		<div class="btn-toolbar">
 			<ul class="btn-group">
-				<li class="btn"><cl:homeLink/></li>
-				<li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
-				<li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+				<li class="btn btn-default"><cl:homeLink/></li>
+				<li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+				<li class="btn btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
 			</ul>
 		</div>
 		<div id="list-providerCode" class="content scaffold-list" role="main">
@@ -20,12 +20,10 @@
 			<g:if test="${flash.message}">
 			<div class="message" role="status">${flash.message}</div>
 			</g:if>
-			<table>
+			<table class="table">
 				<thead>
 					<tr>
-					
 						<g:sortableColumn property="code" title="${message(code: 'providerCode.code.label', default: 'Code')}" />
-					
 					</tr>
 				</thead>
 				<tbody>

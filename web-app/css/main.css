@@ -516,7 +516,9 @@ input.addAction, input.cancelAction {
 .homeCell {
     margin-left: 25px;
     margin-top: 25px;
-    width: 85%;
+    margin-bottom: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 /* MEW for login screen */
@@ -1360,3 +1362,5 @@ div.manage ul.list {
 }
 
 .config-warning { color: red; font-weight: bold; }
+
+#main-content div.btn-toolbar ul.btn-group { padding-inline-start: 0px; }
