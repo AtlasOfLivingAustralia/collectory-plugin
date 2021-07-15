@@ -42,6 +42,10 @@ class IptController {
         def isShareableWithGBIF = params.isShareableWithGBIF ? params.isShareableWithGBIF.toBoolean(): true
         def provider = ProviderGroup._get(params.uid)
         def apiKey = request.cookies.find { cookie -> cookie.name == API_KEY_COOKIE }
+        if (!apiKey){
+            // look in the standard place - http apiKey param
+            apiKey = params.apiKey
+        }
         def keyCheck = apiKey ? collectoryAuthService.checkApiKey(apiKey.value) : null
         def username = keyCheck?.userEmail ?: collectoryAuthService.username()
         def admin = keyCheck?.valid || collectoryAuthService.userInRole(ProviderGroup.ROLE_ADMIN)

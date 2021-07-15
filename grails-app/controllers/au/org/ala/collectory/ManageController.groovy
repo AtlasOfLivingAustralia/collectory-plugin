@@ -3,6 +3,7 @@ package au.org.ala.collectory
 import au.org.ala.audit.AuditLogEvent
 import au.org.ala.collectory.resources.DataSourceLoad
 import au.org.ala.collectory.resources.gbif.GbifDataSourceAdapter
+import au.org.ala.collectory.resources.gbif.GbifRepatDataSourceAdapter
 
 class ManageController {
 
@@ -29,13 +30,47 @@ class ManageController {
     /**
      * Renders the view that allows a user to load all the gbif resources for a country
      */
+    def repatriate = {
+        DataSourceConfiguration configuration = new DataSourceConfiguration(
+                guid: UUID.randomUUID().toString(),
+                name: '',
+                description: '',
+                adaptorClass: GbifRepatDataSourceAdapter.class,
+                endpoint: new URL(grailsApplication.config.gbifApiUrl),
+                uniqueKeyTerm: grailsApplication.config.gbifUniqueKeyTerm,
+                username: '',
+                password: '',
+                country: Locale.default.getCountry(),
+                recordType: 'OCCURRENCE',
+                defaultDatasetValues: [:],
+                keyTerms: [],
+                resources: [],
+                countries: gbifService.getCountryMap().keySet()
+        )
+        def adaptor = configuration.createAdaptor()
+        render(view: "repatriate",
+                model: [
+                        repatriate: true,
+                        configuration: configuration,
+                        countryMap: gbifService.getCountryMap(),
+                        datasetTypeMap: adaptor.datasetTypeMap,
+                        adaptors: externalDataService.REPAT_ADAPTORMAP,
+                        dataProviders: DataProvider.all.sort { it.name }
+                ]
+        )
+    }
+
+    /**
+     * Renders the view that allows a user to load all the gbif resources for a country
+     */
     def loadExternalResources = {
         DataSourceConfiguration configuration = new DataSourceConfiguration(
                 guid: UUID.randomUUID().toString(),
                 name: '',
                 description: '',
                 adaptorClass: GbifDataSourceAdapter.class,
-                endpoint: new URL(grailsApplication.config.gbifApiUrl + '/'),
+                endpoint: new URL(grailsApplication.config.gbifApiUrl),
+                uniqueKeyTerm: grailsApplication.config.gbifUniqueKeyTerm,
                 username: '',
                 password: '',
                 country: Locale.default.getCountry(),
@@ -80,7 +115,30 @@ class ManageController {
     }
 
     /**
-     * Update from an externbal source
+     * Search for resources that may be loaded from an external source
+     */
+    def searchForRepatResources() {
+        log.debug "Searching for resources from external source: ${params}"
+        DataSourceConfiguration configuration = new DataSourceConfiguration(params)
+        def dataResources = DataResource.all.findAll({ dr -> dr.resourceType == 'records' }).sort({ it.name })
+        def resources = externalDataService.searchForDatasets(configuration)
+        configuration.resources = resources
+        def dataProvider = null
+        if (configuration.dataProviderUid){
+            dataProvider = DataProvider.findByUid(configuration.dataProviderUid)
+        }
+        render(view: 'repatriateReview',
+                model: [
+                        loadGuid: UUID.randomUUID().toString(),
+                        dataResources: dataResources,
+                        dataProvider: dataProvider,
+                        configuration: configuration
+                ]
+        )
+    }
+
+    /**
+     * Update from an external source
      * <p>
      * The web pade
      */
@@ -96,12 +154,12 @@ class ManageController {
      * @return
      */
     def loadDataset() {
+
         log.debug("Loading resources from GBIF: " + params)
-        if (params.guid && params.gbifUsername && params.gbifPassword) {
-            gbifService.getGbifDataset(
+        if (params.guid) {
+            gbifService.downloadGbifDataset(
                     params.guid,
-                    params.gbifUsername,
-                    params.gbifPassword)
+                    params.repatriationCountry)
             redirect(action: 'gbifDatasetLoadStatus', model: ['datasetKey': params.guid], params: ['datasetKey': params.guid])
         }
     }
@@ -113,7 +171,7 @@ class ManageController {
      * @return
      */
     def gbifDatasetLoadStatus(){
-        log.debug('key->'+params.datasetKey)
+        log.debug('key->' + params.datasetKey)
         def gbifSummary = gbifService.getDatasetKeyStatusInfoFor(params.datasetKey)
         log.debug(gbifSummary)
         [gbifSummary:gbifSummary,'datasetKey':params.datasetKey]
@@ -126,7 +184,7 @@ class ManageController {
     def gbifDatasetDownload() {
         log.debug('Dataset id ' + params.id)
         def dr = DataResource.findByUid(params.id)
-        render(view: "gbifDatasetDownload", model: ['uid': dr.uid, 'guid' : dr.guid])
+        render(view: "gbifDatasetDownload", model: ['uid': dr.uid, 'guid' : dr.guid, 'dr' : dr])
     }
 
     /**

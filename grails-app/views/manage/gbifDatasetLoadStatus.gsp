@@ -28,10 +28,17 @@
 <body>
 <g:if test="${gbifSummary}">
     <h1>Reloading dataset - ${gbifSummary.gbifResourceUid}</h1>
-    <h2>Status: ${gbifSummary.phase}</h2>
-    <g:if test="${gbifSummary.isComplete()}">
-        <g:link controller="dataResource" action="show" id="${gbifSummary.dataResourceUid}"><g:message code="manage.gbifdds.returnToDataResource" args="${[gbifSummary.dataResourceUid]}"></g:message></g:link>
-    </g:if>
+    <div class="well">
+        <h3>Status: ${gbifSummary.phase}</h3>
+        <g:if test="${gbifSummary.isComplete()}">
+            <p>Please keep this window open. It will automatically refresh.</p>
+        </g:if>
+        <g:if test="${gbifSummary.isComplete()}">
+            <g:link controller="dataResource" action="show" id="${gbifSummary.dataResourceUid}">
+                <g:message code="manage.gbifdds.returnToDataResource" args="${[gbifSummary.dataResourceUid]}"></g:message>
+            </g:link>
+        </g:if>
+    </div>
 </g:if>
 </body>
 </html>

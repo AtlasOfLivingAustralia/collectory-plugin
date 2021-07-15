@@ -17,7 +17,6 @@
           <div>
             <h1>${grailsApplication.config.projectName}  <g:message code="public.datasets.header.title" /></h1>
             <p><g:message code="public.datasets.header.message01" /> ${grailsApplication.config.projectName}, <g:message code="public.datasets.header.message02" />.</p>
-            <p><g:message code="public.datasets.header.message03" /> <img style="vertical-align:middle;" src="${resource(dir:'/images/skin',file:'ExpandArrow.png')}"/><g:message code="public.datasets.header.message04" />.</p>
           </div><!--close hrgroup-->
         </div><!--close section-->
       </div><!--close header-->
@@ -44,43 +43,50 @@
           <div id="data-set-list" class="col-md-9">
             <div class="well">
                 <div class="row">
-                      <div>
-                          <span id="resultsReturned"><g:message code="public.datasets.resultsreturned.message01" /> <strong></strong>&nbsp;<g:message code="public.datasets.resultsreturned.message02" />.</span>
-                      </div>
+
                     <form class="form-inline">
-                        <div class="form-group ">
-                            <input type="text" name="dr-search" id="dr-search" class="form-control" style="width:500px;"/>
+                        <div class="col-md-12">
+                            <div>
+                                <span id="resultsReturned"><g:message code="public.datasets.resultsreturned.message01" /> <strong></strong>&nbsp;<g:message code="public.datasets.resultsreturned.message02" />.</span>
+                            </div>
+                            <div class="input-group col-lg-8">
+                                <input type="text" name="dr-search" id="dr-search" class="form-control" />
+                                <span class="input-group-btn">
+                                    <button href="javascript:void(0);" title="Only show data sets which contain the search term"
+                                            id="dr-search-link" class="btn btn-default">
+                                        <g:message code="public.datasets.drsearch.search" />
+                                    </button>
+                                </span>
+                            </div><!-- /input-group -->
+
+                            <div class="pull-right">
+                                <button href="javascript:reset()" title="Remove all filters and sorting options" class=" form-control btn btn-default">
+                                    <g:message code="public.datasets.drsearch.resetlist" />
+                                </button>
+                                <button href="#" id="downloadLink" class="btn btn-default"
+                                        title="Download metadata for datasets as a CSV file">
+                                    <span class="glyphicon glyphicon-download"></span>
+                                    <g:message code="public.datasets.downloadlink.label" />
+                                </button>
+                            </div>
                         </div>
-                        <button href="javascript:void(0);" title="Only show data sets which contain the search term"
-                                id="dr-search-link" class="form-control btn btn-default"><g:message code="public.datasets.drsearch.search" /></button>
-                        <button href="javascript:reset()" title="Remove all filters and sorting options" class=" form-control btn btn-default">
-                            <g:message code="public.datasets.drsearch.resetlist" />
-                        </button>
-                        <button href="#" id="downloadLink" class="btn btn-default"
-                                title="Download metadata for datasets as a CSV file">
-                            <span class="glyphicon glyphicon-download"></span>
-                            <g:message code="public.datasets.downloadlink.label" />
-                        </button>
                     </form>
-
-                    <div class="pull-right">
-
-                    </div>
                 </div>
-                <hr/>
+            </div>
+            <div>
                 <div id="searchControls">
                   <div id="sortWidgets" class="row">
-                      <div class="col-md-4">
+                      <div class="col-md-4 form-inline">
                           <label for="per-page"><g:message code="public.datasets.sortwidgets.rpp" /></label>
-                          <g:select id="per-page" name="per-page" from="${[10,20,50,100,500]}" value="${pageSize ?: 20}"/>
+                          <g:select class="form-control input-sm" id="per-page" name="per-page" from="${[10,20,50,100,500]}" value="${pageSize ?: 20}"/>
                       </div>
-                      <div class="col-md-4">
+                      <div class="col-md-4 form-inline">
                           <label for="sort"><g:message code="public.datasets.sortwidgets.sb" /></label>
-                          <g:select id="sort" name="sort" from="${['name','type','license']}"/>
+                          <g:select class="form-control  input-sm" id="sort" name="sort" from="${['name','type','license']}"/>
                       </div>
-                      <div class="col-md-4">
+                      <div class="col-md-4 form-inline">
                           <label for="dir"><g:message code="public.datasets.sortwidgets.so" /></label>
-                          <g:select id="dir" name="dir" from="${['ascending','descending']}"/>
+                          <g:select class="form-control  input-sm" id="dir" name="dir" from="${['ascending','descending']}"/>
                       </div>
                   </div>
                 </div><!--drop downs-->

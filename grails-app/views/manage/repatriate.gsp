@@ -14,12 +14,7 @@
 </head>
 <body>
 <h1>
-<g:if test="${repatriate}">
-    <g:message code="manage.repatriate.title01" />
-</g:if>
-<g:else>
-    <g:message code="manage.extload.title01" />
-</g:else>
+<g:message code="manage.repatriate.title01" />
 </h1>
 
 <div class="btn-toolbar">
@@ -29,9 +24,8 @@
 </div>
 <div class="row">
     <div id="baseForm" class="col-md-8">
-        <g:form action="searchForResources" controller="manage">
+        <g:form action="searchForRepatResources" controller="manage">
             <g:hiddenField name="configuration.guid" value="${configuration.guid}"/>
-
             <div class="form-group hide">
                 <label for="adaptorString"><g:message code="manage.extload.label04" /><cl:helpText code="manage.extload.label04.help"/></label>
                 <g:select name="adaptorString" class="form-control" from="${adaptors}" optionKey="adaptorString" optionValue="name" value="${configuration.adaptorString}"/>
@@ -45,14 +39,14 @@
                 <g:field name="uniqueKeyTerm" class="form-control" type="url" value="${configuration.uniqueKeyTerm}"/>
             </div>
             <div class="form-group">
-                <label for="country"><g:message code="manage.extload.label06" /><cl:helpText code="manage.extload.label06.help"/></label>
-                <g:select name="country" class="form-control" from="${countryMap.entrySet()}" optionKey="key" optionValue="value" values="${configuration.country}"/>
+                <label for="country"><g:message code="manage.repatriationCountry.label06" /><cl:helpText code="manage.extload.label06.help"/></label>
+                <g:select name="country" class="form-control" from="${countryMap.entrySet()}" optionKey="key" optionValue="value" values="${configuration.country}" value="${params.country}"/>
             </div>
             <div class="form-group hide">
                 <label for="recordType"><g:message code="manage.extload.label07" /><cl:helpText code="manage.extload.label07.help"/></label>
                 <g:select name="recordType" class="form-control" from="${datasetTypeMap.entrySet()}" optionKey="key" optionValue="value" values="${configuration.recordType}"/>
             </div>
-            <div class="form-group">
+            <div class="form-group hide">
                 <label for="name"><g:message code="manage.extload.label01" /><cl:helpText code="manage.extload.label01.help"/></label>
                 <g:field name="name" class="form-control" type="text" value="${configuration.name}"/>
             </div>
@@ -71,9 +65,19 @@
                           noSelection="${['':'Optionally select a provider...']}"
                 />
             </div>
-            <div class="form-group">
-                <label for="maxNoOfDatasets"><g:message code="manage.extload.label10" /><cl:helpText code="manage.extload.label10.help"/></label>
-                <g:field type="text" name="maxNoOfDatasets" class="form-control" value="10" />
+            <div class="form-inline">
+                <label for="maxNoOfDatasets"><g:message code="manage.extload.label13" /><cl:helpText code="manage.extload.label13.help"/></label>
+                <g:field type="number" name="maxNoOfDatasets" class="form-control form-control-sm" value="25" />
+            </div>
+            <br/>
+            <div class="form-inline">
+                <label for="minRecordCount"><g:message code="manage.extload.label11" /><cl:helpText code="manage.extload.label11.help"/></label>
+                <g:field type="number" name="minRecordCount" class="form-control form-control-sm" value="10000" />
+            </div>
+            <br/>
+            <div class="form-inline">
+                <label for="maxRecordCount"><g:message code="manage.extload.label12" /><cl:helpText code="manage.extload.label12.help"/></label>
+                <g:field type="number" name="maxRecordCount" class="form-control form-control-sm" value="1000000" />
             </div>
             <div class="form-group hide">
                 <label for="username"><g:message code="manage.extload.label08" /><cl:helpText code="manage.extload.label08.help"/></label>
@@ -90,11 +94,11 @@
     </div>
     <div class="well col-md-4">
         <p>
-            <g:message code="manage.extload.des01" />
-            <g:message code="manage.extload.des02" />
+            <g:message code="manage.repatriate.des01" />
+            <g:message code="manage.repatriate.des02" />
         </p>
         <p>
-            <g:message code="manage.extload.des03" />
+            <g:message code="manage.repatriate.des03" />
         </p>
     </div>
 </div>

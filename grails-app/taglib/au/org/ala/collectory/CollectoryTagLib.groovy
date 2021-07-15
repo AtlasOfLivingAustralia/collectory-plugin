@@ -1777,23 +1777,21 @@ class CollectoryTagLib {
             out << "<tr><td>Protocol:</td><td>${profile.display}</td></tr>"
 
             // display each of the protocol's parameters
-            profile.params.each {pp ->
+            profile.params.each { pp ->
                 def value
                 if (pp.paramName == "termsForUniqueKey") {
                     // show as comma separated list
                     value = cp."${pp.paramName}".collect {it}.join(', ') as String
-                }
-                else if (cp."${pp.paramName}" instanceof List) {
+                } else if (cp."${pp.paramName}" instanceof List) {
                     // show as list
                     value = cp."${pp.paramName}".join(',');
-                }
-                else {
+                } else {
                     // encode any control characters
                     value = encodeControlChars(cp."${pp.paramName}")
                 }
 
-                if(pp.paramName == "url"){
-                    if(value){
+                if (pp.paramName == "url"){
+                    if (value){
                         out << "<tr><td id='dataURL'>Data URLs</td><td>"
                         def rdr = new CSVReader(new StringReader(value))
                         def dataUrls = rdr.readNext()
@@ -1810,8 +1808,7 @@ class CollectoryTagLib {
                 out << "<tr><td id=\"${pp.paramName}\">${pp.display}:</td><td>" + (value ?: 'Not supplied') + "</td></tr>"
             }
             out << "</table>"
-        }
-        else {
+        } else {
             out << "none"
         }
     }

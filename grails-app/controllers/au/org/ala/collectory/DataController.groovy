@@ -35,7 +35,7 @@ class DataController {
                 }
             } else {
 
-                if(params.entity){
+                if (params.entity){
                     params.pg = ProviderGroup._get(params.uid, params.entity)
                 }
 
@@ -178,8 +178,10 @@ class DataController {
 
     def checkApiKey = {
         def apiKey = {
-            if(params.api_key){
+            if (params.api_key) {
                 params.api_key
+            } else if (params.apiKey){
+                params.apiKey
             } else {
                 request.getHeader("Authorization")
             }
@@ -357,7 +359,6 @@ class DataController {
                 def detail = params.summary ? summary : brief
                 def summaries = list.collect(detail)
                 def eTag = summaries.toString().encodeAsMD5()
-//                response.setCharacterEncoding("UTF-8")
                 response.setContentType("application/json")
                 renderAsJson summaries, last, eTag
             }

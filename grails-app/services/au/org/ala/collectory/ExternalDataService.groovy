@@ -5,6 +5,7 @@ import au.org.ala.collectory.resources.DataSourceAdapter
 import au.org.ala.collectory.resources.DataSourceLoad
 import au.org.ala.collectory.resources.TaskPhase
 import au.org.ala.collectory.resources.gbif.GbifDataSourceAdapter
+import au.org.ala.collectory.resources.gbif.GbifRepatDataSourceAdapter
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
 import org.codehaus.groovy.grails.web.json.JSONArray
@@ -29,6 +30,9 @@ class ExternalDataService {
     static final DateFormat ALA_TIMESTAMP_FORMAT= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
     static final ADAPTORMAP = [
             [name: GbifDataSourceAdapter.SOURCE, adaptorString: GbifDataSourceAdapter.class.name]
+    ]
+    static final REPAT_ADAPTORMAP = [
+            [name: GbifRepatDataSourceAdapter.SOURCE, adaptorString: GbifRepatDataSourceAdapter.class.name]
     ]
 
     def CONCURRENT_LOADS = 3
@@ -136,8 +140,16 @@ class ExternalDataService {
             }
 
             def update = adaptor.getDataset(resource.guid)
-            if (load.configuration.dataProviderUid)
+            if (load.configuration.dataProviderUid) {
                 update.dataProvider = [uid: load.configuration.dataProviderUid]
+            }
+            if (load.configuration.country){
+                update.repatriationCountry = load.configuration.country
+            }
+            if (load.configuration.uniqueKeyTerm){
+                resource.uniqueKeyTerm = load.configuration.uniqueKeyTerm
+            }
+
             update = convertToJSON(update)
             if (dr && update && resource.updateMetadata) {
                 dr = crudService.updateDataResource(dr, update)
@@ -203,7 +215,7 @@ class ExternalDataService {
 
             if (adaptor.isGeneratable()) {
                 resource.phase = TaskPhase.GENERATING
-                resource.occurrenceId = adaptor.generateData(resource.guid)
+                resource.occurrenceId = adaptor.generateData(resource.guid, resource.country)
                 if (resource.phase.terminal) return // Cancelled externally
 
                 TaskPhase status = TaskPhase.GENERATING
@@ -237,7 +249,7 @@ class ExternalDataService {
                 if (resource.phase.terminal) return // Cancelled externally
             }
 
-            resource.phase = TaskPhase.CONNECITNG
+            resource.phase = TaskPhase.CONNECTING
             def connection = (new JsonSlurper()).parseText(dr.connectionParameters ?: '{}')
             def update = convertToJSON(adaptor.buildConnection(uploadFileName, connection, resource))
             DataResource.withTransaction {
