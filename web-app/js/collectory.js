@@ -213,7 +213,7 @@ function loadDownloadStats(loggerServicesUrl, uid, name, eventType) {
     var url = loggerServicesUrl + "/reasonBreakdown.json?eventId=" + eventType + "&entityUid=" + uid;
     $.ajax({
         url: url,
-        dataType: 'jsonp',
+        dataType: 'json',
         cache: false,
         error: function (jqXHR, textStatus, errorThrown) {
             $('div#usage').html(jQuery.i18n.prop('collectory.js.nousagestatistics'));
