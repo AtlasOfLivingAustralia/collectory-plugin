@@ -26,8 +26,10 @@ class GBIFActiveLoad {
     String downloadId
     String gbifResourceUid
     String name
-    String phase="<NOT STARTED>"
+    String phase = "<NOT STARTED>"
     String dataResourceUid
+    String repatriationCountry
+
     private boolean completed = false
     public void setCompleted(){
         completed = true

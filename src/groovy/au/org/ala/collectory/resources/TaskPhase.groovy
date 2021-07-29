@@ -23,7 +23,7 @@ enum TaskPhase {
     /** Processing downloaded occurrence data */
     PROCESSING(false),
     /** Connecting to occurrence data */
-    CONNECITNG(false),
+    CONNECTING(false),
     /** Load empty */
     EMPTY(true),
     /** Load completed */

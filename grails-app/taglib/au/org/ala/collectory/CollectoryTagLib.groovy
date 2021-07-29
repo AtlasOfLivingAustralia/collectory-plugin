@@ -5,7 +5,6 @@ import au.org.ala.collectory.resources.PP
 import grails.converters.JSON
 import groovy.json.JsonSlurper
 import groovy.xml.MarkupBuilder
-import org.apache.commons.httpclient.util.URIUtil
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.util.StreamCharBuffer
@@ -56,15 +55,19 @@ class CollectoryTagLib {
         if(!grailsApplication.config.disableAlertLinks.toBoolean()){
             def link = grailsApplication.config.alertUrl + urlPath
             String query = '/occurrences/search?q=' + attrs.query
-            String encodedQuery = URIUtil.encodeWithinQuery(query, "UTF-8")
+            String encodedQuery = encodeWithinQuery(query, "UTF-8")
             link += '?webserviceQuery=' + encodedQuery
             link += '&uiQuery=' + encodedQuery
-            link += '&queryDisplayName=' + URIUtil.encodeWithinQuery(attrs.displayName, "UTF-8")
-            link += '&baseUrlForWS=' + URIUtil.encodeWithinQuery(grailsApplication.config.biocacheServicesUrl, "UTF-8")
-            link += '&baseUrlForUI=' + URIUtil.encodeWithinQuery(grailsApplication.config.biocacheUiURL, "UTF-8")
-            link += '&resourceName=' + URIUtil.encodeWithinQuery(grailsApplication.config.alertResourceName, "UTF-8")
+            link += '&queryDisplayName=' + encodeWithinQuery(attrs.displayName, "UTF-8")
+            link += '&baseUrlForWS=' + encodeWithinQuery(grailsApplication.config.biocacheServicesUrl, "UTF-8")
+            link += '&baseUrlForUI=' + encodeWithinQuery(grailsApplication.config.biocacheUiURL, "UTF-8")
+            link += '&resourceName=' + encodeWithinQuery(grailsApplication.config.alertResourceName, "UTF-8")
             out << "<a href=\"" + link +"\" class='btn btn-default' alt='"+attrs.altText+"'><i class='glyphicon glyphicon-bell'></i> "+ attrs.linkText + "</a>"
         }
+    }
+
+    def encodeWithinQuery(raw, encoding){
+        URLEncoder.encode(raw, encoding).replaceAll("\\+", "%20");
     }
 
     /**
@@ -1777,23 +1780,21 @@ class CollectoryTagLib {
             out << "<tr><td>Protocol:</td><td>${profile.display}</td></tr>"
 
             // display each of the protocol's parameters
-            profile.params.each {pp ->
+            profile.params.each { pp ->
                 def value
                 if (pp.paramName == "termsForUniqueKey") {
                     // show as comma separated list
                     value = cp."${pp.paramName}".collect {it}.join(', ') as String
-                }
-                else if (cp."${pp.paramName}" instanceof List) {
+                } else if (cp."${pp.paramName}" instanceof List) {
                     // show as list
                     value = cp."${pp.paramName}".join(',');
-                }
-                else {
+                } else {
                     // encode any control characters
                     value = encodeControlChars(cp."${pp.paramName}")
                 }
 
-                if(pp.paramName == "url"){
-                    if(value){
+                if (pp.paramName == "url"){
+                    if (value){
                         out << "<tr><td id='dataURL'>Data URLs</td><td>"
                         def rdr = new CSVReader(new StringReader(value))
                         def dataUrls = rdr.readNext()
@@ -1810,8 +1811,7 @@ class CollectoryTagLib {
                 out << "<tr><td id=\"${pp.paramName}\">${pp.display}:</td><td>" + (value ?: 'Not supplied') + "</td></tr>"
             }
             out << "</table>"
-        }
-        else {
+        } else {
             out << "none"
         }
     }

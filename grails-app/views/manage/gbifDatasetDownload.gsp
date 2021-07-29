@@ -10,23 +10,13 @@
 <div id="baseForm">
 <g:form action="loadDataset" controller="manage">
     <div class="col-md-5">
-        <table>
-            <tr class="prop">
-                <td valign="top" class="name"><label for="guid"><g:message code="manage.gbifdldataset.label01" />:</label></td>
-                <td valign="top" class="value"><g:field type="text" name="guid" required="true" value="${guid}" readonly="true" /></td>
-            </tr>
-            <tr class="prop">
-                <td valign="top" class="name"><label for="gbifUsername"><g:message code="manage.gbifdldataset.label02" />:</label></td>
-                <td valign="top" class="value"><g:field type="text" name="gbifUsername" required="true" value="" /></td>
-            </tr>
-            <tr class="prop">
-                <td valign="top" class="name"><label for="gbifPassword"><g:message code="manage.gbifdldataset.label03" />:</label> </td>
-                <td valign="top" class="value"><g:field type="password" name="gbifPassword" required="true" value="" /></td>
-            </tr>
-        </table>
-        <span class="button">
-            <input type="submit" name="performGBIFLoad" value="Reload" class="save btn btn-default">
-        </span>
+        <label for="guid"><g:message code="manage.gbifdldataset.label01" />:</label>
+        <g:field type="text" class="form-control" name="guid" required="true" value="${guid}" readonly="true" />
+        <br/>
+        <label for="repatriationCountry"><g:message code="manage.gbifdldataset.label02" />:</label>
+        <g:field type="text" class="form-control" name="repatriationCountry" required="true" value="${dr.repatriationCountry}" readonly="true" />
+        <br/>
+        <input type="submit" name="performGBIFLoad" value="Reload" class="save btn btn-default">
     </div>
 
     <div class="well pull-right col-md-5">
@@ -36,10 +26,6 @@
             <br/>
             <g:message code="manage.gbifdldataset.des03" />
             <a href="http://www.gbif.org/user/register"><g:message code="manage.gbifdldataset.link01" /></a>.
-        </p>
-        <p>
-            <b><g:message code="manage.gbifdldataset.des04" /></b>: <g:message code="manage.gbifdldataset.des05" />.<br/>
-            <g:message code="manage.gbifdldataset.des06" />.
         </p>
     </div>
     </div>

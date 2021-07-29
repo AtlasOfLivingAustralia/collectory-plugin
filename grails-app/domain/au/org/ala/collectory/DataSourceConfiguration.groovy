@@ -29,13 +29,16 @@ class DataSourceConfiguration {
     String country
     String recordType
     String dataProviderUid
+    String uniqueKeyTerm
     Map<String, String> defaultDatasetValues
     List<String> keyTerms
     List<ExternalResourceBean> resources
     Integer maxNoOfDatasets
+    Integer maxRecordCount
+    Integer minRecordCount
 
     /**
-     * Create an adaptor source from this configutation
+     * Create an adaptor source from this configuration
      *
      * @return An initalised adaptor
      */

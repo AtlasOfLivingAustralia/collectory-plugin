@@ -526,7 +526,7 @@ class PublicController {
 
     def resources = {
         cache shared:true, validFor: 3600*24
-        def drs = DataResource.findAllByStatusNotEqual('declined',[sort:'name']).collect {
+        def drs = DataResource.findAllByStatusNotEqual('declined', [sort:'name']).collect {
         //def drs = DataResource.list([sort:'name']).collect {
             def pdesc = it.pubDescription ? cl.formattedText(dummy:'1',limit(it.pubDescription,1000)) : ""
             def tdesc = it.techDescription ? cl.formattedText(dummy:'1',limit(it.techDescription,1000)) : ""
@@ -541,27 +541,23 @@ class PublicController {
         render drs as JSON
     }
 
+    def condensed = {
+        cache shared:true, validFor: 3600*24
+        def drs = DataResource.findAllByStatusNotEqual('declined',  [sort:'name'] ).collect {
+            //def drs = DataResource.list([sort:'name']).collect {
+            def inst = it.institution
+            def instName = (inst && inst.name.size() > 36 && inst.acronym) ? inst.acronym : inst?.name
+            [name: it.name, resourceType: it.resourceType, licenseType: it.licenseType,
+             uid: it.uid, status: it.status, websiteUrl: it.websiteUrl, contentTypes: it.contentTypes,
+             institution: instName]
+        }
+        render drs as JSON
+    }
+
     def downloadDataSets = {
         def filters = params.filters ? JSON.parse(params.filters) : [];
         def uids = params.uids.tokenize(',')
         def drs = DataResource.list([sort:'name'])
-        /*if (filters) {
-            drs = drs.findAll { dr ->
-                // check each filter
-                for (filter in filters) {
-                    if (filter.value == 'noValue') {
-                        if (dr[filter.name]) {
-                            return false
-                        }
-                    }
-                    // TODO: handle filters for properties with multiple values
-                    else if (dr[filter.name] != filter.value) {
-                        return false
-                    }
-                }
-                return true
-            }
-        }*/
         drs = drs.findAll { dr ->
             if (dr.status == 'declined') {
                 return false
@@ -701,17 +697,6 @@ class PublicController {
             return str[0..length] + "... and more."
         }
         return str
-    }
-
-    private boolean matchNetwork(pg, filterString) {
-        def filters = filterString.tokenize(",")
-        for (int i = 0; i < filters.size(); i++) {
-            //println "Checking filter ${filters[i]} against network membership ${pg?.networkMembership}"
-            if (pg?.isMemberOf(filters[i])) {
-                return true;
-            }
-        }
-        return false
     }
 
     private findCollection(id) {

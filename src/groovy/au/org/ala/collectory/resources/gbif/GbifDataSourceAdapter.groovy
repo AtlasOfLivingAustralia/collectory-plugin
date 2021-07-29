@@ -32,7 +32,6 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
     static final SOURCE = "GBIF"
     static final MessageFormat DATASET_SEARCH = new MessageFormat("dataset/search?publishingCountry={0}&type={1}&offset={2}&limit={3}")
     static final MessageFormat DATASET_GET = new MessageFormat("dataset/{0}")
-    static final String OCCURRENCE_DOWNLOAD_REQUEST = "occurrence/download/request"
     static final MessageFormat DATASET_RECORD_COUNT = new MessageFormat("occurrence/count?datasetKey={0}")
     static final MessageFormat DOWNLOAD_STATUS = new MessageFormat("occurrence/download/{0}")
     static final DateFormat TIMESTAMP_FORMAT= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
@@ -40,7 +39,10 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
     static LICENSE_MAP = [
             "https://creativecommons.org/publicdomain/zero/1.0/legalcode": [licenseType: "CC0", licenseVersion: "1.0" ],
             "https://creativecommons.org/licenses/by-nc/4.0/legalcode":    [licenseType: "CC BY-NC", licenseVersion: "4.0" ],
-            "https://creativecommons.org/licenses/by/4.0/legalcode":       [licenseType: "CC BY", licenseVersion: "4.0" ]
+            "https://creativecommons.org/licenses/by/4.0/legalcode":       [licenseType: "CC BY", licenseVersion: "4.0" ],
+            "http://creativecommons.org/publicdomain/zero/1.0/legalcode":  [licenseType: "CC0", licenseVersion: "1.0" ],
+            "http://creativecommons.org/licenses/by-nc/4.0/legalcode":     [licenseType: "CC BY-NC", licenseVersion: "4.0" ],
+            "http://creativecommons.org/licenses/by/4.0/legalcode":        [licenseType: "CC BY", licenseVersion: "4.0" ]
     ]
     static TYPE_MAP = [
             "CHECKLIST"    : "species-list",
@@ -103,7 +105,7 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
         def datasets = []
         boolean atEnd = false
         Integer pageSizeToUse = pageSize
-        if(configuration.maxNoOfDatasets < pageSize){
+        if (configuration.maxNoOfDatasets < pageSize){
             pageSizeToUse = configuration.maxNoOfDatasets
         } else {
             pageSizeToUse = pageSize
@@ -209,7 +211,8 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
                 source: source,
                 gbifDoi: dataset.doi,
                 gbifRegistryKey: dataset.key,
-                gbifDataset: true
+                gbifDataset: true,
+                isShareableWithGBIF: false
         ]
         addDefaultDatasetValues(resource)
         return resource
@@ -250,34 +253,8 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
      * @return The downloadId used to monitor when the download has been completed
      */
     @Override
-    String generateData(String guid) throws ExternalResourceException {
-        def request = [
-                creator             : configuration.username,
-                notification_address: [],
-                predicate           : [
-                        type : "equals",
-                        key  : "DATASET_KEY",
-                        value: guid
-                ]
-        ]
-        LOGGER.debug("Sending download request for ${guid}")
-        def http = new HTTPBuilder(new URL(configuration.endpoint, OCCURRENCE_DOWNLOAD_REQUEST))
-        def downloadId = null
-        if (configuration.username) {
-            http.auth.basic(configuration.username, configuration.password)
-        }
-        http.request(Method.POST, ContentType.TEXT) { req ->
-            requestContentType = ContentType.JSON
-            headers.Accept = ContentType.JSON.acceptHeader
-            body = request
-            response.failure = { resp ->
-                throw new ExternalResourceException("Unable to generate download", "manage.note.note06", resp.statusLine)
-            }
-            response.success = { resp, responseBody ->
-                downloadId = responseBody.text
-            }
-        }
-        return downloadId
+    String generateData(String guid, String country) throws ExternalResourceException {
+        GbifService.startGBIFDownload(guid, country, configuration.endpoint, configuration.username, configuration.password)
     }
 
     /**
@@ -359,9 +336,16 @@ class GbifDataSourceAdapter extends DataSourceAdapter {
         def update = [:]
         connection.url = "file:///${upload.absolutePath}"
         connection.protocol = "DwCA"
-        connection.termsForUniqueKey = ["gbifID"]
+        if (resource.uniqueKeyTerm){
+            if (resource.uniqueKeyTerm.contains(",")){
+                connection.termsForUniqueKey = resource.uniqueKeyTerm?:''.split(",").collect {it.trim() }
+            } else {
+                connection.termsForUniqueKey = [resource.uniqueKeyTerm.trim()]
+            }
+        }
+
         update.connectionParameters = (new JsonOutput()).toJson(connection)
-        return update
+        update
     }
 
     /**

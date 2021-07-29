@@ -141,7 +141,7 @@ class IptService {
                     update.resource.uid = idGeneratorService.getNextDataResourceId()
                     update.resource.userLastModified = username
                     try {
-                        update.resource.save(flush: true)
+                        update.resource.save(flush: true, failOnError: true)
                         update.contacts.each { contact ->
                             update.resource.addToContacts(contact, null, false, true, collectoryAuthService.username())
                         }
@@ -204,7 +204,7 @@ class IptService {
         resource.isShareableWithGBIF = isShareableWithGBIF
 
         def contacts = []
-        if (eml != null) {
+        if (eml != null && eml != "") {
             contacts = retrieveEml(resource, eml)
         }
 

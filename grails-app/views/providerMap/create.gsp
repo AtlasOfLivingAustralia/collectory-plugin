@@ -9,7 +9,7 @@
     <body>
         <div class="btn-toolbar">
             <ul class="btn-group">
-                <li class="btn"><cl:homeLink/></li>
+                <li class="btn btn-default"><cl:homeLink/></li>
             </ul>
         </div>
         <div class="body">

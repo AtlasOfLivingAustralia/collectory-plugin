@@ -3,8 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="${grailsApplication.config.skin.layout}" />
-        <!--meta name="viewport" content="initial-scale=1.0, user-scalable=no" /-->
+        <meta name="layout" content ="${grailsApplication.config.skin.layout}" />
         <title><g:message code="data.catalogue.title" args="[orgNameLong]" /></title>
         <style type="text/css">
             .entity { font-weight: bold; }
@@ -28,12 +27,6 @@
       </div><!--close header-->
       <div id="column-one">
         <div class="section infoPage">
-          %{--<div id='warnings'>
-            <h2>Disclaimer</h2>
-            <p>Please be aware that these services are still being refined. The specifications should be treated as experimental.
-            They may change.</p>
-          </div>--}%
-
           <h2 id="WS0024"><g:message code="data.catalogue.title02" /></h2>
           <p><g:message code="data.catalogue.des05" args="[orgNameLong]"/>:</p>
           <ul>
@@ -301,9 +294,6 @@
               <td><g:message code="data.catalogue.ws0030.table0101" />:</td>
               <td><a href="${grailsApplication.config.grails.serverURL}/lookup/taxonomyCoverageHints/co12.json">https://collections.ala.org.au/lookup/taxonomyCoverageHints/co12</a></td>
             </tr>
-            <tr>
-              <td colspan="2"><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_taxonomic_coverage_hints_from_UID" class="btn btn-default">More information.</a></td>
-            </tr>
           </table>
 
           <h3><g:message code="data.catalogue.ws0030.title01" /></h3>
@@ -315,6 +305,26 @@
           <p><g:message code="data.catalogue.ws0030.des04" />:</p>
           <p><span class="code">GET https://collections.ala.org.au/lookup/generateDataResourceUid</span></p>
           <p><a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Generate_UID_for_a_new_entity" class="btn btn-default"><g:message code="data.catalogue.ws0030.link01" />.</a></p>
+
+          <h2 id="WS0031"><g:message code="data.catalogue.ws0031.title01" /></h2>
+          <p><g:message code="data.catalogue.ws0031.des01" />:</p>
+
+          <h4>IPT</h4>
+          <p><g:message code="data.catalogue.ws0031.des02" /></p>
+          <table class="clean no-left-pad">
+            <colgroup><col width="55%"><col width="45%"></colgroup>
+            <tr>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/ipt/scan?create=true&isShareableWithGBIF=false&uid=<strong>{uid}</strong>&apiKey=XXXXXX</span></td>
+            </tr>
+          </table>
+          <h4>GBIF</h4>
+          <p><g:message code="data.catalogue.ws0031.des03" /></p>
+          <table class="clean no-left-pad">
+            <colgroup><col width="55%"><col width="45%"></colgroup>
+            <tr>
+              <td colspan="2"><span class="code"><span class='entity'>GET</span> https://collections.ala.org.au/gbif/scan?uid=<strong>{uid}</strong>&apiKey=XXXXXX</span></td>
+            </tr>
+          </table>
 
         </div><!--close section-->
       </div><!--close column-one-->
@@ -333,15 +343,6 @@
             <a href="https://collections.ala.org.au/ws/collection/contacts.json"><g:message code="data.catalogue.ct.lmcfec" /></a><br/>
           </p>
 
-          <h1><g:message code="data.catalogue.ct.title02" /></h1>
-          <p>
-            <a href="http://code.google.com/p/ala-collectory/w/list"><g:message code="data.catalogue.ct.pwiki" /></a><br/>
-            <a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices"><g:message code="data.catalogue.ct.so" /></a><br/>
-            <a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Data_services"><g:message code="data.catalogue.ct.ds" /></a><br/>
-            <a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#EML_services"><g:message code="data.catalogue.ct.emls" /></a><br/>
-            <a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_citation_text_for_a_list_of_UIDs"><g:message code="data.catalogue.ct.cs" /></a><br/>
-            <a href="http://code.google.com/p/ala-collectory/wiki/CollectoryServices#Lookup_services"><g:message code="data.catalogue.ct.ls" /></a><br/>
-          </p>
         </div><!--close section-->
       </div><!--close column-two-->
 
