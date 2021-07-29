@@ -36,7 +36,7 @@ class CrudService {
                 'filed','publicArchiveAvailable','contentTypes','defaultDarwinCoreValues', 'imageMetadata',
                 'geographicDescription','northBoundingCoordinate','southBoundingCoordinate','eastBoundingCoordinate',
                 'westBoundingCoordinate','beginDate','endDate','qualityControlDescription','methodStepDescription',
-                'gbifDoi'
+                'gbifDoi','repatriationCountry','isPrivate'
     ]
     static dataResourceNumberProperties = ['harvestFrequency','downloadLimit']
     static dataResourceTimestampProperties = ['lastChecked','dataCurrency']

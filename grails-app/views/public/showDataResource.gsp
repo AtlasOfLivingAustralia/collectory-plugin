@@ -223,6 +223,13 @@
             </section>
         </g:if>
 
+        <g:if test="${instance.repatriationCountry && instance.gbifDataset}">
+            <section class="public-metadata">
+            <h4><g:message code="public.repatriatedDataset" default="Repatriated dataset" /></h4>
+            <p><g:message code="public.repatriatedDataset.desc"/></p>
+            </section>
+        </g:if>
+
         <g:if test="${instance.beginDate}">
             <section class="public-metadata">
             <h4><g:message code="public.temporal" default="Temporal scope" /></h4>

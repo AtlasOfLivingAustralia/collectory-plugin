@@ -21,17 +21,17 @@
     </style>
         <div class="btn-toolbar">
             <ul class="btn-group">
-                <li class="btn"><cl:homeLink/></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
-                <li class="btn"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><cl:homeLink/></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="list"> <g:message code="default.list.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-list"></span><g:link class="list" action="myList"> <g:message code="default.myList.label" args="[entityName]"/></g:link></li>
+                <li class="btn btn-default"><span class="glyphicon glyphicon-plus"></span><g:link class="create" action="create"> <g:message code="default.new.label" args="[entityName]"/></g:link></li>
             </ul>
             <ul class="btn-group pull-right">
-                <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
-                <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
-                <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
-                <li class="btn"><cl:emlDataLink uid="${instance.uid}"/></li>
-                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
+                <li class="btn btn-default"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                <li class="btn btn-default"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                <li class="btn btn-default"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                <li class="btn btn-default"><cl:emlDataLink uid="${instance.uid}"/></li>
+                <g:if test="${instance.getPrimaryContact()?.contact?.email}"><li class="btn btn-default"><a href="mailto:${instance.getPrimaryContact()?.contact?.email}?subject=Request to review web pages presenting information about the ${instance.name}.&body=${contactEmailBody}"><span class="glyphicon glyphicon-envelope"></span><g:message code="default.query.label"/></a></li></g:if>
             </ul>
         </div>
         <div class="body">
@@ -246,12 +246,11 @@
                 <cl:ifGranted role="${ProviderGroup.ROLE_ADMIN}">
                   <div><span class="buttons"><g:link class="edit btn btn-default" action='edit' params="[page:'contribution']" id="${instance.uid}">${message(code: 'default.button.edit.label', default: 'Edit')}</g:link></span></div>
                 </cl:ifGranted>
-
-
               </div>
 
               <div class="well">
                   <h3><g:message code="dataresource.show.title03" /></h3>
+                  <p><g:message code="dataresource.show.desc03" /></p>
                   <g:link controller="dataResource" action="upload" class="btn btn-default" id="${instance.uid}"><i class="glyphicon glyphicon-upload"></i> <g:message code="dataresource.show.link.upload" /></g:link>
               </div>
 
@@ -371,6 +370,10 @@
                 </cl:ifGranted>
 
                 <p><span class="category">GBIF registry key:</span> ${instance.gbifRegistryKey ?: 'Not registered with GBIF'}</p>
+                <g:if test="${instance.repatriationCountry}">
+                    <p><span class="category">GBIF repatriation country:</span> ${instance.repatriationCountry}</p>
+                </g:if>
+
                 <p><span class="category">GBIF supplied dataset (i.e. downloaded via GBIF services): </span> ${instance.gbifDataset ? 'yes' : 'no'}</p>
                 <p><span class="category">Should be shared with GBIF ? :</span>
                     <span class="${instance.isShareableWithGBIF ? '' : 'config-warning'}">
@@ -411,10 +414,10 @@
                     </cl:ifGranted>
                 </g:form>
                 <ul class="btn-group pull-right">
-                    <li class="btn"><cl:viewPublicLink uid="${instance?.uid}"/></li>
-                    <li class="btn"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
-                    <li class="btn"><cl:jsonDataLink uid="${instance.uid}"/></li>
-                    <li class="btn"><cl:emlDataLink uid="${instance.uid}"/></li>
+                    <li class="btn btn-default"><cl:viewPublicLink uid="${instance?.uid}"/></li>
+                    <li class="btn btn-default"><cl:jsonSummaryLink uid="${instance.uid}"/></li>
+                    <li class="btn btn-default"><cl:jsonDataLink uid="${instance.uid}"/></li>
+                    <li class="btn btn-default"><cl:emlDataLink uid="${instance.uid}"/></li>
                 </ul>
             </div>
         </div>

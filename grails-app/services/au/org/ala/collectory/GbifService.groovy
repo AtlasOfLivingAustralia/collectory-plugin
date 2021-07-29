@@ -5,27 +5,35 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
+import org.apache.http.HttpEntity
 import org.apache.http.HttpException
+import org.apache.http.HttpHeaders
 import org.apache.http.HttpRequest
 import org.apache.http.HttpRequestInterceptor
 import org.apache.http.HttpResponse
+import org.apache.http.StatusLine
 import org.apache.http.auth.AuthScope
 import org.apache.http.auth.AuthState
 import org.apache.http.auth.Credentials
 import org.apache.http.auth.UsernamePasswordCredentials
 import org.apache.http.client.CredentialsProvider
+import org.apache.http.client.HttpClient
+import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.protocol.ClientContext
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.auth.BasicScheme
 import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.impl.client.HttpClientBuilder
 import org.apache.http.protocol.HTTP
 import org.apache.http.protocol.HttpContext
 import org.apache.tools.zip.ZipFile
 import org.codehaus.groovy.grails.web.json.JSONObject
+import org.slf4j.LoggerFactory
 
 import java.text.MessageFormat
+import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 /**
@@ -34,29 +42,26 @@ import java.util.concurrent.Executors
  * @author Natasha Quimby (natasha.quimby@csiro.au)
  */
 class GbifService {
+    static final LOGGER = LoggerFactory.getLogger(GbifService.class)
 
     def grailsApplication
     def crudService
 
-    static final POLL_INTERVAL = 15000
     static final String CITATION_FILE = "citations.txt"
     static final String RIGHTS_FILE = "rights.txt"
     static final String EML_DIRECTORY = "dataset"
     static final String OCCURRENCE_FILE = "occurrence.txt"
-    static final String OCCURRENCE_DOWNLOAD = "/occurrence/download/request" //POST request to this to start download
+    static final String OCCURRENCE_DOWNLOAD = "occurrence/download/request" //POST request to this to start download
     // GET request to retrieve download
-    static final String DOWNLOAD_STATUS = "/occurrence/download/" //GET request to this
-    static final String DATASET_SEARCH = "/dataset/search?publishingCountry={0}&type=OCCURRENCE" //GET request to this
-    static final String DATASET_RECORD_COUNT = "/occurrence/count?datasetKey={0}"
+    static final String DOWNLOAD_STATUS = "occurrence/download/" //GET request to this
+    static final String DATASET_RECORD_COUNT = "occurrence/count?datasetKey={0}"
 
     def CONCURRENT_LOADS = 3
-    def DOWNLOAD_LIMIT = 50
 
     def pool = Executors.newFixedThreadPool(CONCURRENT_LOADS)
     def loading = false
     def loadMap = [:]
     def stopStatus = ["CANCELLED", "FAILED", "KILLED", "SUCCEEDED", "UNKNOWN"]
-
 
     /**
      * Returns the status information for a specific losd
@@ -159,7 +164,7 @@ class GbifService {
                 dr.save(flush:true)
                 log.debug("Finished saving the connection params for " + dr.getUid())
             }
-        } catch(Exception e){
+        } catch (Exception e){
             log.error(e.getClass().toString() + " : " + e.getMessage(), e)
         }
     }
@@ -200,10 +205,7 @@ class GbifService {
             }
         }
 
-        JSONObject jo = new JSONObject(map)
-        //map.each{k, v -> jo.put(k,v)}
-        log.debug("the toString : " + jo.toString())
-        return jo
+        new JSONObject(map)
     }
 
     /**
@@ -223,10 +225,30 @@ class GbifService {
      * @param downloadId
      */
     def getDownloadStatus(String downloadId, String userName, String password){
-        //http://api.gbif.org/v0.9/occurrence/download/0006020-131106143450413
-        def json = getJSONWSWithAuth(grailsApplication.config.gbifApiUrl + DOWNLOAD_STATUS + downloadId, userName, password)
+        def statusUrl = grailsApplication.config.gbifApiUrl + DOWNLOAD_STATUS + downloadId
+        def json = getJSONWSWithAuth(statusUrl, userName, password)
         log.debug("Download status for ${downloadId} : ${json?.status}")
         return json && json?.status ? json.status : "UNKNOWN"
+    }
+
+    /**
+     * Retrieves the status of the supplied GBIF download
+     *
+     * The possible status include:
+     * CANCELLED
+     * FAILED
+     * KILLED
+     * PREPARING
+     * RUNNING
+     * SUCCEEDED
+     * SUSPENDED
+     *
+     * return "SUCCEEDED" when finished.
+     *
+     * @param downloadId
+     */
+    def getDownloadStatus(String downloadId){
+        getDownloadStatus(downloadId, grailsApplication.config.gbifApiUser, grailsApplication.config.gbifApiPassword)
     }
 
     /**
@@ -236,16 +258,23 @@ class GbifService {
      * @param password
      * @return
      */
-    def getJSONWSWithAuth(String url, String userName, String password){
+    def getJSONWSWithAuth(String url, String username, String password) {
 
-        DefaultHttpClient http = (userName) ? createAuthClient(userName, password) : new DefaultHttpClient()
+        log.debug("Checking download status:" + url)
+        HttpClient httpClient = HttpClientBuilder.create()
+                .build();
 
-        HttpGet get = new HttpGet(url)
-        get.addHeader("Content-Type", "application/json; charset=UTF-8")
+        HttpGet httpGet = new HttpGet(url)
+        if (username && password) {
+            String encoding = Base64.getEncoder()
+                    .encodeToString((username + ":" + password).getBytes())
+            httpGet.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+        }
 
-        HttpResponse response = http.execute(get)
+        HttpResponse response = httpClient.execute(httpGet)
+
         log.debug("Response code " + response.getStatusLine().getStatusCode())
-        if(response.getStatusLine().getStatusCode() == 200){
+        if (response.getStatusLine().getStatusCode() == 200){
             ByteArrayOutputStream bos = new ByteArrayOutputStream()
             response.getEntity().writeTo(bos)
             String respText = bos.toString();
@@ -271,8 +300,6 @@ class GbifService {
      * @return
      */
     def isDataAvailableForResource(String resourceId){
-
-        //http://api.gbif.org/v1/occurrence/count?datasetKey=6679952f-649b-4888-bd97-00daca4b8cc1
         String url = grailsApplication.config.gbifApiUrl + MessageFormat.format(DATASET_RECORD_COUNT, resourceId)
         try {
             def value = new URL(url).getText("UTF-8")
@@ -296,46 +323,96 @@ class GbifService {
      * @param password  The password for the GBIF user.
      * @return The downloadId used to monitor when the download has been completed
      */
-    def startGBIFDownload(String resourceId, String username, String password){
-        try {
-            log.debug("[startGBIFDownload] Initialising download..... ")
+    def String startGBIFDownload(String resourceId, String repatCountry){
+      startGBIFDownload(resourceId, repatCountry, new URL(grailsApplication.config.gbifApiUrl), grailsApplication.config.gbifApiUser, grailsApplication.config.gbifApiPassword)
+    }
 
-            def jsonBody = [
-                    creator             : username,
-                    notification_address: [],
-                    predicate           : [
+    /**
+     * Starts the GBIF download by calling the API/
+     *
+     * @param resourceId The GBIF identifier for the resource
+     * @param username The username of a register GBIF user - a download will only be started when a valid user is supplied
+     * @param email NOT USED as the email is automatically associated via the username
+     * @param password  The password for the GBIF user.
+     * @return The downloadId used to monitor when the download has been completed
+     */
+    static String startGBIFDownload(String resourceId, String repatCountry, URL endpointUrl, String username, String password){
+        try {
+            LOGGER.debug("[startGBIFDownload] Initialising download..... ")
+            def params = [:]
+
+            if (repatCountry){
+                params = [
+                        creator: username,
+                        notification_address: [],
+                        format: "DWCA",
+                        predicate: [
+                            type: "and",
+                            predicates: [
+                                [
+                                    type : "equals",
+                                    key  : "DATASET_KEY",
+                                    value: resourceId
+                                ],
+                                [
+                                    type : "equals",
+                                    key: "COUNTRY",
+                                    value: repatCountry
+                                ]
+                            ]
+                        ]
+                ]
+            } else {
+                params = [
+                        creator             : username,
+                        notification_address: [],
+                        format: "DWCA",
+                        predicate           : [
                             type : "equals",
                             key  : "DATASET_KEY",
                             value: resourceId
-                    ]
-            ] as JSON
-
-            log.debug("Sending request: " + jsonBody)
-
-            //Below is the way we set up Basic Authentication to work
-            DefaultHttpClient http = createAuthClient(username, password)
-
-            def postUrl = grailsApplication.config.gbifApiUrl + OCCURRENCE_DOWNLOAD
-            log.debug("[startGBIFDownload] Posting to " + postUrl)
-            HttpPost post = new HttpPost(postUrl)
-            log.debug("[startGBIFDownload] Posting JSON Body: " + jsonBody.toString(true))
-            def entity = new StringEntity(jsonBody.toString(), HTTP.UTF_8)
-            post.setEntity(entity)
-            post.addHeader("Content-Type", "application/json; charset=UTF-8")
-
-            HttpResponse response = http.execute(post)
-            if(response.getStatusLine().getStatusCode() in [200,201,202] ){
-                ByteArrayOutputStream bos = new ByteArrayOutputStream()
-                response.getEntity().writeTo(bos)
-                String downloadId = bos.toString()
-                log.debug("[startGBIFDownload] Download ID: " + downloadId)
-                downloadId
-            } else {
-                log.error("Response code was " + response.getStatusLine().getStatusCode())
-                null
+                        ]
+                ]
             }
+
+            String downloadId = downloadFromGBIF(params, endpointUrl, username, password)
+            downloadId
         } catch (Exception e){
-            e.printStackTrace()
+            LOGGER.error(e.getMessage(), e)
+            null
+        }
+    }
+
+    /**
+     * Starts a download from GBIF returning the downloadId for tracking status.
+     *
+     * @param requestBody
+     * @param endpointUrl
+     * @param username
+     * @param password
+     * @return
+     */
+    static String downloadFromGBIF(Map requestBody, URL endpointUrl, String username, String password) throws Exception {
+        StringEntity requestEntity = new StringEntity(
+                JsonOutput.toJson(requestBody),
+                "application/json",
+                "UTF-8")
+
+        String encoding = Base64.getEncoder()
+                .encodeToString((username + ":" + password).getBytes())
+        HttpClient httpClient = HttpClientBuilder.create()
+                .build();
+
+        HttpPost httpPost = new HttpPost(new URL(endpointUrl, OCCURRENCE_DOWNLOAD).toURI())
+        httpPost.setHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoding);
+        httpPost.setEntity(requestEntity);
+
+        CloseableHttpResponse response = httpClient.execute(httpPost);
+        HttpEntity entity = response.getEntity();
+
+        if (response.getStatusLine().statusCode in [200,201,202]){
+            return IOUtils.readLines(entity.getContent()).get(0)
+        } else {
             null
         }
     }
@@ -377,9 +454,11 @@ class GbifService {
      * @param password      The gbif.org password
      * @return
      */
-    def getGbifDataset(String datasetKey, String username, String password){
+    def downloadGbifDataset(String datasetKey, String repatriationCountry){
         GBIFActiveLoad l = new GBIFActiveLoad()
         l.gbifResourceUid = datasetKey
+        l.repatriationCountry = repatriationCountry
+
         def reloadExisting = true
         log.debug("Started Gbif Dataset")
         //check to see if a load is already running. We can only have one at a time
@@ -390,29 +469,29 @@ class GbifService {
 
             //at this point we need to return to the user and perform remaining tasks asynchronously
             pool.submit(new Runnable(){
-                public void run(){
+                void run(){
 
                     def defer = { c -> pool.submit(c as Callable) }
 
                         defer {
                             Boolean skipReload = false
                             def existingDataResource = DataResource.findByGuid(l.gbifResourceUid)
-                            if(!reloadExisting){
+                            if (!reloadExisting){
                                 log.info("Reload existing resources set to false. Checking for " + l.gbifResourceUid)
-                                if(existingDataResource){
+                                if (existingDataResource){
                                     skipReload = true
                                 }
                             }
 
                             // is data available
-                            if(!isDataAvailableForResource(l.gbifResourceUid)){
+                            if (!isDataAvailableForResource(l.gbifResourceUid)){
                                 l.phase = "Data is currently not available for this resource through GBIF"
                                 loading = false
                                 l.setCompleted()
                                 return null
                             }
 
-                            if(skipReload){
+                            if (skipReload){
                                 l.phase = "Resource is already loaded. To reload check the reload existing resource checkbox"
                                 loading = false
                                 l.dataResourceUid = existingDataResource.uid
@@ -423,7 +502,7 @@ class GbifService {
 
                                 log.info("Submitting " + l + " to be processed")
                                 //1) Start the download
-                                String downloadId = startGBIFDownload(l.gbifResourceUid, username, password)
+                                String downloadId = startGBIFDownload(l.gbifResourceUid, l.repatriationCountry)
                                 if (downloadId) {
                                     l.downloadId = downloadId
                                     //2) Monitor the download
@@ -432,7 +511,7 @@ class GbifService {
                                     while (!stopStatus.contains(status)) {
                                         //sleep for 30 seconds between checks.
                                         Thread.sleep(3000)
-                                        status = getDownloadStatus(l.downloadId, username, password)
+                                        status = getDownloadStatus(l.downloadId)
                                     }
                                     log.debug("Download status: " + status)
                                     //3) if the status was "SUCCEEDED" then starts the download
@@ -499,13 +578,14 @@ class GbifService {
      * Returns the status information for the supplied datasetKey
      * @param datasetKey
      * @return
+     *
      */
     def getDatasetKeyStatusInfoFor(String datasetKey){
         return loadMap[datasetKey]
     }
 
     def getCountryMap(){
-        def isoCodeList = getJSONWS(grailsApplication.config.gbifApiUrl + "/node/country")
+        def isoCodeList = getJSONWS(grailsApplication.config.gbifApiUrl + "node/country")
         //intersect with iso names
         def isoMap = [:]
         this.class.classLoader.getResourceAsStream("isoCodes.csv").readLines().each{
@@ -519,4 +599,22 @@ class GbifService {
         }
         return pubMap
     }
+
+    def Date getGbifDatasetLastUpdated(String guid){
+
+        try {
+            def json = new JsonSlurper().parse(new URL(grailsApplication.config.gbifApiUrl + "dataset/" + guid))
+            //TODO check with GBIF this is the appropriate timestamp to use
+            if (json.pubDate) {
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX").parse(json.pubDate)
+            } else {
+                new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sssXXX").parse(json.modified)
+            }
+        } catch (Exception e){
+            // expected with a 404
+            log.error("Unable to retrieve pubDate for GBIF guid: " + guid)
+            null
+        }
+    }
+
 }

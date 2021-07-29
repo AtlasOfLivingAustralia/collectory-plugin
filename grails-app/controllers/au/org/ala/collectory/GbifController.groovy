@@ -1,12 +1,18 @@
 package au.org.ala.collectory
 
+import au.org.ala.collectory.resources.gbif.GbifRepatDataSourceAdapter
+import grails.converters.JSON
 import groovy.json.JsonSlurper
 
 class GbifController {
+    static final API_KEY_COOKIE = "ALA-API-Key"
 
+    def collectoryAuthService
     def gbifRegistryService
+    def gbifService
     def authService
     def grailsApplication
+    def externalDataService
 
     def healthCheck() {
         gbifRegistryService.generateSyncBreakdown()
@@ -115,11 +121,78 @@ class GbifController {
         def results = [:]
         def errorMessage = ""
 
-        if(authService.userInRole(grailsApplication.config.gbifRegistrationRole)){
+        if (authService.userInRole(grailsApplication.config.gbifRegistrationRole)){
             results = gbifRegistryService.syncAllResources()
         } else {
             errorMessage = "User does not have sufficient privileges to perform this."
         }
         [results:results, errorMessage:errorMessage]
+    }
+
+    def scan(){
+
+        def apiKey = request.cookies.find { cookie -> cookie.name == API_KEY_COOKIE }
+        if (!apiKey){
+            // look in the standard place - http apiKey param
+            apiKey = params.apiKey
+        }
+        def keyCheck =  collectoryAuthService.checkApiKey(apiKey.value)
+
+        if (!keyCheck || !keyCheck.valid){
+            response.sendError(401)
+            return
+        }
+
+        DataProvider dataProvider = DataProvider.findByUid(params.uid)
+        if (!dataProvider){
+            response.sendError(404)
+            return
+        }
+
+        def resources = dataProvider.resources
+        def output = []
+        resources.each { DataResource resource ->
+            Date lastUpdated = gbifService.getGbifDatasetLastUpdated(resource.guid)
+            //get last updated data
+            output << [uid:resource.uid,
+                       name: resource.name,
+                       lastUpdated: resource.lastUpdated,
+                       guid: resource.guid,
+                       country: resource.repatriationCountry,
+                       pubDate: lastUpdated,
+                       inSync:  !(lastUpdated > resource.lastUpdated)
+            ]
+        }
+
+        DataSourceConfiguration configuration = new DataSourceConfiguration()
+        configuration.adaptorClass = GbifRepatDataSourceAdapter.class
+        configuration.endpoint = new URL(grailsApplication.config.gbifApiUrl)
+        configuration.username = grailsApplication.config.gbifApiUser
+        configuration.password = grailsApplication.config.gbifApiPassword
+
+        def externalResourceBeans = []
+
+        output.each { res ->
+            if (!res.inSync && res.guid){
+                res.status = "RELOADING"
+                externalResourceBeans << new ExternalResourceBean(
+                        uid: res.uid, guid: res.guid, name: res.name, country: res.country, updateMetadata:true, updateConnection:true)
+            } else {
+                res.status = "IN_SYNC"
+            }
+        }
+        configuration.resources = externalResourceBeans
+
+        def loadGuid = UUID.randomUUID().toString()
+
+        log.info("Reloading process ID " + loadGuid)
+        externalDataService.updateFromExternalSources(configuration, loadGuid)
+
+        def fullOutput =
+                [loadGuid: loadGuid,
+                 trackingUrl: createLink(controller:"manage", action:"externalLoadStatus", params: [loadGuid: loadGuid]),
+                 resources: output
+                ]
+        render(fullOutput as JSON)
     }
 }

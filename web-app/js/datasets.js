@@ -54,7 +54,7 @@ var tooltipOptions = {position:{my: 'left bottom', at: 'center top-10'}, show: {
 function loadResources(serverUrl, biocacheRecordsUrl) {
     baseUrl = serverUrl;
     biocacheUrl = biocacheRecordsUrl;
-    $.getJSON(baseUrl + "/public/resources.json", function(data) {
+    $.getJSON(baseUrl + "/public/condensed.json", function(data) {
         allResources = data;
         // no filtering at this stage
         resources = allResources;
@@ -110,13 +110,11 @@ function appendResource(value) {
     // row A
     $rowA.append('<img title="'+ jQuery.i18n.prop('datasets.js.appendresource01') + '" src="' + baseUrl + '/images/skin/ExpandArrow.png"/>');  // twisty
     $rowA.append('<span class="result-name"><a title="' + jQuery.i18n.prop('datasets.js.appendresource02') + '" href="' + baseUrl + '/public/showDataResource/' + value.uid + '">' + value.name + '</a></span>'); // name
-    $rowA.find('a').tooltip(tooltipOptions);
     $rowA.find('img').tooltip($.extend({},tooltipOptions,{position:{my: 'center bottom', at: 'center top-10'}}));
 
     // row B
     $rowB.append('<span><strong class="resultsLabelFirst">'+ jQuery.i18n.prop('datasets.js.appendresource06') +': </strong>' + value.resourceType + '</span>');  // resource type
     $rowB.append('<span><strong class="resultsLabel">'+ jQuery.i18n.prop('datasets.js.appendresource07') +': </strong>' + (value.licenseType == null ? '' : value.licenseType) + '</span>'); // license type
-    $rowB.append('<span><strong class="resultsLabel">'+ jQuery.i18n.prop('datasets.js.appendresource08') +': </strong>' + (value.licenseVersion == null ? '' : value.licenseVersion) + '</span>'); // license version
     if (value.resourceType == 'records') {
         $rowB.append('<span class="viewRecords"><a title="' + jQuery.i18n.prop('datasets.js.appendresource03') + '" href="' + biocacheUrl + '/occurrences/search?q=data_resource_uid:' + value.uid + '">'+ jQuery.i18n.prop('datasets.js.appendresource10') +'</a></span>'); // records link
     }
@@ -472,7 +470,6 @@ var helpText = {
 var facets = {
     resourceType:{name:"resourceType",display:jQuery.i18n.prop('datasets.js.facets01')},
     licenseType:{name:"licenseType",display:jQuery.i18n.prop('datasets.js.facets02')},
-    licenseVersion:{name:"licenseVersion",display:jQuery.i18n.prop('datasets.js.facets03')},
     status:{name:"status",display:jQuery.i18n.prop('datasets.js.facets04'),help:jQuery.i18n.prop('datasets.js.facets05')},
     contentTypes:{name:"contentTypes", action:"has",display:jQuery.i18n.prop('datasets.js.facets06'),help:jQuery.i18n.prop('datasets.js.facets07')},
     contains:{name:"contains", action:"containedIn", display:jQuery.i18n.prop('datasets.js.facets08')},

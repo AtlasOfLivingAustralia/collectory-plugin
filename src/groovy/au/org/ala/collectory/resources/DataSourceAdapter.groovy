@@ -137,8 +137,7 @@ abstract class DataSourceAdapter {
      *
      * @throws ExternalResourceException if unable to generate data
      */
-    abstract String generateData(String guid) throws ExternalResourceException
-
+    abstract String generateData(String guid, String country) throws ExternalResourceException
 
     /**
      * See if a task has completed.
