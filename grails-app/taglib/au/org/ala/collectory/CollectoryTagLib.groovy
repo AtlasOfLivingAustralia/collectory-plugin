@@ -5,7 +5,6 @@ import au.org.ala.collectory.resources.PP
 import grails.converters.JSON
 import groovy.json.JsonSlurper
 import groovy.xml.MarkupBuilder
-import org.apache.commons.httpclient.util.URIUtil
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.util.StreamCharBuffer
@@ -56,15 +55,19 @@ class CollectoryTagLib {
         if(!grailsApplication.config.disableAlertLinks.toBoolean()){
             def link = grailsApplication.config.alertUrl + urlPath
             String query = '/occurrences/search?q=' + attrs.query
-            String encodedQuery = URIUtil.encodeWithinQuery(query, "UTF-8")
+            String encodedQuery = encodeWithinQuery(query, "UTF-8")
             link += '?webserviceQuery=' + encodedQuery
             link += '&uiQuery=' + encodedQuery
-            link += '&queryDisplayName=' + URIUtil.encodeWithinQuery(attrs.displayName, "UTF-8")
-            link += '&baseUrlForWS=' + URIUtil.encodeWithinQuery(grailsApplication.config.biocacheServicesUrl, "UTF-8")
-            link += '&baseUrlForUI=' + URIUtil.encodeWithinQuery(grailsApplication.config.biocacheUiURL, "UTF-8")
-            link += '&resourceName=' + URIUtil.encodeWithinQuery(grailsApplication.config.alertResourceName, "UTF-8")
+            link += '&queryDisplayName=' + encodeWithinQuery(attrs.displayName, "UTF-8")
+            link += '&baseUrlForWS=' + encodeWithinQuery(grailsApplication.config.biocacheServicesUrl, "UTF-8")
+            link += '&baseUrlForUI=' + encodeWithinQuery(grailsApplication.config.biocacheUiURL, "UTF-8")
+            link += '&resourceName=' + encodeWithinQuery(grailsApplication.config.alertResourceName, "UTF-8")
             out << "<a href=\"" + link +"\" class='btn btn-default' alt='"+attrs.altText+"'><i class='glyphicon glyphicon-bell'></i> "+ attrs.linkText + "</a>"
         }
+    }
+
+    def encodeWithinQuery(raw, encoding){
+        URLEncoder.encode(raw, encoding).replaceAll("\\+", "%20");
     }
 
     /**
