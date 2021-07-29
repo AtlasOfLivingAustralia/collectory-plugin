@@ -68,7 +68,6 @@ class DataResource extends ProviderGroup implements Serializable {
     DataProvider dataProvider
     Institution institution         // optional link to the institution whose records are served by this resource
     Boolean makeContactPublic = true
-    Boolean isPrivate = false
     String repatriationCountry
 
     //Additional EML fields
@@ -123,7 +122,6 @@ class DataResource extends ProviderGroup implements Serializable {
         methodStepDescription(nullable:true)
         qualityControlDescription(nullable:true)
         gbifDoi(nullable:true)
-        isPrivate(nullable:true)
         repatriationCountry(nullable:true)
     }
 
